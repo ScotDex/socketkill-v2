@@ -1,15 +1,18 @@
-// @ts-check
-import { defineConfig } from 'astro/config';
-import svelte from '@astrojs/svelte';
-import tailwindcss from '@tailwindcss/vite';
-import cloudflare from '@astrojs/cloudflare';
+import { defineConfig } from 'astro/config'
+import svelte from '@astrojs/svelte'
+import cloudflare from '@astrojs/cloudflare'
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineConfig({
   output: 'server',
+  adapter: cloudflare({
+    imageService: 'passthrough',
+    platformProxy: {
+      enabled: false
+    }
+  }),
   integrations: [svelte()],
-
   vite: {
     plugins: [tailwindcss()]
-  },
-
-  adapter: cloudflare()
-});
+  }
+})
