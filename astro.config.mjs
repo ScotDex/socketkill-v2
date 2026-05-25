@@ -12,7 +12,9 @@ export default defineConfig({
     }
   }),
   integrations: [svelte()],
-  session: false,
+  session: {
+    driver: 'memory'
+  },
   vite: {
     plugins: [tailwindcss()]
   }
