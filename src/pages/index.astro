@@ -1,17 +1,15 @@
 ---
-
+import Base from '../layouts/Base.astro'
+import SiteHeader from '../components/astro/SiteHeader.astro'
+import LiveFeed from '../components/svelte/LiveFeed.svelte'
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="Socket.Kill">
+    <div class="crt-screen max-w-[1500px] mx-auto px-4 py-3">
+        <SiteHeader />
+
+        <main class="mt-4">
+            <LiveFeed client:only="svelte" />
+        </main>
+    </div>
+</Base>

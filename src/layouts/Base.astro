@@ -1,0 +1,26 @@
+---
+import '../styles/global.css'
+
+const { title = 'Socket.Kill' } = Astro.props
+const backgroundUrl = import.meta.env.BACKGROUND_API_URL
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="dark" />
+        <title>{title}</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+        <slot name="head" />
+    </head>
+    <body style={`background-image: url('${backgroundUrl}')`}>
+        <div class="fog-overlay"></div>
+        <slot />
+    </body>
+</html>

@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro'
+
+const { killID } = Astro.params
+
+const id = parseInt(killID)
+if (!Number.isFinite(id) || id <= 0) {
+    return new Response('Invalid killID', { status: 400 })
+}
+
+let kill = null
+try {
+    const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`)
+    if (!res.ok) {
+        return new Response('Kill not found', { status: 404 })
+    }
+    kill = await res.json()
+} catch (err) {
+    return new Response(`Error: ${err.message}`, { status: 500 })
+}
+
+function article(shipName) {
+    const vowels = ['a', 'e', 'i', 'o', 'u']
+    return vowels.includes(shipName[0].toLowerCase()) ? 'an' : 'a'
+}
+
+const title = `${kill.victim.name} lost ${article(kill.victim.ship)} ${kill.victim.ship}`
+const image = `https://images.evetech.net/types/${kill.victim.shipTypeID}/render?size=512`
+const canonicalUrl = `https://socketkill.com/kill/${id}`
+---
+
+<Base title={`${title} | Socketkill.com`}>
+    <Fragment slot="head">
+        <meta name="description" content={title} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={title} />
+        <meta property="og:image" content={image} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Socketkill.com" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:image" content={image} />
+    </Fragment>
+
+    <div class="max-w-7xl mx-auto p-4">
+        <h1 class="text-2xl font-mono text-[var(--color-neon-green)]">{title}</h1>
+        <p class="mt-4">System: {kill.system.name} | Region: {kill.system.region}</p>
+        <p class="mt-2">Total value: {kill.totalValue ?? 'N/A'} ISK</p>
+
+        <!-- Full kill detail UI to be ported from V1's Pages Function -->
+    </div>
+</Base>

@@ -9,9 +9,21 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
-    "astro": "^6.3.7"
+    "@astrojs/cloudflare": "^13.5.4",
+    "@astrojs/svelte": "^8.1.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.7",
+    "socket.io-client": "^4.8.3",
+    "svelte": "^5.55.9",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.94.0"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
