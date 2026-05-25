@@ -12,6 +12,7 @@ export default defineConfig({
     }
   }),
   integrations: [svelte()],
+  session: false,
   vite: {
     plugins: [tailwindcss()]
   }
