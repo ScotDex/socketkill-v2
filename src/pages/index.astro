@@ -2,14 +2,15 @@
 import Base from '../layouts/Base.astro'
 import SiteHeader from '../components/svelte/SiteHeader.svelte'
 import LiveFeed from '../components/svelte/LiveFeed.svelte'
+import SiteFooter from '../components/astro/SiteFooter.astro'
 ---
 
 <Base title="Socket.Kill">
     <div class="crt-screen max-w-[1700px] mx-auto px-4 py-3">
         <SiteHeader client:load />
-
         <main class="mt-4">
             <LiveFeed client:only="svelte" />
         </main>
     </div>
+    <SiteFooter />
 </Base>

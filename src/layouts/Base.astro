@@ -1,17 +1,17 @@
 ---
-import SiteHeader from '../components/svelte/SiteHeader.svelte'
-import LiveFeed from '../components/svelte/LiveFeed.svelte'
-import SiteFooter from '../components/astro/SiteFooter.astro'
+import '../styles/global.css'
+const { title } = Astro.props
 ---
-
-<Base title="Socket.Kill">
-    <div class="crt-screen max-w-[1700px] mx-auto px-4 py-3">
-        <SiteHeader client:load />
-
-        <main class="mt-4">
-            <LiveFeed client:only="svelte" />
-        </main>
-    </div>
-
-    <SiteFooter />
-</Base>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <title>{title}</title>
+        <slot name="head" />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>
