@@ -1,4 +1,4 @@
-<div class="border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0">
+<div class="border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
     <!-- Header matching the filter panel style -->
     <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
