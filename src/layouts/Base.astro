@@ -1,26 +1,18 @@
 ---
-import '../styles/global.css'
-
-const { title = 'Socket.Kill' } = Astro.props
-
+import Base from '../layouts/Base.astro'
+import SiteHeader from '../components/svelte/SiteHeader.svelte'
+import LiveFeed from '../components/svelte/LiveFeed.svelte'
+import SiteFooter from '../components/astro/SiteFooter.astro'
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="color-scheme" content="dark" />
-        <title>{title}</title>
+<Base title="Socket.Kill">
+    <div class="crt-screen max-w-[1700px] mx-auto px-4 py-3">
+        <SiteHeader client:load />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+        <main class="mt-4">
+            <LiveFeed client:only="svelte" />
+        </main>
+    </div>
 
-        <slot name="head" />
-    </head>
-    <body>
-        <div class="fog-overlay"></div>
-        <slot />
-    </body>
-</html>
+    <SiteFooter />
+</Base>

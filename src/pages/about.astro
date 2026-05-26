@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro'
+
+const faqData = [
+    {
+        q: "What is Socket.Kill?",
+        a: "The design is optimised to produce killmails as fast as the internet allows, streamlining every aspect of the rendering process."
+    },
+    {
+        q: "How is this different from zKill or Eve-Kill?",
+        a: "Both contribute to historical records — stats, history, deep detailed information. Socket.Kill is a live feed. They're complementary tools, not competitors. Idea is to use both."
+    },
+    {
+        q: "Where does the data come from?",
+        a: "Squizz's recently developed R2 feed from zKillboard, which is utilised by multiple EVE killmail tools. Socket.Kill renders it differently."
+    },
+    {
+        q: "Can I filter the feed?",
+        a: "Yes. Type a corp, alliance, system, or region name and the feed filters to matching kills. Multi-mode — combine filters as needed."
+    },
+    {
+        q: "What's with the green-on-black aesthetic?",
+        a: "A lot of interfaces opt for utility and re-usability. I went down a different route — the idea comes from fusing the Alien franchise with EVE Online."
+    },
+    {
+        q: "Who built this?",
+        a: "Dexomus Viliana. EVE player, cloud infrastructure engineer. Contact me in-game if you want."
+    },
+    {
+        q: "Is there an API?",
+        a: "Yes. Image proxy and kill data: <a href='https://api.socketkill.com/docs/' class='text-[var(--color-neon-green)] underline'>api.socketkill.com/docs</a>. WebSocket access is whitelist-based — get in touch if you want to integrate."
+    },
+    {
+        q: "Is this open source?",
+        a: "The frontend is. <a href='https://github.com/ScotDex/socketkill-frontend' class='text-[var(--color-neon-green)] underline'>github.com/ScotDex/socketkill-frontend</a>. I cannot permit backend open source yet — some corporations are sensitive."
+    }
+]
+---
+
+<Base title="About — Socket.Kill">
+    <Fragment slot="head">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    </Fragment>
+
+    <header class="text-center py-12 border-b border-white/5">
+        <h1 class="text-5xl text-[var(--color-neon-green)] tracking-widest mb-4 font-mono">SOCKET.KILL</h1>
+        <p class="text-lg text-gray-500 mb-8">See yourself die in an atmospheric and aesthetically pleasing way.</p>
+        <a href="/" class="bg-[var(--color-neon-green)] text-black px-10 py-3 font-bold tracking-widest hover:bg-green-500 transition">MAIN SITE</a>
+
+        <div class="flex gap-8 justify-center mt-10 text-2xl">
+            <a href="https://discord.gg/dpgmEm9REc" title="Discord" class="hover:text-[var(--color-neon-green)] transition"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://twitter.com/scottishdex" title="X / Twitter" class="hover:text-[var(--color-neon-green)] transition"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://github.com/ScotDex/socketkill-frontend" title="GitHub" class="hover:text-[var(--color-neon-green)] transition"><i class="fa-brands fa-github"></i></a>
+            <a href="https://angrygoldfish5.wordpress.com/" title="Blog" class="hover:text-[var(--color-neon-green)] transition"><i class="fa-brands fa-wordpress"></i></a>
+            <a href="https://twitch.tv/scottishdex" title="Twitch" class="hover:text-[var(--color-neon-green)] transition"><i class="fa-brands fa-twitch"></i></a>
+            <a href="https://youtube.com/@scottishdex" title="YouTube" class="hover:text-[var(--color-neon-green)] transition"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto p-6">
+        <section class="border-b border-white/5 py-6">
+            <h2 class="text-[var(--color-neon-green)] text-lg tracking-[0.2em] uppercase mb-6">Frequently Asked Questions</h2>
+            <div class="flex flex-col gap-3">
+                {faqData.map(item => (
+                    <details class="accordion-item border border-white/10 bg-black/40">
+                        <summary class="p-4 flex justify-between items-center cursor-pointer hover:text-[var(--color-neon-green)] transition list-none">
+                            <span>{item.q}</span>
+                            <span class="text-[var(--color-neon-green)] text-xl accordion-icon">+</span>
+                        </summary>
+                        <div class="px-4 pb-4 border-t border-white/10 pt-4 text-lg text-gray-400">
+                            <p set:html={item.a}></p>
+                        </div>
+                    </details>
+                ))}
+            </div>
+        </section>
+    </main>
+
+    <footer class="max-w-7xl mx-auto p-4 mt-8 border-t border-white/5 text-center">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-widest text-gray-500 font-mono">
+            <div>
+                <a href="/" class="hover:text-[var(--color-neon-green)] transition">&lt; BACK TO SOCKETKILL.COM</a>
+            </div>
+            <div class="space-x-4">
+                <a href="https://github.com/ScotDex/socketkill-frontend" target="_blank" class="hover:text-[var(--color-neon-green)]">GITHUB</a>
+                <a href="https://api.socketkill.com/docs/" class="hover:text-[var(--color-neon-green)]">API</a>
+                <a href="https://discord.gg/dpgmEm9REc" target="_blank" class="hover:text-[var(--color-neon-green)]">DISCORD</a>
+            </div>
+            <div>
+                &copy; 2026 SOCKETKILL.COM
+            </div>
+        </div>
+    </footer>
+</Base>
+
+<style>
+    details summary::-webkit-details-marker { display: none; }
+    details[open] .accordion-icon::before { content: '−'; }
+    details:not([open]) .accordion-icon::before { content: '+'; }
+    details > summary > .accordion-icon { display: none; }
+</style>

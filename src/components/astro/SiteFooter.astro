@@ -1,0 +1,85 @@
+<footer class="legal-footer">
+    <div class="footer-content">
+
+        <div class="footer-left">
+            <span class="tech-spec">
+                [ CREDITS:
+                <a href="https://github.com/zKillboard/zKillboard/wiki/API-(R2Z2)" target="_blank" rel="noopener" class="credit-link">R2 FROM ZKILL</a> //
+                <a href="https://developers.eveonline.com/api-explorer" target="_blank" rel="noopener" class="credit-link">ESI</a> //
+                <a href="https://www.flickr.com/photos/rixxjavix/" target="_blank" rel="noopener" class="credit-link">@RIXXJAVIX</a> ]
+            </span>
+            <span class="ccp-notice">EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights reserved.</span>
+        </div>
+
+        <div class="footer-center">
+            <div class="footer-stat">
+                <span class="footer-stat-label">GLOBAL_NPC_DEATHS</span>
+                <span id="npc-count" class="footer-stat-value font-bold">...</span>
+            </div>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer navigation">
+            <a href="/about" class="footer-link">ABOUT</a>
+            <a href="https://socketkill.com/map/" rel="noopener" class="footer-link">HEAT_MAP</a>
+
+            <span class="footer-network-wrapper">
+                <span class="footer-link" id="network-toggle">LINKS</span>
+                <div id="network-dropdown">
+                    <a href="https://eveworkbench.com" target="_blank" rel="noopener" class="network-link">EVE_WORKBENCH</a>
+                    <a href="https://zkillboard.com/" target="_blank" rel="noopener" class="network-link">ZKILLBOARD</a>
+                    <a href="https://everookies.com/" target="_blank" rel="noopener" class="network-link">EVE_ROOKIES</a>
+                    <a href="https://wiki.eveuniversity.org/Main_Page" target="_blank" rel="noopener" class="network-link">EVE_UNI</a>
+                    <a href="https://eve-kill.com/" target="_blank" rel="noopener" class="network-link">EVE_KILL</a>
+                </div>
+            </span>
+
+            <a href="https://eve-kill.com/character/95282689" target="_blank" rel="noopener"
+                class="footer-link footer-link--author"
+                title="Built by Dexomus Viliana">
+                DEXOMUS_VILIANA
+            </a>
+            <span class="footer-version">v2.0</span>
+        </nav>
+
+    </div>
+</footer>
+
+<script>
+    async function updateNPCTicker() {
+        const npcDisplay = document.getElementById('npc-count')
+        if (!npcDisplay) return
+
+        try {
+            const response = await fetch('https://api.socketkill.com/stats/npc-kills')
+            const data = await response.json()
+            if (data && data.lifetimeTotal) {
+                npcDisplay.innerText = data.lifetimeTotal.toLocaleString()
+                npcDisplay.style.opacity = '0.5'
+                setTimeout(() => (npcDisplay.style.opacity = '1'), 200)
+            }
+        } catch {
+            npcDisplay.innerText = 'OFFLINE'
+        }
+    }
+
+    function bindNetworkDropdown() {
+        const toggle = document.getElementById('network-toggle')
+        const dropdown = document.getElementById('network-dropdown')
+        if (!toggle || !dropdown) return
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation()
+            dropdown.classList.toggle('active')
+        })
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#network-toggle') && !e.target.closest('#network-dropdown')) {
+                dropdown.classList.remove('active')
+            }
+        })
+    }
+
+    updateNPCTicker()
+    setInterval(updateNPCTicker, 300_000)
+    bindNetworkDropdown()
+</script>
