@@ -32,7 +32,7 @@
                 <img src={kill.shipImageUrl} alt="Ship" class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="ml-2">
-                <strong class="text-white text-base font-semibold block">
+                <strong class="ship-name text-white text-base font-semibold block">
                     <span class="text-[var(--color-neon-green)]/70 text-xs font-mono mr-1.5">{kill.timestamp}</span>
                     {getVictimDisplay(kill)} lost {kill.article} <span class="inline-block">{kill.ship}</span>
                 </strong>

@@ -114,7 +114,7 @@
         />
     </div>
 
-    <div class="border border-[var(--color-border-dim)] rounded-lg overflow-hidden lg:flex-1">
+    <div class="feed-container lg:flex-1">
         {#if filteredFeed.length === 0}
             <div class="p-8 text-center text-[var(--color-neon-green)] font-mono text-sm tracking-widest opacity-60">
                 &gt; {hasActiveFilters ? 'AWAITING DATA' : 'WAITING FOR NEXT KILL'}...
