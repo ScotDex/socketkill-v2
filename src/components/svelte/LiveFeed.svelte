@@ -4,6 +4,7 @@
     import KillRow from './KillRow.svelte'
     import ChipFacet from './ChipFacet.svelte'
     import QueryBuilder from './QueryBuilder.svelte'
+    import { killCount, playerCount, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import {
         passesFilter,
         getUtcTimestamp,
@@ -22,7 +23,7 @@
         corps: []
     })
 
-    let connectionStatus = $state('connecting')
+
 
     const filteredFeed = $derived(
         killBuffer.filter(k => passesFilter(k, filters)).slice(0, MAX_FEED_SIZE)
@@ -44,12 +45,12 @@
     onMount(() => {
         const socket = io('https://ws.socketkill.com')
 
-        socket.on('connect', () => {
-            connectionStatus = 'online'
+socket.on('connect', () => {
+            connectionStatus.set('online')
         })
 
         socket.on('disconnect', () => {
-            connectionStatus = 'offline'
+            connectionStatus.set('offline')
         })
 
         socket.on('region-list', (regions) => {
@@ -64,6 +65,13 @@
             corpCache = new Set(corpCache)
 
             killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
+
+            killCount.update(n => n + 1)
+            iskDestroyed.update(total => total + (kill.val || 0))
+        })
+
+        socket.on('gatekeeper-stats', (stats) => {
+            if (stats?.playerCount != null) playerCount.set(stats.playerCount)
         })
 
         return () => socket.disconnect()
