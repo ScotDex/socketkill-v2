@@ -23,7 +23,7 @@
 
     <div class="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 whitespace-nowrap">
         <span>KILLMAILS PROCESSED</span>
-        <span class="text-white font-bold text-sm">{$killCount}</span>
+        <span class="text-white font-bold text-sm">{$killCount.toLocaleString}</span>
         <span>//</span>
         <span>TQ_STATUS</span>
         <span class="text-white font-bold text-sm">{$playerCount}</span>
