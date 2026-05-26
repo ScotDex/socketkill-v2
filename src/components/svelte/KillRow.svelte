@@ -22,7 +22,10 @@
     }
 </script>
 
-<div class="flex items-center justify-between border-b border-[#1c2128] py-2 px-4 min-h-[64px] {isWhale ? 'bg-yellow-500/5' : ''}">
+<div
+    class="flex items-center justify-between border-b border-[#1c2128] py-2 px-4 min-h-[64px] {isWhale ? 'bg-yellow-500/5' : ''}"
+    bind:this={rowElement}
+>
     <div class="flex items-center flex-1">
         <a href={kill.zkillUrl} target="_blank" rel="noopener" class="flex items-center">
             <div class="w-16 h-16 bg-black border border-[var(--color-border-dim)] rounded-sm overflow-hidden mr-4">
