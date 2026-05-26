@@ -263,7 +263,7 @@ body::after {
     z-index: 5;
 }
 
-.feed-container {
+.kill-feed-panel {
     position: relative;
     overflow: visible;
     background: radial-gradient(circle at center, rgba(22, 27, 34, 0.7) 0%, rgba(10, 12, 16, 0.9) 100%);

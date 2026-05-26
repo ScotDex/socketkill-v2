@@ -145,22 +145,25 @@ onMount(async () => {
         />
     </div>
 
-    <div class="feed-container lg:flex-1 lg:self-start">
+    <div class="lg:flex-1 lg:self-start">
         {#if filteredFeed.length === 0}
-    {#if hasActiveFilters}
-        <div class="p-8 text-center text-[var(--color-neon-green)] font-mono text-sm tracking-widest opacity-60">
-            &gt; AWAITING DATA...
-        </div>
-    {:else}
-        <div class="flex items-center justify-center min-h-[400px]">
-            <BootSequence />
-        </div>
-    {/if}
-{:else}
-    {#each filteredFeed as kill (kill.zkillUrl)}
-        <KillRow {kill} />
-    {/each}
-{/if}
+            {#if hasActiveFilters}
+                <div class="p-8 text-center text-[var(--color-neon-green)] font-mono text-sm tracking-widest opacity-60">
+                    &gt; AWAITING DATA...
+                </div>
+            {:else}
+                <div class="flex items-center justify-center min-h-[400px]">
+                    <BootSequence />
+                </div>
+            {/if}
+        {:else}
+            <div class="kill-feed-panel">
+                {#each filteredFeed as kill (kill.zkillUrl)}
+                    <KillRow {kill} />
+                {/each}
+            </div>
+        {/if}
     </div>
+
     <QueryBuilder />
 </div>
