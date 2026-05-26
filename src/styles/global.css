@@ -118,6 +118,25 @@ body::after {
     opacity: 0.6;
 }
 
+.kill-row {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.1s ease;
+    will-change: transform, opacity;
+}
+
+.kill-row:hover {
+    transform: translateX(4px);
+    background: linear-gradient(90deg, rgba(63, 185, 80, 0.08) 0%, rgba(63, 185, 80, 0.02) 50%, transparent 100%);
+    box-shadow: inset 2px 0 0 var(--color-neon-green), -5px 0 15px rgba(63, 185, 80, 0.1);
+    border-bottom-color: rgba(63, 185, 80, 0.5);
+    z-index: 10;
+}
+
+.whale-row {
+    box-shadow: inset 4px 0 0 #f2cc60;
+}
+
 /* Fog / vignette overlay - apply as <div class="fog-overlay"> in layout */
 .fog-overlay {
     position: fixed;
