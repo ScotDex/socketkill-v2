@@ -1,5 +1,6 @@
 <script>
     import { formatIsk } from '../../lib/filter-logic.js'
+    import { onMount } from 'svelte'
 
     let { kill } = $props()
     let rowElement
