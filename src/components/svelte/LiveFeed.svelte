@@ -30,9 +30,9 @@
         systems: []
     })
     const regionSuggestions = $derived(Array.from(regionCache))
-    const corpSuggestions = $derived(Array.from(corpCache))
     const allianceSuggestions = $derived(Array.from(allianceCache))
     const systemSuggestions = $derived(Array.from(systemCache))
+    const corpSuggestions = $derived(Array.from(corpCache))
 
     const filteredFeed = $derived(
         killBuffer.filter(k => passesFilter(k, filters)).slice(0, MAX_FEED_SIZE)
@@ -49,7 +49,7 @@
         { label: '10B', value: 10_000_000_000 }
     ]
 
-    const corpSuggestions = $derived(Array.from(corpCache))
+    
 
 onMount(async () => {
     // Hydrate stats from backend before connecting socket
@@ -158,17 +158,17 @@ onMount(async () => {
             allowFreeText={true}
         />
         <ChipFacet
-    label="SYSTEMS (MAX 5)"
-    bind:items={filters.systems}
-    suggestions={systemSuggestions}
-    placeholder="ADD SYSTEM NAME"
-    maxItems={MAX_SYSTEMS}
-    allowFreeText={true}
-/>
+            label="SYSTEMS (MAX 5)"
+            bind:items={filters.systems}
+            suggestions={systemSuggestions}
+            placeholder="ADD SYSTEM NAME"
+            maxItems={MAX_SYSTEMS}
+            allowFreeText={true}
+        />
 
         <ChipFacet
-    label="ALLIANCES (MAX 5)"
-    bind:items={filters.alliances}
+            label="ALLIANCES (MAX 5)"
+            bind:items={filters.alliances}
     suggestions={allianceSuggestions}
     placeholder="ADD ALLIANCE NAME"
     maxItems={MAX_ALLIANCES}

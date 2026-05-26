@@ -4,6 +4,7 @@ export const WHALE_THRESHOLD = 10_000_000_000
 export const BILLION_THRESHOLD = 1_000_000_000
 export const MAX_CORPS = 5
 export const MAX_ALLIANCES = 5
+export const MAX_SYSTEMS = 5
 
 export function passesFilter(kill, filters) {
     if (filters.minValue > 0 && kill.val < filters.minValue) return false
@@ -21,6 +22,12 @@ export function passesFilter(kill, filters) {
         const match = filters.alliances.some(a =>
             (kill.allianceName || '').toLowerCase().includes(a.toLowerCase()) ||
             (kill.finalBlowAlliance || '').toLowerCase().includes(a.toLowerCase())
+        )
+        if (!match) return false
+    }
+    if (filters.systems.length) {
+        const match = filters.systems.some(s =>
+            (kill.systemName || '').toLowerCase() === s.toLowerCase()
         )
         if (!match) return false
     }
