@@ -80,6 +80,18 @@ onMount(async () => {
         killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
     })
 
+    socket.on('nebula-update', (data) => {
+    if (!data || !data.url) return
+    const tempImg = new Image()
+    tempImg.src = data.url
+    tempImg.onload = () => {
+        document.body.style.backgroundImage = `linear-gradient(rgba(13,17,23,0.8), rgba(13,17,23,0.8)), url('${data.url}')`
+        document.body.style.backgroundSize = 'cover'
+        document.body.style.backgroundAttachment = 'fixed'
+        document.body.style.backgroundPosition = 'center'
+    }
+})
+
     socket.on('gatekeeper-stats', (stats) => {
         if (stats?.totalScanned != null) killCount.set(stats.totalScanned)
         if (stats?.totalIsk != null) iskDestroyed.set(stats.totalIsk)

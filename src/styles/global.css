@@ -53,15 +53,6 @@ body {
     font-family: var(--font-body);
 }
 
-/* Dark overlay so background doesn't drown out content */
-body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(13, 17, 23, 0.85);
-    pointer-events: none;
-    z-index: -1;
-}
 
 /* ============================================================
    ATMOSPHERIC EFFECTS — scanline, flicker, vignette

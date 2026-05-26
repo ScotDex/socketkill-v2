@@ -2,7 +2,7 @@
 import '../styles/global.css'
 
 const { title = 'Socket.Kill' } = Astro.props
-const backgroundUrl = import.meta.env.BACKGROUND_API_URL
+
 ---
 
 <!DOCTYPE html>
@@ -19,7 +19,7 @@ const backgroundUrl = import.meta.env.BACKGROUND_API_URL
 
         <slot name="head" />
     </head>
-    <body style={`background-image: url('${backgroundUrl}')`}>
+    <body>
         <div class="fog-overlay"></div>
         <slot />
     </body>
