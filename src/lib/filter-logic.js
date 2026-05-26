@@ -3,14 +3,24 @@ export const KILL_BUFFER_SIZE = 200
 export const WHALE_THRESHOLD = 10_000_000_000
 export const BILLION_THRESHOLD = 1_000_000_000
 export const MAX_CORPS = 5
+export const MAX_ALLIANCES = 5
 
 export function passesFilter(kill, filters) {
     if (filters.minValue > 0 && kill.val < filters.minValue) return false
     if (filters.regions.length && !filters.regions.includes(kill.region)) return false
+
+
     if (filters.corps.length) {
         const match = filters.corps.some(c =>
             (kill.corpName || '').toLowerCase().includes(c.toLowerCase()) ||
             (kill.finalBlowCorp || '').toLowerCase().includes(c.toLowerCase())
+        )
+        if (!match) return false
+    }
+    if (filters.alliances.length) {
+        const match = filters.alliances.some(a =>
+            (kill.allianceName || '').toLowerCase().includes(a.toLowerCase()) ||
+            (kill.finalBlowAlliance || '').toLowerCase().includes(a.toLowerCase())
         )
         if (!match) return false
     }

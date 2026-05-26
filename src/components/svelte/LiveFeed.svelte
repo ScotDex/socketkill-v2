@@ -11,27 +11,35 @@
         getUtcTimestamp,
         MAX_FEED_SIZE,
         KILL_BUFFER_SIZE,
-        MAX_CORPS
+        MAX_CORPS,
+        MAX_ALLIANCES,
+        MAX_SYSTEMS
     } from '../../lib/filter-logic.js'
 
     let killBuffer = $state([])
     let regionCache = $state([])
     let corpCache = $state(new Set())
+    let allianceCache = $state(new Set())
+    let systemCache = $state([])
 
     let filters = $state({
         minValue: 0,
         regions: [],
-        corps: []
+        corps: [],
+        alliances: [],
+        systems: []
     })
-
-
+    const regionSuggestions = $derived(Array.from(regionCache))
+    const corpSuggestions = $derived(Array.from(corpCache))
+    const allianceSuggestions = $derived(Array.from(allianceCache))
+    const systemSuggestions = $derived(Array.from(systemCache))
 
     const filteredFeed = $derived(
         killBuffer.filter(k => passesFilter(k, filters)).slice(0, MAX_FEED_SIZE)
     )
 
     const hasActiveFilters = $derived(
-        filters.minValue > 0 || filters.regions.length > 0 || filters.corps.length > 0
+        filters.minValue > 0 || filters.regions.length > 0 || filters.corps.length > 0 || filters.alliances.length > 0 || filters.systems.length > 0
     )
 
     const valuePresets = [
@@ -76,6 +84,12 @@ onMount(async () => {
         if (kill.corpName) corpCache.add(kill.corpName)
         if (kill.finalBlowCorp) corpCache.add(kill.finalBlowCorp)
         corpCache = new Set(corpCache)
+
+        if (kill.allianceName) allianceCache.add(kill.allianceName)
+        if (kill.finalBlowAlliance) allianceCache.add(kill.finalBlowAlliance)
+        allianceCache = new Set(allianceCache)
+        if (kill.systemName) systemCache.add(kill.systemName)
+        systemCache = new Set(systemCache)
 
         killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
     })
@@ -143,6 +157,23 @@ onMount(async () => {
             maxItems={MAX_CORPS}
             allowFreeText={true}
         />
+        <ChipFacet
+    label="SYSTEMS (MAX 5)"
+    bind:items={filters.systems}
+    suggestions={systemSuggestions}
+    placeholder="ADD SYSTEM NAME"
+    maxItems={MAX_SYSTEMS}
+    allowFreeText={true}
+/>
+
+        <ChipFacet
+    label="ALLIANCES (MAX 5)"
+    bind:items={filters.alliances}
+    suggestions={allianceSuggestions}
+    placeholder="ADD ALLIANCE NAME"
+    maxItems={MAX_ALLIANCES}
+    allowFreeText={true}
+/>
     </div>
 
     <div class="lg:flex-1 lg:self-start">
