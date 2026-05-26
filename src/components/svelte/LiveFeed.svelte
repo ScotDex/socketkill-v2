@@ -42,41 +42,50 @@
 
     const corpSuggestions = $derived(Array.from(corpCache))
 
-    onMount(() => {
-        const socket = io('https://ws.socketkill.com')
+onMount(async () => {
+    // Hydrate stats from backend before connecting socket
+    try {
+        const res = await fetch('https://ws.socketkill.com/api/stats')
+        if (res.ok) {
+            const stats = await res.json()
+            if (stats.totalScanned != null) killCount.set(stats.totalScanned)
+            if (stats.totalIsk != null) iskDestroyed.set(stats.totalIsk)
+        }
+    } catch (e) {
+        console.warn('Stats hydration failed:', e)
+    }
 
-socket.on('connect', () => {
-            connectionStatus.set('online')
-        })
+    const socket = io('https://ws.socketkill.com')
 
-        socket.on('disconnect', () => {
-            connectionStatus.set('offline')
-        })
-
-        socket.on('region-list', (regions) => {
-            regionCache = regions || []
-        })
-
-        socket.on('raw-kill', (kill) => {
-            kill.timestamp = getUtcTimestamp()
-
-            if (kill.corpName) corpCache.add(kill.corpName)
-            if (kill.finalBlowCorp) corpCache.add(kill.finalBlowCorp)
-            corpCache = new Set(corpCache)
-
-            killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
-
-            killCount.update(n => n + 1)
-            iskDestroyed.update(total => total + (kill.val || 0))
-        })
-
-        socket.on('gatekeeper-stats', (stats) => {
-            if (stats?.playerCount != null) playerCount.set(stats.playerCount)
-        })
-
-        return () => socket.disconnect()
+    socket.on('connect', () => {
+        connectionStatus.set('online')
     })
-</script>
+
+    socket.on('disconnect', () => {
+        connectionStatus.set('offline')
+    })
+
+    socket.on('region-list', (regions) => {
+        regionCache = regions || []
+    })
+
+    socket.on('raw-kill', (kill) => {
+        kill.timestamp = getUtcTimestamp()
+
+        if (kill.corpName) corpCache.add(kill.corpName)
+        if (kill.finalBlowCorp) corpCache.add(kill.finalBlowCorp)
+        corpCache = new Set(corpCache)
+
+        killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
+    })
+
+    socket.on('gatekeeper-stats', (stats) => {
+        if (stats?.totalScanned != null) killCount.set(stats.totalScanned)
+        if (stats?.totalIsk != null) iskDestroyed.set(stats.totalIsk)
+    })
+
+    return () => socket.disconnect()
+})
 
 <div class="flex flex-col lg:flex-row gap-4">
     <div class="border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
