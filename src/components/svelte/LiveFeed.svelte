@@ -4,6 +4,7 @@
     import KillRow from './KillRow.svelte'
     import ChipFacet from './ChipFacet.svelte'
     import QueryBuilder from './QueryBuilder.svelte'
+    import BootSequence from './BootSequence.svelte'
     import { killCount, playerCount, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import {
         passesFilter,
@@ -89,7 +90,7 @@ onMount(async () => {
 </script>
 
 <div class="flex flex-col lg:flex-row gap-4">
-    <div class="border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
+    <div class="filter-panel-enter border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
         <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
             <span class="text-[var(--color-neon-green)] text-xs">&gt;</span>
             <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">STREAM FILTER</span>
@@ -134,14 +135,20 @@ onMount(async () => {
 
     <div class="feed-container lg:flex-1 lg:self-start">
         {#if filteredFeed.length === 0}
-            <div class="p-8 text-center text-[var(--color-neon-green)] font-mono text-sm tracking-widest opacity-60">
-                &gt; {hasActiveFilters ? 'AWAITING DATA' : 'WAITING FOR NEXT KILL'}...
-            </div>
-        {:else}
-            {#each filteredFeed as kill (kill.zkillUrl)}
-                <KillRow {kill} />
-            {/each}
-        {/if}
+    {#if hasActiveFilters}
+        <div class="p-8 text-center text-[var(--color-neon-green)] font-mono text-sm tracking-widest opacity-60">
+            &gt; AWAITING DATA...
+        </div>
+    {:else}
+        <div class="flex items-center justify-center min-h-[400px]">
+            <BootSequence />
+        </div>
+    {/if}
+{:else}
+    {#each filteredFeed as kill (kill.zkillUrl)}
+        <KillRow {kill} />
+    {/each}
+{/if}
     </div>
     <QueryBuilder />
 </div>

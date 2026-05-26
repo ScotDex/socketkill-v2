@@ -16,7 +16,7 @@
     }
 </script>
 
-<header class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+<header class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-white/10 pb-3 mb-4">
     <div class="min-w-0">
         <TitleBoot />
     </div>

@@ -192,6 +192,22 @@ body.signal-interference {
     }
 }
 
+@keyframes filter-panel-enter {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.filter-panel-enter {
+    animation: filter-panel-enter 0.5s ease-out forwards;
+}
+
 @keyframes crt-boot {
     0% {
         filter: brightness(0) contrast(1);
