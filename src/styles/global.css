@@ -39,6 +39,10 @@
     src: url(https://edge.socketkill.com/triglavian-completed.otf) format('opentype');
 }
 
+.triglavian {
+    font-family: 'Triglavian', var(--font-body);
+}
+
 html,
 body {
     margin: 0;

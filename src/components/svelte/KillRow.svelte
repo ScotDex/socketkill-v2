@@ -34,7 +34,7 @@
                     {getVictimDisplay(kill)} lost {kill.article} <span class="inline-block">{kill.ship}</span>
                 </strong>
                 <div class="text-sm">
-                    <span class="text-[var(--color-terminal-blue)] font-light text-sm">{kill.locationLabel}</span>
+                    <span class="text-[var(--color-terminal-blue)] font-light text-sm" class:triglavian={kill.isTriglavian}>{kill.locationLabel}</span>
                 </div>
             </div>
         </a>
