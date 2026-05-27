@@ -5,7 +5,7 @@
     import ChipFacet from './ChipFacet.svelte'
     import QueryBuilder from './QueryBuilder.svelte'
     import BootSequence from './BootSequence.svelte'
-    import { killCount, playerCount, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
+    import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import {
         passesFilter,
         getUtcTimestamp,
