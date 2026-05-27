@@ -154,7 +154,7 @@ onMount(async () => {
 
         <div class="flex flex-col gap-2">
     <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
-        SEC BAND
+        SEC STATUS
     </label>
     <div class="flex gap-1 flex-wrap">
         {#each [

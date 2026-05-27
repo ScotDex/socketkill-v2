@@ -23,13 +23,13 @@
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$killCount} formatter={numberFormatter} />
         </span>
-        <span>//</span>
+        <span>||</span>
         <span>TQ_STATUS</span>
         <span class="text-white font-bold text-sm" class:text-yellow-400={$serverStatus.active === false}>
             <PhosphorCounter value={$serverStatus} formatter={tqFormatter} />
             {#if $serverStatus.vip}<span class="text-yellow-400 ml-1">VIP</span>{/if}
         </span>
-        <span>//</span>
+        <span>||</span>
         <span>ISK_DESTROYED</span>
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$iskDestroyed} formatter={formatIsk} />
