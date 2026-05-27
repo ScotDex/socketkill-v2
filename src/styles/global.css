@@ -56,6 +56,59 @@ body {
     font-family: var(--font-body);
 }
 
+/* ============================================================
+   KILL DETAIL PAGE
+   ============================================================ */
+
+.kill-screen {
+    position: relative;
+    min-height: 100vh;
+}
+
+.kill-screen::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0px, rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(90deg, rgba(0, 212, 255, 0.015) 0px, rgba(0, 212, 255, 0.015) 1px, transparent 1px, transparent 4px);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.fade-card {
+    animation: fade-card-in 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.fade-card:nth-child(1) { animation-delay: 0.00s; }
+.fade-card:nth-child(2) { animation-delay: 0.08s; }
+.fade-card:nth-child(3) { animation-delay: 0.16s; }
+.fade-card:nth-child(4) { animation-delay: 0.24s; }
+
+@keyframes fade-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: brightness(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: brightness(1);
+    }
+}
+
+.eve-accent-glow {
+    text-shadow:
+        0 0 4px var(--color-eve-accent),
+        0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+.eve-card-title {
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.5);
+}
 
 /* ============================================================
    ATMOSPHERIC EFFECTS — scanline, flicker, vignette
