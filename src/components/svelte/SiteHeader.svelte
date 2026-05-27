@@ -1,6 +1,6 @@
 <script>
     import TitleBoot from './TitleBoot.svelte'
-    import { killCount, playerCount, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
+    import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import { formatIsk } from '../../lib/filter-logic.js'
 
     const statusClasses = {
@@ -26,7 +26,14 @@
         <span class="text-white font-bold text-sm">{$killCount.toLocaleString()}</span>
         <span>//</span>
         <span>TQ_STATUS</span>
-        <span class="text-white font-bold text-sm">{$playerCount}</span>
+<span class="text-white font-bold text-sm" class:text-yellow-400={$serverStatus.active === false}>
+  {$serverStatus.active === false
+    ? 'OFFLINE'
+    : $serverStatus.active === true
+      ? $serverStatus.count.toLocaleString()
+      : '---'}
+  {#if $serverStatus.vip}<span class="text-yellow-400 ml-1">VIP</span>{/if}
+</span>
         <span>//</span>
         <span>ISK_DESTROYED</span>
         <span class="text-white font-bold text-sm">{formatIsk($iskDestroyed)}</span>

@@ -94,6 +94,15 @@ onMount(async () => {
         killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
     })
 
+    socket.on('player-count', (payload) => {
+    serverStatus.set({
+        count: payload.count || 0,
+        version: payload.version || 'UNKNOWN',
+        vip: payload.vip === true,
+        active: payload.active === true,
+    });
+});
+
     socket.on('nebula-update', (data) => {
     if (!data || !data.url) return
     const tempImg = new Image()
