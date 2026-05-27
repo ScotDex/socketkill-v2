@@ -8,7 +8,6 @@ Winner of [CCP Fanfest 2026 New Developer of the Year](https://www.eveonline.com
 
 **Live at [socketkill.com](https://socketkill.com) · [Discord](https://discord.gg/UnFN8UY6Dz)**
 
-![Snippet](image.png)
 
 ## Features
 
@@ -19,14 +18,6 @@ Winner of [CCP Fanfest 2026 New Developer of the Year](https://www.eveonline.com
 - **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems and region to configure your own view.
 - **Atmospheric interface.** Terminal-aesthetic design from the alien franchise 
 
-## Architecture
-
-```
-zKillboard R2 Feed → R2 Background Worker → Processor → WebSocket Broadcast
-                                                      → Discord Webhooks
-                                                      → Stats Manager
-                                                      → R2 State Persistence
-```
 
 ## Tech stack
 
@@ -46,7 +37,7 @@ Full API documentation: [api.socketkill.com/docs](https://api.socketkill.com/doc
 
 ## WebSocket access
 
-Please see here
+[Please see here](https://github.com/ScotDex/socketkill-v2/wiki/Web%E2%80%90Socket)
 
 ## Legal
 
