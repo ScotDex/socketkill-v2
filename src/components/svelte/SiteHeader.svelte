@@ -1,19 +1,7 @@
 <script>
     import TitleBoot from './TitleBoot.svelte'
-    import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
+    import { killCount, serverStatus, iskDestroyed } from '../../lib/stats-store.js'
     import { formatIsk } from '../../lib/filter-logic.js'
-
-    const statusClasses = {
-        connecting: 'text-red-400',
-        online: 'text-[var(--color-neon-green)]',
-        offline: 'text-yellow-400'
-    }
-
-    const statusText = {
-        connecting: '● CONNECTING...',
-        online: '● ONLINE',
-        offline: '● OFFLINE'
-    }
 </script>
 
 <header class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-white/10 pb-3 mb-4">
@@ -26,22 +14,18 @@
         <span class="text-white font-bold text-sm">{$killCount.toLocaleString()}</span>
         <span>//</span>
         <span>TQ_STATUS</span>
-<span class="text-white font-bold text-sm" class:text-yellow-400={$serverStatus.active === false}>
-  {$serverStatus.active === false
-    ? 'OFFLINE'
-    : $serverStatus.active === true
-      ? $serverStatus.count.toLocaleString()
-      : '---'}
-  {#if $serverStatus.vip}<span class="text-yellow-400 ml-1">VIP</span>{/if}
-</span>
+        <span class="text-white font-bold text-sm" class:text-yellow-400={$serverStatus.active === false}>
+            {$serverStatus.active === false
+                ? 'OFFLINE'
+                : $serverStatus.active === true
+                    ? $serverStatus.count.toLocaleString()
+                    : '---'}
+            {#if $serverStatus.vip}<span class="text-yellow-400 ml-1">VIP</span>{/if}
+        </span>
         <span>//</span>
         <span>ISK_DESTROYED</span>
         <span class="text-white font-bold text-sm">{formatIsk($iskDestroyed)}</span>
     </div>
 
-    <div>
-        <div class={statusClasses[$connectionStatus]}>
-            {statusText[$connectionStatus]}
-        </div>
-    </div>
+    <div></div>
 </header>

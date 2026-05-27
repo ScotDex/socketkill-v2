@@ -1,12 +1,36 @@
+<script>
+    import { connectionStatus } from '../../lib/stats-store.js'
+
+    const statusClasses = {
+        connecting: 'text-red-400',
+        online: 'text-[var(--color-neon-green)]',
+        offline: 'text-yellow-400'
+    }
+
+    const statusText = {
+        connecting: '● CONNECTING...',
+        online: '● ONLINE',
+        offline: '● OFFLINE'
+    }
+</script>
+
+
 <div class="border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
-    <!-- Header matching the filter panel style -->
+
+    <div class="flex items-center justify-between pb-2 border-b border-[var(--color-border-dim)]">
+        <span class="font-mono text-[10px] tracking-widest uppercase text-[var(--color-neon-green)]/50">UPLINK</span>
+        <span class="font-mono text-xs {statusClasses[$connectionStatus]}">
+            {statusText[$connectionStatus]}
+        </span>
+    </div>
+    
     <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
         <span class="text-[var(--color-neon-green)] text-xs">&gt;</span>
         <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">QUERY BUILDER</span>
     </div>
 
-    <!-- Status block -->
+   
     <div class="flex flex-col gap-2">
         <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
             STATUS
@@ -16,7 +40,7 @@
         </div>
     </div>
 
-    <!-- Placeholder facets, visually present but disabled -->
+    
     <div class="flex flex-col gap-2 opacity-40">
         <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
             DATE RANGE
@@ -47,7 +71,7 @@
         </div>
     </div>
 
-    <!-- Footer block hinting at intent -->
+   
     <div class="mt-auto pt-2 border-t border-[var(--color-border-dim)]">
         <div class="font-mono text-[10px] tracking-widest text-[var(--color-neon-green)]/40 uppercase">
             &gt; HISTORICAL ARCHIVE
