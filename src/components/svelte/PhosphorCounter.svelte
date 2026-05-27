@@ -41,9 +41,9 @@
 
     // After displayString settles, snapshot it for next diff
     $effect(() => {
-        const _ = displayString
-        queueMicrotask(() => { previousString = displayString })
-    })
+    const settled = displayString
+    setTimeout(() => { previousString = settled }, 300)
+})
 </script>
 
 <span class="phosphor-counter">
