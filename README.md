@@ -17,6 +17,7 @@ Winner of [CCP Fanfest 2026 New Developer of the Year](https://www.eveonline.com
 - **Multi-channel Discord integration.** [Whale alerts, AT/officer/Rorqual sightings, Multiple Value Thresholds](https://discord.gg/UnFN8UY6Dz)
 - **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems and region to configure your own view.
 - **Atmospheric interface.** Terminal-aesthetic design from the alien franchise 
+- **Query Builder.** Coming Soon TM - configure your own question using the query builder module, resulting on the days killmails.
 
 
 ## Tech stack
@@ -25,7 +26,7 @@ Winner of [CCP Fanfest 2026 New Developer of the Year](https://www.eveonline.com
 - **Transport:** Socket.io (WebSocket + polling fallback)
 - **Backend:** DigitalOcean ARM VM
 - **Frontend:** Astro/Svelte/Tailwind
-- **Storage:** Cloudflare R2
+- **Storage:** Cloudflare R2/KV
 - **Image delivery:** Cloudflare edge
 - **EVE data:** ESI (EVE Swagger Interface) for character, corporation, and universe data
 
