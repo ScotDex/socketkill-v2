@@ -4,10 +4,8 @@
     import { killCount, serverStatus, iskDestroyed } from '../../lib/stats-store.js'
     import { formatIsk } from '../../lib/filter-logic.js'
 
-    // Formatter for raw numeric counters
     const numberFormatter = (n) => n.toLocaleString()
 
-    // Formatter for TQ — handles the active/null/offline states
     const tqFormatter = (status) => {
         if (status.active === false) return 'OFFLINE'
         if (status.active === true) return status.count.toLocaleString()
