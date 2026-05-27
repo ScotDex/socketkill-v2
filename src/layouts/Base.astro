@@ -7,11 +7,39 @@ const { title } = Astro.props
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="dark" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" />
         <title>{title}</title>
+
+        <meta name="description" content="Socket.Kill - Live kill feed for Eve Online optimized for rendering speed and performance complete with a global NPC death counter and stream filter." />
+    <meta name="keywords" content="eve online, eve, pvp, socket.kill, killboard, real-time, intel, whale hunter, wormhole, low-latency, eve tool, pvp tracker, gatekeeper, mmorpg, third, party, tools, socket, kill, socket kill, socket kill feed" />
+    <meta name="author" content="Dexomus Viliana" />
+
+    <!-- Icons -->
+<link rel="icon" type="image/png" href="https://edge.socketkill.com/favicon.png" />
+<link rel="apple-touch-icon" href="https://edge.socketkill.com/favicon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://socketkill.com" />
+    <meta property="og:title" content="Socket.Kill" />
+    <meta property="og:description" content="Socket.Kill - Live kill feed for Eve Online optimized for rendering speed and performance complete with a global NPC death counter and stream filter." />
+    <meta property="og:image" content="https://socketkill.com/socket-preview-v2.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://socketkill.com/" />
+    <meta property="twitter:title" content="Socket.Kill" />
+    <meta property="twitter:description" content="Socket.Kill - Live kill feed for Eve Online optimized for rendering speed and performance complete with a global NPC death counter and stream filter." />
+    <meta name="twitter:image" content="https://socketkill.com/socket-preview-v2.png" />
+
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9a7b8334fd974f46a3b570cbc18d90b1"}'></script>
+
         <slot name="head" />
     </head>
     <body>
