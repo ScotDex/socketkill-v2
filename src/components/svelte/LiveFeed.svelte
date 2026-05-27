@@ -27,7 +27,8 @@
         regions: [],
         corps: [],
         alliances: [],
-        systems: []
+        systems: [],
+        bands: []
     })
     const regionSuggestions = $derived(Array.from(regionCache))
     const allianceSuggestions = $derived(Array.from(allianceCache))
@@ -39,7 +40,7 @@
     )
 
     const hasActiveFilters = $derived(
-        filters.minValue > 0 || filters.regions.length > 0 || filters.corps.length > 0 || filters.alliances.length > 0 || filters.systems.length > 0
+        filters.minValue > 0 || filters.regions.length > 0 || filters.corps.length > 0 || filters.alliances.length > 0 || filters.systems.length > 0 || filters.bands.length > 0
     )
 
     const valuePresets = [
@@ -150,6 +151,39 @@ onMount(async () => {
                 {/each}
             </div>
         </div>
+
+        <div class="flex flex-col gap-2">
+    <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
+        SEC BAND
+    </label>
+    <div class="flex gap-1 flex-wrap">
+        {#each [
+            { label: 'HS', value: 'high' },
+            { label: 'LS', value: 'low' },
+            { label: 'NULL', value: 'null' },
+            { label: 'WH', value: 'wh' },
+            { label: 'POCH', value: 'pochven' }
+        ] as band}
+            {@const active = filters.bands.includes(band.value)}
+            <button
+                type="button"
+                class="flex-1 bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)]/60 font-mono text-xs px-2 py-1 cursor-pointer hover:border-[var(--color-border-mid)] hover:text-[var(--color-neon-green)]"
+                class:bg-[var(--color-neon-green)]={active}
+                class:text-black={active}
+                class:border-[var(--color-neon-green)]={active}
+                onclick={() => {
+                    if (active) {
+                        filters.bands = filters.bands.filter(b => b !== band.value)
+                    } else {
+                        filters.bands = [...filters.bands, band.value]
+                    }
+                }}
+            >
+                {band.label}
+            </button>
+        {/each}
+    </div>
+</div>
 
         <ChipFacet
             label="REGIONS"

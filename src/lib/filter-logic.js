@@ -5,6 +5,7 @@ export const BILLION_THRESHOLD = 1_000_000_000
 export const MAX_CORPS = 5
 export const MAX_ALLIANCES = 5
 export const MAX_SYSTEMS = 5
+export const SEC_BANDS = ['high', 'low', 'null', 'wh', 'pochven']
 
 export function passesFilter(kill, filters) {
     if (filters.minValue > 0 && kill.val < filters.minValue) return false
@@ -31,6 +32,9 @@ export function passesFilter(kill, filters) {
         )
         if (!match) return false
     }
+    if (filters.bands?.length) {
+    if (!filters.bands.includes(kill.space)) return false
+}
     return true
 }
 

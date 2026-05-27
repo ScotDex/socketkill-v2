@@ -1,14 +1,9 @@
 <script>
     let { value, formatter = null } = $props()
 
-    // Format the incoming value to display string
+    
     const displayString = $derived(formatter ? formatter(value) : String(value))
-
-    // Track previous string for diffing
     let previousString = $state('')
-
-    // Tokenise: each character becomes { char, isDigit, key }
-    // We diff against previousString right-aligned (rightmost char = position 0)
     const tokens = $derived.by(() => {
         const current = displayString
         const prev = previousString
@@ -20,7 +15,6 @@
         for (let i = 0; i < currentLen; i++) {
             const char = current[i]
             const isDigit = /\d/.test(char)
-            // Right-aligned comparison: position from the right
             const posFromRight = currentLen - 1 - i
             const prevChar = posFromRight < prevLen ? prev[prevLen - 1 - posFromRight] : null
             const changed = char !== prevChar
@@ -30,16 +24,12 @@
                 isDigit,
                 changed: changed && isDigit,
                 posFromRight,
-                // Key ensures Svelte re-mounts the span when the digit changes,
-                // re-triggering the CSS animation
                 key: `${posFromRight}-${char}-${changed ? Date.now() : 'stable'}`
             })
         }
 
         return result
     })
-
-    // After displayString settles, snapshot it for next diff
     $effect(() => {
     const settled = displayString
     setTimeout(() => { previousString = settled }, 300)
