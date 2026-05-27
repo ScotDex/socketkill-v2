@@ -56,10 +56,6 @@ body {
     font-family: var(--font-body);
 }
 
-/* ============================================================
-   KILL DETAIL PAGE
-   ============================================================ */
-
 .kill-screen {
     position: relative;
     min-height: 100vh;
