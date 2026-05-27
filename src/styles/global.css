@@ -10,6 +10,9 @@
     --color-text-body: #c9d1d9;
     --color-whale-accent: #f2cc60;
     --color-isk-billion: #ff0000;
+    --color-eve-accent: #00d4ff;
+--color-eve-dark: #0a0b0e;
+--color-eve-border: rgba(255, 255, 255, 0.1);
 
     --font-mono: 'Share Tech Mono', monospace;
     --font-body: 'Exo 2', sans-serif;
