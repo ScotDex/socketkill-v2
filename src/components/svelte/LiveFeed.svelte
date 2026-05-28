@@ -20,7 +20,7 @@
     let regionCache = $state([])
     let corpCache = $state(new Set())
     let allianceCache = $state(new Set())
-    let systemCache = $state([])
+    let systemCache = $state(new set())
 
     let filters = $state({
         minValue: 0,
@@ -138,16 +138,14 @@ onMount(async () => {
             </label>
             <div class="flex gap-1 flex-wrap">
                 {#each valuePresets as preset}
-                    <button
-                        type="button"
-                        class="flex-1 bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)]/60 font-mono text-xs px-2 py-1 cursor-pointer hover:border-[var(--color-border-mid)] hover:text-[var(--color-neon-green)]"
-                        class:bg-[var(--color-neon-green)]={filters.minValue === preset.value}
-                        class:text-black={filters.minValue === preset.value}
-                        class:border-[var(--color-neon-green)]={filters.minValue === preset.value}
-                        onclick={() => filters.minValue = preset.value}
-                    >
-                        {preset.label}
-                    </button>
+                   <button
+    type="button"
+    class="filter-btn flex-1 bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)]/60 font-mono text-xs px-2 py-1 cursor-pointer hover:border-[var(--color-border-mid)] hover:text-[var(--color-neon-green)]"
+    class:selected={filters.minValue === preset.value}
+    onclick={() => filters.minValue = preset.value}
+>
+    {preset.label}
+</button>
                 {/each}
             </div>
         </div>
@@ -166,21 +164,19 @@ onMount(async () => {
         ] as band}
             {@const active = filters.bands.includes(band.value)}
             <button
-                type="button"
-                class="flex-1 bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)]/60 font-mono text-xs px-2 py-1 cursor-pointer hover:border-[var(--color-border-mid)] hover:text-[var(--color-neon-green)]"
-                class:bg-[var(--color-neon-green)]={active}
-                class:text-black={active}
-                class:border-[var(--color-neon-green)]={active}
-                onclick={() => {
-                    if (active) {
-                        filters.bands = filters.bands.filter(b => b !== band.value)
-                    } else {
-                        filters.bands = [...filters.bands, band.value]
-                    }
-                }}
-            >
-                {band.label}
-            </button>
+    type="button"
+    class="filter-btn flex-1 bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)]/60 font-mono text-xs px-2 py-1 cursor-pointer hover:border-[var(--color-border-mid)] hover:text-[var(--color-neon-green)]"
+    class:selected={active}
+    onclick={() => {
+        if (active) {
+            filters.bands = filters.bands.filter(b => b !== band.value)
+        } else {
+            filters.bands = [...filters.bands, band.value]
+        }
+    }}
+>
+    {band.label}
+</button>
         {/each}
     </div>
 </div>

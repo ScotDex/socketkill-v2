@@ -50,6 +50,12 @@ body {
     min-height: 100vh;
 }
 
+.filter-btn.selected {
+    background: var(--color-neon-green);
+    color: #ffffff;
+    border-color: var(--color-neon-green);
+}
+
 body {
     background-color: var(--color-dark-bg);
     background-size: cover;
