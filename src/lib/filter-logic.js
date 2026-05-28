@@ -1,4 +1,4 @@
-export const MAX_FEED_SIZE = 70
+export const MAX_FEED_SIZE = 100
 export const KILL_BUFFER_SIZE = 200
 export const WHALE_THRESHOLD = 10_000_000_000
 export const BILLION_THRESHOLD = 1_000_000_000
