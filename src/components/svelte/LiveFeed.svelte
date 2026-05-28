@@ -89,7 +89,7 @@ onMount(async () => {
         if (kill.allianceName) allianceCache.add(kill.allianceName)
         if (kill.finalBlowAlliance) allianceCache.add(kill.finalBlowAlliance)
         allianceCache = new Set(allianceCache)
-        if (kill.systemName) systemCache.add(kill.systemName)
+        if (kill.system) systemCache.add(kill.system)
         systemCache = new Set(systemCache)
 
         killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)

@@ -28,7 +28,7 @@ export function passesFilter(kill, filters) {
     }
     if (filters.systems.length) {
         const match = filters.systems.some(s =>
-            (kill.systemName || '').toLowerCase() === s.toLowerCase()
+            (kill.system || '').toLowerCase() === s.toLowerCase()
         )
         if (!match) return false
     }
