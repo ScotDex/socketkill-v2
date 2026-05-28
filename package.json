@@ -16,7 +16,7 @@
     "@astrojs/cloudflare": "^13.6.0",
     "@astrojs/svelte": "^8.1.1",
     "@tailwindcss/vite": "^4.3.0",
-    "astro": "^6.3.7",
+    "astro": "^6.4.0",
     "socket.io-client": "^4.8.3",
     "svelte": "^5.55.10",
     "tailwindcss": "^4.3.0",
