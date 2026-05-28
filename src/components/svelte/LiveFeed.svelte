@@ -20,7 +20,7 @@
     let regionCache = $state([])
     let corpCache = $state(new Set())
     let allianceCache = $state(new Set())
-    let systemCache = $state(new set())
+    let systemCache = $state(new Set())
 
     let filters = $state({
         minValue: 0,
