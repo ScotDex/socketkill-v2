@@ -227,14 +227,5 @@ onMount(async () => {
         {/each}
     </div>
 {/if}
-        {:else}
-            <div class="kill-feed-panel">
-                {#each filteredFeed as kill (kill.zkillUrl)}
-                    <KillRow {kill} />
-                {/each}
-            </div>
-        {/if}
-    </div>
-
     <QueryBuilder />
 </div>
