@@ -7,10 +7,9 @@ export const MAX_ALLIANCES = 5
 export const MAX_SYSTEMS = 5
 export const SEC_BANDS = ['high', 'low', 'null', 'wh', 'pochven']
 
-export function passesFilter(kill, filters) {
+export function passesFilter(kill, filters, resolvedSets = {}) {
     if (filters.minValue > 0 && kill.val < filters.minValue) return false
     if (filters.regions.length && !filters.regions.includes(kill.region)) return false
-
 
     if (filters.corps.length) {
         const match = filters.corps.some(c =>
@@ -33,9 +32,22 @@ export function passesFilter(kill, filters) {
         if (!match) return false
     }
     if (filters.bands?.length) {
-    if (!filters.bands.includes(kill.space)) return false
-}
+        if (!filters.bands.includes(kill.space)) return false
+    }
+
+    // Weapon keyword filter. Active when resolvedSets.weaponTypeIDs is a
+    // non-empty Set (resolution happens once per keyword change in the
+    // component, not per kill). Empty Set means "no keyword set" — pass.
+    if (!passesWeaponKeyword(kill, resolvedSets.weaponTypeIDs)) return false
+
     return true
+}
+
+export function passesWeaponKeyword(kill, matchedTypeIDs) {
+    if (!matchedTypeIDs || matchedTypeIDs.size === 0) return true  // filter inactive
+    const ids = kill.weaponTypeIDs
+    if (!Array.isArray(ids) || ids.length === 0) return false
+    return ids.some((id) => matchedTypeIDs.has(id))
 }
 
 export function formatIsk(value) {

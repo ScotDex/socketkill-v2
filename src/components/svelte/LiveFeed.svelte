@@ -5,6 +5,7 @@
     import ChipFacet from './ChipFacet.svelte'
     import QueryBuilder from './QueryBuilder.svelte'
     import BootSequence from './BootSequence.svelte'
+    import WeaponKeywordFacet from './WeaponKeywordFacet.svelte'
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import {
         passesFilter,
@@ -15,6 +16,7 @@
         MAX_ALLIANCES,
         MAX_SYSTEMS
     } from '../../lib/filter-logic.js'
+    import { itemsFuse, loadFilterSource, resolveWeaponKeyword } from '../../lib/filter-source-store.js'
 
     let killBuffer = $state([])
     let regionCache = $state([])
@@ -28,7 +30,8 @@
         corps: [],
         alliances: [],
         systems: [],
-        bands: []
+        bands: [],
+        weaponKeyword: ''
     })
 
     const regionSuggestions = $derived(Array.from(regionCache))
@@ -36,8 +39,16 @@
     const systemSuggestions = $derived(Array.from(systemCache))
     const corpSuggestions = $derived(Array.from(corpCache))
 
+    // Resolves the weapon keyword to a Set of matching typeIDs once per
+    // keyword change. The Fuse index comes from filter-source-store; it's
+    // null until /api/filter-source returns. Until then matched set is empty,
+    // which means "filter inactive" — kills pass through.
+    const weaponMatchedIDs = $derived(resolveWeaponKeyword(filters.weaponKeyword, $itemsFuse))
+
     const filteredFeed = $derived(
-        killBuffer.filter(k => passesFilter(k, filters)).slice(0, MAX_FEED_SIZE)
+        killBuffer
+            .filter(k => passesFilter(k, filters, { weaponTypeIDs: weaponMatchedIDs }))
+            .slice(0, MAX_FEED_SIZE)
     )
 
     const hasActiveFilters = $derived(
@@ -46,7 +57,8 @@
         filters.corps.length > 0 ||
         filters.alliances.length > 0 ||
         filters.systems.length > 0 ||
-        filters.bands.length > 0
+        filters.bands.length > 0 ||
+        weaponMatchedIDs.size > 0
     )
 
     const valuePresets = [
@@ -65,6 +77,9 @@
     ]
 
     onMount(async () => {
+        // Kick off filter source load — non-blocking, populates store when ready
+        loadFilterSource()
+
         // Hydrate stats from backend before connecting socket
         try {
             const res = await fetch('https://ws.socketkill.com/api/stats')
@@ -221,6 +236,8 @@
             maxItems={MAX_ALLIANCES}
             allowFreeText={true}
         />
+
+        <WeaponKeywordFacet bind:keyword={filters.weaponKeyword} />
     </div>
 
     <div class="lg:flex-1 lg:self-start">
