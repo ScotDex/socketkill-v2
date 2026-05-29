@@ -16,13 +16,16 @@
         MAX_ALLIANCES,
         MAX_SYSTEMS
     } from '../../lib/filter-logic.js'
-    import { itemsFuse, loadFilterSource, resolveWeaponKeyword } from '../../lib/filter-source-store.js'
+    import {
+        filterSource,
+        itemsFuse,
+        loadFilterSource,
+        resolveWeaponKeyword
+    } from '../../lib/filter-source-store.js'
 
     let killBuffer = $state([])
-    let regionCache = $state([])
     let corpCache = $state(new Set())
     let allianceCache = $state(new Set())
-    let systemCache = $state(new Set())
 
     let filters = $state({
         minValue: 0,
@@ -34,15 +37,24 @@
         weaponKeyword: ''
     })
 
-    const regionSuggestions = $derived(Array.from(regionCache))
+    // SDE-backed suggestion lists. Derived once when filterSource loads.
+    // Sorted alphabetically for predictable autocomplete order.
+    const sdeRegionNames = $derived(
+        $filterSource.loaded
+            ? Object.values($filterSource.regions).map(r => r.name).sort()
+            : []
+    )
+    const sdeSystemNames = $derived(
+        $filterSource.loaded
+            ? Object.values($filterSource.systems).map(s => s.name).sort()
+            : []
+    )
+
+    // Corps and alliances remain stream-derived until ESI cache is wired in.
     const allianceSuggestions = $derived(Array.from(allianceCache))
-    const systemSuggestions = $derived(Array.from(systemCache))
     const corpSuggestions = $derived(Array.from(corpCache))
 
-    // Resolves the weapon keyword to a Set of matching typeIDs once per
-    // keyword change. The Fuse index comes from filter-source-store; it's
-    // null until /api/filter-source returns. Until then matched set is empty,
-    // which means "filter inactive" — kills pass through.
+    // Resolves the weapon keyword to a Set of matching typeIDs.
     const weaponMatchedIDs = $derived(resolveWeaponKeyword(filters.weaponKeyword, $itemsFuse))
 
     const filteredFeed = $derived(
@@ -102,10 +114,6 @@
             connectionStatus.set('offline')
         })
 
-        socket.on('region-list', (regions) => {
-            regionCache = regions || []
-        })
-
         socket.on('raw-kill', (kill) => {
             kill.timestamp = getUtcTimestamp()
 
@@ -116,9 +124,6 @@
             if (kill.allianceName) allianceCache.add(kill.allianceName)
             if (kill.finalBlowAlliance) allianceCache.add(kill.finalBlowAlliance)
             allianceCache = new Set(allianceCache)
-
-            if (kill.system) systemCache.add(kill.system)
-            systemCache = new Set(systemCache)
 
             killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
         })
@@ -206,7 +211,7 @@
         <ChipFacet
             label="REGIONS"
             bind:items={filters.regions}
-            suggestions={regionCache}
+            suggestions={sdeRegionNames}
             placeholder="ADD REGION"
         />
 
@@ -222,7 +227,7 @@
         <ChipFacet
             label="SYSTEMS (MAX 5)"
             bind:items={filters.systems}
-            suggestions={systemSuggestions}
+            suggestions={sdeSystemNames}
             placeholder="ADD SYSTEM NAME"
             maxItems={MAX_SYSTEMS}
             allowFreeText={true}

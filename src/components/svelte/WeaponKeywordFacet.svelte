@@ -1,112 +1,51 @@
-
 <script>
-  import { itemsFuse, resolveWeaponKeyword } from '../../lib/filter-source-store.js';
+    import { itemsFuse, resolveWeaponKeyword } from '../../lib/filter-source-store.js'
 
-  let { keyword = $bindable('') } = $props();
+    let { keyword = $bindable('') } = $props()
 
-  // Derived match count for live feedback — recomputes only when keyword or
-  // the Fuse index changes.
-  const matchedIDs = $derived(resolveWeaponKeyword(keyword, $itemsFuse));
-  const matchCount = $derived(matchedIDs.size);
+    const matchedIDs = $derived(resolveWeaponKeyword(keyword, $itemsFuse))
+    const matchCount = $derived(matchedIDs.size)
 
-  function clear() {
-    keyword = '';
-  }
+    function clear() {
+        keyword = ''
+    }
 </script>
 
-<div class="facet">
-  <label class="facet-label" for="weapon-keyword-input">WEAPON KEYWORD</label>
+<div class="flex flex-col gap-2">
+    <label
+        for="weapon-keyword-input"
+        class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70"
+    >
+        WEAPON KEYWORD
+    </label>
 
-  <div class="input-row">
-    <input
-      id="weapon-keyword-input"
-      type="text"
-      bind:value={keyword}
-      placeholder="smartbomb, neut, ECM…"
-      class="weapon-input"
-      autocomplete="off"
-      spellcheck="false"
-    />
-    {#if keyword}
-      <button type="button" class="clear-btn" onclick={clear} aria-label="Clear">×</button>
-    {/if}
-  </div>
-
-  {#if keyword && keyword.length >= 3}
-    <div class="match-meta" class:has-matches={matchCount > 0}>
-      {#if matchCount > 0}
-        {matchCount} match{matchCount === 1 ? '' : 'es'}
-      {:else}
-        No matches
-      {/if}
+    <div class="relative">
+        <input
+            id="weapon-keyword-input"
+            type="text"
+            bind:value={keyword}
+            placeholder="smartbomb, neut, ECM…"
+            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-xs px-2 py-1.5 outline-none italic placeholder:text-[var(--color-neon-green)]/40 placeholder:italic focus:border-[var(--color-neon-green)]/70"
+            autocomplete="off"
+            spellcheck="false"
+        />
+        {#if keyword}
+            <button
+                type="button"
+                onclick={clear}
+                aria-label="Clear"
+                class="absolute right-1 top-1/2 -translate-y-1/2 text-[var(--color-neon-green)]/40 hover:text-[var(--color-neon-green)] font-mono cursor-pointer text-sm leading-none px-1"
+            >×</button>
+        {/if}
     </div>
-  {:else if keyword && keyword.length > 0}
-    <div class="match-meta">Type 3+ characters…</div>
-  {/if}
+
+    {#if keyword && keyword.length >= 3}
+        <div class="font-mono text-[0.65rem] tracking-wider text-[var(--color-neon-green)]/50">
+            {#if matchCount > 0}
+                {matchCount} MATCH{matchCount === 1 ? '' : 'ES'}
+            {:else}
+                NO MATCHES
+            {/if}
+        </div>
+    {/if}
 </div>
-
-<style>
-  .facet {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .facet-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-    color: var(--color-text-dim, #9ca3af);
-    text-transform: uppercase;
-  }
-
-  .input-row {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .weapon-input {
-    flex: 1;
-    background: transparent;
-    border: 1px solid var(--color-border, #374151);
-    color: var(--color-text, #e5e7eb);
-    padding: 0.4rem 0.6rem;
-    font-family: inherit;
-    font-size: 0.85rem;
-    outline: none;
-    transition: border-color 120ms ease;
-  }
-
-  .weapon-input:focus {
-    border-color: var(--color-neon-green, #22c55e);
-  }
-
-  .clear-btn {
-    background: transparent;
-    border: 1px solid var(--color-border, #374151);
-    color: var(--color-text-dim, #9ca3af);
-    width: 1.75rem;
-    height: 1.75rem;
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .clear-btn:hover {
-    color: var(--color-text, #e5e7eb);
-    border-color: var(--color-text-dim, #9ca3af);
-  }
-
-  .match-meta {
-    font-size: 0.7rem;
-    color: var(--color-text-dim, #9ca3af);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .match-meta.has-matches {
-    color: var(--color-neon-green, #22c55e);
-  }
-</style>
