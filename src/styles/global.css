@@ -328,6 +328,16 @@ body {
         min-height: 56px;
     }
 
+    /* Hide site header (logo + stats bar) — semantic <header> element */
+    header {
+        display: none;
+    }
+
+    /* Hide query builder panel */
+    .query-builder {
+        display: none;
+    }
+
     /* Shrink ship image — first <div> inside the <a> link */
     .kill-row a>div:first-child {
         width: 48px;
