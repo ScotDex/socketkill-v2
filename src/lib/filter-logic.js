@@ -35,9 +35,6 @@ export function passesFilter(kill, filters, resolvedSets = {}) {
         if (!filters.bands.includes(kill.space)) return false
     }
 
-    // Weapon keyword filter. Active when resolvedSets.weaponTypeIDs is a
-    // non-empty Set (resolution happens once per keyword change in the
-    // component, not per kill). Empty Set means "no keyword set" — pass.
     if (!passesWeaponKeyword(kill, resolvedSets.weaponTypeIDs)) return false
 
     return true

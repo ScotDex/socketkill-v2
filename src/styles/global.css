@@ -356,6 +356,10 @@ body {
         /* text-sm */
     }
 
+    .filter-panel-enter {
+        order: 1;
+    }
+
     /* Hide attacker count badge — direct child of .kill-row, position 2 */
     .kill-row>div:nth-child(2) {
         display: none;
