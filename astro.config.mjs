@@ -1,7 +1,6 @@
 import { defineConfig } from 'astro/config'
 import svelte from '@astrojs/svelte'
 import cloudflare from '@astrojs/cloudflare'
-import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
