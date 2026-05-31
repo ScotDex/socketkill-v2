@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://socketkill.com/sitemap-index.xml

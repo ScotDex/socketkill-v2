@@ -91,19 +91,18 @@ const visibleAttackers = attackers.slice(0, 5)
 const hiddenAttackers = attackers.slice(5)
 ---
 
-<Base title={`${title} | Socketkill.com`}>
+<Base
+    title={`${title} | Socketkill.com`}
+    ogTitle={title}
+    ogDescription={description}
+    ogImage={image}
+    ogImageWidth="512"
+    ogImageHeight="512"
+    ogUrl={canonicalUrl}
+    ogType="article"
+    twitterCard="summary"
+>
     <Fragment slot="head">
-        <meta name="description" content={description} />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={image} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="Socketkill.com" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={image} />
         <script type="application/ld+json" set:html={JSON.stringify({
             "@context": "https://schema.org",
             "@type": "NewsArticle",
