@@ -11,7 +11,7 @@ export default defineConfig({
       enabled: false
     }
   }),
-  integrations: [svelte(), sitemap()],
+  integrations: [svelte()],
   session: {
     driver: 'memory'
   },
