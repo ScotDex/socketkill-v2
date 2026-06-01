@@ -1,8 +1,6 @@
 import { writable, derived } from 'svelte/store';
 import Fuse from 'fuse.js';
 
-// Replace with your existing backend URL config if you have one centralised.
-// V2 likely has this in an env var or config file already.
 const API_BASE = 'https://ws.socketkill.com';
 
 const EMPTY = {
@@ -43,9 +41,9 @@ export const itemsFuse = derived(filterSource, ($fs) => {
   }));
   return new Fuse(list, {
     keys: ['name'],
-    threshold: 0.3,         // looser = more permissive substring matching
+    threshold: 0.3,        
     minMatchCharLength: 3,
-    ignoreLocation: true,   // "smartbomb" matches "Large Smartbomb II" anywhere in name
+    ignoreLocation: true,  
   });
 });
 

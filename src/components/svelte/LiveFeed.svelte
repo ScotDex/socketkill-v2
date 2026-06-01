@@ -49,12 +49,8 @@
             ? Object.values($filterSource.systems).map(s => s.name).sort()
             : []
     )
-
-    // Corps and alliances remain stream-derived until ESI cache is wired in.
     const allianceSuggestions = $derived(Array.from(allianceCache))
     const corpSuggestions = $derived(Array.from(corpCache))
-
-    // Resolves the weapon keyword to a Set of matching typeIDs.
     const weaponMatchedIDs = $derived(resolveWeaponKeyword(filters.weaponKeyword, $itemsFuse))
 
     const filteredFeed = $derived(
@@ -89,10 +85,7 @@
     ]
 
     onMount(async () => {
-        // Kick off filter source load — non-blocking, populates store when ready
         loadFilterSource()
-
-        // Hydrate stats from backend before connecting socket
         try {
             const res = await fetch('https://ws.socketkill.com/api/stats')
             if (res.ok) {
