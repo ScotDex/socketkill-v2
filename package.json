@@ -21,6 +21,7 @@
     "socket.io-client": "^4.8.3",
     "svelte": "^5.55.10",
     "tailwindcss": "^4.3.0",
+    "three": "^0.184.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.95.0"
   },

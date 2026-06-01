@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro'
+import GalaxyMap from '../components/svelte/GalaxyMap.svelte'
+---
+
+<Base
+  title="Galaxy Map | Socket.Kill"
+  ogTitle="Galaxy Map — live EVE Online combat"
+  ogDescription="Live 3D visualisation of combat activity across New Eden. Watch kills appear in real time across the galaxy."
+  ogUrl="https://socketkill.com/map"
+>
+  <GalaxyMap client:only="svelte" />
+</Base>
