@@ -15,9 +15,9 @@
   }
 
   const SEC_BANDS = [
-    { label: 'HI',   value: 'high' },
-    { label: 'LO',   value: 'low' },
-    { label: 'NUL',  value: 'null' },
+    { label: 'HS',   value: 'high' },
+    { label: 'LS',   value: 'low' },
+    { label: 'NULL',  value: 'null' },
     { label: 'WH',   value: 'wh' },
     { label: 'POCH', value: 'pochven' },
   ]
@@ -61,7 +61,7 @@
 
   <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
     <span class="text-[var(--color-neon-green)] text-xs">&gt;</span>
-    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">QUERY BUILDER</span>
+    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">ARCHIVE SCANNER</span>
   </div>
 
   <div class="flex flex-col gap-2 opacity-40">
@@ -99,7 +99,7 @@
       SHIP CLASS
     </label>
     <div class="border border-[var(--color-border-dim)] px-2 py-1 font-mono text-xs text-[var(--color-neon-green)]/40 italic">
-      SELECT CLASS
+      SELECT HULL CLASS
     </div>
   </div>
 
@@ -113,7 +113,7 @@
       {$searchResults.loading ? 'QUERYING...' : '> EXECUTE QUERY'}
     </button>
     <div class="font-mono text-[10px] tracking-widest text-[var(--color-neon-green)]/40 uppercase">
-      &gt; HISTORICAL ARCHIVE
+      &gt; KILLMAIL STORE
     </div>
   </div>
 </div>

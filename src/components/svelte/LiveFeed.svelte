@@ -37,8 +37,6 @@
         weaponKeyword: ''
     })
 
-    // SDE-backed suggestion lists. Derived once when filterSource loads.
-    // Sorted alphabetically for predictable autocomplete order.
     const sdeRegionNames = $derived(
         $filterSource.loaded
             ? Object.values($filterSource.regions).map(r => r.name).sort()
