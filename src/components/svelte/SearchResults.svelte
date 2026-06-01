@@ -18,20 +18,6 @@
       hasParams = true;
     }
 
-    if (params.has('shipGroup')) {
-  const ids = params.get('shipGroup').split(',').map(v => parseInt(v, 10)).filter(Number.isFinite);
-  searchFilters.update(f => ({ ...f, shipGroup: ids }));
-  hasParams = true;
-}
-
-if (params.has('minIsk')) {
-  const v = parseInt(params.get('minIsk'), 10);
-  if (Number.isFinite(v)) {
-    searchFilters.update(f => ({ ...f, minIsk: v }));
-    hasParams = true;
-  }
-}
-
     // 3. Fire the search automatically on page load
     runSearch($searchFilters, 1);
   });
@@ -61,7 +47,7 @@ if (params.has('minIsk')) {
       <li class="row">
         <span class="col time">{formatTime(k.time)}</span>
         <span class="col victim">
-          <a href={`/kill/${k.time.slice(0, 10)}/${k.killID}`}>{k.victim.ship}</a>
+          <a href={`/kill/${k.killID}`}>{k.victim.ship}</a>
           <span class="muted">{k.victim.name} ({k.victim.corp})</span>
         </span>
         <span class="col system">{k.system.name} <span class="muted">/ {k.system.region}</span></span>
