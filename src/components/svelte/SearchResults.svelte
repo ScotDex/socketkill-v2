@@ -1,36 +1,49 @@
 <script>
+  import { onMount } from 'svelte';
   import { searchFilters, searchResults, runSearch } from '../../lib/search-store.js';
 
-  let filters = $state();
-  let results = $state();
+  onMount(() => {
+    // 1. Intercept the URL parameters passed over from QueryBuilder
+    const params = new URLSearchParams(window.location.search);
+    let hasParams = false;
 
-  $effect(() => {
-    const unsubF = searchFilters.subscribe(v => filters = v);
-    const unsubR = searchResults.subscribe(v => results = v);
-    return () => { unsubF(); unsubR(); };
+    // 2. Hydrate the wiped store memory
+    if (params.has('space')) {
+      searchFilters.update(f => ({ ...f, space: params.get('space').split(',') }));
+      hasParams = true;
+    }
+
+    if (params.has('date')) {
+      searchFilters.update(f => ({ ...f, date: params.get('date') }));
+      hasParams = true;
+    }
+
+    // 3. Fire the search automatically on page load
+    runSearch($searchFilters, 1);
   });
 
-  function nextPage() { runSearch(filters, results.page + 1); }
-  function prevPage() { runSearch(filters, results.page - 1); }
+  function nextPage() { runSearch($searchFilters, $searchResults.page + 1); }
+  function prevPage() { runSearch($searchFilters, $searchResults.page - 1); }
 
   function formatTime(iso) {
+    if (!iso) return '';
     return new Date(iso).toISOString().slice(11, 19);
   }
 </script>
 
 <section class="search-results">
   <header class="results-header">
-    <span>Results: {results?.total ?? 0}</span>
+    <span>Results: {$searchResults?.total ?? 0}</span>
     <span class="status">
-      {#if results?.loading}Loading…
-      {:else if results?.error}Error: {results.error}
-      {:else}Showing {results?.kills?.length ?? 0} of {results?.total ?? 0}
+      {#if $searchResults?.loading}Loading…
+      {:else if $searchResults?.error}Error: {$searchResults.error}
+      {:else}Showing {$searchResults?.kills?.length ?? 0} of {$searchResults?.total ?? 0}
       {/if}
     </span>
   </header>
 
   <ul class="kill-list">
-    {#each results?.kills ?? [] as k (k.killID)}
+    {#each $searchResults?.kills ?? [] as k (k.killID)}
       <li class="row">
         <span class="col time">{formatTime(k.time)}</span>
         <span class="col victim">
@@ -42,15 +55,15 @@
         <span class="col isk">{k.formattedValue}</span>
       </li>
     {/each}
-    {#if !results?.loading && results?.kills?.length === 0}
+    {#if !$searchResults?.loading && $searchResults?.kills?.length === 0}
       <li class="empty">No kills match these filters.</li>
     {/if}
   </ul>
 
   <footer class="pagination">
-    <button onclick={prevPage} disabled={!results?.hasPrev}>← Newer</button>
-    <span>Page {results?.page ?? 1}</span>
-    <button onclick={nextPage} disabled={!results?.hasMore}>Older →</button>
+    <button onclick={prevPage} disabled={!$searchResults?.hasPrev}>← Newer</button>
+    <span>Page {$searchResults?.page ?? 1}</span>
+    <button onclick={nextPage} disabled={!$searchResults?.hasMore}>Older →</button>
   </footer>
 </section>
 

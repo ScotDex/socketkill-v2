@@ -32,7 +32,26 @@
   }
 
   function runQuery() {
-    runSearch($searchFilters, 1)
+    if (window.location.pathname !== '/search') {
+      // 1. Serialize active parameters to survive the Astro page load
+      const params = new URLSearchParams()
+      
+      if ($searchFilters.space.length > 0) {
+        params.set('space', $searchFilters.space.join(','))
+      }
+      
+      if ($searchFilters.date) {
+        params.set('date', $searchFilters.date)
+      }
+
+      // Add future filter serializations here (shipType, region, etc.) as you wire them.
+
+      // 2. Force hard browser navigation
+      window.location.href = `/search?${params.toString()}`
+    } else {
+      // 3. Already on the Search route, execute native store update
+      runSearch($searchFilters, 1)
+    }
   }
 </script>
 
