@@ -18,6 +18,20 @@
       hasParams = true;
     }
 
+    if (params.has('shipGroup')) {
+  const ids = params.get('shipGroup').split(',').map(v => parseInt(v, 10)).filter(Number.isFinite);
+  searchFilters.update(f => ({ ...f, shipGroup: ids }));
+  hasParams = true;
+}
+
+if (params.has('minIsk')) {
+  const v = parseInt(params.get('minIsk'), 10);
+  if (Number.isFinite(v)) {
+    searchFilters.update(f => ({ ...f, minIsk: v }));
+    hasParams = true;
+  }
+}
+
     // 3. Fire the search automatically on page load
     runSearch($searchFilters, 1);
   });
