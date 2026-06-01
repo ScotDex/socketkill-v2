@@ -1,5 +1,6 @@
 <script>
     import { connectionStatus } from '../../lib/stats-store.js'
+    import { searchFilters, runSearch } from '../../lib/search-store.js';
 
     const statusClasses = {
         connecting: 'text-red-400',

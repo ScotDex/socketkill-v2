@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro'
+import QueryBuilder from '../components/svelte/QueryBuilder.svelte'
+import SearchResults from '../components/svelte/SearchResults.svelte'
+---
+
+<Base
+  title="Search | Socket.Kill"
+  ogTitle="Search EVE Online Killmails — Socket.Kill"
+  ogDescription="Filter the EVE killmail stream by ship, system, region, value, corp, alliance and more. Live data, no account required."
+  ogUrl="https://socketkill.com/search"
+>
+  <main class="search-page">
+    <QueryBuilder client:load />
+    <SearchResults client:load />
+  </main>
+</Base>
+
+<style>
+  .search-page { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+</style>
