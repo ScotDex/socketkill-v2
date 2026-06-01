@@ -32,7 +32,7 @@ export async function runSearch(filters, page = 1) {
   searchResults.update(r => ({ ...r, loading: true, error: null }));
 
   const params = new URLSearchParams();
-  params.set('date', filters.date);
+  if (filters.date) params.set('date', filters.date);
   if (filters.shipType.length) params.set('shipType', filters.shipType.join(','));
   if (filters.shipGroup.length) params.set('shipGroup', filters.shipGroup.join(','));
   if (filters.system.length) params.set('system', filters.system.join(','));
