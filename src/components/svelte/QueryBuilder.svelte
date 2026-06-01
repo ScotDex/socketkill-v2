@@ -1,6 +1,6 @@
 <script>
   import { connectionStatus } from '../../lib/stats-store.js'
-  import { searchFilters, searchResults, runSearch } from '../../lib/search-store.js'
+  import { searchFilters, searchResults } from '../../lib/search-store.js'
 
   const statusClasses = {
     connecting: 'text-red-400',
@@ -32,26 +32,21 @@
   }
 
   function runQuery() {
-    if (window.location.pathname !== '/search') {
-      // 1. Serialize active parameters to survive the Astro page load
-      const params = new URLSearchParams()
-      
-      if ($searchFilters.space.length > 0) {
-        params.set('space', $searchFilters.space.join(','))
-      }
-      
-      if ($searchFilters.date) {
-        params.set('date', $searchFilters.date)
-      }
-
-      // Add future filter serializations here (shipType, region, etc.) as you wire them.
-
-      // 2. Force hard browser navigation
-      window.location.href = `/search?${params.toString()}`
-    } else {
-      // 3. Already on the Search route, execute native store update
-      runSearch($searchFilters, 1)
+    // 1. Serialize active parameters for the new tab
+    const params = new URLSearchParams()
+    
+    if ($searchFilters.space.length > 0) {
+      params.set('space', $searchFilters.space.join(','))
     }
+    
+    if ($searchFilters.date) {
+      params.set('date', $searchFilters.date)
+    }
+
+    // Add future filter serializations here (shipType, region, etc.) as you wire them.
+
+    // 2. Spawn a new tab with the target URL
+    window.open(`/search?${params.toString()}`, '_blank')
   }
 </script>
 
@@ -69,7 +64,6 @@
     <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">QUERY BUILDER</span>
   </div>
 
-  <!-- DATE RANGE — placeholder, wire later -->
   <div class="flex flex-col gap-2 opacity-40">
     <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
       DATE RANGE
@@ -79,7 +73,6 @@
     </div>
   </div>
 
-  <!-- SEC BAND — wired -->
   <div class="flex flex-col gap-2">
     <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
       SEC BAND
@@ -101,7 +94,6 @@
     </div>
   </div>
 
-  <!-- SHIP CLASS — placeholder, wire later -->
   <div class="flex flex-col gap-2 opacity-40">
     <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
       SHIP CLASS
@@ -111,7 +103,6 @@
     </div>
   </div>
 
-  <!-- EXECUTE / FOOTER -->
   <div class="mt-auto pt-2 border-t border-[var(--color-border-dim)] flex flex-col gap-2">
     <button
       type="button"
