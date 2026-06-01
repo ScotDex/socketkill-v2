@@ -61,7 +61,7 @@ if (params.has('minIsk')) {
       <li class="row">
         <span class="col time">{formatTime(k.time)}</span>
         <span class="col victim">
-          <a href={`/kill/${k.killID}`}>{k.victim.ship}</a>
+          <a href={`/kill/${k.time.slice(0, 10)}/${k.killID}`}>{k.victim.ship}</a>
           <span class="muted">{k.victim.name} ({k.victim.corp})</span>
         </span>
         <span class="col system">{k.system.name} <span class="muted">/ {k.system.region}</span></span>
