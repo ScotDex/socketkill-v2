@@ -61,7 +61,7 @@
 
   <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
     <span class="text-[var(--color-neon-green)] text-xs">&gt;</span>
-    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">ARCHIVE SCANNER</span>
+    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">OFFLINE</span>
   </div>
 
   <div class="flex flex-col gap-2 opacity-40">
@@ -75,7 +75,7 @@
 
   <div class="flex flex-col gap-2">
     <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
-      SEC BAND
+      SEC STATUS
     </label>
     <div class="flex gap-1">
       {#each SEC_BANDS as band}
