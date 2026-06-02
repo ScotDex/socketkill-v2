@@ -11,9 +11,9 @@ if (!Number.isFinite(id) || id <= 0) {
 
 let kill = null
 try {
-    const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`
-    headers: { 'User-Agent': 'SocketKill-Frontend/1.0' }
-    )
+    const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
+  headers: { 'User-Agent': 'SocketKill-Frontend/1.0' }
+})
     if (!res.ok) {
         return new Response('Kill not found', { status: 404 })
     }
