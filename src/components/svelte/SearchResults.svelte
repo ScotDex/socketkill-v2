@@ -1,34 +1,24 @@
 <script>
   import { onMount } from 'svelte';
   import { searchFilters, searchResults, runSearch } from '../../lib/search-store.js';
+  import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js';
+  import { formatIsk } from '../../lib/filter-logic.js';
 
   onMount(() => {
-    // 1. Intercept the URL parameters passed over from QueryBuilder
+    loadFilterSource();                       =
     const params = new URLSearchParams(window.location.search);
-    let hasParams = false;
-
-    // 2. Hydrate the wiped store memory
-    if (params.has('space')) {
-      searchFilters.update(f => ({ ...f, space: params.get('space').split(',') }));
-      hasParams = true;
-    }
-
-    if (params.has('date')) {
-      searchFilters.update(f => ({ ...f, date: params.get('date') }));
-      hasParams = true;
-    }
-
-    // 3. Fire the search automatically on page load
+    if (params.has('space')) searchFilters.update(f => ({ ...f, space: params.get('space').split(',') }));
+    if (params.has('date'))  searchFilters.update(f => ({ ...f, date: params.get('date') }));
     runSearch($searchFilters, 1);
   });
 
   function nextPage() { runSearch($searchFilters, $searchResults.page + 1); }
   function prevPage() { runSearch($searchFilters, $searchResults.page - 1); }
+  function formatTime(iso) { return iso ? new Date(iso).toISOString().slice(11, 19) : ''; }
 
-  function formatTime(iso) {
-    if (!iso) return '';
-    return new Date(iso).toISOString().slice(11, 19);
-  }
+  const shipName   = (k) => $filterSource.ships?.[k.shipID]?.name   ?? `Ship ${k.shipID}`;
+  const systemName = (k) => $filterSource.systems?.[k.systemID]?.name ?? `Sys ${k.systemID}`;
+  const regionName = (k) => $filterSource.regions?.[k.regionID]?.name ?? '';
 </script>
 
 <section class="search-results">
