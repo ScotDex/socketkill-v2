@@ -38,7 +38,6 @@
   const regionNames = $derived($filterSource.loaded ? Object.values($filterSource.regions).map(r => r.name).sort() : [])
   const groupNames  = $derived($filterSource.loaded ? Object.values($filterSource.groups).map(g => g.name).sort()  : [])
 
-  // local NAME selections (ChipFacet works in names)
   let selectedGroups  = $state([])
   let selectedSystems = $state([])
   let selectedRegions = $state([])
@@ -96,13 +95,11 @@
     <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">RUN A QUERY</span>
   </div>
 
-  <!-- DATE: today-only by design -->
   <div class="flex flex-col gap-2 opacity-40">
     <label class={labelCls}>DATE RANGE</label>
     <div class="border border-[var(--color-border-dim)] px-2 py-1 font-mono text-sm text-[var(--color-neon-green)]/40">TODAY (UTC)</div>
   </div>
 
-  <!-- SEC STATUS (colour-coded) -->
   <div class="flex flex-col gap-2">
     <label class={labelCls}>SEC STATUS</label>
     <div class="flex gap-1">
@@ -124,9 +121,8 @@
     </div>
   </div>
 
-  <!-- MIN VALUE -->
   <div class="flex flex-col gap-2">
-    <label class={labelCls}>MIN VALUE</label>
+    <label class={labelCls}>VALUE</label>
     <div class="flex gap-1">
       {#each VALUE_PRESETS as p}
         {@const active = ($searchFilters.minIsk ?? null) === p.value}
@@ -142,7 +138,6 @@
   <ChipFacet label="SYSTEM"     bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM"     maxItems={5} />
   <ChipFacet label="REGION"     bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION"     maxItems={3} />
 
-  <!-- ATTACKERS + SOLO -->
   <div class="flex flex-col gap-2">
     <label class={labelCls}>ATTACKERS</label>
     <div class="flex gap-1">

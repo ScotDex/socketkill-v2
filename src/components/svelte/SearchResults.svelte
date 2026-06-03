@@ -37,7 +37,7 @@
 <section class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden font-mono mt-4">
 
   <header class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] flex justify-between items-center text-sm tracking-widest text-gray-400 uppercase">
-    <span class="eve-card-title">RESULTS LOGGED: {$searchResults?.total ?? 0}</span>
+    <span class="eve-card-title">RESULTS GENERATED: {$searchResults?.total ?? 0}</span>
     <span class="text-[var(--color-eve-accent)] eve-accent-glow">
       {#if $searchResults?.loading}
         &gt; SCANNING WRECKAGE...
@@ -76,7 +76,7 @@
     {/each}
 
     {#if !$searchResults?.loading && $searchResults?.kills?.length === 0}
-      <li class="p-8 text-center text-gray-500 text-sm tracking-widest uppercase">&gt; NO WRECKAGE MATCHES QUERY &lt;</li>
+      <li class="p-8 text-center text-gray-500 text-sm tracking-widest uppercase">&gt; NO RESULTS &lt;</li>
     {/if}
   </ul>
 
