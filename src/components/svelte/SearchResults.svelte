@@ -5,7 +5,7 @@
   import { formatIsk } from '../../lib/filter-logic.js';
 
   onMount(() => {
-    loadFilterSource();                       =
+    loadFilterSource();                       
     const params = new URLSearchParams(window.location.search);
     if (params.has('space')) searchFilters.update(f => ({ ...f, space: params.get('space').split(',') }));
     if (params.has('date'))  searchFilters.update(f => ({ ...f, date: params.get('date') }));
