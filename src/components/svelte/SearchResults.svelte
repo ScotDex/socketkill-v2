@@ -57,19 +57,18 @@
 
           <div class="md:col-span-2 text-xs text-gray-500 tracking-widest">{formatTime(k.time)}</div>
 
-          <div class="md:col-span-5 flex flex-col min-w-0">
-            <span class="font-bold text-white group-hover:text-[var(--color-eve-accent)] transition-colors truncate">{shipName(k)}</span>
-            <span class="text-xs text-gray-500 truncate">{k.victimName ?? '—'} ({k.corpName ?? '—'})</span>
-          </div>
-
-          <div class="md:col-span-3 text-xs text-gray-400 truncate">
-            {systemName(k)} <span class="text-gray-600">/ {regionName(k)}</span>
-          </div>
-
-          <div class="md:col-span-2 flex flex-col items-end text-right">
-            <span class="text-[var(--color-eve-accent)] eve-accent-glow font-bold">{formatIsk(k.totalValue)}</span>
-            <span class="text-[10px] text-gray-500 tracking-widest">{k.attackerCount} ATTACKERS</span>
-          </div>
+<div class="md:col-span-5 flex items-center gap-3 min-w-0">
+  <img
+    src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
+    alt="" loading="lazy" width="40" height="40"
+    class="w-10 h-10 flex-shrink-0 bg-black border border-[var(--color-eve-border)] rounded-sm object-cover"
+    onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }}
+  />
+  <div class="flex flex-col min-w-0">
+    <span class="font-bold text-white group-hover:text-[var(--color-eve-accent)] transition-colors truncate">{shipName(k)}</span>
+    <span class="text-xs text-gray-500 truncate">{k.victimName ?? '—'} ({k.corpName ?? '—'})</span>
+  </div>
+</div>
 
         </a>
       </li>
