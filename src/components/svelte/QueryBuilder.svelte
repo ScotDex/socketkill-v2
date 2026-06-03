@@ -14,13 +14,13 @@
     offline: '● OFFLINE'
   }
 
-  const SEC_BANDS = [
-    { label: 'HS',   value: 'high' },
-    { label: 'LS',   value: 'low' },
-    { label: 'NULL',  value: 'null' },
-    { label: 'WH',   value: 'wh' },
-    { label: 'POCH', value: 'pochven' },
-  ]
+const SEC_BANDS = [
+  { label: 'HS',   value: 'high',    color: '#3fb950' },
+  { label: 'LS',   value: 'low',     color: '#f39c12' },
+  { label: 'NULL', value: 'null',    color: '#ff6b6b' },
+  { label: 'WH',   value: 'wh',      color: '#58a6ff' },
+  { label: 'POCH', value: 'pochven', color: '#9b59b6' },
+]
 
   function toggleSpace(value) {
     searchFilters.update(f => {
@@ -30,6 +30,15 @@
       return { ...f, space: [...next] }
     })
   }
+
+  const VALUE_PRESETS = [
+  { label: 'ANY',  value: null },
+  { label: '100M', value: 100_000_000 },
+  { label: '1B',   value: 1_000_000_000 },
+  { label: '10B',  value: 10_000_000_000 },
+]
+const setMinValue = (v) => searchFilters.update(f => ({ ...f, minIsk: v }))
+const toggleSolo  = () => searchFilters.update(f => ({ ...f, solo: !f.solo }))
 
 function runQuery() {
     const params = new URLSearchParams();
