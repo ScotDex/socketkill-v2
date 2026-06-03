@@ -37,10 +37,10 @@
       <li class="row">
         <span class="col time">{formatTime(k.time)}</span>
         <span class="col victim">
-          <a href={`/kill/${k.killID}`}>{k.victim.ship}</a>
-          <span class="muted">{k.victim.name} ({k.victim.corp})</span>
-        </span>
-        <span class="col system">{k.system.name} <span class="muted">/ {k.system.region}</span></span>
+    <a href={`/kill/${k.killID}`}>{k.shipName || k.ship}</a>
+    <span class="muted">{k.victimName} ({k.corpName})</span>
+  </span>
+  <span class="col system">{k.locationLabel}</span>
         <span class="col attackers">{k.attackerCount}</span>
         <span class="col isk">{k.formattedValue}</span>
       </li>
