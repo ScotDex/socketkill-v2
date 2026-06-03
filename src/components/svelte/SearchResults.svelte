@@ -65,7 +65,7 @@
     
     {#if !$searchResults?.loading && $searchResults?.kills?.length === 0}
       <li class="p-8 text-center text-gray-500 text-xs tracking-widest uppercase">
-        > NO WRECKAGE MATCHES QUERY <
+        &gt; NO WRECKAGE MATCHES QUERY &lt;
       </li>
     {/if}
   </ul>
