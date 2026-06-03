@@ -1,6 +1,6 @@
 <script>
   import { connectionStatus } from '../../lib/stats-store.js'
-  import { searchFilters, searchResults } from '../../lib/search-store.js'
+  import { searchFilters, searchResults, runSearch } from '../../lib/search-store.js'
 
   const statusClasses = {
     connecting: 'text-red-400',
@@ -31,22 +31,24 @@
     })
   }
 
-  function runQuery() {
-    // 1. Serialize active parameters for the new tab
-    const params = new URLSearchParams()
-    
-    if ($searchFilters.space.length > 0) {
-      params.set('space', $searchFilters.space.join(','))
-    }
-    
-    if ($searchFilters.date) {
-      params.set('date', $searchFilters.date)
-    }
+function runQuery() {
+    const params = new URLSearchParams();
+    const f = $searchFilters;
 
-    // Add future filter serializations here (shipType, region, etc.) as you wire them.
+    if (f.space.length)          params.set('space', f.space.join(','));
+    if (f.date)                  params.set('date', f.date);
+    if (f.shipGroup.length)      params.set('shipGroup', f.shipGroup.join(','));
+    if (f.system.length)         params.set('system', f.system.join(','));
+    if (f.region.length)         params.set('region', f.region.join(','));
+    if (f.victimCorp.length)     params.set('victimCorp', f.victimCorp.join(','));
+    if (f.victimAlliance.length) params.set('victimAlliance', f.victimAlliance.join(','));
+    if (f.minIsk != null)        params.set('minValue', f.minIsk);
+    if (f.maxIsk != null)        params.set('maxValue', f.maxIsk);
+    if (f.minAttackers != null)  params.set('minAttackers', f.minAttackers);
+    if (f.maxAttackers != null)  params.set('maxAttackers', f.maxAttackers);
+    if (f.solo)                  params.set('solo', 'true');
 
-    // 2. Spawn a new tab with the target URL
-    window.open(`/search?${params.toString()}`, '_blank')
+    window.open(`/search?${params.toString()}`, '_blank');
   }
 </script>
 
