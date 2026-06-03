@@ -33,7 +33,6 @@
     { label: '10B',  value: 10_000_000_000 },
   ]
 
-  // SDE-backed suggestion lists (names). Selection is mapped to IDs at query time.
   const systemNames = $derived($filterSource.loaded ? Object.values($filterSource.systems).map(s => s.name).sort() : [])
   const regionNames = $derived($filterSource.loaded ? Object.values($filterSource.regions).map(r => r.name).sort() : [])
   const groupNames  = $derived($filterSource.loaded ? Object.values($filterSource.groups).map(g => g.name).sort()  : [])
@@ -95,11 +94,6 @@
     <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">RUN A QUERY</span>
   </div>
 
-  <div class="flex flex-col gap-2 opacity-40">
-    <label class={labelCls}>DATE RANGE</label>
-    <div class="border border-[var(--color-border-dim)] px-2 py-1 font-mono text-sm text-[var(--color-neon-green)]/40">TODAY (UTC)</div>
-  </div>
-
   <div class="flex flex-col gap-2">
     <label class={labelCls}>SEC STATUS</label>
     <div class="flex gap-1">
@@ -134,7 +128,7 @@
     </div>
   </div>
 
-  <ChipFacet label="SHIP CLASS" bind:items={selectedGroups}  suggestions={groupNames}  placeholder="ADD HULL CLASS" maxItems={5} />
+  <ChipFacet label="OFFLINE" bind:items={selectedGroups}  suggestions={groupNames}  placeholder="OFFLINE" maxItems={5} />
   <ChipFacet label="SYSTEM"     bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM"     maxItems={5} />
   <ChipFacet label="REGION"     bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION"     maxItems={3} />
 
@@ -157,6 +151,6 @@
       class="border border-[var(--color-neon-green)] bg-[var(--color-neon-green)]/10 hover:bg-[var(--color-neon-green)]/20 text-[var(--color-neon-green)] font-mono text-sm tracking-widest uppercase py-2 transition-colors">
       &gt; EXECUTE QUERY
     </button>
-    <div class="font-mono text-xs tracking-widest text-[var(--color-neon-green)]/40 uppercase">&gt; KILLMAIL STORE</div>
+    <div class="font-mono text-xs tracking-widest text-[var(--color-neon-green)]/40 uppercase"></div>
   </div>
 </div>
