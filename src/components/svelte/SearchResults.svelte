@@ -32,6 +32,13 @@
   const shipName   = (k) => $filterSource.ships?.[k.shipID]?.name     ?? `Ship ${k.shipID}`;
   const systemName = (k) => $filterSource.systems?.[k.systemID]?.name ?? `Sys ${k.systemID}`;
   const regionName = (k) => $filterSource.regions?.[k.regionID]?.name ?? '';
+
+  const SEC_COLORS = { high:'#3fb950', low:'#f39c12', null:'#ff6b6b', wh:'#58a6ff', pochven:'#9b59b6' };
+  const SEC_LABEL  = { high:'HS', low:'LS', null:'NULL', wh:'WH', pochven:'POCH' };
+  const valueColor = (v) =>
+    v >= 10_000_000_000 ? 'var(--color-whale-accent)'
+    : v >= 1_000_000_000 ? 'var(--color-isk-billion)'
+    : 'var(--color-eve-accent)';
 </script>
 
 <section class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden font-mono mt-4">
@@ -51,24 +58,50 @@
 
   <ul class="flex flex-col">
     {#each $searchResults?.kills ?? [] as k (k.killID)}
-      <li class="border-b border-[var(--color-eve-border)]">
+      {@const whale = k.totalValue >= 10_000_000_000}
+      <li class="border-b border-[var(--color-eve-border)]"
+          style={whale ? 'box-shadow: inset 3px 0 0 var(--color-whale-accent);' : ''}>
         <a href={`/kill/${k.killID}`} target="_blank" rel="noopener noreferrer"
           class="group grid grid-cols-1 md:grid-cols-12 gap-3 p-3 hover:bg-white/5 transition-colors items-center text-sm cursor-pointer block w-full">
 
-          <div class="md:col-span-2 text-xs text-gray-500 tracking-widest">{formatTime(k.time)}</div>
+          <!-- time + sec band -->
+          <div class="md:col-span-2 flex flex-col gap-0.5">
+            <span class="text-xs text-gray-500 tracking-widest">{formatTime(k.time)}</span>
+            <span class="text-[10px] font-bold tracking-widest" style="color:{SEC_COLORS[k.space] ?? '#c9d1d9'}">
+              {SEC_LABEL[k.space] ?? (k.space ?? '—').toUpperCase()}
+            </span>
+          </div>
 
-<div class="md:col-span-5 flex items-center gap-3 min-w-0">
-  <img
-    src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
-    alt="" loading="lazy" width="40" height="40"
-    class="w-10 h-10 flex-shrink-0 bg-black border border-[var(--color-eve-border)] rounded-sm object-cover"
-    onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }}
-  />
-  <div class="flex flex-col min-w-0">
-    <span class="font-bold text-white group-hover:text-[var(--color-eve-accent)] transition-colors truncate">{shipName(k)}</span>
-    <span class="text-xs text-gray-500 truncate">{k.victimName ?? '—'} ({k.corpName ?? '—'})</span>
-  </div>
-</div>
+          <!-- ship image + name + victim/corp -->
+          <div class="md:col-span-5 flex items-center gap-3 min-w-0">
+            <img src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
+              alt="" loading="lazy" width="48" height="48"
+              class="w-12 h-12 flex-shrink-0 bg-black border border-[var(--color-eve-border)] rounded-sm object-cover"
+              onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
+            <div class="flex flex-col min-w-0">
+              <span class="font-bold text-white group-hover:text-[var(--color-eve-accent)] transition-colors truncate">{shipName(k)}</span>
+              <span class="text-xs text-gray-500 truncate flex items-center gap-1.5">
+                {#if k.victimCorpID}
+                  <img src={`https://api.socketkill.com/render/corp/${k.victimCorpID}?size=32`}
+                    alt="" loading="lazy" width="16" height="16" class="w-4 h-4 flex-shrink-0"
+                    onerror={(e) => { e.currentTarget.style.display = 'none' }} />
+                {/if}
+                <span class="truncate">{k.victimName ?? '—'} ({k.corpName ?? '—'})</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- location -->
+          <div class="md:col-span-3 flex flex-col min-w-0 text-xs">
+            <span class="text-gray-400 truncate">{systemName(k)}</span>
+            <span class="text-gray-600 truncate">{regionName(k)}</span>
+          </div>
+
+          <!-- value + attackers -->
+          <div class="md:col-span-2 flex flex-col items-end text-right">
+            <span class="font-bold" style="color:{valueColor(k.totalValue)}">{formatIsk(k.totalValue)}</span>
+            <span class="text-[10px] text-gray-500 tracking-widest">{k.attackerCount} ATTACKERS</span>
+          </div>
 
         </a>
       </li>
