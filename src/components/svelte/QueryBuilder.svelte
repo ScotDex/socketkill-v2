@@ -72,7 +72,7 @@ function runQuery() {
 
   <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
     <span class="text-[var(--color-neon-green)] text-xs">&gt;</span>
-    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">OFFLINE</span>
+    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">RUN A QUERY</span>
   </div>
 
   <div class="flex flex-col gap-2 opacity-40">
