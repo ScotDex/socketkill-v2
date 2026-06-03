@@ -33,6 +33,26 @@
   const systemName = (k) => $filterSource.systems?.[k.systemID]?.name ?? `Sys ${k.systemID}`;
   const regionName = (k) => $filterSource.regions?.[k.regionID]?.name ?? '';
 
+  const SEC_LABEL_FULL = { high:'HIGHSEC', low:'LOWSEC', null:'NULLSEC', wh:'WORMHOLE', pochven:'POCHVEN' };
+
+const filterSummary = $derived.by(() => {
+  const f = $searchFilters;
+  const src = $filterSource;
+  const parts = [];
+
+  if (f.space.length)        parts.push(f.space.map(s => SEC_LABEL_FULL[s] ?? s.toUpperCase()).join('/'));
+  if (f.shipGroup.length)    parts.push(f.shipGroup.map(id => src.groups?.[id]?.name  ?? `Grp ${id}`).join(', '));
+  if (f.system.length)       parts.push('in ' + f.system.map(id => src.systems?.[id]?.name ?? `Sys ${id}`).join(', '));
+  if (f.region.length)       parts.push('in ' + f.region.map(id => src.regions?.[id]?.name ?? `Rgn ${id}`).join(', '));
+  if (f.minIsk != null)      parts.push('≥ ' + formatIsk(f.minIsk));
+  if (f.maxIsk != null)      parts.push('≤ ' + formatIsk(f.maxIsk));
+  if (f.minAttackers != null) parts.push('≥' + f.minAttackers + ' atk');
+  if (f.maxAttackers != null) parts.push('≤' + f.maxAttackers + ' atk');
+  if (f.solo)                parts.push('SOLO');
+
+  return parts.length ? parts.join('  ·  ') : 'ALL KILLS';
+});
+
   const SEC_COLORS = { high:'#3fb950', low:'#f39c12', null:'#ff6b6b', wh:'#58a6ff', pochven:'#9b59b6' };
   const SEC_LABEL  = { high:'HS', low:'LS', null:'NULL', wh:'WH', pochven:'POCH' };
   const valueColor = (v) =>
@@ -55,6 +75,10 @@
       {/if}
     </span>
   </header>
+
+  <div class="px-3 py-1.5 border-b border-[var(--color-eve-border)] bg-black/20 text-xs font-mono tracking-widest text-[var(--color-eve-accent)] eve-accent-glow uppercase">
+    &gt; FILTER: {filterSummary}
+  </div>
 
   <ul class="flex flex-col">
     {#each $searchResults?.kills ?? [] as k (k.killID)}
