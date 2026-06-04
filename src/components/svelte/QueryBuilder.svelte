@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <ChipFacet label="OFFLINE" bind:items={selectedGroups}  suggestions={groupNames}  placeholder="OFFLINE" maxItems={5} />
+  <ChipFacet label="HULL" bind:items={selectedGroups}  suggestions={groupNames}  placeholder="HULL CLASS" maxItems={5} />
   <ChipFacet label="SYSTEM"     bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM"     maxItems={5} />
   <ChipFacet label="REGION"     bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION"     maxItems={3} />
 
