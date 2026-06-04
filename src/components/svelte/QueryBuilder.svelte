@@ -35,7 +35,7 @@
 
   const systemNames = $derived($filterSource.loaded ? Object.values($filterSource.systems).map(s => s.name).sort() : [])
   const regionNames = $derived($filterSource.loaded ? Object.values($filterSource.regions).map(r => r.name).sort() : [])
-  const groupNames  = $derived($filterSource.loaded ? Object.values($filterSource.groups).map(g => g.name).sort()  : [])
+  const groupNames  = $derived($filterSource.loaded ? Object.values($filterSource.groups).filter(g => g.categoryID === 6).map(g => g.name).sort()  : [])
 
   let selectedGroups  = $state([])
   let selectedSystems = $state([])
