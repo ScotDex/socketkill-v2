@@ -4,7 +4,7 @@ The inspiration came from a development project where I was discarding some kill
 
 The scope is very simple, stream kills as fast as technically possible utilizing the latest tech and ideas.
 
-Winner of [CCP Fanfest 2026 New Developer of the Year](https://www.eveonline.com/news/view/eve-fanfest-wrapped).
+Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/news/view/eve-fanfest-wrapped).
 
 **Live at [socketkill.com](https://socketkill.com) · [Discord](https://discord.gg/UnFN8UY6Dz)**
 
@@ -42,13 +42,13 @@ Full API documentation: [api.socketkill.com/docs](https://api.socketkill.com/doc
 
 ## Legal
 
-EVE Online and the EVE logo are registered trademarks of CCP hf. All rights are reserved worldwide.
+EVE Online and the EVE logo are registered trademarks of Fenris Creations. All rights are reserved worldwide.
 
-All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE, and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts, or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf.
+All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE, and all associated logos and designs are the intellectual property of Fenris Creations. All artwork, screenshots, characters, vehicles, storylines, world facts, or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of Fenris Creations.
 
-CCP hf. has granted permission to socketkill.com to use EVE Online and all associated logos and designs for promotional and informational purposes on its website but does not endorse, and is not in any way affiliated with, socketkill.com.
+FC has granted permission to socketkill.com to use EVE Online and all associated logos and designs for promotional and informational purposes on its website but does not endorse, and is not in any way affiliated with, socketkill.com.
 
-CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
+FC is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
 
 ## Credits
 
