@@ -1,87 +1,71 @@
-<footer class="legal-footer">
-    <div class="footer-content">
-
-        <div class="footer-left">
-            <span class="tech-spec">
-                [ CREDITS:
-                <a href="https://github.com/zKillboard/zKillboard/wiki/API-(R2Z2)" target="_blank" rel="noopener" class="credit-link">R2 FROM ZKILL</a> //
-                <a href="https://developers.eveonline.com/api-explorer" target="_blank" rel="noopener" class="credit-link">ESI</a> //
-                <a href="https://www.flickr.com/photos/rixxjavix/" target="_blank" rel="noopener" class="credit-link">@RIXXJAVIX</a> ]
-            </span>
-            <span class="ccp-notice">EVE Online and the EVE logo are the registered trademarks of Fenris Creations. All rights reserved.</span>
-            <a href=""https://www.eveonline.com/news/view/eve-fanfest-wrapped"
-            target="_blank" rel="noopener" class="award-notice">
-            [ EVE FANFEST 2026 // NEW DEVELOPER OF THE YEAR ]
-        </div>
-
-        <div class="footer-center">
-            <div class="footer-stat">
-                <span class="footer-stat-label">GLOBAL_NPC_DEATHS</span>
-                <span id="npc-count" class="footer-stat-value font-bold">...</span>
-            </div>
-        </div>
-
-        <nav class="footer-nav" aria-label="Footer navigation">
-            <a href="/about" class="footer-link">ABOUT</a>
-            <span class="footer-network-wrapper">
-                <span class="footer-link" id="network-toggle">LINKS</span>
-                <div id="network-dropdown">
-                    <a href="https://eveworkbench.com" target="_blank" rel="noopener" class="network-link">EVE_WORKBENCH</a>
-                    <a href="https://zkillboard.com/" target="_blank" rel="noopener" class="network-link">ZKILLBOARD</a>
-                    <a href="https://everookies.com/" target="_blank" rel="noopener" class="network-link">EVE_ROOKIES</a>
-                    <a href="https://killmail.app/" target="_blank" rel="noopener" class="network-link">KILLMAIL.APP</a>
-                    <a href="https://wiki.eveuniversity.org/Main_Page" target="_blank" rel="noopener" class="network-link">EVE_UNI</a>
-                    <a href="https://eve-kill.com/" target="_blank" rel="noopener" class="network-link">EVE_KILL</a>
-                </div>
-            </span>
-
-            <a href="https://eve-kill.com/character/95282689" target="_blank" rel="noopener"
-                class="footer-link footer-link--author"
-                title="Dexomus Viliana">
-                DEXOMUS_VILIANA
-            </a>
-            <span class="footer-version">v2.0</span>
-        </nav>
-
+<footer
+    class="group fixed bottom-0 left-0 w-full z-[9999] px-5 py-1
+           bg-black/80 backdrop-blur-sm border-t border-[var(--color-border-dim)]
+           font-mono text-[0.6rem] uppercase tracking-widest text-white/40
+           grid grid-cols-[1fr_auto_1fr] items-center gap-4 pointer-events-auto"
+>
+    <div class="flex items-center gap-3 min-w-0 truncate">
+        <a
+            href="https://www.eveonline.com/news/view/eve-fanfest-wrapped"
+            target="_blank" rel="noopener"
+            class="text-[0.55rem] text-white/20 no-underline transition-colors duration-300
+                   group-hover:text-[var(--color-neon-green)] group-hover:[text-shadow:0_0_5px_rgba(63,185,80,0.5)]"
+        >
+            [ FANFEST 2026 // NEW DEVELOPER OF THE YEAR ]
+        </a>
+        <span
+            class="text-[0.5rem] text-white/15 truncate transition-colors duration-300 cursor-help
+                   group-hover:text-white/60"
+            title="EVE Online and the EVE logo are registered trademarks of Fenris Creations. All rights reserved."
+        >
+            © CCP hf.
+        </span>
     </div>
+
+    <!-- CENTER: live NPC ticker (identity) -->
+    <div class="flex items-center gap-1.5 whitespace-nowrap">
+        <span class="text-white/30">GLOBAL_NPC_DEATHS</span>
+        <span id="npc-count" class="font-bold text-[#ffc107] [text-shadow:0_0_5px_rgba(255,193,7,0.3)] transition-opacity duration-300">...</span>
+    </div>
+
+    <!-- RIGHT: nav -->
+    <nav class="flex items-center justify-end gap-5 flex-wrap" aria-label="Footer navigation">
+        <a href="/about" class="text-white/40 no-underline transition-colors hover:text-[var(--color-neon-green)] hover:[text-shadow:0_0_5px_rgba(63,185,80,0.5)]">ABOUT</a>
+
+        <details class="relative">
+            <summary class="text-white/40 list-none cursor-pointer transition-colors hover:text-[var(--color-neon-green)] [&::-webkit-details-marker]:hidden">LINKS</summary>
+            <div class="absolute bottom-[calc(100%+15px)] left-1/2 -translate-x-1/2 min-w-[160px] py-1.5
+                        bg-[rgba(10,12,16,0.98)] border border-[var(--color-border-mid)] z-[99999]">
+                <a href="https://eveworkbench.com" target="_blank" rel="noopener" class="block px-3 py-1 text-[var(--color-neon-green)]/60 no-underline hover:text-[var(--color-neon-green)]">EVE_WORKBENCH</a>
+                <a href="https://zkillboard.com/" target="_blank" rel="noopener" class="block px-3 py-1 text-[var(--color-neon-green)]/60 no-underline hover:text-[var(--color-neon-green)]">ZKILLBOARD</a>
+                <a href="https://everookies.com/" target="_blank" rel="noopener" class="block px-3 py-1 text-[var(--color-neon-green)]/60 no-underline hover:text-[var(--color-neon-green)]">EVE_ROOKIES</a>
+                <a href="https://wiki.eveuniversity.org/Main_Page" target="_blank" rel="noopener" class="block px-3 py-1 text-[var(--color-neon-green)]/60 no-underline hover:text-[var(--color-neon-green)]">EVE_UNI</a>
+                <a href="https://eve-kill.com/" target="_blank" rel="noopener" class="block px-3 py-1 text-[var(--color-neon-green)]/60 no-underline hover:text-[var(--color-neon-green)]">EVE_KILL</a>
+            </div>
+        </details>
+
+        <a href="https://eve-kill.com/character/95282689" target="_blank" rel="noopener"
+           class="font-bold text-[var(--color-neon-green)] no-underline" title="Dexomus Viliana">DEXOMUS_VILIANA</a>
+        <span class="text-white/20">v2.0</span>
+    </nav>
 </footer>
 
 <script>
     async function updateNPCTicker() {
-        const npcDisplay = document.getElementById('npc-count')
-        if (!npcDisplay) return
-
+        const el = document.getElementById('npc-count')
+        if (!el) return
         try {
-            const response = await fetch('https://api.socketkill.com/stats/npc-kills')
-            const data = await response.json()
-            if (data && data.lifetimeTotal) {
-                npcDisplay.innerText = data.lifetimeTotal.toLocaleString()
-                npcDisplay.style.opacity = '0.5'
-                setTimeout(() => (npcDisplay.style.opacity = '1'), 200)
+            const res = await fetch('https://api.socketkill.com/stats/npc-kills')
+            const data = await res.json()
+            if (data?.lifetimeTotal) {
+                el.innerText = data.lifetimeTotal.toLocaleString()
+                el.style.opacity = '0.5'
+                setTimeout(() => (el.style.opacity = '1'), 200)
             }
         } catch {
-            npcDisplay.innerText = 'OFFLINE'
+            el.innerText = 'OFFLINE'
         }
     }
-
-    function bindNetworkDropdown() {
-        const toggle = document.getElementById('network-toggle')
-        const dropdown = document.getElementById('network-dropdown')
-        if (!toggle || !dropdown) return
-
-        toggle.addEventListener('click', (e) => {
-            e.stopPropagation()
-            dropdown.classList.toggle('active')
-        })
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#network-toggle') && !e.target.closest('#network-dropdown')) {
-                dropdown.classList.remove('active')
-            }
-        })
-    }
-
     updateNPCTicker()
     setInterval(updateNPCTicker, 300_000)
-    bindNetworkDropdown()
 </script>
