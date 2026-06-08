@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.6.1",
+    "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "^8.1.2",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.4",
+    "astro-robots-txt": "^1.0.0",
     "fuse.js": "^7.4.1",
     "socket.io-client": "^4.8.3",
     "svelte": "^5.56.1",
