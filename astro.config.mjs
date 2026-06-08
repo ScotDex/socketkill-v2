@@ -13,7 +13,21 @@ export default defineConfig({
       enabled: false
     }
   }),
-  integrations: [svelte()],
+  integrations: [
+    svelte(), 
+    sitemap(),
+    robotsTxt({
+      sitemap: 'https://socketkill.com/sitemap-index.xml',
+      policy: [
+        {
+          userAgent: '*',
+          allow: '/',
+          disallow: ['/api/']
+        }
+
+      ]
+    })
+  ], 
   session: {
     driver: 'memory'
   },
