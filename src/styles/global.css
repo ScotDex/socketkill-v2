@@ -128,23 +128,6 @@ body {
     text-shadow: 0 0 6px rgba(0, 212, 255, 0.5);
 }
 
-
-.award-notice {
-    font-size: 0.5rem;
-    white-space: nowrap;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.2);
-    opacity: 0.4;
-    transition: opacity 0.3s ease, color 0.3s ease;
-}
-.legal-footer:hover .award-notice {
-    opacity: 1;
-    color: var(--color-neon-green);
-    text-shadow: 0 0 5px rgba(63, 185, 80, 0.5);
-}
-
 /* ============================================================
    ATMOSPHERIC EFFECTS — scanline, flicker, vignette
    ============================================================ */
@@ -161,135 +144,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.legal-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
-    border-top: 1px solid rgba(63, 185, 80, 0.2);
-    padding: 3px 20px;
-    z-index: 9999;
-    pointer-events: none;
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 1rem;
-    pointer-events: auto;
-    color: #444;
-    font-size: 0.6rem;
-    font-family: var(--font-body);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.footer-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    white-space: nowrap;
-    min-width: 200px;
-}
-
-.footer-stat {
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-    font-size: 0.6rem;
-    font-family: var(--font-mono);
-    width: 100%;
-    justify-content: center;
-}
-
-.footer-stat-label {
-    color: rgba(255, 255, 255, 0.3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.footer-stat-value {
-    display: inline-block;
-    min-width: 120px;
-    text-align: left;
-    color: #ffc107;
-    text-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
-    transition: opacity 0.3s ease;
-}
-
-.footer-nav {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-}
-
-.footer-link {
-    color: rgba(255, 255, 255, 0.4);
-    text-decoration: none;
-    font-size: 0.6rem;
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: color 0.2s ease;
-    cursor: pointer;
-}
-
-.footer-link:hover {
-    color: var(--color-neon-green);
-    text-shadow: 0 0 5px rgba(63, 185, 80, 0.5);
-}
-
-.footer-link--author {
-    color: var(--color-neon-green);
-    font-weight: 700;
-}
-
-.footer-version {
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 0.6rem;
-    font-family: var(--font-mono);
-    letter-spacing: 1px;
-}
-
-.tech-spec {
-    font-size: 0.6rem;
-    color: rgba(255, 255, 255, 0.2);
-    font-family: var(--font-mono);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.credit-link {
-    color: rgba(255, 255, 255, 0.3);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.credit-link:hover {
-    color: var(--color-neon-green);
-}
-
-.ccp-notice {
-    font-size: 0.5rem;
-    white-space: nowrap;
-    opacity: 0.15;
-    transition: opacity 0.3s ease, color 0.3s ease;
-    cursor: help;
-}
-
-.legal-footer:hover .ccp-notice {
-    opacity: 0.8;
-    color: #888;
-}
 
 /* Network dropdown */
 #network-dropdown {
@@ -329,12 +183,6 @@ body {
     cursor: pointer;
 }
 
-.footer-network-wrapper {
-    position: relative;
-    align-items: center;
-    display: inline-flex;
-    pointer-events: auto;
-}
 
 @media (max-width: 1023px) {
 
