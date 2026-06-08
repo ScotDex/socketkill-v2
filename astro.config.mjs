@@ -28,9 +28,6 @@ export default defineConfig({
       ]
     })
   ], 
-  session: {
-    driver: 'memory'
-  },
   vite: {
     plugins: [tailwindcss()]
   }
