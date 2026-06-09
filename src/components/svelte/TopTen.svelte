@@ -55,6 +55,7 @@
   const systemName = (id) => $filterSource?.systems?.[id]?.name ?? `Sys ${id}`;
   const regionName = (id) => $filterSource?.regions?.[id]?.name ?? `Region ${id}`;
   const itemName   = (id) => $filterSource?.items?.[id]?.name   ?? `Type ${id}`;
+  const starField = Array.from({ length: 50 }, () => ({ x: Math.random() * 100, y: Math.random() * 100, r: Math.random() * 0.8 }));
 </script>
 
 {#snippet metricCard(title, items, labelFn, variantClass = "text-eve-accent")}
@@ -85,6 +86,17 @@
 {/snippet}
 
 <div class="min-h-screen bg-eve-dark font-body text-text-body max-w-7xl mx-auto lg:p-6 space-y-6 select-none relative">
+<svg class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  {#each starField as star}
+    <circle 
+      cx="{star.x}%" 
+      cy="{star.y}%" 
+      r="{star.r}" 
+      fill="white" 
+      opacity="{star.r > 0.5 ? '0.7' : '0.4'}" 
+    />
+  {/each}
+</svg>
   <header class="flex flex-col sm:flex-row items-start sm:items-baseline justify-between border-b border-border-dim pb-4 gap-2">
     <div class="space-y-1">
       <h1 class="text-neon-green font-mono tracking-widest text-2xl font bold">TOP 10 // LAST HOUR</h1>
