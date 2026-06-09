@@ -100,13 +100,13 @@
   </header>
 
   {#if loading && !initialized}
-    <div class="flex flex-col items-center justify-center min-h-[400px] border border-dashed border-[var(--color-eve-border)] rounded-sm bg-[var(--color-eve-dark)]/20">
-      <div class="text-[var(--color-eve-accent)] eve-accent-glow text-sm tracking-widest animate-pulse uppercase">&gt; ESTABLISHING INTEL UPLINK...</div>
+    <div class="flex flex-col items-center justify-center min-h-[400px] border border-dashed border-eve-border rounded-xs bg-eve-dark/20">
+      <div class="text-eve-accent font-mono text-sm tracking-widest animate-pulse uppercase">&gt; AWAITING STATS FROM ENGINE</div>
     </div>
   {:else if error}
-    <div class="flex flex-col items-center justify-center min-h-[400px] border border-[var(--color-isk-billion)]/30 rounded-sm bg-[var(--color-eve-dark)]">
-      <div class="text-[var(--color-isk-billion)] text-sm tracking-widest uppercase mb-2">&gt; CRITICAL EXCEPTION ENCOUNTERED</div>
-      <div class="text-xs text-white/40 font-mono bg-black/40 px-4 py-2 border border-white/5 rounded-sm">{error}</div>
+    <div class="flex flex-col items-center justify-center min-h-[400px] border border-isk-billion/30 rounded-xs bg-eve-dark">
+      <div class="text-isk-billion font-mono text-sm tracking-widest uppercase mb-2">&gt; CRITICAL EXCEPTION ENCOUNTERED</div>
+      <div class="text-xs text-text-faint font-mono bg-black/40 px-4 py-2 border border-eve-border rounded-xs">{error}</div>
     </div>
   {:else if initialized}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
@@ -139,11 +139,11 @@
       </section>
 
       {@render metricCard("Top Ships Destroyed", data.ships, (it) => shipName(it.id))}
-      {@render metricCard("Top Ship Classes", data.shipGroups, (it) => groupName(it.id))}
-      {@render metricCard("Busiest Systems", data.systems, (it) => systemName(it.id))}
-      {@render metricCard("Busiest Regions", data.regions, (it) => regionName(it.id))}
-      {@render metricCard("Top Corps Losing Ships", data.victimCorp, (it) => it.name ?? `Corp ${it.id}`)}
-      {@render metricCard("Top Alliances Losing Ships", data.victimAlliance, (it) => it.name ?? `Alliance ${it.id}`)}
+      {@render metricCard("Top Hull Classes", data.shipGroups, (it) => groupName(it.id))}
+      {@render metricCard("Most Active Systems", data.systems, (it) => systemName(it.id))}
+      {@render metricCard("Most Active Regions", data.regions, (it) => regionName(it.id))}
+      {@render metricCard("Top Corps Losses", data.victimCorp, (it) => it.name ?? `Corp ${it.id}`)}
+      {@render metricCard("Top Alliances Losses", data.victimAlliance, (it) => it.name ?? `Alliance ${it.id}`)}
       
       {@render metricCard("Top Final-Blow Weapons", data.finalBlowWeapon, (it) => itemName(it.id), "text-[var(--color-isk-billion)]")}
       {@render metricCard("Top Killing Ships", data.killerShip, (it) => shipName(it.id), "text-[var(--color-isk-billion)]")}
