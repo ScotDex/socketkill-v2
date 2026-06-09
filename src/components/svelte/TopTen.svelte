@@ -67,10 +67,20 @@
         <header class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] text-xs tracking-widest text-[var(--color-whale-accent)] uppercase">MOST VALUABLE KILLS</header>
         <ol class="flex flex-col">
           {#each data.topValue as k, i (k.killID)}
-            <li class="flex items-center gap-2 px-3 py-1.5 border-b border-[var(--color-eve-border)] last:border-b-0 text-sm">
-              <span class="w-5 text-[var(--color-neon-green)]/40 text-xs">{i + 1}</span>
-              <a href={`/kill/${k.killID}`} target="_blank" rel="noopener" class="flex-1 truncate text-white hover:text-[var(--color-eve-accent)] transition-colors">#{k.killID}</a>
-              <span class="text-[var(--color-whale-accent)] font-bold tabular-nums">{formatIsk(k.value)}</span>
+            <li class="border-b border-[var(--color-eve-border)] last:border-b-0">
+              <a href={`/kill/${k.killID}`} target="_blank" rel="noopener"
+                 class="group flex items-center gap-3 px-3 py-2 hover:bg-white/5 transition-colors">
+                <span class="w-4 flex-shrink-0 text-[var(--color-neon-green)]/40 text-xs tabular-nums">{i + 1}</span>
+                <img src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
+                     alt="" loading="lazy" width="32" height="32"
+                     class="w-8 h-8 flex-shrink-0 bg-black border border-[var(--color-eve-border)] rounded-sm object-cover"
+                     onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
+                <div class="flex flex-col min-w-0 flex-1">
+                  <span class="truncate text-white text-sm group-hover:text-[var(--color-eve-accent)] transition-colors">{shipName(k.shipID)}</span>
+                  <span class="truncate text-gray-500 text-xs">{k.victimName ?? '—'} · {systemName(k.systemID)}</span>
+                </div>
+                <span class="flex-shrink-0 text-[var(--color-whale-accent)] font-bold tabular-nums text-sm">{formatIsk(k.value)}</span>
+              </a>
             </li>
           {/each}
         </ol>
