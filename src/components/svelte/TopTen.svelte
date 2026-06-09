@@ -58,8 +58,8 @@
 </script>
 
 {#snippet metricCard(title, items, labelFn, variantClass = "text-[var(--color-eve-accent)] eve-accent-glow")}
-  <section class="fade-card flex flex-col bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden h-full">
-    <header class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] text-xs tracking-widest {variantClass} uppercase">
+  <section class="fade-card flex flex-col bg-eve-dark border border-eve-border rounded-xs overflow-hidden h-full shadow-feed">
+    <header class="bg-black/40 px-3 py-2 border-b border-eve-border font-mono text-xs tracking-widest {variantClass} uppercase">
       {title}
     </header>
     <div class="flex-1 overflow-y-auto">
@@ -111,27 +111,28 @@
   {:else if initialized}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
 
-      <section class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden md:col-span-2 flex flex-col h-full shadow-lg">
-        <header class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] text-xs tracking-widest text-[var(--color-whale-accent)] uppercase font-semibold">
+      <section class="fade-card bg-eve-dark border border-eve-border rounded-xs overflow-hidden md:col-span-2 flex flex-col h-full shadow-feed">
+        <header class="bg-black/40 px-3 py-2 border-b border-eve-border font-mono text-xs tracking-widest text-whale-accent uppercase font-semibold">
           MOST VALUABLE KILLS
         </header>
-        <ol class="flex flex-col flex-1 divide-y divide-[var(--color-eve-border)]">
+        <ol class="flex flex-col flex-1 divide-y divide-eve-border">
           {#each data.topValue as k, i (k.killID)}
             <li class="h-full">
               <a href={`/kill/${k.killID}`} target="_blank" rel="noopener"
                  class="group flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 transition-colors h-full">
-                <span class="w-4 flex-shrink-0 text-[var(--color-neon-green)]/40 text-xs tabular-nums">{i + 1}</span>
-                <div class="relative w-9 h-9 flex-shrink-0 bg-black border border-[var(--color-eve-border)] rounded-sm overflow-hidden">
+                <span class="w-4 flex-shrink-0 text-neon-green/40 text-xs tabular-nums">{i + 1}</span>
+                <div class="relative w-9 h-9 flex-shrink-0 bg-black border border-eve-border rounded-xs overflow-hidden">
                   <img src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
                        alt="" loading="lazy" width="36" height="36"
                        class="w-full h-full object-cover"
                        onerror={(e) => { e.currentTarget.style.display = 'none' }} />
                 </div>
                 <div class="flex flex-col min-w-0 flex-1">
-                  <span class="truncate text-white text-sm font-semibold group-hover:text-[var(--color-eve-accent)] transition-colors">{shipName(k.shipID)}</span>
-                  <span class="truncate text-gray-400 text-xs mt-0.5">{k.victimName ?? 'Unknown Capsuleer'} · <span class="text-gray-500">{systemName(k.systemID)}</span></span>
+                  <span class="truncate text-white text-sm font-semibold group-hover:text-eve-accent transition-colors">{shipName(k.shipID)}</span>
+                  <span class="truncate text-text-body/70 text-xs mt-0.5">{k.victimName ?? 'Unknown Capsuleer'} · <span class="text-text-faint">{systemName(k.systemID)}</span></span>
                 </div>
-                <span class="flex-shrink-0 text-[var(--color-whale-accent)] font-bold tabular-nums text-sm bg-[var(--color-whale-accent)]/5 border border-[var(--color-whale-accent)]/10 px-2 py-0.5 rounded-sm">{formatIsk(k.value)}</span>
+                <span class="flex-shrink-0 text-whale-accent font-bold font-mono tabular-nums text-sm bg-whale-accent/5 border border-whale-accent/10 px-2 py-0.5 rounded-xs">{formatIsk(k.value)}</span>
+                
               </a>
             </li>
           {/each}
