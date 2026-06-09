@@ -57,7 +57,7 @@
   const itemName   = (id) => $filterSource?.items?.[id]?.name   ?? `Type ${id}`;
 </script>
 
-{#snippet metricCard(title, items, labelFn, variantClass = "text-[var(--color-eve-accent)] eve-accent-glow")}
+{#snippet metricCard(title, items, labelFn, variantClass = "text-eve-accent")}
   <section class="fade-card flex flex-col bg-eve-dark border border-eve-border rounded-xs overflow-hidden h-full shadow-feed">
     <header class="bg-black/40 px-3 py-2 border-b border-eve-border font-mono text-xs tracking-widest {variantClass} uppercase">
       {title}
@@ -72,11 +72,11 @@
   {@const max = Math.max(...items.map(i => i.count), 1)}
   <ol class="flex flex-col h-full">
     {#each items as item, i (item.id + '-' + i)}
-      <li class="relative flex items-center gap-2 px-3 py-1.5 border-b border-[var(--color-eve-border)] last:border-b-0 text-sm font-mono overflow-hidden group hover:bg-white/5 transition-colors">
-        <span class="absolute inset-y-0 left-0 bg-[var(--color-neon-green)]/5 transition-all duration-300" style="width: {item.count / max * 100}%"></span>
-        <span class="relative w-5 text-[var(--color-neon-green)]/40 text-xs tabular-nums">{i + 1}</span>
+      <li class="relative flex items-center gap-2 px-3 py-1.5 border-b border-eve-border last:border-b-0 text-sm font-mono overflow-hidden group hover:bg-white/5 transition-colors">
+        <span class="absolute inset-y-0 left-0 bg-neon-green/5 transition-all duration-300" style="width: {item.count / max * 100}%"></span>
+        <span class="relative w-5 text-neon-green/40 text-xs tabular-nums">{i + 1}</span>
         <span class="relative flex-1 truncate text-gray-300 group-hover:text-white transition-colors">{labelFn(item)}</span>
-        <span class="relative text-[var(--color-neon-green)] font-bold tabular-nums ml-auto">{item.count}</span>
+        <span class="relative text-neon-green font-bold tabular-nums ml-auto">{item.count}</span>
       </li>
     {:else}
       <li class="px-3 py-4 text-sm text-white/20 uppercase tracking-wider text-center">No Activity Recorded</li>
@@ -146,10 +146,10 @@
       {@render metricCard("Top Corps Losses", data.victimCorp, (it) => it.name ?? `Corp ${it.id}`)}
       {@render metricCard("Top Alliances Losses", data.victimAlliance, (it) => it.name ?? `Alliance ${it.id}`)}
       
-      {@render metricCard("Top Final-Blow Weapons", data.finalBlowWeapon, (it) => itemName(it.id), "text-[var(--color-isk-billion)]")}
-      {@render metricCard("Top Killing Ships", data.killerShip, (it) => shipName(it.id), "text-[var(--color-isk-billion)]")}
-      {@render metricCard("Top Killer Corps", data.killerCorp, (it) => it.name ?? `Corp ${it.id}`, "text-[var(--color-isk-billion)]")}
-      {@render metricCard("Top Killer Alliances", data.killerAlliance, (it) => it.name ?? `Alliance ${it.id}`, "text-[var(--color-isk-billion)]")}
+      {@render metricCard("Top Final-Blow Weapons", data.finalBlowWeapon, (it) => itemName(it.id), "text-isk-billion")}
+      {@render metricCard("Top Killing Ships", data.killerShip, (it) => shipName(it.id), "text-isk-billion")}
+      {@render metricCard("Top Killer Corps", data.killerCorp, (it) => it.name ?? `Corp ${it.id}`, "text-isk-billion")}
+      {@render metricCard("Top Killer Alliances", data.killerAlliance, (it) => it.name ?? `Alliance ${it.id}`, "text-isk-billion")}
 
     </div>
   {/if}
