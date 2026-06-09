@@ -79,20 +79,20 @@
         <span class="relative text-[var(--color-neon-green)] font-bold tabular-nums ml-auto">{item.count}</span>
       </li>
     {:else}
-      <li class="px-3 py-4 text-xs text-white/20 uppercase tracking-wider text-center">No Activity Recorded</li>
+      <li class="px-3 py-4 text-sm text-white/20 uppercase tracking-wider text-center">No Activity Recorded</li>
     {/each}
   </ol>
 {/snippet}
 
-<div class="font-mono max-w-7xl mx-auto p-4 lg:p-6 space-y-6 select-none">
-  <header class="flex flex-col sm:flex-row items-start sm:items-baseline justify-between border-b border-white/10 pb-4 gap-2">
+<div class="min-h-screen bg-eve-dark font-body text-text-body max-w-7xl mx-auto lg:p-6 space-y-6 select-none relative">
+  <header class="flex flex-col sm:flex-row items-start sm:items-baseline justify-between border-b border-border-dim pb-4 gap-2">
     <div class="space-y-1">
-      <h1 class="text-[var(--color-neon-green)] tracking-widest text-2xl font-bold">TOP 10 // LAST HOUR</h1>
-      <p class="text-[10px] tracking-wider text-white/30 uppercase">Rolling 1h window · Intel auto-refreshes every 60s</p>
+      <h1 class="text-neon-green font-mono tracking-widest text-2xl font bold">TOP 10 // LAST HOUR</h1>
+      <p class="text-[10px] font-mono tracking-wider text-text-faint uppercase">Rolling 1h window ·  auto-refreshes every 60s</p>
     </div>
     {#if data}
       <div class="text-right">
-        <span class="text-xs tracking-widest text-white/50 bg-white/5 border border-white/10 px-2 py-1 rounded-sm uppercase font-semibold">
+        <span class="text-sm font-mono tracking-widest text-text-body bg-feed-bg border border-border-dim px-2 py-1 rounded-xs uppercase font-semibold">
           {data.sampleSize.toLocaleString()} kills sampled
         </span>
       </div>
