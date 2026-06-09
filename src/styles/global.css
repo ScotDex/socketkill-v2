@@ -186,36 +186,27 @@ body {
 
 @media (max-width: 1023px) {
 
-    /* Tighten outer padding and row height */
     .kill-feed-panel .kill-row {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         min-height: 56px;
     }
-
-    /* Hide site header (logo + stats bar) — semantic <header> element */
     header {
         display: none;
     }
 
-    /* Hide query builder panel */
     .query-builder {
         display: none;
     }
 
-    /* Shrink ship image — first <div> inside the <a> link */
     .kill-row a>div:first-child {
         width: 48px;
         height: 48px;
         margin-right: 0.5rem;
     }
-
-    /* Drop margin on the text block beside the ship image */
     .kill-row a>div:nth-child(2) {
         margin-left: 0;
     }
-
-    /* Reduce ship-name font on mobile */
     .kill-row .ship-name {
         font-size: 0.875rem;
         /* text-sm */
@@ -225,18 +216,15 @@ body {
         order: 1;
     }
 
-    /* Hide attacker count badge — direct child of .kill-row, position 2 */
     .kill-row>div:nth-child(2) {
         display: none;
     }
 
-    /* Hide corp + alliance image containers — first two children of the right cluster */
     .kill-row>div:nth-child(3)>div:nth-child(1),
     .kill-row>div:nth-child(3)>div:nth-child(2) {
         display: none;
     }
 
-    /* ISK column collapses to auto width on mobile */
     .kill-row>div:nth-child(3)>div:nth-child(3) {
         width: auto;
         padding-left: 0.5rem;
