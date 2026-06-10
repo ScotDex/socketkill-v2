@@ -11,18 +11,19 @@
     const isWhale = $derived(kill.val >= WHALE_THRESHOLD)
     const isBillion = $derived(kill.val >= BILLION_THRESHOLD)
 
-    onMount(() => {
-        if (rowElement) {
-            rowElement.style.animation = 'phosphor-strike 0.4s ease-out forwards'
-        }
-    })
-
     function getVictimDisplay(k) {
         return k.victimName === k.corpName ? k.victimName : `${k.victimName} of ${k.corpName}`
     }
 </script>
 
-<div class="kill-row flex items-center justify-between border-b border-[#1c2128] py-2 px-4 min-h-[64px] {isWhale ? 'whale-row' : ''}" bind:this={rowElement}>
+<div
+    class="kill-row group relative overflow-hidden flex items-center justify-between border-b border-[#1c2128] border-l-2 border-l-transparent hover:border-l-[var(--color-neon-green)] py-2 px-4 min-h-[64px] {isWhale ? 'whale-row' : ''}"
+    bind:this={rowElement}
+    onmousemove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    }}
+>
     <div class="flex items-center flex-1">
         <a href={kill.zkillUrl} target="_blank" rel="noopener" class="flex items-center">
             <div class="w-16 h-16 bg-black border border-[var(--color-border-dim)] rounded-sm overflow-hidden mr-4">
