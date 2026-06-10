@@ -1,5 +1,7 @@
 <script>
     import { onMount } from 'svelte'
+    import { fly, fade } from 'svelte/transition'
+    import { flip } from 'svelte/animate'
     import { io } from 'socket.io-client'
     import KillRow from './KillRow.svelte'
     import ChipFacet from './ChipFacet.svelte'
@@ -105,19 +107,29 @@
             connectionStatus.set('offline')
         })
 
-        socket.on('raw-kill', (kill) => {
-            kill.timestamp = getUtcTimestamp()
+let pendingKills = []
 
-            if (kill.corpName) corpCache.add(kill.corpName)
-            if (kill.finalBlowCorp) corpCache.add(kill.finalBlowCorp)
-            corpCache = new Set(corpCache)
+socket.on('raw-kill', (kill) => {
+    kill.timestamp = getUtcTimestamp()
+    pendingKills.push(kill)
+})
 
-            if (kill.allianceName) allianceCache.add(kill.allianceName)
-            if (kill.finalBlowAlliance) allianceCache.add(kill.finalBlowAlliance)
-            allianceCache = new Set(allianceCache)
+const flushInterval = setInterval(() => {
+    if (pendingKills.length === 0) return
+    const batch = pendingKills
+    pendingKills = []
 
-            killBuffer = [kill, ...killBuffer].slice(0, KILL_BUFFER_SIZE)
-        })
+    for (const kill of batch) {
+        if (kill.corpName) corpCache.add(kill.corpName)
+        if (kill.finalBlowCorp) corpCache.add(kill.finalBlowCorp)
+        if (kill.allianceName) allianceCache.add(kill.allianceName)
+        if (kill.finalBlowAlliance) allianceCache.add(kill.finalBlowAlliance)
+    }
+    corpCache = new Set(corpCache)
+    allianceCache = new Set(allianceCache)
+
+    killBuffer = [...batch.reverse(), ...killBuffer].slice(0, KILL_BUFFER_SIZE)
+}, 300)
 
         socket.on('player-count', (payload) => {
             serverStatus.set({
@@ -145,7 +157,10 @@
             if (stats?.totalIsk != null) iskDestroyed.set(stats.totalIsk)
         })
 
-        return () => socket.disconnect()
+        return () => {
+    clearInterval(flushInterval)
+    socket.disconnect()
+}
     })
 </script>
 
@@ -244,8 +259,14 @@
         {:else}
             <div class="kill-feed-panel">
                 {#each filteredFeed as kill (kill.zkillUrl)}
-                    <KillRow {kill} />
-                {/each}
+    <div
+        in:fly={{ x: -20, duration: 200 }}
+        out:fade={{ duration: 80 }}
+        animate:flip={{ duration: 150 }}
+    >
+        <KillRow {kill} />
+    </div>
+{/each}
             </div>
         {/if}
     </div>
