@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-    --color-neon-green: #3fb950;        /* primary accent — counts, aggregate */
-    --color-terminal-blue: #58a6ff;     /* now unused — safe to delete */
-    --color-dark-bg: #0a0b0e;           /* unified with eve-dark (was #0d1117) */
+    --color-neon-green: #3fb950;        
+    --color-terminal-blue: #58a6ff;    
+    --color-dark-bg: #0a0b0e;           =
     --color-border-dim: rgba(63, 185, 80, 0.2);
     --color-border-mid: rgba(63, 185, 80, 0.4);
     --color-border-bright: rgba(63, 185, 80, 0.6);
     --color-text-body: #c9d1d9;
-    --color-whale-accent: #f2cc60;      /* ISK value only */
-    --color-isk-billion: #ff7b72;       /* was #ff0000 — soft danger red, kill boards */
-    --color-eve-accent: #3fb950;        /* was #00d4ff cyan — folded into green */
+    --color-whale-accent: #f2cc60;      
+    --color-isk-billion: #ff7b72;       
+    --color-eve-accent: #3fb950;        
     --color-eve-dark: #0a0b0e;
     --color-eve-border: rgba(255, 255, 255, 0.1);
 
-    --font-mono: 'JetBrains Mono', monospace;   /* was Share Tech Mono — tabular legibility */
+    --font-mono: 'Share Tech Mono', monospace;   
     --font-body: 'Exo 2', sans-serif;
 
-    --color-glass-bg: #0d0f13;          /* was rgba .85 — solid, contrast now guaranteed */
-    --color-feed-bg: #161b22;           /* was rgba .7 — solid */
-    --color-text-faint: rgba(255, 255, 255, 0.55);  /* was 0.25 — now passes AA ~5:1 */
+    --color-glass-bg: #0d0f13;          
+    --color-feed-bg: #161b22;           
+    --color-text-faint: rgba(255, 255, 255, 0.55); 
     --color-whale: rgba(242, 204, 96, 0.05);
 
     --shadow-phosphor:
         0 0 2px rgba(63, 185, 80, 0.6),
         0 0 4px rgba(63, 185, 80, 0.3),
-        0 0 1px rgba(255, 255, 255, 0.2);   /* keep — but only on a hero element, never as text-shadow on rows */
+        0 0 1px rgba(255, 255, 255, 0.2);   
 
     --shadow-feed:
         0 8px 24px rgba(0, 0, 0, 0.6),
@@ -126,9 +126,6 @@ body {
     text-shadow: 0 0 6px rgba(0, 212, 255, 0.5);
 }
 
-/* ============================================================
-   ATMOSPHERIC EFFECTS — scanline, flicker, vignette
-   ============================================================ */
 
 body {
     /* Add these to your existing body block */
@@ -229,7 +226,6 @@ body {
     }
 }
 
-/* Cathode flicker overlay */
 body::after {
     content: "";
     position: fixed;
@@ -286,7 +282,6 @@ body::after {
     box-shadow: inset 4px 0 0 #f2cc60;
 }
 
-/* Fog / vignette overlay - apply as <div class="fog-overlay"> in layout */
 .fog-overlay {
     position: fixed;
     inset: 0;
@@ -300,20 +295,16 @@ body::after {
     opacity: 0.8;
 }
 
-/* CRT boot effect - apply to <main> or whichever wrapper */
 .crt-screen {
     animation: crt-boot 1.5s ease-out forwards;
     transform-origin: center;
 }
 
-/* Signal interference glitch - toggle via body.signal-interference */
+
 body.signal-interference {
     animation: screen-corruption 0.4s steps(8);
 }
 
-/* ============================================================
-   ANIMATIONS
-   ============================================================ */
 
 @keyframes vignette-breathe {
 

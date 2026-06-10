@@ -53,7 +53,7 @@ const filterSummary = $derived.by(() => {
   return parts.length ? parts.join('  ·  ') : 'ALL KILLS';
 });
 
-  const SEC_COLORS = { high:'#3fb950', low:'#f39c12', null:'#ff6b6b', wh:'#58a6ff', pochven:'#9b59b6' };
+  const SEC_COLORS = { high:'#3fb950', low:'#f39c12', null:'#ff0000', wh:'#58a6ff', pochven:'#ff0000' };
   const SEC_LABEL  = { high:'HS', low:'LS', null:'NULL', wh:'WH', pochven:'POCH' };
   const valueColor = (v) =>
     v >= 10_000_000_000 ? 'var(--color-whale-accent)'

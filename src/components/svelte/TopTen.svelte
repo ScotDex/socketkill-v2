@@ -3,17 +3,17 @@
   import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js';
   import { formatIsk } from '../../lib/filter-logic.js';
  
-  // --- Reactive States ---
+
   let data = $state(null);
   let error = $state(null);
   let loading = $state(true);
   let dictionaryLoaded = $state(false);
 
-  // --- Derived State (Svelte 5 Performance Optimization) ---
-  // Ensures lists do not calculate recalculation loops on random UI re-renders
+  
+ 
   let initialized = $derived(!!data && $filterSource && dictionaryLoaded);
 
-  // --- Decoupled Data Fetching ---
+
   async function fetchMetrics() {
     try {
       const res = await fetch('https://ws.socketkill.com/api/top10');
@@ -49,7 +49,6 @@
     };
   });
 
-  // --- Safe Mapping Lookups ---
   const shipName   = (id) => $filterSource?.ships?.[id]?.name   ?? `Type ${id}`;
   const groupName  = (id) => $filterSource?.groups?.[id]?.name  ?? `Group ${id}`;
   const systemName = (id) => $filterSource?.systems?.[id]?.name ?? `Sys ${id}`;

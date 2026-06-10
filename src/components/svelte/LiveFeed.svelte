@@ -153,12 +153,12 @@
     <div class="filter-panel-enter border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
         <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
             <span class="text-[var(--color-neon-green)] text-xs">&gt;</span>
-            <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">STREAM FILTER</span>
+            <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">LIVE FILTER</span>
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
-                MIN VALUE
+                VALUE THRESHOLD
             </label>
             <div class="flex gap-1 flex-wrap">
                 {#each valuePresets as preset}
@@ -216,7 +216,7 @@
         />
 
         <ChipFacet
-            label="SYSTEMS (MAX 5)"
+            label="SOLAR SYSTEMS (MAX 5)"
             bind:items={filters.systems}
             suggestions={sdeSystemNames}
             placeholder="ADD SYSTEM NAME"

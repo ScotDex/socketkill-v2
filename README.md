@@ -17,7 +17,7 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 - **Multi-channel Discord integration.** [Whale alerts, AT/officer/Rorqual sightings, Multiple Value Thresholds](https://discord.gg/UnFN8UY6Dz)
 - **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems and region to configure your own view.
 - **Atmospheric interface.** Terminal-aesthetic design from the alien franchise 
-- **Query Builder.** Coming Soon TM - configure your own question using the query builder module, resulting on the days killmails.
+- **Query Builder.** Coming Soon - configure your own question using the query builder module, resulting on the days killmails.
 
 
 ## Tech stack
@@ -36,10 +36,6 @@ A public image proxy API is available for EVE Online assets. Free to use for per
 
 Full API documentation: [api.socketkill.com/docs](https://api.socketkill.com/docs/)
 
-## WebSocket access
-
-[Please see here](https://github.com/ScotDex/socketkill-v2/wiki/Web%E2%80%90Socket)
-
 ## Legal
 
 EVE Online and the EVE logo are registered trademarks of Fenris Creations. All rights are reserved worldwide.
@@ -52,8 +48,8 @@ FC is in no way responsible for the content on or functioning of this website, n
 
 ## Credits
 
-Developed by [@ScottishDex / Dexomus Viliana](https://socketkill.com)
+Original API provided by: [zKillboard](https://github.com/zKillboard/zKillboard/wiki/API-(R2Z2))
 
-Killmail data: [zKillboard](https://zkillboard.com)
+Further API's and SDE used [EVE API Explorer](https://developers.eveonline.com/api-explorer)
 
-[EVE API Explorer](https://developers.eveonline.com/api-explorer)
+Main site backgrounds with explicit permission from [Rixx Javix] (https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)

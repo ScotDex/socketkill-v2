@@ -85,13 +85,13 @@
 <div class="query-builder border border-[var(--color-border-dim)] bg-black/60 rounded-sm p-3 flex flex-col gap-4 lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
   <div class="flex items-center justify-between pb-2 border-b border-[var(--color-border-dim)]">
-    <span class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/50">UPLINK</span>
+    <span class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/50">SOCKET</span>
     <span class="font-mono text-sm {statusClasses[$connectionStatus]}">{statusText[$connectionStatus]}</span>
   </div>
 
   <div class="flex items-center gap-2 pb-2 border-b border-[var(--color-border-dim)]">
     <span class="text-[var(--color-neon-green)] text-sm">&gt;</span>
-    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">RUN A QUERY</span>
+    <span class="text-[var(--color-neon-green)] font-mono text-sm tracking-widest">SEARCH KILLMAILS</span>
   </div>
 
   <div class="flex flex-col gap-2">
@@ -116,7 +116,7 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <label class={labelCls}>VALUE</label>
+    <label class={labelCls}>VALUE THRESHOLD</label>
     <div class="flex gap-1">
       {#each VALUE_PRESETS as p}
         {@const active = ($searchFilters.minIsk ?? null) === p.value}
@@ -129,11 +129,11 @@
   </div>
 
   <ChipFacet label="HULL" bind:items={selectedGroups}  suggestions={groupNames}  placeholder="HULL CLASS" maxItems={5} />
-  <ChipFacet label="SYSTEM"     bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM"     maxItems={5} />
+  <ChipFacet label="SOLAR SYSTEM"     bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM"     maxItems={5} />
   <ChipFacet label="REGION"     bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION"     maxItems={3} />
 
   <div class="flex flex-col gap-2">
-    <label class={labelCls}>ATTACKERS</label>
+    <label class={labelCls}>ATTACKER COUNT</label>
     <div class="flex gap-1">
       <input type="number" min="0" placeholder="MIN" value={$searchFilters.minAttackers ?? ''} oninput={(e) => setNum('minAttackers', e)}
         class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-sm px-2 py-1 outline-none focus:border-[var(--color-border-bright)] placeholder:text-[var(--color-neon-green)]/30" />
@@ -142,14 +142,14 @@
     </div>
     <button type="button" onclick={toggleSolo}
       class="border px-2 py-1 font-mono text-sm tracking-widest uppercase transition-colors {$searchFilters.solo ? btnActive : btnIdle}">
-      SOLO {$searchFilters.solo ? '◉' : '○'}
+      SOLO KILLS ONLY {$searchFilters.solo ? '◉' : '○'}
     </button>
   </div>
 
   <div class="mt-auto pt-2 border-t border-[var(--color-border-dim)] flex flex-col gap-2">
     <button type="button" onclick={runQuery}
       class="border border-[var(--color-neon-green)] bg-[var(--color-neon-green)]/10 hover:bg-[var(--color-neon-green)]/20 text-[var(--color-neon-green)] font-mono text-sm tracking-widest uppercase py-2 transition-colors">
-      &gt; EXECUTE QUERY
+      &gt; VIEW RESULTS
     </button>
     <div class="font-mono text-xs tracking-widest text-[var(--color-neon-green)]/40 uppercase"></div>
   </div>
