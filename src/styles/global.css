@@ -1,37 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-    --color-neon-green: #3fb950;
-    --color-terminal-blue: #58a6ff;
-    --color-dark-bg: #0d1117;
+    --color-neon-green: #3fb950;        /* primary accent — counts, aggregate */
+    --color-terminal-blue: #58a6ff;     /* now unused — safe to delete */
+    --color-dark-bg: #0a0b0e;           /* unified with eve-dark (was #0d1117) */
     --color-border-dim: rgba(63, 185, 80, 0.2);
     --color-border-mid: rgba(63, 185, 80, 0.4);
     --color-border-bright: rgba(63, 185, 80, 0.6);
     --color-text-body: #c9d1d9;
-    --color-whale-accent: #f2cc60;
-    --color-isk-billion: #ff0000;
-    --color-eve-accent: #00d4ff;
+    --color-whale-accent: #f2cc60;      /* ISK value only */
+    --color-isk-billion: #ff7b72;       /* was #ff0000 — soft danger red, kill boards */
+    --color-eve-accent: #3fb950;        /* was #00d4ff cyan — folded into green */
     --color-eve-dark: #0a0b0e;
     --color-eve-border: rgba(255, 255, 255, 0.1);
 
-    --font-mono: 'Share Tech Mono', monospace;
+    --font-mono: 'JetBrains Mono', monospace;   /* was Share Tech Mono — tabular legibility */
     --font-body: 'Exo 2', sans-serif;
 
-
-    --color-glass-bg: rgba(10, 12, 16, 0.85);
-    --color-feed-bg: rgba(22, 27, 34, 0.7);
-    --color-text-faint: rgba(255, 255, 255, 0.25);
+    --color-glass-bg: #0d0f13;          /* was rgba .85 — solid, contrast now guaranteed */
+    --color-feed-bg: #161b22;           /* was rgba .7 — solid */
+    --color-text-faint: rgba(255, 255, 255, 0.55);  /* was 0.25 — now passes AA ~5:1 */
     --color-whale: rgba(242, 204, 96, 0.05);
 
     --shadow-phosphor:
         0 0 2px rgba(63, 185, 80, 0.6),
         0 0 4px rgba(63, 185, 80, 0.3),
-        0 0 1px rgba(255, 255, 255, 0.2);
+        0 0 1px rgba(255, 255, 255, 0.2);   /* keep — but only on a hero element, never as text-shadow on rows */
 
     --shadow-feed:
-        0 20px 50px rgba(0, 0, 0, 0.9),
-        0 0 15px rgba(63, 185, 80, 0.05),
-        inset 0 0 40px rgba(0, 0, 0, 0.8);
+        0 8px 24px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.04);  /* was heavy + inset 40px — dropped the muddy vignette */
 }
 
 @font-face {
