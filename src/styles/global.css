@@ -3,7 +3,7 @@
 @theme {
     --color-neon-green: #3fb950;        
     --color-terminal-blue: #58a6ff;    
-    --color-dark-bg: #0a0b0e;           =
+    --color-dark-bg: #0a0b0e;           
     --color-border-dim: rgba(63, 185, 80, 0.2);
     --color-border-mid: rgba(63, 185, 80, 0.4);
     --color-border-bright: rgba(63, 185, 80, 0.6);
@@ -29,7 +29,7 @@
 
     --shadow-feed:
         0 8px 24px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(255, 255, 255, 0.04);  /* was heavy + inset 40px — dropped the muddy vignette */
+        0 0 0 1px rgba(255, 255, 255, 0.04);  
 }
 
 @font-face {
