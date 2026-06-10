@@ -3,7 +3,6 @@
     import { onMount } from 'svelte'
 
     let { kill } = $props()
-    let rowElement
 
     const WHALE_THRESHOLD = 10_000_000_000
     const BILLION_THRESHOLD = 1_000_000_000
