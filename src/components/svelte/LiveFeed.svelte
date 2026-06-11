@@ -233,7 +233,7 @@
                 label="CORPORATIONS (MAX 5)"
                 bind:items={filters.corps}
                 suggestions={corpSuggestions}
-                placeholder="ADD CORP NAME"
+                placeholder="ADD CORPORATIONS"
                 maxItems={MAX_CORPS}
                 allowFreeText={true}
             />
@@ -242,7 +242,7 @@
                 label="SOLAR SYSTEMS (MAX 5)"
                 bind:items={filters.systems}
                 suggestions={sdeSystemNames}
-                placeholder="ADD SYSTEM NAME"
+                placeholder="ADD SYSTEM"
                 maxItems={MAX_SYSTEMS}
                 allowFreeText={true}
             />
@@ -251,7 +251,7 @@
                 label="ALLIANCES (MAX 5)"
                 bind:items={filters.alliances}
                 suggestions={allianceSuggestions}
-                placeholder="ADD ALLIANCE NAME"
+                placeholder="ADD ALLIANCE"
                 maxItems={MAX_ALLIANCES}
                 allowFreeText={true}
             />

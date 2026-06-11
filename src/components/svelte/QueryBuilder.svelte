@@ -175,7 +175,6 @@
     clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   }
 
-  /* UI chrome runs in Exo 2; data stays in Share Tech Mono */
   .ui, .lbl, .seg, .run { font-family: var(--font-body); }
   .glow { text-shadow: var(--shadow-phosphor); }
 

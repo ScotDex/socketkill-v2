@@ -1,14 +1,11 @@
 ---
 import Base from '../../layouts/Base.astro'
 import { externalLink } from '../../lib/entity-links.js'
-
 const { killID } = Astro.params
-
 const id = parseInt(killID)
 if (!Number.isFinite(id) || id <= 0) {
     return new Response('Invalid killID', { status: 400 })
 }
-
 let kill = null
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
@@ -70,7 +67,6 @@ const bgStyle = shipTypeID
 
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
 
-// Security classification (restored from V1 kill.js classifySecurity)
 function classifySecurity(system) {
     if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
     if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
@@ -82,7 +78,6 @@ function classifySecurity(system) {
 }
 const sec = classifySecurity(kill.system)
 
-// ISK tiering: accepts raw numbers or formatted strings ("12.4B", "830,512,114")
 function parseIsk(v) {
     if (typeof v === 'number') return v
     if (typeof v !== 'string') return 0
@@ -98,22 +93,18 @@ const valueTier =
     : totalIsk >= 1_000_000_000 ? 'var(--color-isk-billion)'
     : 'var(--color-neon-green)'
 
-// Dropped/destroyed split bar
 const droppedIsk = parseIsk(kill.droppedValue)
 const destroyedIsk = parseIsk(kill.destroyedValue)
 const splitTotal = droppedIsk + destroyedIsk
 const droppedPct = splitTotal > 0 ? (droppedIsk / splitTotal * 100).toFixed(1) : 0
-
 const GROUP_LABELS = {
     high: 'HIGH SLOTS', mid: 'MID SLOTS', low: 'LOW SLOTS', rig: 'RIGS',
     subsystem: 'SUBSYSTEMS', drone: 'DRONE BAY', fighter: 'FIGHTER BAY',
     cargo: 'CARGO HOLD', implant: 'IMPLANTS', other: 'OTHER'
 }
 const GROUP_ORDER = ['high', 'mid', 'low', 'rig', 'subsystem', 'drone', 'fighter', 'cargo', 'implant', 'other']
-
 const groups = kill.items?.groups || {}
 const orderedGroups = GROUP_ORDER.filter(g => groups[g]?.length).map(g => ({ key: g, label: GROUP_LABELS[g], items: groups[g] }))
-
 const attackers = kill.attackers || []
 const visibleAttackers = attackers.slice(0, 5)
 const hiddenAttackers = attackers.slice(5)
@@ -144,11 +135,7 @@ const hiddenAttackers = attackers.slice(5)
 
     <div class="kill-screen" style={bgStyle}>
         <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
-
-            <!-- LEFT COLUMN -->
             <section class="md:col-span-3 flex flex-col gap-4">
-
-                <!-- Location: terminal blue -->
                 <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
                     <header class="card-h">// location data</header>
                     <div class="p-3 space-y-2 text-sm font-mono">
@@ -163,7 +150,6 @@ const hiddenAttackers = attackers.slice(5)
                     <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; coordinates logged</footer>
                 </div>
 
-                <!-- Value: tiered -->
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
                     <header class="card-h">// value analysis</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
@@ -179,7 +165,6 @@ const hiddenAttackers = attackers.slice(5)
                     </div>
                 </div>
 
-                <!-- Attackers: hostile red -->
                 <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
                     <header class="card-h flex justify-between items-center">
                         <span>// attackers</span>
@@ -228,7 +213,6 @@ const hiddenAttackers = attackers.slice(5)
                 </div>
             </section>
 
-            <!-- CENTRE COLUMN: cargo manifest, primary green -->
             <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
                 <header class="card-h">// killmail contents</header>
 
@@ -270,14 +254,13 @@ const hiddenAttackers = attackers.slice(5)
                 )}
             </section>
 
-            <!-- RIGHT COLUMN -->
             <section class="md:col-span-3 flex flex-col gap-4">
 
                 <!-- Victim record: neutral green -->
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 150ms">
                     <header class="card-h flex justify-between items-center">
                         <span>// {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
-                        <span class="tag">RECORD UPLOADED</span>
+                        <span class="tag">MAIL RECORDED</span>
                     </header>
                     <div class="p-3 space-y-3">
                         <div class="flex items-center gap-3">
@@ -318,7 +301,7 @@ const hiddenAttackers = attackers.slice(5)
                 <div class="card" style={`--card-c: ${valueTier}; --d: 210ms`}>
                     <header class="card-h flex justify-between items-center">
                         <span>// target destroyed</span>
-                        <span class="tag">WRECKAGE SCANNED</span>
+                        <span class="tag">WRECK SCANNED</span>
                     </header>
                     <div class="wreck relative overflow-hidden">
                         <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
@@ -329,7 +312,6 @@ const hiddenAttackers = attackers.slice(5)
                     </div>
                 </div>
 
-                <!-- Actions -->
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 270ms">
                     <header class="card-h">// actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
@@ -354,7 +336,7 @@ const hiddenAttackers = attackers.slice(5)
                     <a href="https://api.socketkill.com/docs/" class="link">API</a>
                     <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="link">DISCORD</a>
                 </div>
-                <div>&copy; 2026 SOCKETKILL.COM</div>
+                <div>&copy; SOCKETKILL.COM</div>
             </div>
         </footer>
     </div>
@@ -362,8 +344,6 @@ const hiddenAttackers = attackers.slice(5)
 
 <style>
     details summary::-webkit-details-marker { display: none; }
-
-    /* ---- card chassis (accent via --card-c, stagger via --d) ---- */
     .card {
         background:
             linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
@@ -409,8 +389,6 @@ const hiddenAttackers = attackers.slice(5)
         letter-spacing: 0.16em;
         color: var(--color-text-faint);
     }
-
-    /* ---- key/value rows ---- */
     .row { display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline; }
     .k {
         font-family: var(--font-body);
@@ -433,8 +411,6 @@ const hiddenAttackers = attackers.slice(5)
         padding-bottom: 1px;
         text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
     }
-
-    /* ---- value split bar ---- */
     .split-bar {
         height: 4px;
         margin-top: 0.6rem;
@@ -449,8 +425,6 @@ const hiddenAttackers = attackers.slice(5)
         transform-origin: left;
     }
     @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-
-    /* ---- attacker damage bars ---- */
     .dmg {
         position: absolute;
         top: 0; bottom: 0; left: 0;
@@ -482,7 +456,6 @@ const hiddenAttackers = attackers.slice(5)
     }
     .more:hover { color: var(--color-isk-billion); border-bottom-color: var(--color-isk-billion); }
 
-    /* ---- item group headers ---- */
     .grp {
         font-family: var(--font-body);
         font-size: 10px;
@@ -493,7 +466,6 @@ const hiddenAttackers = attackers.slice(5)
         text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
     }
 
-    /* ---- wreck scanline on hover ---- */
     .wreck::after {
         content: '';
         position: absolute;
@@ -507,7 +479,6 @@ const hiddenAttackers = attackers.slice(5)
     .wreck:hover::after { animation: scan 1.2s linear infinite; opacity: 1; }
     @keyframes scan { from { top: -2px; } to { top: 100%; } }
 
-    /* ---- status dead pulse ---- */
     .pulse-dot {
         display: inline-block;
         width: 6px; height: 6px;
@@ -520,7 +491,6 @@ const hiddenAttackers = attackers.slice(5)
     }
     @keyframes blink { 50% { opacity: 0.2; } }
 
-    /* ---- action buttons ---- */
     .act {
         font-family: var(--font-body);
         font-size: 10px;

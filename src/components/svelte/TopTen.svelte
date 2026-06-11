@@ -110,8 +110,6 @@
     </div>
   {:else if initialized}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
-
-      <!-- Most valuable kills: whale gold -->
       <section class="card fade-card overflow-hidden md:col-span-2 flex flex-col h-full" style="--card-c:var(--color-whale-accent)">
         <header class="card-h">// Most valuable kills</header>
         <ol class="flex flex-col flex-1 divide-y divide-eve-border">
