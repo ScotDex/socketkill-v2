@@ -83,7 +83,7 @@
   </ol>
 {/snippet}
 
-<div class="min-h-screen bg-eve-dark font-body text-text-body max-w-7xl mx-auto lg:p-6 space-y-6 select-none">
+<div class="min-h-screen art-bg font-body text-text-body max-w-7xl mx-auto lg:p-6 space-y-6 select-none">
 
   <header class="flex flex-col sm:flex-row items-start sm:items-baseline justify-between border-b border-border-dim pb-4 gap-2">
     <div class="space-y-1">

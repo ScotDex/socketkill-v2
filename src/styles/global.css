@@ -41,6 +41,15 @@
     font-family: 'Triglavian', var(--font-body);
 }
 
+.art-bg {
+    background-image:
+        linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)),
+        url(https://api.socketkill.com/kills);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
 html,
 body {
     margin: 0;
