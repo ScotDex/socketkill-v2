@@ -62,7 +62,7 @@ const image = shipTypeID
 const canonicalUrl = `https://socketkill.com/kill/${id}`
 
 const bgStyle = shipTypeID
-    ? `background-image: linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)), url(https://api.socketkill.com/render/ship/${shipTypeID}?size=512); background-size: cover; background-position: center; background-attachment: fixed;`
+    ? `background-image: linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)), url(https://api.socketkill.com/kills); background-size: cover; background-position: center; background-attachment: fixed;`
     : ''
 
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
