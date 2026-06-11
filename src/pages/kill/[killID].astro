@@ -58,7 +58,6 @@ function buildDescription(data) {
 const title = buildTitle(kill)
 const description = buildDescription(kill)
 
-
 const shipTypeID = kill.victim?.shipTypeID ?? null
 const image = shipTypeID
     ? `https://images.evetech.net/types/${shipTypeID}/render?size=512`
@@ -73,15 +72,37 @@ const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() :
 
 // Security classification (restored from V1 kill.js classifySecurity)
 function classifySecurity(system) {
-    if (!system || system.security == null) return { label: 'UNKNOWN', cls: 'sec-unknown' }
-    if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', cls: 'sec-wspace' }
-    if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', cls: 'sec-pochven' }
+    if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
+    if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
+    if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', color: '#b07ce8' }
     const s = system.security
-    if (s >= 0.5) return { label: `HIGHSEC ${s.toFixed(1)}`, cls: 'sec-highsec' }
-    if (s > 0.0)  return { label: `LOWSEC ${s.toFixed(1)}`, cls: 'sec-lowsec' }
-    return { label: `NULLSEC ${s.toFixed(1)}`, cls: 'sec-nullsec' }
+    if (s >= 0.5) return { label: `HIGHSEC ${s.toFixed(1)}`, color: 'var(--color-neon-green)' }
+    if (s > 0.0)  return { label: `LOWSEC ${s.toFixed(1)}`, color: 'var(--color-whale-accent)' }
+    return { label: `NULLSEC ${s.toFixed(1)}`, color: 'var(--color-isk-billion)' }
 }
 const sec = classifySecurity(kill.system)
+
+// ISK tiering: accepts raw numbers or formatted strings ("12.4B", "830,512,114")
+function parseIsk(v) {
+    if (typeof v === 'number') return v
+    if (typeof v !== 'string') return 0
+    const m = v.match(/([\d.,]+)\s*([KMBT])?/i)
+    if (!m) return 0
+    const n = parseFloat(m[1].replace(/,/g, ''))
+    const mult = { K: 1e3, M: 1e6, B: 1e9, T: 1e12 }[m[2]?.toUpperCase()] ?? 1
+    return n * mult
+}
+const totalIsk = parseIsk(kill.totalValue)
+const valueTier =
+    totalIsk >= 10_000_000_000 ? 'var(--color-whale-accent)'
+    : totalIsk >= 1_000_000_000 ? 'var(--color-isk-billion)'
+    : 'var(--color-neon-green)'
+
+// Dropped/destroyed split bar
+const droppedIsk = parseIsk(kill.droppedValue)
+const destroyedIsk = parseIsk(kill.destroyedValue)
+const splitTotal = droppedIsk + destroyedIsk
+const droppedPct = splitTotal > 0 ? (droppedIsk / splitTotal * 100).toFixed(1) : 0
 
 const GROUP_LABELS = {
     high: 'HIGH SLOTS', mid: 'MID SLOTS', low: 'LOW SLOTS', rig: 'RIGS',
@@ -127,76 +148,77 @@ const hiddenAttackers = attackers.slice(5)
             <!-- LEFT COLUMN -->
             <section class="md:col-span-3 flex flex-col gap-4">
 
-                <div class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden">
-                    <div class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] flex justify-between items-center text-xs tracking-widest text-gray-400 uppercase">
-                        <span class="eve-card-title">LOCATION DATA</span>
+                <!-- Location: terminal blue -->
+                <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
+                    <header class="card-h">// location data</header>
+                    <div class="p-3 space-y-2 text-sm font-mono">
+                        <div class="row"><span class="k">SYSTEM</span>
+                            <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
+                        <div class="row"><span class="k">REGION</span>
+                            <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.region}</a></div>
+                        <div class="row"><span class="k">SEC.STATUS</span>
+                            <span class="chip" style={`--c:${sec.color}`}>{sec.label}</span></div>
+                        <div class="row"><span class="k">TIME</span><span class="v text-xs tabular-nums">{killTime}</span></div>
                     </div>
-                    <div class="p-3 space-y-2 text-base font-mono">
-                        <div class="flex justify-between gap-2">
-                            <span class="text-gray-500">SYSTEM</span>
-                            <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="text-white hover:text-[var(--color-eve-accent)] transition-colors truncate">{kill.system.name}</a>
-                        </div>
-                        <div class="flex justify-between gap-2">
-                            <span class="text-gray-500">REGION</span>
-                            <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="text-white hover:text-[var(--color-eve-accent)] transition-colors truncate">{kill.system.region}</a>
-                        </div>
-                        <div class="flex justify-between"><span class="text-gray-500">SEC.STATUS</span><span class={sec.cls}>{sec.label}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">TIME</span><span class="text-white text-sm">{killTime}</span></div>
-                    </div>
-                    <div class="bg-black/20 px-3 py-1 text-xs text-[var(--color-eve-accent)] eve-accent-glow border-t border-[var(--color-eve-border)]">&gt; COORDINATES LOGGED</div>
+                    <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; coordinates logged</footer>
                 </div>
 
-                <div class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden">
-                    <div class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] flex justify-between items-center text-xs tracking-widest text-gray-400 uppercase">
-                        <span class="eve-card-title">VALUE ANALYSIS</span>
-                    </div>
-                    <div class="p-3 space-y-2 text-base font-mono">
-                        <div class="flex justify-between"><span class="text-gray-500">TOTAL VALUE</span><span class="text-white">{kill.totalValue ?? '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">DROPPED</span><span class="text-green-400">{kill.droppedValue ?? '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">DESTROYED</span><span class="text-red-400">{kill.destroyedValue ?? '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">FITTED</span><span class="text-white">{kill.fittedValue ?? '—'}</span></div>
+                <!-- Value: tiered -->
+                <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
+                    <header class="card-h">// value analysis</header>
+                    <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
+                        <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">DESTROYED</span><span style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">FITTED</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
+                        {splitTotal > 0 && (
+                            <div class="split-bar" title={`${droppedPct}% dropped`}>
+                                <span style={`width:${droppedPct}%`}></span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                <div class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm p-3">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-xs tracking-widest text-gray-500">&gt; ATTACKERS</span>
-                        <span class="text-base text-[var(--color-eve-accent)] eve-accent-glow">{kill.attackerCount}</span>
-                    </div>
-                    <ul class="space-y-2">
+                <!-- Attackers: hostile red -->
+                <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// attackers</span>
+                        <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
+                    </header>
+                    <ul class="p-3 space-y-2">
                         {visibleAttackers.map(a => (
-                            <li class="flex items-center gap-2 text-sm">
-                                {a.characterID && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=32`} class="w-6 h-6 flex-shrink-0" alt="" loading="lazy" />}
-                                <div class="flex-1 min-w-0">
-                                    <div class="truncate text-white font-mono">
+                            <li class="atk relative flex items-center gap-2 text-sm overflow-hidden">
+                                <span class="dmg" style={`width:${a.damagePercent}%`}></span>
+                                {a.characterID && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=32`} class="relative w-6 h-6 flex-shrink-0" alt="" loading="lazy" />}
+                                <div class="relative flex-1 min-w-0">
+                                    <div class="ui truncate text-white text-[13px]">
                                         {a.characterID
-                                            ? <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-eve-accent)] transition-colors">{a.name}</a>
+                                            ? <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>
                                             : a.name}
-                                        {a.finalBlow && <span class="ml-1 text-[var(--color-eve-accent)] eve-accent-glow text-[10px]">[FB]</span>}
+                                        {a.finalBlow && <span class="ml-1 fb">[FB]</span>}
                                     </div>
-                                    <div class="truncate text-gray-500 text-xs">{a.ship} · {a.damagePercent}%</div>
+                                    <div class="ui truncate text-[var(--color-text-faint)] text-xs">{a.ship} · <span class="font-mono tabular-nums">{a.damagePercent}%</span></div>
                                 </div>
                             </li>
                         ))}
                     </ul>
 
                     {hiddenAttackers.length > 0 && (
-                        <details class="mt-2">
-                            <summary class="cursor-pointer w-full py-1 text-xs border border-[var(--color-eve-border)] bg-black/60 text-[var(--color-eve-accent)] eve-accent-glow hover:bg-[var(--color-eve-accent)] hover:text-black transition-colors text-center list-none">
-                                SHOW {hiddenAttackers.length} MORE
-                            </summary>
+                        <details class="px-3 pb-3">
+                            <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
                             <ul class="space-y-2 mt-2">
                                 {hiddenAttackers.map(a => (
-                                    <li class="flex items-center gap-2 text-sm">
-                                        {a.characterID && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=32`} class="w-6 h-6 flex-shrink-0" alt="" loading="lazy" />}
-                                        <div class="flex-1 min-w-0">
-                                            <div class="truncate text-white font-mono">
+                                    <li class="atk relative flex items-center gap-2 text-sm overflow-hidden">
+                                        <span class="dmg" style={`width:${a.damagePercent}%`}></span>
+                                        {a.characterID && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=32`} class="relative w-6 h-6 flex-shrink-0" alt="" loading="lazy" />}
+                                        <div class="relative flex-1 min-w-0">
+                                            <div class="ui truncate text-white text-[13px]">
                                                 {a.characterID
-                                                    ? <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-eve-accent)] transition-colors">{a.name}</a>
+                                                    ? <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>
                                                     : a.name}
-                                                {a.finalBlow && <span class="ml-1 text-[var(--color-eve-accent)] eve-accent-glow text-[10px]">[FB]</span>}
+                                                {a.finalBlow && <span class="ml-1 fb">[FB]</span>}
                                             </div>
-                                            <div class="truncate text-gray-500 text-xs">{a.ship} · {a.damagePercent}%</div>
+                                            <div class="ui truncate text-[var(--color-text-faint)] text-xs">{a.ship} · <span class="font-mono tabular-nums">{a.damagePercent}%</span></div>
                                         </div>
                                     </li>
                                 ))}
@@ -206,38 +228,38 @@ const hiddenAttackers = attackers.slice(5)
                 </div>
             </section>
 
-            <!-- CENTRE COLUMN -->
-            <section class="md:col-span-6 fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm p-4">
-                <div class="text-xs tracking-widest text-gray-500 mb-4 eve-card-title">&gt; KILLMAIL CONTENTS</div>
+            <!-- CENTRE COLUMN: cargo manifest, primary green -->
+            <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
+                <header class="card-h">// killmail contents</header>
 
                 {orderedGroups.length === 0 ? (
-                    <div class="text-base text-gray-500 italic">&gt; NO ITEMS</div>
+                    <div class="ui p-4 text-sm text-[var(--color-text-faint)] italic">&gt; NO ITEMS</div>
                 ) : (
-                    <div class="space-y-4">
+                    <div class="p-4 space-y-5">
                         {orderedGroups.map(group => {
                             const totalDropped = group.items.reduce((sum, i) => sum + (i.dropped || 0), 0)
                             const totalDestroyed = group.items.reduce((sum, i) => sum + (i.destroyed || 0), 0)
                             return (
                                 <div>
-                                    <div class="flex justify-between items-baseline border-b border-[var(--color-eve-border)] pb-1 mb-2">
-                                        <span class="text-xs tracking-widest text-[var(--color-eve-accent)] eve-accent-glow uppercase">{group.label}</span>
-                                        <span class="text-[10px] text-gray-500">
-                                            <span class="text-green-400">{totalDropped}D</span> / <span class="text-red-400">{totalDestroyed}X</span>
+                                    <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] pb-1 mb-2">
+                                        <span class="grp">{group.label}</span>
+                                        <span class="font-mono text-[10px] tabular-nums text-[var(--color-text-faint)]">
+                                            <span style="color: var(--color-neon-green)">{totalDropped}D</span> / <span style="color: var(--color-isk-billion)">{totalDestroyed}X</span>
                                         </span>
                                     </div>
                                     <ul class="space-y-1">
                                         {group.items.map(item => (
-                                            <li class="flex items-center gap-2 text-sm">
+                                            <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors px-1 -mx-1">
                                                 <img src={`https://images.evetech.net/types/${item.typeID}/icon?size=32`} class="w-6 h-6 flex-shrink-0" alt="" loading="lazy" />
-                                                <div class="flex-1 min-w-0 truncate font-mono">
-                                                    <a href={externalLink('type', item.typeID)} target="_blank" rel="noopener noreferrer" class="text-white hover:text-[var(--color-eve-accent)] transition-colors">{item.name}</a>
+                                                <div class="ui flex-1 min-w-0 truncate">
+                                                    <a href={externalLink('type', item.typeID)} target="_blank" rel="noopener noreferrer" class="text-[var(--color-text-body)] link">{item.name}</a>
                                                 </div>
-                                                <div class="text-xs text-gray-500 flex-shrink-0">
-                                                    {item.dropped > 0 && <span class="text-green-400">+{item.dropped}</span>}
-                                                    {item.dropped > 0 && item.destroyed > 0 && <span class="mx-1 text-gray-700">/</span>}
-                                                    {item.destroyed > 0 && <span class="text-red-400">−{item.destroyed}</span>}
+                                                <div class="font-mono text-xs tabular-nums flex-shrink-0">
+                                                    {item.dropped > 0 && <span style="color: var(--color-neon-green)">+{item.dropped}</span>}
+                                                    {item.dropped > 0 && item.destroyed > 0 && <span class="mx-1 text-white/20">/</span>}
+                                                    {item.destroyed > 0 && <span style="color: var(--color-isk-billion)">−{item.destroyed}</span>}
                                                 </div>
-                                                <div class="text-xs text-gray-400 w-20 text-right flex-shrink-0 font-mono">{item.formattedValue}</div>
+                                                <div class="font-mono text-xs tabular-nums text-[var(--color-text-faint)] w-20 text-right flex-shrink-0">{item.formattedValue}</div>
                                             </li>
                                         ))}
                                     </ul>
@@ -251,19 +273,20 @@ const hiddenAttackers = attackers.slice(5)
             <!-- RIGHT COLUMN -->
             <section class="md:col-span-3 flex flex-col gap-4">
 
-                <div class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden">
-                    <div class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] flex justify-between items-center text-xs tracking-widest text-gray-400 uppercase">
-                        <span class="eve-card-title">{kill.victim.characterID ? 'PILOT ID' : 'CORP ID'}</span>
-                        <span class="text-[var(--color-eve-accent)] eve-accent-glow">RECORD UPLOADED</span>
-                    </div>
+                <!-- Victim record: neutral green -->
+                <div class="card" style="--card-c: var(--color-neon-green); --d: 150ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
+                        <span class="tag">RECORD UPLOADED</span>
+                    </header>
                     <div class="p-3 space-y-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-gray-800 rounded overflow-hidden flex-shrink-0">
+                            <div class="w-10 h-10 bg-black border border-[var(--color-eve-border)] overflow-hidden flex-shrink-0">
                                 {kill.victim.characterID && <img src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=64`} class="w-full h-full object-cover" alt="" loading="lazy" />}
                             </div>
-                            <div class="font-bold text-white text-base truncate">
+                            <div class="ui font-semibold text-white text-[15px] truncate">
                                 {kill.victim.characterID
-                                    ? <a href={externalLink('character', kill.victim.characterID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-eve-accent)] transition-colors">{kill.victim.name}</a>
+                                    ? <a href={externalLink('character', kill.victim.characterID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.name}</a>
                                     : kill.victim.name}
                             </div>
                         </div>
@@ -271,9 +294,9 @@ const hiddenAttackers = attackers.slice(5)
                             <div class="w-10 h-10 flex-shrink-0">
                                 <img src={`https://images.evetech.net/corporations/${kill.victim.corporationID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />
                             </div>
-                            <div class="font-bold text-white text-base truncate">
+                            <div class="ui font-semibold text-white/90 text-sm truncate">
                                 {kill.victim.corporationID
-                                    ? <a href={externalLink('corp', kill.victim.corporationID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-eve-accent)] transition-colors">{kill.victim.corp}</a>
+                                    ? <a href={externalLink('corp', kill.victim.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.corp}</a>
                                     : kill.victim.corp}
                             </div>
                         </div>
@@ -281,70 +304,55 @@ const hiddenAttackers = attackers.slice(5)
                             <div class="w-10 h-10 flex-shrink-0">
                                 {kill.victim.allianceID && <img src={`https://images.evetech.net/alliances/${kill.victim.allianceID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />}
                             </div>
-                            <div class="font-bold text-white text-base truncate">
+                            <div class="ui font-semibold text-white/90 text-sm truncate">
                                 {kill.victim.allianceID
-                                    ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-eve-accent)] transition-colors">{kill.victim.alliance}</a>
+                                    ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
                                     : (kill.victim.alliance || 'NO ALLIANCE')}
                             </div>
                         </div>
                     </div>
-                    <div class="bg-black/20 px-3 py-1 text-xs text-[var(--color-eve-accent)] eve-accent-glow tracking-tighter border-t border-[var(--color-eve-border)]">&gt; STATUS: DEAD</div>
+                    <footer class="card-f" style="color: var(--color-isk-billion)"><span class="pulse-dot"></span> status: dead</footer>
                 </div>
 
-                <div class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden">
-                    <div class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] flex justify-between items-center text-xs tracking-widest text-gray-400 uppercase">
-                        <span class="eve-card-title">TARGET DESTROYED</span>
-                        <span class="text-[var(--color-eve-accent)] eve-accent-glow">WRECKAGE SCANNED</span>
-                    </div>
-                    <div class="relative">
+                <!-- Wreck: tiered by value -->
+                <div class="card" style={`--card-c: ${valueTier}; --d: 210ms`}>
+                    <header class="card-h flex justify-between items-center">
+                        <span>// target destroyed</span>
+                        <span class="tag">WRECKAGE SCANNED</span>
+                    </header>
+                    <div class="wreck relative overflow-hidden">
                         <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
                     </div>
                     <div class="p-3 border-t border-[var(--color-eve-border)]">
-                        <div class="font-bold text-white text-lg">{kill.victim.ship}</div>
-                        <div class="text-base text-[var(--color-eve-accent)] eve-accent-glow">{kill.totalValue ?? '—'}</div>
+                        <div class="ui font-semibold text-white text-lg">{kill.victim.ship}</div>
+                        <div class="font-mono font-bold tabular-nums" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</div>
                     </div>
                 </div>
 
-                <div class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm p-3">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs tracking-widest text-gray-500">&gt; ACTIONS</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer"
-                           class="text-[10px] text-center text-[var(--color-eve-accent)] eve-accent-glow border border-[var(--color-eve-border)] px-2 py-1 hover:bg-white/5 transition-colors">
-                            VIEW FIT
-                        </a>
-                        <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer"
-                           class="text-[10px] text-center text-gray-400 border border-[var(--color-eve-border)] px-2 py-1 hover:text-white hover:border-white transition-colors">
-                            ZKILLBOARD
-                        </a>
-                        <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer"
-                           class="text-[10px] text-center text-gray-400 border border-[var(--color-eve-border)] px-2 py-1 hover:text-white hover:border-white transition-colors">
-                            EVE-KILL
-                        </a>
-                        <a href={`https://ws.socketkill.com/api/kill/${id}`} target="_blank" rel="noopener noreferrer"
-                           class="text-[10px] text-center text-gray-600 border border-[var(--color-eve-border)] px-2 py-1 hover:text-gray-400 transition-colors">
-                            RAW DATA
-                        </a>
-                        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer"
-                           class="text-[10px] text-center text-[var(--color-eve-accent)] eve-accent-glow border border-[var(--color-eve-border)] px-2 py-1 hover:bg-white/5 transition-colors col-span-2">
-                            SHARE ON X
-                        </a>
+                <!-- Actions -->
+                <div class="card" style="--card-c: var(--color-neon-green); --d: 270ms">
+                    <header class="card-h">// actions</header>
+                    <div class="grid grid-cols-2 gap-1.5 p-3">
+                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
+                        <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
+                        <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
+                        <a href={`https://ws.socketkill.com/api/kill/${id}`} target="_blank" rel="noopener noreferrer" class="act">RAW DATA</a>
+                        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
                 </div>
             </section>
         </main>
 
         <footer class="relative z-10 max-w-7xl mx-auto p-4 mt-8 border-t border-[var(--color-eve-border)] text-center">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-widest text-gray-500 font-mono">
+            <div class="ui flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] tracking-[0.14em] text-[var(--color-text-faint)]">
                 <div>
-                    <a href="/" class="hover:text-[var(--color-eve-accent)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
+                    <a href="/" class="link">&lt; BACK TO SOCKETKILL.COM</a>
                 </div>
                 <div class="space-x-4">
-                    <a href="/about" class="hover:text-[var(--color-eve-accent)] transition-colors">ABOUT</a>
-                    <a href="https://github.com/ScotDex/socketkill-v2" target="_blank" rel="noopener" class="hover:text-[var(--color-eve-accent)] transition-colors">GITHUB</a>
-                    <a href="https://api.socketkill.com/docs/" class="hover:text-[var(--color-eve-accent)] transition-colors">API</a>
-                    <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="hover:text-[var(--color-eve-accent)] transition-colors">DISCORD</a>
+                    <a href="/about" class="link">ABOUT</a>
+                    <a href="https://github.com/ScotDex/socketkill-v2" target="_blank" rel="noopener" class="link">GITHUB</a>
+                    <a href="https://api.socketkill.com/docs/" class="link">API</a>
+                    <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="link">DISCORD</a>
                 </div>
                 <div>&copy; 2026 SOCKETKILL.COM</div>
             </div>
@@ -355,10 +363,184 @@ const hiddenAttackers = attackers.slice(5)
 <style>
     details summary::-webkit-details-marker { display: none; }
 
-    .sec-highsec { color: #3fb950; }
-    .sec-lowsec  { color: #f39c12; }
-    .sec-nullsec { color: #ff6b6b; }
-    .sec-wspace  { color: #58a6ff; }
-    .sec-pochven { color: #9b59b6; }
-    .sec-unknown { color: #c9d1d9; }
+    /* ---- card chassis (accent via --card-c, stagger via --d) ---- */
+    .card {
+        background:
+            linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
+            var(--color-glass-bg);
+        border: 1px solid var(--color-border-dim);
+        box-shadow: var(--shadow-feed);
+        clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+        overflow: hidden;
+        animation: card-rise 0.35s ease-out both;
+        animation-delay: var(--d, 0ms);
+    }
+    @keyframes card-rise {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .card-h {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--card-c);
+        padding: 0.55rem 0.75rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+    }
+
+    .card-f {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 0.35rem 0.75rem;
+        border-top: 1px solid var(--color-eve-border);
+        background: rgba(0, 0, 0, 0.25);
+    }
+
+    .tag {
+        font-family: var(--font-body);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        color: var(--color-text-faint);
+    }
+
+    /* ---- key/value rows ---- */
+    .row { display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline; }
+    .k {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        color: var(--color-text-faint);
+    }
+    .v { color: var(--color-text-body); }
+    .link { transition: color 0.15s, text-shadow 0.15s; }
+    .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+
+    .chip {
+        font-family: var(--font-body);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        color: var(--c);
+        border-bottom: 2px solid var(--c);
+        padding-bottom: 1px;
+        text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+    }
+
+    /* ---- value split bar ---- */
+    .split-bar {
+        height: 4px;
+        margin-top: 0.6rem;
+        background: color-mix(in srgb, var(--color-isk-billion) 30%, transparent);
+        overflow: hidden;
+    }
+    .split-bar span {
+        display: block;
+        height: 100%;
+        background: var(--color-neon-green);
+        animation: grow 0.6s ease-out 0.3s both;
+        transform-origin: left;
+    }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* ---- attacker damage bars ---- */
+    .dmg {
+        position: absolute;
+        top: 0; bottom: 0; left: 0;
+        background: color-mix(in srgb, var(--color-isk-billion) 8%, transparent);
+        animation: grow 0.5s ease-out 0.25s both;
+        transform-origin: left;
+    }
+    .fb {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--color-isk-billion);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+    }
+
+    .more {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        color: var(--color-text-faint);
+        background: var(--color-feed-bg);
+        border: 0;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem;
+        text-align: center;
+        cursor: pointer;
+        list-style: none;
+        transition: color 0.15s, border-color 0.15s;
+    }
+    .more:hover { color: var(--color-isk-billion); border-bottom-color: var(--color-isk-billion); }
+
+    /* ---- item group headers ---- */
+    .grp {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-neon-green);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
+    }
+
+    /* ---- wreck scanline on hover ---- */
+    .wreck::after {
+        content: '';
+        position: absolute;
+        left: 0; right: 0;
+        height: 2px;
+        top: -2px;
+        background: color-mix(in srgb, var(--card-c) 60%, transparent);
+        box-shadow: 0 0 12px var(--card-c);
+        opacity: 0;
+    }
+    .wreck:hover::after { animation: scan 1.2s linear infinite; opacity: 1; }
+    @keyframes scan { from { top: -2px; } to { top: 100%; } }
+
+    /* ---- status dead pulse ---- */
+    .pulse-dot {
+        display: inline-block;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--color-isk-billion);
+        box-shadow: 0 0 6px var(--color-isk-billion);
+        margin-right: 4px;
+        vertical-align: middle;
+        animation: blink 1.4s steps(2) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.2; } }
+
+    /* ---- action buttons ---- */
+    .act {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-align: center;
+        color: var(--color-text-faint);
+        background: var(--color-feed-bg);
+        border-bottom: 2px solid transparent;
+        padding: 0.45rem 0.5rem;
+        transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .act:hover { color: var(--color-text-body); border-bottom-color: var(--color-text-faint); background: #1b212b; }
+    .act-primary { color: var(--color-neon-green); }
+    .act-primary:hover { color: var(--color-neon-green); border-bottom-color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+
+    .ui { font-family: var(--font-body); }
+
+    @media (prefers-reduced-motion: reduce) {
+        .card, .split-bar span, .dmg { animation: none; }
+        .pulse-dot, .wreck:hover::after { animation: none; }
+    }
 </style>
