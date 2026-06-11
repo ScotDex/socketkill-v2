@@ -122,16 +122,18 @@ const hiddenAttackers = attackers.slice(5)
     twitterCard="summary"
 >
     <Fragment slot="head">
-        <script type="application/ld+json" set:html={JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "NewsArticle",
-            "name": title,
-            "description": description,
-            "location": { "@type": "Place", "name": kill.system.name },
-            "eventStatus": "https://schema.org/EventCancelled",
-            "startDate": kill.killmailTime
-        })}></script>
-    </Fragment>
+    <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        headline: title,
+        description: description,
+        image: [image],
+        datePublished: kill.killmailTime,
+        url: canonicalUrl,
+        publisher: { "@type": "Organization", name: "Socket.Kill", url: "https://socketkill.com" },
+        author: { "@type": "Organization", name: "Socket.Kill" }
+    })}></script>
+</Fragment>
 
     <div class="kill-screen" style={bgStyle}>
         <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
