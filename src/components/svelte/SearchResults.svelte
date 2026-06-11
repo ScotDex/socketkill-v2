@@ -1,5 +1,8 @@
 <script>
   import { onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
+  import { Tween } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
   import { searchFilters, searchResults, runSearch } from '../../lib/search-store.js';
   import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js';
   import { formatIsk } from '../../lib/filter-logic.js';
@@ -35,63 +38,82 @@
 
   const SEC_LABEL_FULL = { high:'HIGHSEC', low:'LOWSEC', null:'NULLSEC', wh:'WORMHOLE', pochven:'POCHVEN' };
 
-const filterSummary = $derived.by(() => {
-  const f = $searchFilters;
-  const src = $filterSource;
-  const parts = [];
+  const filterSummary = $derived.by(() => {
+    const f = $searchFilters;
+    const src = $filterSource;
+    const parts = [];
 
-  if (f.space.length)        parts.push(f.space.map(s => SEC_LABEL_FULL[s] ?? s.toUpperCase()).join('/'));
-  if (f.shipGroup.length)    parts.push(f.shipGroup.map(id => src.groups?.[id]?.name  ?? `Grp ${id}`).join(', '));
-  if (f.system.length)       parts.push('in ' + f.system.map(id => src.systems?.[id]?.name ?? `Sys ${id}`).join(', '));
-  if (f.region.length)       parts.push('in ' + f.region.map(id => src.regions?.[id]?.name ?? `Rgn ${id}`).join(', '));
-  if (f.minIsk != null)      parts.push('≥ ' + formatIsk(f.minIsk));
-  if (f.maxIsk != null)      parts.push('≤ ' + formatIsk(f.maxIsk));
-  if (f.minAttackers != null) parts.push('≥' + f.minAttackers + ' atk');
-  if (f.maxAttackers != null) parts.push('≤' + f.maxAttackers + ' atk');
-  if (f.solo)                parts.push('SOLO');
+    if (f.space.length)        parts.push(f.space.map(s => SEC_LABEL_FULL[s] ?? s.toUpperCase()).join('/'));
+    if (f.shipGroup.length)    parts.push(f.shipGroup.map(id => src.groups?.[id]?.name  ?? `Grp ${id}`).join(', '));
+    if (f.system.length)       parts.push('in ' + f.system.map(id => src.systems?.[id]?.name ?? `Sys ${id}`).join(', '));
+    if (f.region.length)       parts.push('in ' + f.region.map(id => src.regions?.[id]?.name ?? `Rgn ${id}`).join(', '));
+    if (f.minIsk != null)      parts.push('≥ ' + formatIsk(f.minIsk));
+    if (f.maxIsk != null)      parts.push('≤ ' + formatIsk(f.maxIsk));
+    if (f.minAttackers != null) parts.push('≥' + f.minAttackers + ' atk');
+    if (f.maxAttackers != null) parts.push('≤' + f.maxAttackers + ' atk');
+    if (f.solo)                parts.push('SOLO');
 
-  return parts.length ? parts.join('  ·  ') : 'ALL KILLS';
-});
+    return parts.length ? parts.join('  ·  ') : 'ALL KILLS';
+  });
 
-  const SEC_COLORS = { high:'#3fb950', low:'#f39c12', null:'#ff0000', wh:'#58a6ff', pochven:'#ff0000' };
-  const SEC_LABEL  = { high:'HS', low:'LS', null:'NULL', wh:'WH', pochven:'POCH' };
+  // Sec colors aligned with the filter panels (was: null/pochven both #ff0000)
+  const SEC_COLORS = {
+    high:    'var(--color-neon-green)',
+    low:     'var(--color-whale-accent)',
+    null:    'var(--color-isk-billion)',
+    wh:      'var(--color-terminal-blue)',
+    pochven: '#b07ce8'
+  };
+  const SEC_LABEL = { high:'HS', low:'LS', null:'NULL', wh:'WH', pochven:'POCH' };
+
   const valueColor = (v) =>
     v >= 10_000_000_000 ? 'var(--color-whale-accent)'
     : v >= 1_000_000_000 ? 'var(--color-isk-billion)'
     : 'var(--color-eve-accent)';
+
+  // Instrument touch: total count rolls up rather than snapping
+  const totalTween = new Tween(0, { duration: 600, easing: cubicOut });
+  $effect(() => { totalTween.set($searchResults?.total ?? 0); });
+  const shownTotal = $derived(Math.round(totalTween.current).toLocaleString());
 </script>
 
-<section class="fade-card bg-[var(--color-eve-dark)] border border-[var(--color-eve-border)] rounded-sm overflow-hidden font-mono mt-4">
+<section class="sr mt-4">
 
-  <header class="bg-black/40 px-3 py-2 border-b border-[var(--color-eve-border)] flex justify-between items-center text-sm tracking-widest text-gray-400 uppercase">
-    <span class="eve-card-title">RESULTS GENERATED: {$searchResults?.total ?? 0}</span>
-    <span class="text-[var(--color-eve-accent)] eve-accent-glow">
+  <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
+    <span class="font-mono text-[13px] tracking-[0.14em] text-[var(--color-neon-green)] glow">
+      &gt; SEARCH RESULTS <span class="tabular-nums">[{shownTotal}]</span>
+    </span>
+    <span class="ui text-[10px] tracking-[0.14em]"
+      class:text-[var(--color-whale-accent)]={$searchResults?.loading}
+      class:text-[var(--color-isk-billion)]={$searchResults?.error}
+      class:text-[var(--color-text-faint)]={!$searchResults?.loading && !$searchResults?.error}>
       {#if $searchResults?.loading}
-        &gt; SCANNING WRECKAGE...
+        SCANNING WRECKAGE…
       {:else if $searchResults?.error}
-        &gt; ERR: {$searchResults.error}
+        ERR: {$searchResults.error}
       {:else}
-        &gt; SHOWING {$searchResults?.kills?.length ?? 0}
+        SHOWING {$searchResults?.kills?.length ?? 0}
       {/if}
     </span>
   </header>
 
-  <div class="px-3 py-1.5 border-b border-[var(--color-eve-border)] bg-black/20 text-xs font-mono tracking-widest text-[var(--color-eve-accent)] eve-accent-glow uppercase">
-    &gt; FILTER: {filterSummary}
+  <div class="readout px-3 py-2 border-b border-[var(--color-border-dim)]">
+    <span class="text-[var(--color-neon-green)]">&gt;</span> filter: {filterSummary}
   </div>
 
-  <ul class="flex flex-col">
-    {#each $searchResults?.kills ?? [] as k (k.killID)}
+  <ul class="flex flex-col" class:loading={$searchResults?.loading}>
+    {#each $searchResults?.kills ?? [] as k, i (k.killID)}
       {@const whale = k.totalValue >= 10_000_000_000}
-      <li class="border-b border-[var(--color-eve-border)]"
-          style={whale ? 'box-shadow: inset 3px 0 0 var(--color-whale-accent);' : ''}>
+      <li in:fly={{ y: 6, duration: 150, delay: Math.min(i * 20, 300) }}
+        class="border-b border-[var(--color-eve-border)]"
+        style={whale ? 'box-shadow: inset 3px 0 0 var(--color-whale-accent); background: var(--color-whale);' : ''}>
         <a href={`/kill/${k.killID}`} target="_blank" rel="noopener noreferrer"
           class="group grid grid-cols-1 md:grid-cols-12 gap-3 p-3 hover:bg-white/5 transition-colors items-center text-sm cursor-pointer block w-full">
 
           <!-- time + sec band -->
-          <div class="md:col-span-2 flex flex-col gap-0.5">
-            <span class="text-xs text-gray-500 tracking-widest">{formatTime(k.time)}</span>
-            <span class="text-[10px] font-bold tracking-widest" style="color:{SEC_COLORS[k.space] ?? '#c9d1d9'}">
+          <div class="md:col-span-2 flex flex-col gap-1">
+            <span class="font-mono text-xs tabular-nums text-[var(--color-text-faint)]">{formatTime(k.time)}</span>
+            <span class="sec-chip" style="--c:{SEC_COLORS[k.space] ?? 'var(--color-text-faint)'}">
               {SEC_LABEL[k.space] ?? (k.space ?? '—').toUpperCase()}
             </span>
           </div>
@@ -100,11 +122,11 @@ const filterSummary = $derived.by(() => {
           <div class="md:col-span-5 flex items-center gap-3 min-w-0">
             <img src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
               alt="" loading="lazy" width="48" height="48"
-              class="w-12 h-12 flex-shrink-0 bg-black border border-[var(--color-eve-border)] rounded-sm object-cover"
+              class="w-12 h-12 flex-shrink-0 bg-black border border-[var(--color-eve-border)] object-cover"
               onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
             <div class="flex flex-col min-w-0">
-              <span class="font-bold text-white group-hover:text-[var(--color-eve-accent)] transition-colors truncate">{shipName(k)}</span>
-              <span class="text-xs text-gray-500 truncate flex items-center gap-1.5">
+              <span class="ui font-semibold text-[15px] text-[var(--color-text-body)] group-hover:text-[var(--color-neon-green)] transition-colors truncate">{shipName(k)}</span>
+              <span class="ui text-xs text-[var(--color-text-faint)] truncate flex items-center gap-1.5">
                 {#if k.victimCorpID}
                   <img src={`https://api.socketkill.com/render/corp/${k.victimCorpID}?size=32`}
                     alt="" loading="lazy" width="16" height="16" class="w-4 h-4 flex-shrink-0"
@@ -117,14 +139,14 @@ const filterSummary = $derived.by(() => {
 
           <!-- location -->
           <div class="md:col-span-3 flex flex-col min-w-0 text-xs">
-            <span class="text-gray-400 truncate">{systemName(k)}</span>
-            <span class="text-gray-600 truncate">{regionName(k)}</span>
+            <span class="ui text-[var(--color-text-body)]/70 truncate">{systemName(k)}</span>
+            <span class="ui text-[var(--color-text-faint)]/60 truncate">{regionName(k)}</span>
           </div>
 
           <!-- value + attackers -->
           <div class="md:col-span-2 flex flex-col items-end text-right">
-            <span class="font-bold" style="color:{valueColor(k.totalValue)}">{formatIsk(k.totalValue)}</span>
-            <span class="text-[10px] text-gray-500 tracking-widest">{k.attackerCount} ATTACKERS</span>
+            <span class="font-mono font-bold tabular-nums" style="color:{valueColor(k.totalValue)}">{formatIsk(k.totalValue)}</span>
+            <span class="ui text-[10px] tracking-[0.12em] text-[var(--color-text-faint)] tabular-nums">{k.attackerCount} ATTACKERS</span>
           </div>
 
         </a>
@@ -132,19 +154,75 @@ const filterSummary = $derived.by(() => {
     {/each}
 
     {#if !$searchResults?.loading && $searchResults?.kills?.length === 0}
-      <li class="p-8 text-center text-gray-500 text-sm tracking-widest uppercase">&gt; NO RESULTS &lt;</li>
+      <li class="ui p-8 text-center text-[var(--color-text-faint)] text-xs tracking-[0.2em] uppercase">&gt; no results &lt;</li>
     {/if}
   </ul>
 
-  <footer class="bg-black/20 p-3 flex justify-between items-center text-sm tracking-widest text-gray-500 border-t border-[var(--color-eve-border)]">
-    <button onclick={prevPage} disabled={!$searchResults?.hasPrev}
-      class="border border-[var(--color-eve-border)] px-3 py-1 hover:text-white hover:border-white transition-colors disabled:opacity-30 disabled:hover:text-gray-500 disabled:hover:border-[var(--color-eve-border)] cursor-pointer disabled:cursor-not-allowed">
-      &lt; NEWER
-    </button>
-    <span class="text-[var(--color-eve-accent)] eve-accent-glow">PAGE {$searchResults?.page ?? 1}</span>
-    <button onclick={nextPage} disabled={!$searchResults?.hasMore}
-      class="border border-[var(--color-eve-border)] px-3 py-1 hover:text-white hover:border-white transition-colors disabled:opacity-30 disabled:hover:text-gray-500 disabled:hover:border-[var(--color-eve-border)] cursor-pointer disabled:cursor-not-allowed">
-      OLDER &gt;
-    </button>
+  <footer class="flex justify-between items-center p-3 border-t border-[var(--color-border-dim)]">
+    <button class="page-btn" onclick={prevPage} disabled={!$searchResults?.hasPrev}>&lt; NEWER</button>
+    <span class="font-mono text-xs tracking-[0.18em] text-[var(--color-neon-green)] glow tabular-nums">PAGE {$searchResults?.page ?? 1}</span>
+    <button class="page-btn" onclick={nextPage} disabled={!$searchResults?.hasMore}>OLDER &gt;</button>
   </footer>
 </section>
+
+<style>
+  .sr {
+    font-family: var(--font-mono);
+    background:
+      linear-gradient(180deg, rgba(63, 185, 80, 0.04), transparent 56px),
+      var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: var(--shadow-feed);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  }
+
+  .ui { font-family: var(--font-body); }
+  .glow { text-shadow: var(--shadow-phosphor); }
+
+  .readout {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--color-text-faint);
+    word-break: break-word;
+  }
+
+  .sec-chip {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--c);
+    border-bottom: 2px solid var(--c);
+    align-self: flex-start;
+    padding-bottom: 1px;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+  }
+
+  ul.loading { opacity: 0.45; transition: opacity 0.2s; pointer-events: none; }
+
+  .page-btn {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .page-btn:hover:not(:disabled) {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+    background: #1b212b;
+  }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .page-btn:focus-visible {
+    outline: 1px solid var(--color-neon-green);
+    outline-offset: 2px;
+  }
+</style>
