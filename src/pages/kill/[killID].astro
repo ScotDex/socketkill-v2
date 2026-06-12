@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro'
 import { externalLink } from '../../lib/entity-links.js'
-import AttackerRow from '../../components/AttackerRow.astro'
+import AttackerRow from '../../components/astro/AttackerRow.astro'
 const { killID } = Astro.params
 const id = parseInt(killID)
 if (!Number.isFinite(id) || id <= 0) {
