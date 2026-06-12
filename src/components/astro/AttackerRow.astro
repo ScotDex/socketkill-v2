@@ -1,0 +1,61 @@
+---
+import { externalLink } from '../lib/entity-links.js'
+const { a } = Astro.props
+const isNpc = !a.characterID
+const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
+---
+<li class="atk relative flex items-start gap-2 text-sm overflow-hidden py-1">
+    <span class="dmg" style={`width:${a.damagePercent}%`}></span>
+
+    <div class="relative w-10 h-10 flex-shrink-0 bg-black/40">
+        {!isNpc && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=64`} class="w-full h-full" alt="" loading="lazy" />}
+    </div>
+
+    <div class="relative flex flex-col gap-0.5 flex-shrink-0">
+        {a.shipTypeID && <img src={`https://images.evetech.net/types/${a.shipTypeID}/icon?size=32`} class="w-5 h-5" alt="" title={a.ship} loading="lazy" />}
+        {a.weaponTypeID && a.weaponTypeID !== a.shipTypeID && <img src={`https://images.evetech.net/types/${a.weaponTypeID}/icon?size=32`} class="w-5 h-5" alt="" title={a.weapon} loading="lazy" />}
+    </div>
+
+    <div class="relative flex-1 min-w-0">
+        <div class="ui truncate text-white text-[13px]">
+            {isNpc
+                ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
+                : <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>}
+            {a.finalBlow && <span class="ml-1 fb">[FB]</span>}
+        </div>
+        {corpKnown && (
+            <div class="ui truncate text-[var(--color-text-faint)] text-xs">
+                <a href={externalLink('corp', a.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{a.corp}</a>
+            </div>
+        )}
+        {a.allianceID && a.alliance && (
+            <div class="ui truncate text-[var(--color-text-faint)] text-xs">
+                <a href={externalLink('alliance', a.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{a.alliance}</a>
+            </div>
+        )}
+    </div>
+
+    <div class="relative font-mono text-xs tabular-nums text-right flex-shrink-0">
+        {Number.isFinite(a.damage) && <div class="text-white">{a.damage.toLocaleString()}</div>}
+        <div class="text-[var(--color-text-faint)]">{a.damagePercent}%</div>
+    </div>
+</li>
+
+<style>
+    .dmg {
+        position: absolute; top: 0; bottom: 0; left: 0;
+        background: color-mix(in srgb, var(--color-isk-billion) 8%, transparent);
+        animation: grow 0.5s ease-out 0.25s both;
+        transform-origin: left;
+    }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .fb {
+        font-family: var(--font-mono); font-size: 10px;
+        color: var(--color-isk-billion);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+    }
+    .link { transition: color 0.15s, text-shadow 0.15s; }
+    .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+    .ui { font-family: var(--font-body); }
+    @media (prefers-reduced-motion: reduce) { .dmg { animation: none; } }
+</style>
