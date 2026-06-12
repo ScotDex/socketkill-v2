@@ -21,12 +21,12 @@
 
 <svelte:window onkeydown={skip} />
 
-
 <div class="boot-sequence" onclick={skip}>
     {#each shown.split('\n') as line, i}
-        <div>{line}{#if !done && i === shown.split('\n').length - 1}<span class="cursor">█</span>{/if}</div>
+        <div>
+            {line}{#if !done && i === shown.split('\n').length - 1}<span class="cursor">█</span>{/if}{#if done && i === bootLines.length - 1}<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>{/if}
+        </div>
     {/each}
-    {#if done}<div class="dot-pulse"></div>{/if}
 </div>
 
 <style>
@@ -42,4 +42,18 @@
     }
     .cursor { animation: blink 1s steps(2) infinite; }
     @keyframes blink { 50% { opacity: 0; } }
+
+    .dots span {
+        opacity: 0;
+        animation: dot-cycle 1.4s infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dot-cycle {
+        0%, 70%, 100% { opacity: 0; }
+        25%, 50% { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .dots span { animation: none; opacity: 1; }
+    }
 </style>
