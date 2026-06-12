@@ -111,6 +111,23 @@ body {
     animation-delay: 0.24s;
 }
 
+.kill-headline {
+        font-family: var(--font-body);
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-body);
+        text-shadow: 0 0 10px color-mix(in srgb, var(--color-neon-green) 25%, transparent);
+    }
+    .kill-sub {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        color: var(--color-text-faint);
+        margin-top: 0.25rem;
+    }
+
 @keyframes fade-card-in {
     from {
         opacity: 0;
