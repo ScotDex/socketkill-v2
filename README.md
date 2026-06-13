@@ -52,4 +52,6 @@ Original API provided by: [zKillboard](https://github.com/zKillboard/zKillboard/
 
 Further API's and SDE used [EVE API Explorer](https://developers.eveonline.com/api-explorer)
 
-Main site backgrounds with explicit permission from [Rixx Javix] (https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
+Main site background art from [Rixx Javix](https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
+
+Background art for the killmails and stats page from the magnificent work from [El Geo](https://www.lloydgeorge.art/)
