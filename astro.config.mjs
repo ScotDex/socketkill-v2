@@ -17,7 +17,8 @@ export default defineConfig({
     svelte(), 
     sitemap(),
     robotsTxt({
-      sitemap: 'https://socketkill.com/sitemap-index.xml',
+      sitemap:['https://socketkill.com/sitemap-index.xml',
+              'https://socketkill.com/sitemaps/kills-index.xml'],
       policy: [
         {
           userAgent: '*',
