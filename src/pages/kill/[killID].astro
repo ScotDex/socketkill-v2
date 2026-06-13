@@ -137,7 +137,10 @@ const hiddenAttackers = attackers.slice(5)
 </Fragment>
 
     <div class="kill-screen" style={bgStyle}>
-    <header class='max-w-7xl mx-auto px-4 pt-6 relative z-10">
+    <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
+        <h1 class="kill-headline">{title}</h1>
+        <p class="kill-sub">{kill.system.name} // {kill.system.region} -  {killTime}</p>
+        </header>
         <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
