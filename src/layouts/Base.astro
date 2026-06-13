@@ -12,7 +12,7 @@ const {
 } = Astro.props
 
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const canonicalURL = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', Astro.site)
 const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -59,7 +59,7 @@ const jsonLd = {
 
 
         <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9a7b8334fd974f46a3b570cbc18d90b1"}'></script>
-        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+        {Astro.url.pathname === '/' && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
         <slot name="head"/>
     </head>
     <body>
