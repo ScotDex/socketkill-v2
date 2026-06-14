@@ -56,7 +56,6 @@
     return parts.length ? parts.join('  ·  ') : 'ALL KILLS';
   });
 
-  // Sec colors aligned with the filter panels (was: null/pochven both #ff0000)
   const SEC_COLORS = {
     high:    'var(--color-neon-green)',
     low:     'var(--color-whale-accent)',
@@ -70,8 +69,6 @@
     v >= 10_000_000_000 ? 'var(--color-whale-accent)'
     : v >= 1_000_000_000 ? 'var(--color-isk-billion)'
     : 'var(--color-eve-accent)';
-
-  // Instrument touch: total count rolls up rather than snapping
   const totalTween = new Tween(0, { duration: 600, easing: cubicOut });
   $effect(() => { totalTween.set($searchResults?.total ?? 0); });
   const shownTotal = $derived(Math.round(totalTween.current).toLocaleString());
@@ -136,14 +133,10 @@
               </span>
             </div>
           </div>
-
-          <!-- location -->
           <div class="md:col-span-3 flex flex-col min-w-0 text-xs">
             <span class="ui text-[var(--color-text-body)]/70 truncate">{systemName(k)}</span>
             <span class="ui text-[var(--color-text-faint)]/60 truncate">{regionName(k)}</span>
           </div>
-
-          <!-- value + attackers -->
           <div class="md:col-span-2 flex flex-col items-end text-right">
             <span class="font-mono font-bold tabular-nums" style="color:{valueColor(k.totalValue)}">{formatIsk(k.totalValue)}</span>
             <span class="ui text-[10px] tracking-[0.12em] text-[var(--color-text-faint)] tabular-nums">{k.attackerCount} ATTACKERS</span>

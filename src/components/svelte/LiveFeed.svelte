@@ -181,8 +181,6 @@
 </script>
 
 <div class="flex flex-col lg:flex-row gap-4">
-
-    <!-- Live filter panel -->
     <aside class="lf lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
         <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
@@ -266,8 +264,6 @@
         {/if}
 
     </aside>
-
-    <!-- Feed -->
     <div class="lg:flex-1 lg:self-start">
         {#if filteredFeed.length === 0}
             <div class="flex items-center justify-center min-h-[400px]">

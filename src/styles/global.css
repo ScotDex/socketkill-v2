@@ -154,7 +154,6 @@ body {
 
 
 body {
-    /* Add these to your existing body block */
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
@@ -166,7 +165,6 @@ body {
 }
 
 
-/* Network dropdown */
 #network-dropdown {
     display: none;
     position: absolute;
