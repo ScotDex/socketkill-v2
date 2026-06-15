@@ -60,7 +60,7 @@
 </script>
 
 <div class="flex flex-col gap-2" data-active={items.length > 0}>
-    <label class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70">
+    <label class="facet-lbl">
         {label}
     </label>
 
@@ -105,3 +105,15 @@
         {/if}
     </div>
 </div>
+
+<style>
+    .facet-lbl {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--color-border-bright);
+        user-select: none;
+    }
+</style>
