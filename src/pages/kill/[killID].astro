@@ -7,12 +7,23 @@ const id = parseInt(killID)
 if (!Number.isFinite(id) || id <= 0) {
     return new Response('Invalid killID', { status: 400 })
 }
+
+const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
+
 let kill = null
+
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
-  headers: { 'User-Agent': 'SocketKill-Frontend/1.0' }
-})
+        headers: { 'User-Agent': incomingUA }
+    })
     if (!res.ok) {
+        // backend now 503s bots on cold kills — pass that through, don't mask as 404
+        if (res.status === 503) {
+            return new Response('Killmail warming up, retry shortly', {
+                status: 503,
+                headers: { 'Retry-After': '300' }
+            })
+        }
         return new Response('Kill not found', { status: 404 })
     }
     kill = await res.json()
