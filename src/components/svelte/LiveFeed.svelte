@@ -320,8 +320,10 @@
             linear-gradient(180deg, rgba(63, 185, 80, 0.04), transparent 56px),
             var(--color-glass-bg);
         border: 1px solid var(--color-border-dim);
-        box-shadow: var(--shadow-feed);
-        /* mirrored notch: this panel sits on the left edge */
+        box-shadow:
+            var(--shadow-feed),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04),          
+            inset 0 0 40px rgba(63, 185, 80, 0.02);           
         clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px);
     }
 
