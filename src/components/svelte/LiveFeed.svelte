@@ -8,7 +8,6 @@
     import QueryBuilder from './QueryBuilder.svelte'
     import BootSequence from './BootSequence.svelte'
     import WeaponKeywordFacet from './WeaponKeywordFacet.svelte'
-    import { MessageCircle } from 'lucide-svelte'
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import {
         passesFilter,
