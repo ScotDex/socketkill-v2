@@ -14,7 +14,7 @@
 <div class="flex flex-col gap-2">
     <label
         for="weapon-keyword-input"
-        class="font-mono text-xs tracking-widest uppercase text-[var(--color-neon-green)]/70"
+        class="facet-lbl"
     >
         WEAPON KEYWORD
     </label>
@@ -49,3 +49,16 @@
         </div>
     {/if}
 </div>
+
+
+<style>
+    .facet-lbl {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--color-border-bright);
+        user-select: none;
+    }
+</style>
