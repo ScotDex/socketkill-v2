@@ -8,6 +8,7 @@
     import QueryBuilder from './QueryBuilder.svelte'
     import BootSequence from './BootSequence.svelte'
     import WeaponKeywordFacet from './WeaponKeywordFacet.svelte'
+    import { MessageCircle } from 'lucide-svelte'
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import {
         passesFilter,
@@ -194,6 +195,18 @@
 
         <div class="flex flex-col gap-6 p-3 pt-4">
 
+        <section class="flex flex-col gap-1.5">
+                <span class="lbl">// network</span>
+                <div class="flex gap-2">
+                    <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener noreferrer"
+                       class="icon-link" title="Discord" aria-label="Join the Discord">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                            <path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.211.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0a12.6 12.6 0 0 0-.617-1.25a.077.077 0 0 0-.079-.036A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.1 13.1 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.3 12.3 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.84 19.84 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                    </a>
+                </div>
+            </section>
+
             <section class="flex flex-col gap-1.5">
                 <span class="lbl">// value threshold <span class="lbl-unit">isk</span></span>
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
@@ -351,6 +364,26 @@
     .flush:hover { color: var(--color-isk-billion); border-bottom-color: var(--color-isk-billion); }
 
     .seg:focus-visible, .flush:focus-visible {
+        outline: 1px solid var(--color-neon-green);
+        outline-offset: 2px;
+    }
+
+    .icon-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px; height: 32px;
+        color: var(--color-text-faint);
+        background: var(--color-feed-bg);
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .icon-link:hover {
+        color: var(--color-neon-green);
+        border-bottom-color: var(--color-neon-green);
+        background: #1b212b;
+    }
+    .icon-link:focus-visible {
         outline: 1px solid var(--color-neon-green);
         outline-offset: 2px;
     }
