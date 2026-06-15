@@ -184,7 +184,7 @@
     <aside class="lf lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
         <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
-            <span class="font-mono text-[13px] tracking-[0.14em] text-[var(--color-neon-green)] glow">&gt; LIVE FILTER</span>
+            <span class="lbl glow text-[var(--color-neon-green)] !text-[13px]">&gt; LIVE FILTER</span>
             <span class="ui text-[10px] tracking-[0.14em] tabular-nums"
                 class:text-[var(--color-neon-green)]={hasActiveFilters}
                 class:text-[var(--color-text-faint)]={!hasActiveFilters}>
