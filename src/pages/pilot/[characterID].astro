@@ -1,0 +1,511 @@
+---
+import Base from '../../layouts/Base.astro'
+import { externalLink } from '../../lib/entity-links.js'
+
+const { characterID } = Astro.params
+const id = parseInt(characterID)
+if (!Number.isFinite(id) || id <= 0) {
+    return new Response('Invalid characterID', { status: 400 })
+}
+
+const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
+
+// ---------------------------------------------------------------------------
+// DATA SOURCE
+// The real endpoint doesn't exist yet. We attempt it; on any failure we fall
+// back to MOCK and flip `usingMock`, which renders a visible SAMPLE DATA banner.
+// When /api/pilot/:id is live, this whole block keeps working unchanged.
+// The shape below === the materialised per-pilot R2 object (profile/elo/stats
+// jobs all write to this schema).
+// ---------------------------------------------------------------------------
+const MOCK = {
+    characterID: id,
+    name: 'Sample Capsuleer',
+    corporationID: 98000000,
+    corp: 'Placeholder Industries',
+    allianceID: 99000000,
+    alliance: 'Sample Coalition',
+    securityStatus: 1.24,
+    birthday: '2019-01-31',
+    stats: {
+        destroyed: { ships: 1320, points: 1489, isk: '2.09t' },
+        lost:      { ships: 127,  points: 435,  isk: '13.26b' },
+        efficiency: 91.2,
+        soloKills: 4,
+        dangerRatio: 83, // % dangerous vs snuggly
+    },
+    rating: {
+        solo:      { score: 1842, rank: 612,  deviation: 78 },
+        overall:   { score: 1564, rank: 4109, deviation: 41 },
+    },
+    activity90: [0,0,1,0,2,0,0,1,3,0,0,0,1,0,0,2,1,0,0,0,4,1,0,0,2,0,0,1,0,0,3,2,0,0,1,0,0,0,2,1,0,0,0,1,0,3,0,0,1,0,0,2,0,0,0,1,0,0,4,2,0,0,1,0,0,0,2,0,1,0,0,3,0,0,1,0,0,2,0,0,1,0,0,0,2,1,0,0,3,0],
+    kills: [
+        { killID: 130001, time: '2026-06-12T17:53:00Z', shipTypeID: 17720, shipName: 'Prism', system: 'Reitsato', region: 'Black Rise', security: 0.2, victimName: 'Ivora Ronuken', victimCorp: 'Silent Company', victimShipTypeID: 17720, value: '375.76m', solo: false, finalBlow: true },
+        { killID: 130002, time: '2026-05-28T17:40:00Z', shipTypeID: 602,  shipName: 'Kestrel', system: 'Tama', region: 'The Citadel', security: 0.3, victimName: 'Ax Battler', victimCorp: 'State Protectorate', victimShipTypeID: 602, value: '3.75m', solo: false, finalBlow: false },
+        { killID: 130003, time: '2026-05-22T00:17:00Z', shipTypeID: 621,  shipName: 'Drake', system: 'Sujarento', region: 'The Citadel', security: 0.3, victimName: 'Samantha Lyons', victimCorp: 'State War Academy', victimShipTypeID: 621, value: '99.82m', solo: true, finalBlow: true },
+    ],
+    losses: [
+        { killID: 140001, time: '2026-06-12T17:53:00Z', shipTypeID: 17720, shipName: 'Kikimora', system: 'Prism', region: 'Black Rise', security: 0.2, attackerName: 'Ceremonial', attackerCorp: 'Wings of Independence', value: '98.10m', solo: true },
+        { killID: 140002, time: '2026-06-05T19:18:00Z', shipTypeID: 670,  shipName: 'Capsule', system: 'Harva', region: 'Pochven', security: -1.0, attackerName: 'Flavius Flave', attackerCorp: 'The Initiative.', value: '10.00k', solo: false },
+    ],
+    achievements: null, // EVE achievement ESI — slot reserved, see card below
+}
+
+let pilot = MOCK
+let usingMock = true
+
+try {
+    const res = await fetch(`https://ws.socketkill.com/api/pilot/${id}`, {
+        headers: { 'User-Agent': incomingUA }
+    })
+    if (res.ok) {
+        pilot = await res.json()
+        usingMock = false
+    } else if (res.status === 503) {
+        return new Response('Profile warming up, retry shortly', {
+            status: 503, headers: { 'Retry-After': '300' }
+        })
+    }
+    // any other non-ok status → keep MOCK so the page still renders in dev
+} catch (_err) {
+    // network/endpoint absent → keep MOCK
+}
+
+// Profile is MUTABLE (updates on every new kill) — short TTL, never immutable.
+Astro.response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
+
+// --- helpers (ported from kill page for visual consistency) -----------------
+function classifySecurity(security, systemName) {
+    if (security == null) return { label: 'UNK', color: 'var(--color-text-faint)' }
+    if (systemName === 'Harva' || security <= -1.0) return { label: 'POCH', color: '#b07ce8' }
+    if (security >= 0.5) return { label: security.toFixed(1), color: 'var(--color-neon-green)' }
+    if (security > 0.0)  return { label: security.toFixed(1), color: 'var(--color-whale-accent)' }
+    return { label: security.toFixed(1), color: 'var(--color-isk-billion)' }
+}
+
+function shortTime(iso) {
+    const d = new Date(iso)
+    return `${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')}`
+}
+function shortDate(iso) { return (iso ?? '').slice(0, 10) }
+
+const s = pilot.stats
+const r = pilot.rating
+const dangerLabel = s.dangerRatio >= 50 ? 'DANGEROUS' : 'SNUGGLY'
+const dangerColor = s.dangerRatio >= 50 ? 'var(--color-isk-billion)' : 'var(--color-neon-green)'
+
+// activity sparkline scale
+const actMax = Math.max(1, ...pilot.activity90)
+
+// --- SEO / OG ---------------------------------------------------------------
+const portrait = `https://images.evetech.net/characters/${pilot.characterID}/portrait?size=512`
+const canonicalUrl = `https://socketkill.com/pilot/${id}`
+const title = `${pilot.name} — ${s.destroyed.ships} kills / ${s.lost.ships} losses`
+const affil = pilot.alliance ? `${pilot.corp} // ${pilot.alliance}` : pilot.corp
+const description = `${pilot.name} of ${affil}. ${s.destroyed.ships} ships destroyed (${s.destroyed.isk} ISK), ${s.efficiency}% efficiency, solo rating ${r.solo.score}.`
+---
+
+<Base
+    title={`${pilot.name} | Socketkill.com`}
+    ogTitle={title}
+    ogDescription={description}
+    ogImage={portrait}
+    ogImageWidth="512"
+    ogImageHeight="512"
+    ogUrl={canonicalUrl}
+    ogType="profile"
+    twitterCard="summary"
+>
+    <Fragment slot="head">
+        <script type="application/ld+json" set:html={JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            url: canonicalUrl,
+            mainEntity: {
+                "@type": "Person",
+                name: pilot.name,
+                image: portrait,
+                memberOf: { "@type": "Organization", name: pilot.corp }
+            },
+            publisher: { "@type": "Organization", name: "Socket.Kill", url: "https://socketkill.com" }
+        })}></script>
+    </Fragment>
+
+    <div class="kill-screen">
+        {usingMock && (
+            <div class="mock-banner">&gt; SAMPLE DATA — /api/pilot/:id not yet wired. Remove when live.</div>
+        )}
+
+        <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
+            <h1 class="kill-headline">{pilot.name}</h1>
+            <p class="kill-sub">{affil}{pilot.securityStatus != null && ` -  SEC ${pilot.securityStatus.toFixed(2)}`}</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
+
+            <!-- ============ LEFT: PILOT CARD STACK ============ -->
+            <section class="md:col-span-4 lg:col-span-3 flex flex-col gap-4">
+
+                <!-- identity -->
+                <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// pilot id</span>
+                        <span class="tag">CAPSULEER</span>
+                    </header>
+                    <div class="p-3 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 bg-black border border-[var(--color-eve-border)] overflow-hidden flex-shrink-0">
+                                <img src={`https://images.evetech.net/characters/${pilot.characterID}/portrait?size=128`} class="w-full h-full object-cover" alt="" loading="lazy" />
+                            </div>
+                            <div class="min-w-0">
+                                <a href={externalLink('character', pilot.characterID)} target="_blank" rel="noopener noreferrer" class="ui font-semibold text-white text-[15px] truncate link block">{pilot.name}</a>
+                                <div class="font-mono text-[10px] text-[var(--color-text-faint)] tabular-nums">BORN {pilot.birthday}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 flex-shrink-0">
+                                <img src={`https://images.evetech.net/corporations/${pilot.corporationID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />
+                            </div>
+                            <a href={externalLink('corp', pilot.corporationID)} target="_blank" rel="noopener noreferrer" class="ui font-semibold text-white/90 text-sm truncate link">{pilot.corp}</a>
+                        </div>
+                        {pilot.allianceID && (
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 flex-shrink-0">
+                                    <img src={`https://images.evetech.net/alliances/${pilot.allianceID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />
+                                </div>
+                                <a href={externalLink('alliance', pilot.allianceID)} target="_blank" rel="noopener noreferrer" class="ui font-semibold text-white/90 text-sm truncate link">{pilot.alliance}</a>
+                            </div>
+                        )}
+                    </div>
+                    <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; intel compiled</footer>
+                </div>
+
+                <!-- combat record -->
+                <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
+                    <header class="card-h">// combat record</header>
+                    <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
+                        <div class="stat-row">
+                            <span class="k">DESTROYED</span>
+                            <span style="color: var(--color-neon-green)">{s.destroyed.ships} <span class="text-[var(--color-text-faint)]">ships</span></span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="k">ISK DESTROYED</span>
+                            <span style="color: var(--color-neon-green)">{s.destroyed.isk}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="k">LOST</span>
+                            <span style="color: var(--color-isk-billion)">{s.lost.ships} <span class="text-[var(--color-text-faint)]">ships</span></span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="k">ISK LOST</span>
+                            <span style="color: var(--color-isk-billion)">{s.lost.isk}</span>
+                        </div>
+                        <div class="eff-wrap">
+                            <div class="flex justify-between items-baseline mb-1">
+                                <span class="k">EFFICIENCY</span>
+                                <span class="font-bold" style="color: var(--color-neon-green)">{s.efficiency}%</span>
+                            </div>
+                            <div class="eff-bar"><span style={`width:${s.efficiency}%`}></span></div>
+                        </div>
+                        <div class="stat-row pt-1">
+                            <span class="k">SOLO KILLS</span>
+                            <span class="v">{s.soloKills}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="k">PROFILE</span>
+                            <span class="chip" style={`--c:${dangerColor}`}>{dangerLabel} {s.dangerRatio}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ELO / SKILL RATING — the differentiator -->
+                <div class="card rating-card" style="--card-c: var(--color-whale-accent); --d: 120ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// skill rating</span>
+                        <span class="tag" style="color: var(--color-whale-accent)">BETA</span>
+                    </header>
+                    <div class="p-3 space-y-3">
+                        <div class="rating-hero">
+                            <div class="rating-label">SOLO</div>
+                            <div class="rating-score" style="color: var(--color-whale-accent)">{r.solo.score}</div>
+                            <div class="rating-meta font-mono tabular-nums">
+                                RANK #{r.solo.rank} <span class="text-[var(--color-text-faint)]">· ±{r.solo.deviation}</span>
+                            </div>
+                        </div>
+                        <div class="rating-divider"></div>
+                        <div class="flex justify-between items-baseline text-sm font-mono tabular-nums">
+                            <span class="k">OVERALL</span>
+                            <span><span class="text-white">{r.overall.score}</span> <span class="text-[var(--color-text-faint)]">#{r.overall.rank} · ±{r.overall.deviation}</span></span>
+                        </div>
+                    </div>
+                    <footer class="card-f" style="color: var(--color-whale-accent)">&gt; opponent-adjusted · glicko-2</footer>
+                </div>
+
+                <!-- activity sparkline -->
+                <div class="card" style="--card-c: var(--color-terminal-blue); --d: 180ms">
+                    <header class="card-h">// activity · last 90d</header>
+                    <div class="p-3">
+                        <div class="spark">
+                            {pilot.activity90.map(v => (
+                                <span class="spark-bar" style={`height:${Math.max(8, (v / actMax) * 100)}%; opacity:${v === 0 ? 0.18 : 1}`}></span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPANSION SLOT: EVE achievement ESI -->
+                <div class="card expansion" style="--card-c: var(--color-text-faint); --d: 240ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// achievements</span>
+                        <span class="tag">AWAITING ESI</span>
+                    </header>
+                    <div class="p-3">
+                        <div class="locked-grid">
+                            {Array.from({ length: 6 }).map(() => <div class="locked-slot">?</div>)}
+                        </div>
+                        <p class="font-mono text-[10px] text-[var(--color-text-faint)] mt-2 leading-relaxed">
+                            &gt; reserved for CCP achievement endpoints
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ RIGHT: KILLS / LOSSES FEED ============ -->
+            <section class="md:col-span-8 lg:col-span-9 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
+
+                <!-- CSS-only tabs (no JS, SSR-safe) -->
+                <input type="radio" name="feed-tab" id="ft-kills" class="tab-input" checked />
+                <input type="radio" name="feed-tab" id="ft-losses" class="tab-input" />
+
+                <div class="tab-bar">
+                    <label for="ft-kills" class="tab" data-for="ft-kills">
+                        KILLS <span class="count">{pilot.kills.length}</span>
+                    </label>
+                    <label for="ft-losses" class="tab" data-for="ft-losses">
+                        LOSSES <span class="count">{pilot.losses.length}</span>
+                    </label>
+                </div>
+
+                <!-- KILLS -->
+                <div class="tab-panel" data-panel="kills">
+                    <div class="feed-head">
+                        <span>TIME</span><span>SHIP</span><span>LOCATION</span><span>VICTIM</span><span class="text-right">VALUE</span>
+                    </div>
+                    {pilot.kills.map(k => {
+                        const sec = classifySecurity(k.security, k.system)
+                        return (
+                            <a href={`/kill/${k.killID}`} class="feed-row feed-kill">
+                                <div class="font-mono text-xs tabular-nums">
+                                    <div class="text-[var(--color-text-body)]">{shortTime(k.time)}</div>
+                                    <div class="text-[var(--color-text-faint)] text-[10px]">{shortDate(k.time)}</div>
+                                </div>
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <img src={`https://images.evetech.net/types/${k.shipTypeID}/icon?size=32`} class="w-7 h-7 flex-shrink-0" alt="" loading="lazy" />
+                                    <span class="ui text-sm truncate text-[var(--color-text-body)]">{k.shipName}</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="ui text-sm truncate">{k.system} <span class="chip-sm" style={`--c:${sec.color}`}>{sec.label}</span></div>
+                                    <div class="font-mono text-[10px] text-[var(--color-text-faint)] truncate">{k.region}</div>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="ui text-sm truncate text-[var(--color-text-body)]">{k.victimName}</div>
+                                    <div class="font-mono text-[10px] text-[var(--color-text-faint)] truncate">{k.victimCorp}</div>
+                                </div>
+                                <div class="text-right flex flex-col items-end gap-1">
+                                    <span class="font-mono text-xs tabular-nums" style="color: var(--color-neon-green)">{k.value}</span>
+                                    {k.solo && <span class="solo-tag">SOLO</span>}
+                                </div>
+                            </a>
+                        )
+                    })}
+                </div>
+
+                <!-- LOSSES -->
+                <div class="tab-panel" data-panel="losses">
+                    <div class="feed-head">
+                        <span>TIME</span><span>SHIP</span><span>LOCATION</span><span>FINAL BLOW</span><span class="text-right">VALUE</span>
+                    </div>
+                    {pilot.losses.map(l => {
+                        const sec = classifySecurity(l.security, l.system)
+                        return (
+                            <a href={`/kill/${l.killID}`} class="feed-row feed-loss">
+                                <div class="font-mono text-xs tabular-nums">
+                                    <div class="text-[var(--color-text-body)]">{shortTime(l.time)}</div>
+                                    <div class="text-[var(--color-text-faint)] text-[10px]">{shortDate(l.time)}</div>
+                                </div>
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <img src={`https://images.evetech.net/types/${l.shipTypeID}/icon?size=32`} class="w-7 h-7 flex-shrink-0" alt="" loading="lazy" />
+                                    <span class="ui text-sm truncate text-[var(--color-text-body)]">{l.shipName}</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="ui text-sm truncate">{l.system} <span class="chip-sm" style={`--c:${sec.color}`}>{sec.label}</span></div>
+                                    <div class="font-mono text-[10px] text-[var(--color-text-faint)] truncate">{l.region}</div>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="ui text-sm truncate text-[var(--color-text-body)]">{l.attackerName}</div>
+                                    <div class="font-mono text-[10px] text-[var(--color-text-faint)] truncate">{l.attackerCorp}</div>
+                                </div>
+                                <div class="text-right flex flex-col items-end gap-1">
+                                    <span class="font-mono text-xs tabular-nums" style="color: var(--color-isk-billion)">{l.value}</span>
+                                    {l.solo && <span class="solo-tag loss">SOLO</span>}
+                                </div>
+                            </a>
+                        )
+                    })}
+                </div>
+            </section>
+        </main>
+
+        <footer class="relative z-10 max-w-7xl mx-auto p-4 mt-8 border-t border-[var(--color-eve-border)] text-center">
+            <div class="ui flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] tracking-[0.14em] text-[var(--color-text-faint)]">
+                <div><a href="/" class="link">&lt; BACK TO SOCKETKILL.COM</a></div>
+                <div class="space-x-4">
+                    <a href="/about" class="link">ABOUT</a>
+                    <a href="https://github.com/ScotDex/socketkill-v2" target="_blank" rel="noopener" class="link">GITHUB</a>
+                    <a href="https://api.socketkill.com/docs/" class="link">API</a>
+                    <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="link">DISCORD</a>
+                </div>
+                <div>&copy; SOCKETKILL.COM</div>
+            </div>
+        </footer>
+    </div>
+</Base>
+
+<style>
+    /* ---- shared card system (ported from kill page for consistency) ---- */
+    .card {
+        background:
+            linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
+            var(--color-glass-bg);
+        border: 1px solid var(--color-border-dim);
+        box-shadow: var(--shadow-feed);
+        clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+        overflow: hidden;
+        animation: card-rise 0.35s ease-out both;
+        animation-delay: var(--d, 0ms);
+    }
+    @keyframes card-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .card-h {
+        font-family: var(--font-body); font-size: 10px; font-weight: 600;
+        letter-spacing: 0.22em; text-transform: uppercase; color: var(--card-c);
+        padding: 0.55rem 0.75rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+    }
+    .card-f {
+        font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+        text-transform: uppercase; padding: 0.35rem 0.75rem;
+        border-top: 1px solid var(--color-eve-border); background: rgba(0, 0, 0, 0.25);
+    }
+    .tag { font-family: var(--font-body); font-size: 9px; font-weight: 500; letter-spacing: 0.16em; color: var(--color-text-faint); }
+    .k { font-family: var(--font-body); font-size: 10px; font-weight: 500; letter-spacing: 0.16em; color: var(--color-text-faint); }
+    .v { color: var(--color-text-body); }
+    .ui { font-family: var(--font-body); }
+    .link { transition: color 0.15s, text-shadow 0.15s; }
+    .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+
+    .chip {
+        font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+        color: var(--c); border-bottom: 2px solid var(--c); padding-bottom: 1px;
+        text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+    }
+    .chip-sm {
+        font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+        color: var(--c); padding: 0 3px; border: 1px solid color-mix(in srgb, var(--c) 50%, transparent);
+        vertical-align: middle;
+    }
+
+    /* ---- mock banner ---- */
+    .mock-banner {
+        font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+        text-align: center; padding: 0.45rem; color: #000;
+        background: var(--color-whale-accent);
+        position: relative; z-index: 20;
+    }
+
+    /* ---- combat record ---- */
+    .stat-row { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+    .eff-wrap { padding-top: 0.35rem; }
+    .eff-bar { height: 4px; background: color-mix(in srgb, var(--color-isk-billion) 30%, transparent); overflow: hidden; }
+    .eff-bar span { display: block; height: 100%; background: var(--color-neon-green); transform-origin: left; animation: grow 0.6s ease-out 0.3s both; }
+    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* ---- rating card ---- */
+    .rating-hero { text-align: center; padding: 0.4rem 0; }
+    .rating-label { font-family: var(--font-body); font-size: 9px; letter-spacing: 0.3em; color: var(--color-text-faint); }
+    .rating-score { font-family: var(--font-mono); font-weight: 700; font-size: 2.4rem; line-height: 1; tabular-nums: ; text-shadow: 0 0 14px color-mix(in srgb, var(--color-whale-accent) 45%, transparent); }
+    .rating-meta { font-size: 10px; letter-spacing: 0.12em; color: var(--color-text-body); margin-top: 0.2rem; }
+    .rating-divider { height: 1px; background: color-mix(in srgb, var(--color-whale-accent) 20%, transparent); }
+
+    /* ---- activity sparkline ---- */
+    .spark { display: flex; align-items: flex-end; gap: 1px; height: 40px; }
+    .spark-bar { flex: 1; min-width: 0; background: var(--color-terminal-blue); box-shadow: 0 0 4px color-mix(in srgb, var(--color-terminal-blue) 40%, transparent); }
+
+    /* ---- expansion / achievements ---- */
+    .locked-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+    .locked-slot {
+        aspect-ratio: 1; display: grid; place-items: center;
+        font-family: var(--font-mono); font-size: 14px; color: var(--color-text-faint);
+        background: color-mix(in srgb, var(--color-text-faint) 6%, transparent);
+        border: 1px dashed color-mix(in srgb, var(--color-text-faint) 30%, transparent);
+    }
+
+    /* ---- CSS-only tabs ---- */
+    .tab-input { position: absolute; opacity: 0; pointer-events: none; }
+    .tab-bar { display: flex; border-bottom: 1px solid var(--color-eve-border); }
+    .tab {
+        font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+        text-transform: uppercase; color: var(--color-text-faint);
+        padding: 0.7rem 1.1rem; cursor: pointer; border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s; user-select: none;
+    }
+    .tab .count {
+        font-family: var(--font-mono); font-size: 10px; margin-left: 0.3rem;
+        color: var(--color-text-faint); opacity: 0.7;
+    }
+    .tab:hover { color: var(--color-text-body); }
+    .tab-panel { display: none; }
+    #ft-kills:checked  ~ .tab-bar label[for="ft-kills"]  { color: var(--color-neon-green); border-bottom-color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+    #ft-losses:checked ~ .tab-bar label[for="ft-losses"] { color: var(--color-isk-billion); border-bottom-color: var(--color-isk-billion); text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent); }
+    #ft-kills:checked  ~ .tab-panel[data-panel="kills"]  { display: block; }
+    #ft-losses:checked ~ .tab-panel[data-panel="losses"] { display: block; }
+
+    /* ---- feed rows ---- */
+    .feed-head, .feed-row {
+        display: grid;
+        grid-template-columns: 56px 1.4fr 1.6fr 1.6fr 0.9fr;
+        gap: 0.75rem; align-items: center;
+        padding: 0.55rem 0.85rem;
+    }
+    .feed-head {
+        font-family: var(--font-body); font-size: 9px; font-weight: 600; letter-spacing: 0.16em;
+        color: var(--color-text-faint); border-bottom: 1px solid var(--color-eve-border);
+    }
+    .feed-row {
+        border-bottom: 1px solid color-mix(in srgb, var(--color-eve-border) 60%, transparent);
+        border-left: 2px solid transparent;
+        transition: background 0.12s, border-color 0.12s;
+    }
+    .feed-row:hover { background: rgba(255,255,255,0.03); }
+    .feed-kill { border-left-color: color-mix(in srgb, var(--color-neon-green) 40%, transparent); }
+    .feed-kill:hover { border-left-color: var(--color-neon-green); }
+    .feed-loss { border-left-color: color-mix(in srgb, var(--color-isk-billion) 40%, transparent); }
+    .feed-loss:hover { border-left-color: var(--color-isk-billion); }
+
+    .solo-tag {
+        font-family: var(--font-body); font-size: 8px; font-weight: 700; letter-spacing: 0.12em;
+        color: var(--color-neon-green); border: 1px solid color-mix(in srgb, var(--color-neon-green) 50%, transparent);
+        padding: 0 3px;
+    }
+    .solo-tag.loss { color: var(--color-isk-billion); border-color: color-mix(in srgb, var(--color-isk-billion) 50%, transparent); }
+
+    @media (max-width: 768px) {
+        .feed-head { display: none; }
+        .feed-row { grid-template-columns: 48px 1fr auto; grid-template-areas: "time ship value" "time loc value" "time vic value"; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .card, .eff-bar span { animation: none; }
+    }
+</style>
