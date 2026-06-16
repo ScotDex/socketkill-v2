@@ -4,7 +4,7 @@ const { a } = Astro.props
 const isNpc = !a.characterID
 const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
 ---
-<li class="atk relative flex items-start gap-2 text-sm overflow-hidden py-1">
+<li class:list={["atk relative flex items-start gap-2 text-sm overflow-hidden py-1", { "atk-fb": a.finalBlow }]}>
     <span class="dmg" style={`width:${a.damagePercent}%`}></span>
 
     <div class="relative w-10 h-10 flex-shrink-0 bg-black/40">
@@ -58,4 +58,10 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
     .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
     .ui { font-family: var(--font-body); }
     @media (prefers-reduced-motion: reduce) { .dmg { animation: none; } }
+
+    .atk-fb {
+    background: color-mix(in srgb, var(--color-isk-billion) 6%, transparent);
+    border-left: 2px solid var(--color-isk-billion);
+    padding-left: 6px;
+}
 </style>

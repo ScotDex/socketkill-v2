@@ -117,8 +117,12 @@ const GROUP_ORDER = ['high', 'mid', 'low', 'rig', 'subsystem', 'drone', 'fighter
 const groups = kill.items?.groups || {}
 const orderedGroups = GROUP_ORDER.filter(g => groups[g]?.length).map(g => ({ key: g, label: GROUP_LABELS[g], items: groups[g] }))
 const attackers = kill.attackers || []
-const visibleAttackers = attackers.slice(0, 5)
-const hiddenAttackers = attackers.slice(5)
+const sortedAttackers = [...attackers].sort((a, b) => {
+    if (a.finalBlow === b.finalBlow) return 0
+    return a.finalBlow ? -1 : 1
+})
+const visibleAttackers = sortedAttackers.slice(0, 5)
+const hiddenAttackers = sortedAttackers.slice(5)
 ---
 
 <Base
