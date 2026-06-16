@@ -54,8 +54,6 @@
     for (const [id, v] of Object.entries(map)) if (names.includes(v.name)) out.push(Number(id))
     return out
   }
-
-  // Live query string — single source of truth for readout + results button
   const queryString = $derived.by(() => {
     const f = $searchFilters
     const src = $filterSource
@@ -78,8 +76,6 @@
 
     return params.toString()
   })
-
-  // Retyping readout: every filter change re-keys the command line
   const reduceMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches

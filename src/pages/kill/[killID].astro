@@ -17,7 +17,6 @@ try {
         headers: { 'User-Agent': incomingUA }
     })
     if (!res.ok) {
-        // backend now 503s bots on cold kills — pass that through, don't mask as 404
         if (res.status === 503) {
             return new Response('Killmail warming up, retry shortly', {
                 status: 503,
@@ -277,7 +276,7 @@ const hiddenAttackers = attackers.slice(5)
                             <div class="ui font-semibold text-white/90 text-sm truncate">
                                 {kill.victim.allianceID
                                     ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
-                                    : (kill.victim.alliance || 'NO ALLIANCE')}
+                                    : (kill.victim.alliance || 'Non Affiliate')}
                             </div>
                         </div>
                     </div>
@@ -303,8 +302,7 @@ const hiddenAttackers = attackers.slice(5)
                         <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
-                        <a href={`https://ws.socketkill.com/api/kill/${id}`} target="_blank" rel="noopener noreferrer" class="act">RAW DATA</a>
-                        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
+                        <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
                 </div>
             </section>

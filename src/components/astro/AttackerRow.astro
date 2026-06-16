@@ -21,7 +21,7 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
             {isNpc
                 ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
                 : <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>}
-            {a.finalBlow && <span class="ml-1 fb">[FB]</span>}
+            {a.finalBlow && <span class="ml-1 fb">[FINAL BLOW]</span>}
         </div>
         {corpKnown && (
             <div class="ui truncate text-[var(--color-text-faint)] text-xs">
