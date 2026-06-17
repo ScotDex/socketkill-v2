@@ -247,8 +247,12 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                         </span>
                                     </div>
                                     <ul class="space-y-1">
-                                        {group.items.map(item => (
-                                            <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors px-1 -mx-1">
+                                        {group.items.map(item => {
+    const accent = item.dropped > 0 && item.destroyed > 0 ? 'var(--color-whale-accent)'
+        : item.dropped > 0 ? 'var(--color-neon-green)'
+        : 'var(--color-isk-billion)'
+    return (
+    <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors pl-2 pr-1 -mx-1 border-l-2" style={`border-color: ${accent}`}>
                                                 <img src={`https://images.evetech.net/types/${item.typeID}/icon?size=32`} class="w-6 h-6 flex-shrink-0" alt="" loading="lazy" />
                                                 <div class="ui flex-1 min-w-0 truncate">
                                                     <a href={externalLink('type', item.typeID)} target="_blank" rel="noopener noreferrer" class="text-[var(--color-text-body)] link">{item.name}</a>
@@ -260,7 +264,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                                 </div>
                                                 <div class="font-mono text-xs tabular-nums text-[var(--color-text-faint)] w-20 text-right flex-shrink-0">{item.formattedValue}</div>
                                             </li>
-                                        ))}
+                                        )})}
                                     </ul>
                                 </div>
                             )
@@ -371,7 +375,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
 <style>
     
-    button.act { appearance: none; font: inherit; cursor: pointer; width: 100%; }
     details summary::-webkit-details-marker { display: none; }
     .card {
         background:
