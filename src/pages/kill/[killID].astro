@@ -328,7 +328,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                     <div class="grid grid-cols-2 gap-1.5 p-3">
                         <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
-                        <button type="button" id="eft-btn" data-eft={eftText} class="act act-primary col-span-2">COPY TO EFT</button>
+                        <button type="button" id="eft-btn" data-eft={eftText} class="act">COPY TO EFT</button>
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
