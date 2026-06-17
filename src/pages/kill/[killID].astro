@@ -47,6 +47,29 @@ function buildTitle(data) {
     return `${data.victim.name} lost ${article(data.victim.ship)} ${data.victim.ship}${valueClause}`
 }
 
+const EFT_FITTED = ['low', 'mid', 'high', 'rig', 'subsystem']
+const EFT_LOOSE  = ['drone', 'fighter', 'cargo']
+
+function buildEft(kill) {
+    const g = kill.items?.groups || {}
+    const ship = kill.victim?.ship || 'Unknown Ship'
+    const clean = it => it.name && it.name !== 'Unknown'   // skip unimportable lines
+    const lines = [`[${ship}, ${ship} - ${kill.killID ?? 'loss'}]`, '']
+
+    for (const slot of EFT_FITTED)
+        for (const it of (g[slot] || []).filter(clean))
+            for (let n = 0; n < (it.quantity || 1); n++) lines.push(it.name)
+
+    const loose = []
+    for (const slot of EFT_LOOSE)
+        for (const it of (g[slot] || []).filter(clean))
+            loose.push(it.quantity > 1 ? `${it.name} x${it.quantity}` : it.name)
+    if (loose.length) lines.push('', ...loose)
+
+    return lines.join('\n')
+}
+const eftText = buildEft(kill)
+
 function buildDescription(data) {
     const victimAffiliation = data.victim.corp || data.victim.alliance
     const victimLabel = victimAffiliation ? `${data.victim.name} of ${victimAffiliation}` : data.victim.name
@@ -305,6 +328,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                     <div class="grid grid-cols-2 gap-1.5 p-3">
                         <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
+                        <button type="button" id="eft-btn" data-eft={eftText} class="act act-primary col-span-2">COPY TO EFT</button>
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
@@ -329,7 +353,25 @@ const hiddenAttackers = sortedAttackers.slice(5)
     </div>
 </Base>
 
+   <script>
+  const btn = document.getElementById('eft-btn')
+  btn?.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(btn.dataset.eft || '') }
+    catch {
+      const ta = document.createElement('textarea')
+      ta.value = btn.dataset.eft || ''; document.body.appendChild(ta)
+      ta.select(); document.execCommand('copy'); ta.remove()
+    }
+    const orig = btn.textContent
+    btn.textContent = 'COPIED ✓'
+    setTimeout(() => { btn.textContent = orig }, 1500)
+  })
+</script>
+
+
 <style>
+    
+    button.act { appearance: none; font: inherit; cursor: pointer; width: 100%; }
     details summary::-webkit-details-marker { display: none; }
     .card {
         background:
@@ -347,6 +389,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
         to   { opacity: 1; transform: none; }
     }
 
+ 
     .card-h {
         font-family: var(--font-body);
         font-size: 10px;
