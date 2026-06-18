@@ -39,6 +39,19 @@
         weaponKeyword: ''
     })
 
+    const PROMO_CODE = '' // swap in when affiliate approved; '' renders nothing
+let codeCopied = $state(false)
+
+async function copyPromo() {
+    try {
+        await navigator.clipboard.writeText(PROMO_CODE)
+        codeCopied = true
+        setTimeout(() => codeCopied = false, 1500)
+    } catch (e) {
+        console.warn('Clipboard write failed:', e)
+    }
+}
+
     const sdeRegionNames = $derived(
         $filterSource.loaded
             ? Object.values($filterSource.regions).map(r => r.name).sort()
@@ -280,6 +293,16 @@
                 </div>
             </section>
 
+            {#if PROMO_CODE}
+<section class="flex flex-col gap-1.5">
+    <span class="lbl">// support the project</span>
+    <button type="button" class="promo" class:copied={codeCopied} onclick={copyPromo}>
+        <span class="promo-meta">use code</span>
+        <span class="promo-code">{codeCopied ? 'copied' : PROMO_CODE}</span>
+    </button>
+</section>
+{/if}
+
 
         </div>
 
@@ -402,4 +425,36 @@
         outline: 1px solid var(--color-neon-green);
         outline-offset: 2px;
     }
+
+    .promo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    background: var(--color-feed-bg);
+    border: 1px dashed var(--color-border-dim);
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: border-color 0.15s, background 0.15s;
+}
+.promo:hover { border-color: var(--color-neon-green); background: #1b212b; }
+.promo:focus-visible { outline: 1px solid var(--color-neon-green); outline-offset: 2px; }
+
+.promo-meta {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-faint);
+}
+.promo-code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--color-neon-green);
+    text-shadow: var(--shadow-phosphor);
+}
+.promo.copied .promo-code { color: var(--color-whale-accent); text-shadow: none; }
 </style>
