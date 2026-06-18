@@ -39,7 +39,7 @@
         weaponKeyword: ''
     })
 
-    const PROMO_CODE = '' // swap in when affiliate approved; '' renders nothing
+    const PROMO_CODE = 'wizard' 
 let codeCopied = $state(false)
 
 async function copyPromo() {
