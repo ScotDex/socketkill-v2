@@ -12,6 +12,11 @@ const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Fronte
 
 let kill = null
 
+const EMOTES = [
+  { key: 'plus1', glyph: '+1' },
+  // { key: 'f', glyph: 'F' },   
+];
+
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
         headers: { 'User-Agent': incomingUA }
@@ -336,6 +341,17 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
+                    <div class="card" style="--card-c: var(--color-neon-green); --d: 330ms">
+  <header class="card-h">// reactions</header>
+  <div id="reaction-bar" data-kill-id={id} class="flex flex-wrap gap-1.5 p-3">
+    {EMOTES.map((e) => (
+      <button type="button" class="react-btn act" data-emote={e.key}>
+        <span>{e.glyph}</span>
+        <span class="count" data-count>0</span>
+      </button>
+    ))}
+  </div>
+</div>
                 </div>
             </section>
         </main>
@@ -370,6 +386,40 @@ const hiddenAttackers = sortedAttackers.slice(5)
     btn.textContent = 'COPIED ✓'
     setTimeout(() => { btn.textContent = orig }, 1500)
   })
+
+  const bar = document.getElementById('reaction-bar');
+if (bar) {
+  const base = `https://ws.socketkill.com/api/reactions/${bar.dataset.killId}`;
+
+  const paint = (reactions) => {
+    bar.querySelectorAll('.react-btn').forEach((btn) => {
+      btn.querySelector('[data-count]').textContent = reactions?.[btn.dataset.emote] ?? 0;
+    });
+  };
+
+  fetch(base)                                  // hydrate counts on load
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => d && paint(d.reactions))
+    .catch(() => {});
+
+  bar.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest('.react-btn');
+    if (!btn || btn.dataset.done) return;
+    btn.dataset.done = '1';                     // lock to stop double-fire
+    try {
+      const res = await fetch(base, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emoteKey: btn.dataset.emote }),
+      });
+      const d = await res.json();
+      paint(d.reactions);
+      btn.classList.add('reacted');
+    } catch {
+      delete btn.dataset.done;                  // network fail → allow retry
+    }
+  });
+}
 </script>
 
 
@@ -404,6 +454,10 @@ const hiddenAttackers = sortedAttackers.slice(5)
         border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
     }
+
+    .react-btn { display: inline-flex; align-items: center; gap: .4rem; }
+.react-btn .count { font-variant-numeric: tabular-nums; opacity: .7; }
+.react-btn.reacted { border-color: var(--color-neon-green); color: var(--color-neon-green); }
 
     .card-f {
         font-family: var(--font-mono);
