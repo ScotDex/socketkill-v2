@@ -13,8 +13,16 @@ const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Fronte
 let kill = null
 
 const EMOTES = [
-  { key: 'plus1', glyph: '+1' },
-  { key: 'f', glyph: 'F' },   
+  { key: 'plus1',     glyph: '+1' },
+  { key: 'f',         glyph: 'F' },
+  { key: 'nice-feed', glyph: 'Nice Feed' },
+  { key: 'o7',        glyph: 'o7' },
+  { key: 'gf',        glyph: 'gf' },
+  { key: '67',        glyph: '67' },
+  { key: 'lol',       glyph: 'lol' },
+  { key: 'RMT',       glyph: 'RMT' },
+  { key: 'FFS',       glyph: 'FFS' },
+  { key: 'RIP',       glyph: 'RIP' },
 ];
 
 try {
@@ -397,7 +405,7 @@ if (bar) {
     });
   };
 
-  fetch(base)                                  // hydrate counts on load
+  fetch(base)                                 
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => d && paint(d.reactions))
     .catch(() => {});
@@ -405,7 +413,7 @@ if (bar) {
   bar.addEventListener('click', async (ev) => {
     const btn = ev.target.closest('.react-btn');
     if (!btn || btn.dataset.done) return;
-    btn.dataset.done = '1';                     // lock to stop double-fire
+    btn.dataset.done = '1';                     
     try {
       const res = await fetch(base, {
         method: 'POST',
@@ -416,7 +424,7 @@ if (bar) {
       paint(d.reactions);
       btn.classList.add('reacted');
     } catch {
-      delete btn.dataset.done;                  // network fail → allow retry
+      delete btn.dataset.done;                 
     }
   });
 }
