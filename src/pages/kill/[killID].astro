@@ -204,10 +204,17 @@ const hiddenAttackers = sortedAttackers.slice(5)
                     </header>
                     <div class="wreck relative overflow-hidden">
                         <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
+                        <div class="hud" aria-hidden="true">
+                            <span class="hud-tag">&#9656; ANALYSING WRECK</span>
+                        </div>
                     </div>
                     <div class="p-3 border-t border-[var(--color-eve-border)]">
                         <div class="ui font-semibold text-white text-lg">{kill.victim.ship}</div>
                         <div class="font-mono font-bold tabular-nums" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5 p-3 pt-0">
+                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
+                        <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
                     </div>
                 </div>
 
@@ -251,18 +258,21 @@ const hiddenAttackers = sortedAttackers.slice(5)
                     <footer class="card-f" style="color: var(--color-isk-billion)"><span class="pulse-dot"></span> status: dead</footer>
                 </div>
 
-                <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
-                    <header class="card-h flex justify-between items-center">
-                        <span>// attackers</span>
-                        <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
-                    </header>
-                    <ul class="p-3 space-y-2"> {visibleAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)}</ul>
-                    {hiddenAttackers.length > 0 && (
-                        <details class="px-3 pb-3">
-                            <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
-                            <ul class="space-y-2 mt-2"> {hiddenAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)} </ul>
-                        </details>
-                    )}
+                <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
+                    <header class="card-h">// social</header>
+                    <div class="grid grid-cols-2 gap-1.5 p-3 pb-2">
+                        <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
+                        <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
+                        <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
+                    </div>
+                    <div id="reaction-bar" data-kill-id={id} class="flex flex-wrap gap-1.5 p-3 pt-3 border-t border-[var(--color-eve-border)]">
+                        {EMOTES.map((e) => (
+                            <button type="button" class="react-btn act" data-emote={e.key}>
+                                <span>{e.glyph}</span>
+                                <span class="count" data-count>0</span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </section>
 
@@ -345,26 +355,18 @@ const hiddenAttackers = sortedAttackers.slice(5)
                     </div>
                 </div>
 
-                <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
-                    <header class="card-h">// actions</header>
-                    <div class="grid grid-cols-2 gap-1.5 p-3">
-                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
-                        <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
-                        <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
-                        <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
-                        <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
-                    </div>
-                    <div class="card" style="--card-c: var(--color-neon-green); --d: 180ms">
-  <header class="card-h">// reactions</header>
-  <div id="reaction-bar" data-kill-id={id} class="flex flex-wrap gap-1.5 p-3">
-    {EMOTES.map((e) => (
-      <button type="button" class="react-btn act" data-emote={e.key}>
-        <span>{e.glyph}</span>
-        <span class="count" data-count>0</span>
-      </button>
-    ))}
-  </div>
-</div>
+                <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// attackers</span>
+                        <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
+                    </header>
+                    <ul class="p-3 space-y-2"> {visibleAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)}</ul>
+                    {hiddenAttackers.length > 0 && (
+                        <details class="px-3 pb-3">
+                            <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
+                            <ul class="space-y-2 mt-2"> {hiddenAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)} </ul>
+                        </details>
+                    )}
                 </div>
             </section>
         </main>
@@ -433,24 +435,6 @@ if (bar) {
     }
   });
 }
-
-const rv = document.getElementById('real-value');
-if (rv) {
-  const isk = Number(rv.dataset.isk) || 0;
-
-  const fmtGbp = (v) =>
-    v >= 1000 ? `£${(v / 1000).toFixed(1)}k`
-    : v >= 10 ? `£${v.toFixed(0)}`
-    : `£${v.toFixed(2)}`;
-
-  fetch('https://ws.socketkill.com/api/plex-rate')
-    .then((r) => (r.ok ? r.json() : null))
-    .then((d) => {
-      if (!d || !d.gbpPerIsk || isk <= 0) return;
-      rv.textContent = `≈ ${fmtGbp(isk * d.gbpPerIsk)}`;
-    })
-    .catch(() => {});
-}
 </script>
 
 
@@ -458,15 +442,28 @@ if (rv) {
     
     details summary::-webkit-details-marker { display: none; }
     .card {
+        position: relative;
         background:
             linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
             var(--color-glass-bg);
         border: 1px solid var(--color-border-dim);
-        box-shadow: var(--shadow-feed);
+        box-shadow:
+            var(--shadow-feed),
+            inset 0 1px 0 color-mix(in srgb, var(--card-c) 22%, transparent),
+            inset 0 -28px 42px -28px rgba(0, 0, 0, 0.6);
         clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
         overflow: hidden;
         animation: card-rise 0.35s ease-out both;
         animation-delay: var(--d, 0ms);
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card:hover {
+        border-color: color-mix(in srgb, var(--card-c) 38%, var(--color-border-dim));
+        box-shadow:
+            var(--shadow-feed),
+            inset 0 1px 0 color-mix(in srgb, var(--card-c) 32%, transparent),
+            inset 0 -28px 42px -28px rgba(0, 0, 0, 0.6),
+            0 10px 28px -16px rgba(0, 0, 0, 0.7);
     }
     @keyframes card-rise {
         from { opacity: 0; transform: translateY(8px); }
@@ -483,6 +480,7 @@ if (rv) {
         color: var(--card-c);
         padding: 0.55rem 0.75rem;
         border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--card-c) 9%, transparent), transparent);
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
     }
 
@@ -584,6 +582,41 @@ if (rv) {
         text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
     }
 
+    /* ── wreck image: HUD targeting overlay on hover ───────────────── */
+    .wreck img { transition: transform 0.5s ease, filter 0.5s ease; }
+    .wreck:hover img { transform: scale(1.05); filter: brightness(1.12) contrast(1.04) saturate(1.12); }
+
+    .hud {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .wreck:hover .hud { opacity: 1; }
+
+    .hud::before, .hud::after {
+        content: '';
+        position: absolute;
+        width: 26px; height: 26px;
+        border: 2px solid var(--card-c);
+        box-shadow: 0 0 10px color-mix(in srgb, var(--card-c) 55%, transparent);
+    }
+    .hud::before { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }   /* top-left bracket */
+    .hud::after  { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }   /* bottom-right bracket */
+
+    .hud-tag {
+        position: absolute;
+        bottom: 12px; left: 14px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        color: var(--card-c);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 60%, transparent);
+        animation: hud-blink 1.2s steps(2) infinite;
+    }
+    @keyframes hud-blink { 50% { opacity: 0.35; } }
+
     .wreck::after {
         content: '';
         position: absolute;
@@ -630,5 +663,7 @@ if (rv) {
     @media (prefers-reduced-motion: reduce) {
         .card, .split-bar span, .dmg { animation: none; }
         .pulse-dot, .wreck:hover::after { animation: none; }
+        .hud-tag { animation: none; }
+        .wreck:hover img { transform: none; }
     }
 </style>
