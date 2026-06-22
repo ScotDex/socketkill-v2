@@ -163,7 +163,6 @@ const topDamageAttacker = attackers.reduce(
 const visibleAttackers = sortedAttackers.slice(0, 5)
 const hiddenAttackers = sortedAttackers.slice(5)
 
-{visibleAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)}
 ---
 
 <Base
@@ -257,15 +256,11 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <span>// attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
                     </header>
-                    <ul class="p-3 space-y-2">
-    {visibleAttackers.map(a => <AttackerRow a={a} />)}
-</ul>
+                    <ul class="p-3 space-y-2"> {visibleAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)}</ul>
                     {hiddenAttackers.length > 0 && (
                         <details class="px-3 pb-3">
                             <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
-                            <ul class="space-y-2 mt-2">
-    {hiddenAttackers.map(a => <AttackerRow a={a} />)}
-</ul>
+                            <ul class="space-y-2 mt-2"> {hiddenAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)} </ul>
                         </details>
                     )}
                 </div>
