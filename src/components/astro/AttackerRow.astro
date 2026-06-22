@@ -3,46 +3,48 @@ import { externalLink } from '../../lib/entity-links.js'
 const { a, topDamage = false } = Astro.props
 const isNpc = !a.characterID
 const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
+const allianceKnown = a.allianceID && a.alliance
+const hasWeapon = a.weaponTypeID && a.weaponTypeID !== a.shipTypeID
 ---
-<li class:list={["atk relative flex items-start gap-2.5 text-sm overflow-hidden py-1.5", { "atk-fb": a.finalBlow }]}>
+<li class:list={["atk relative flex items-start gap-2 text-sm overflow-hidden py-2", { "atk-fb": a.finalBlow, "atk-td": topDamage && !a.finalBlow }]}>
     <span class="dmg" style={`width:${a.damagePercent}%`}></span>
 
     {(a.finalBlow || topDamage) && (
-        <span class="status-gutter relative flex-shrink-0">
-            {a.finalBlow && <span class="badge fb-badge">FINAL BLOW</span>}
-            {topDamage && <span class="badge td-badge">TOP DMG</span>}
+        <span class="rail">
+            {a.finalBlow && <span class="bo-label fb-label">FINAL BLOW</span>}
+            {topDamage && <span class="bo-label td-label">TOP DMG</span>}
         </span>
     )}
 
-    <div class="relative w-12 h-12 flex-shrink-0 bg-black/40">
-        {!isNpc && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=64`} class="w-full h-full" alt="" loading="lazy" />}
-    </div>
-
-    <div class="relative flex-1 min-w-0 flex flex-col gap-0.5">
-        <div class="ui truncate text-white text-sm">
-            {isNpc
-                ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
-                : <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>}
+    <div class="relative flex-1 min-w-0">
+        <div class="flex items-center gap-1.5">
+            <div class="w-12 h-12 flex-shrink-0 bg-black/40">
+                {!isNpc && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=64`} class="w-full h-full" alt="" loading="lazy" />}
+            </div>
+            {corpKnown && <img src={`https://images.evetech.net/corporations/${a.corporationID}/logo?size=32`} class="w-8 h-8 flex-shrink-0" alt="" title={a.corp} loading="lazy" />}
+            {allianceKnown && <img src={`https://images.evetech.net/alliances/${a.allianceID}/logo?size=32`} class="w-8 h-8 flex-shrink-0" alt="" title={a.alliance} loading="lazy" />}
+            {a.shipTypeID && <img src={`https://images.evetech.net/types/${a.shipTypeID}/icon?size=32`} class="w-8 h-8 flex-shrink-0" alt="" title={a.ship} loading="lazy" />}
+            {hasWeapon && <img src={`https://images.evetech.net/types/${a.weaponTypeID}/icon?size=32`} class="w-8 h-8 flex-shrink-0" alt="" title={a.weapon} loading="lazy" />}
         </div>
 
-        {a.ship && (
-            <div class="ui flex items-center gap-1.5 min-w-0 text-[var(--color-text-faint)] text-xs">
-                {a.shipTypeID && <img src={`https://images.evetech.net/types/${a.shipTypeID}/icon?size=32`} class="w-4 h-4 flex-shrink-0" alt="" title={a.ship} loading="lazy" />}
-                {a.weaponTypeID && a.weaponTypeID !== a.shipTypeID && <img src={`https://images.evetech.net/types/${a.weaponTypeID}/icon?size=32`} class="w-4 h-4 flex-shrink-0" alt="" title={a.weapon} loading="lazy" />}
-                <span class="truncate">{a.ship}</span>
+        <div class="mt-1.5 flex flex-col gap-0.5 min-w-0">
+            <div class="ui truncate text-white text-sm">
+                {isNpc
+                    ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
+                    : <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>}
             </div>
-        )}
-
-        {corpKnown && (
-            <div class="ui truncate text-[var(--color-text-faint)] text-xs">
-                <a href={externalLink('corp', a.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{a.corp}</a>
-            </div>
-        )}
-        {a.allianceID && a.alliance && (
-            <div class="ui truncate text-[var(--color-text-faint)] text-xs">
-                <a href={externalLink('alliance', a.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{a.alliance}</a>
-            </div>
-        )}
+            {corpKnown && (
+                <div class="ui truncate text-[var(--color-text-faint)] text-xs">
+                    <a href={externalLink('corp', a.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{a.corp}</a>
+                </div>
+            )}
+            {allianceKnown && (
+                <div class="ui truncate text-[var(--color-text-faint)] text-xs">
+                    <a href={externalLink('alliance', a.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{a.alliance}</a>
+                </div>
+            )}
+            {a.ship && <div class="ui truncate text-[var(--color-text-faint)] text-xs">{a.ship}</div>}
+        </div>
     </div>
 
     <div class="relative font-mono text-xs tabular-nums text-right flex-shrink-0">
@@ -52,6 +54,8 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
 </li>
 
 <style>
+    .atk { padding-left: 20px; border-left: 2px solid transparent; }
+
     .dmg {
         position: absolute; top: 0; bottom: 0; left: 0;
         background: color-mix(in srgb, var(--color-isk-billion) 8%, transparent);
@@ -60,35 +64,42 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
     }
     @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-    .status-gutter {
+    .rail {
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 18px; z-index: 1;
         display: flex; flex-direction: column;
-        justify-content: center; gap: 3px;
-        width: 38px; align-self: stretch;
+        align-items: center; justify-content: center;
+        gap: 8px; pointer-events: none;
     }
-    .badge {
+    .bo-label {
+        writing-mode: vertical-rl; text-orientation: mixed;
         font-family: var(--font-body);
         font-size: 8px; font-weight: 700;
-        line-height: 1.15; letter-spacing: 0.08em;
-        text-transform: uppercase; text-align: center;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        white-space: nowrap;
     }
-    .fb-badge {
+    .fb-label {
         color: var(--color-isk-billion);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 55%, transparent);
     }
-    .td-badge {
+    .td-label {
         color: var(--color-whale-accent);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--color-whale-accent) 45%, transparent);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-whale-accent) 50%, transparent);
+    }
+
+    .atk-fb {
+        background: linear-gradient(90deg, color-mix(in srgb, var(--color-isk-billion) 16%, transparent), transparent 45%);
+        border-left-color: var(--color-isk-billion);
+    }
+    .atk-td {
+        background: linear-gradient(90deg, color-mix(in srgb, var(--color-whale-accent) 14%, transparent), transparent 45%);
+        border-left-color: var(--color-whale-accent);
     }
 
     .link { transition: color 0.15s, text-shadow 0.15s; }
     .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
     .ui { font-family: var(--font-body); }
-
-    .atk-fb {
-        background: color-mix(in srgb, var(--color-isk-billion) 6%, transparent);
-        border-left: 2px solid var(--color-isk-billion);
-        padding-left: 6px;
-    }
 
     @media (prefers-reduced-motion: reduce) { .dmg { animation: none; } }
 </style>
