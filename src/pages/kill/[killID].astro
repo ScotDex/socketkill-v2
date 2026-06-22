@@ -157,8 +157,13 @@ const sortedAttackers = [...attackers].sort((a, b) => {
     if (a.finalBlow === b.finalBlow) return 0
     return a.finalBlow ? -1 : 1
 })
+const topDamageAttacker = attackers.reduce(
+    (top, a) => (a.damage || 0) > (top?.damage || 0) ? a : top, null
+)
 const visibleAttackers = sortedAttackers.slice(0, 5)
 const hiddenAttackers = sortedAttackers.slice(5)
+
+{visibleAttackers.map(a => <AttackerRow a={a} topDamage={a === topDamageAttacker} />)}
 ---
 
 <Base
@@ -331,13 +336,9 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
-                    <header class="card-h">// loot fairy gauge</header>
+                    <header class="card-h">// value</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
                         <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
-                        <div class="row" title="Approx. real-world value via PLEX market rate">
-    <span class="k">IRL VALUE</span>
-    <span id="real-value" data-isk={totalIsk} style="color: var(--color-text-faint)">—</span>
-</div>
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DESTROYED</span><span style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>

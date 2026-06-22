@@ -1,28 +1,38 @@
 ---
 import { externalLink } from '../../lib/entity-links.js'
-const { a } = Astro.props
+const { a, topDamage = false } = Astro.props
 const isNpc = !a.characterID
 const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
 ---
-<li class:list={["atk relative flex items-start gap-2 text-sm overflow-hidden py-1", { "atk-fb": a.finalBlow }]}>
+<li class:list={["atk relative flex items-start gap-2.5 text-sm overflow-hidden py-1.5", { "atk-fb": a.finalBlow }]}>
     <span class="dmg" style={`width:${a.damagePercent}%`}></span>
 
-    <div class="relative w-10 h-10 flex-shrink-0 bg-black/40">
+    {(a.finalBlow || topDamage) && (
+        <span class="status-gutter relative flex-shrink-0">
+            {a.finalBlow && <span class="badge fb-badge">FINAL BLOW</span>}
+            {topDamage && <span class="badge td-badge">TOP DMG</span>}
+        </span>
+    )}
+
+    <div class="relative w-12 h-12 flex-shrink-0 bg-black/40">
         {!isNpc && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=64`} class="w-full h-full" alt="" loading="lazy" />}
     </div>
 
-    <div class="relative flex flex-col gap-0.5 flex-shrink-0">
-        {a.shipTypeID && <img src={`https://images.evetech.net/types/${a.shipTypeID}/icon?size=32`} class="w-5 h-5" alt="" title={a.ship} loading="lazy" />}
-        {a.weaponTypeID && a.weaponTypeID !== a.shipTypeID && <img src={`https://images.evetech.net/types/${a.weaponTypeID}/icon?size=32`} class="w-5 h-5" alt="" title={a.weapon} loading="lazy" />}
-    </div>
-
-    <div class="relative flex-1 min-w-0">
-        <div class="ui truncate text-white text-[13px]">
+    <div class="relative flex-1 min-w-0 flex flex-col gap-0.5">
+        <div class="ui truncate text-white text-sm">
             {isNpc
                 ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
                 : <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>}
-            {a.finalBlow && <span class="ml-1 fb">[FINAL BLOW]</span>}
         </div>
+
+        {a.ship && (
+            <div class="ui flex items-center gap-1.5 min-w-0 text-[var(--color-text-faint)] text-xs">
+                {a.shipTypeID && <img src={`https://images.evetech.net/types/${a.shipTypeID}/icon?size=32`} class="w-4 h-4 flex-shrink-0" alt="" title={a.ship} loading="lazy" />}
+                {a.weaponTypeID && a.weaponTypeID !== a.shipTypeID && <img src={`https://images.evetech.net/types/${a.weaponTypeID}/icon?size=32`} class="w-4 h-4 flex-shrink-0" alt="" title={a.weapon} loading="lazy" />}
+                <span class="truncate">{a.ship}</span>
+            </div>
+        )}
+
         {corpKnown && (
             <div class="ui truncate text-[var(--color-text-faint)] text-xs">
                 <a href={externalLink('corp', a.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{a.corp}</a>
@@ -49,19 +59,36 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
         transform-origin: left;
     }
     @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-    .fb {
-        font-family: var(--font-mono); font-size: 10px;
+
+    .status-gutter {
+        display: flex; flex-direction: column;
+        justify-content: center; gap: 3px;
+        width: 38px; align-self: stretch;
+    }
+    .badge {
+        font-family: var(--font-body);
+        font-size: 8px; font-weight: 700;
+        line-height: 1.15; letter-spacing: 0.08em;
+        text-transform: uppercase; text-align: center;
+    }
+    .fb-badge {
         color: var(--color-isk-billion);
         text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
     }
+    .td-badge {
+        color: var(--color-whale-accent);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-whale-accent) 45%, transparent);
+    }
+
     .link { transition: color 0.15s, text-shadow 0.15s; }
     .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
     .ui { font-family: var(--font-body); }
-    @media (prefers-reduced-motion: reduce) { .dmg { animation: none; } }
 
     .atk-fb {
-    background: color-mix(in srgb, var(--color-isk-billion) 6%, transparent);
-    border-left: 2px solid var(--color-isk-billion);
-    padding-left: 6px;
-}
+        background: color-mix(in srgb, var(--color-isk-billion) 6%, transparent);
+        border-left: 2px solid var(--color-isk-billion);
+        padding-left: 6px;
+    }
+
+    @media (prefers-reduced-motion: reduce) { .dmg { animation: none; } }
 </style>
