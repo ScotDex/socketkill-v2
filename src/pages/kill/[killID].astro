@@ -333,7 +333,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
                     <header class="card-h">// loot fairy gauge</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
-                        <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>1
+                        <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DESTROYED</span><span style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
@@ -433,25 +433,6 @@ if (bar) {
     }
   });
 }
-
-const rv = document.getElementById('real-value');
-if (rv) {
-  const isk = Number(rv.dataset.isk) || 0;
-
-  const fmtGbp = (v) =>
-    v >= 1000 ? `£${(v / 1000).toFixed(1)}k`
-    : v >= 10 ? `£${v.toFixed(0)}`
-    : `£${v.toFixed(2)}`;
-
-  fetch('https://ws.socketkill.com/api/plex-rate')
-    .then((r) => (r.ok ? r.json() : null))
-    .then((d) => {
-      if (!d || !d.gbpPerIsk || isk <= 0) return;
-      rv.textContent = `≈ ${fmtGbp(isk * d.gbpPerIsk)}`;
-    })
-    .catch(() => {});
-}
-</script>
 
 
 <style>
