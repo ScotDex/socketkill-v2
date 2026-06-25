@@ -21,7 +21,7 @@
     "astro-robots-txt": "^1.0.0",
     "fuse.js": "^7.4.2",
     "socket.io-client": "^4.8.3",
-    "svelte": "^5.56.3",
+    "svelte": "^5.56.4",
     "tailwindcss": "^4.3.0",
     "three": "^0.184.0",
     "typescript": "^6.0.3",
