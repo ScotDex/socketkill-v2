@@ -39,7 +39,7 @@
         weaponKeyword: ''
     })
 
-    const PROMO_CODE = 'wizard' 
+    const PROMO_CODE = 'socketkill' 
 let codeCopied = $state(false)
 
 async function copyPromo() {
@@ -295,7 +295,7 @@ async function copyPromo() {
 
             {#if PROMO_CODE}
 <section class="flex flex-col gap-1.5">
-    <span class="lbl">// support the project</span>
+    <span class="lbl">// Support the Site</span>
     <button type="button" class="promo" class:copied={codeCopied} onclick={copyPromo}>
         <span class="promo-meta">use code</span>
         <span class="promo-code">{codeCopied ? 'copied' : PROMO_CODE}</span>
