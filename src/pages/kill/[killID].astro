@@ -12,6 +12,19 @@ const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Fronte
 
 let kill = null
 
+const EMOTES = [
+  { "key": "plus1", "src": "https://edge.socketkill.com/1.0.webp" },
+  { key: 'f',         glyph: 'F' },
+  { key: 'nice-feed', glyph: 'Nice Feed' },
+  { key: 'o7',        glyph: 'o7' },
+  { key: 'gf',        glyph: 'gf' },
+  { key: '67',        glyph: '67' },
+  { key: 'lol',       glyph: 'lol' },
+  { key: 'RMT',       glyph: 'RMT' },
+  { key: 'FFS',       glyph: 'FFS' },
+  { key: 'RIP',       glyph: 'RIP' },
+];
+
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
         headers: { 'User-Agent': incomingUA }
@@ -185,18 +198,12 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <span>// target destroyed</span>
                         <span class="tag">WRECK SCANNED</span>
                     </header>
-                    <div class="wreck">
+                    <div class="wreck relative overflow-hidden">
                         <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
                     </div>
-                    <div class="p-3 border-t border-[var(--color-eve-border)] space-y-3">
-                        <div>
-                            <div class="ui font-semibold text-white text-lg">{kill.victim.ship}</div>
-                            <div class="font-mono font-bold tabular-nums" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-1.5">
-                            <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
-                            <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
-                        </div>
+                    <div class="p-3 border-t border-[var(--color-eve-border)]">
+                        <div class="ui font-semibold text-white text-lg">{kill.victim.ship}</div>
+                        <div class="font-mono font-bold tabular-nums" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</div>
                     </div>
                 </div>
 
@@ -238,6 +245,24 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         </div>
                     </div>
                     <footer class="card-f" style="color: var(--color-isk-billion)"><span class="pulse-dot"></span> status: dead</footer>
+                </div>
+
+                <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
+                    <header class="card-h flex justify-between items-center">
+                        <span>// attackers</span>
+                        <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
+                    </header>
+                    <ul class="p-3 space-y-2">
+    {visibleAttackers.map(a => <AttackerRow a={a} />)}
+</ul>
+                    {hiddenAttackers.length > 0 && (
+                        <details class="px-3 pb-3">
+                            <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
+                            <ul class="space-y-2 mt-2">
+    {hiddenAttackers.map(a => <AttackerRow a={a} />)}
+</ul>
+                        </details>
+                    )}
                 </div>
             </section>
 
@@ -323,28 +348,23 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
                     <header class="card-h">// actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
+                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
+                        <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
-                </div>
-
-                <div class="card" style="--card-c: var(--color-isk-billion); --d: 180ms">
-                    <header class="card-h flex justify-between items-center">
-                        <span>// attackers</span>
-                        <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
-                    </header>
-                    <ul class="p-3 space-y-2">
-    {visibleAttackers.map(a => <AttackerRow a={a} />)}
-</ul>
-                    {hiddenAttackers.length > 0 && (
-                        <details class="px-3 pb-3">
-                            <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
-                            <ul class="space-y-2 mt-2">
-    {hiddenAttackers.map(a => <AttackerRow a={a} />)}
-</ul>
-                        </details>
-                    )}
+                    <div class="card" style="--card-c: var(--color-neon-green); --d: 180ms">
+  <header class="card-h">// reactions</header>
+  <div id="reaction-bar" data-kill-id={id} class="flex flex-wrap gap-1.5 p-3">
+    {EMOTES.map((e) => (
+      <button type="button" class="react-btn act" data-emote={e.key}>
+        <span>{e.glyph}</span>
+        <span class="count" data-count>0</span>
+      </button>
+    ))}
+  </div>
+</div>
                 </div>
             </section>
         </main>
@@ -379,6 +399,41 @@ const hiddenAttackers = sortedAttackers.slice(5)
     btn.textContent = 'COPIED ✓'
     setTimeout(() => { btn.textContent = orig }, 1500)
   })
+
+  const bar = document.getElementById('reaction-bar');
+if (bar) {
+  const base = `https://ws.socketkill.com/api/reactions/${bar.dataset.killId}`;
+
+  const paint = (reactions) => {
+    bar.querySelectorAll('.react-btn').forEach((btn) => {
+      btn.querySelector('[data-count]').textContent = reactions?.[btn.dataset.emote] ?? 0;
+    });
+  };
+
+  fetch(base)                                 
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => d && paint(d.reactions))
+    .catch(() => {});
+
+  bar.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest('.react-btn');
+    if (!btn || btn.dataset.done) return;
+    btn.dataset.done = '1';                     
+    try {
+      const res = await fetch(base, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emoteKey: btn.dataset.emote }),
+      });
+      const d = await res.json();
+      paint(d.reactions);
+      btn.classList.add('reacted');
+    } catch {
+      delete btn.dataset.done;                 
+    }
+  });
+}
+
 </script>
 
 <style>
@@ -412,6 +467,10 @@ const hiddenAttackers = sortedAttackers.slice(5)
         border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
     }
+
+    .react-btn { display: inline-flex; align-items: center; gap: .4rem; }
+.react-btn .count { font-variant-numeric: tabular-nums; opacity: .7; }
+.react-btn.reacted { border-color: var(--color-neon-green); color: var(--color-neon-green); }
 
     .card-f {
         font-family: var(--font-mono);
@@ -507,6 +566,19 @@ const hiddenAttackers = sortedAttackers.slice(5)
         text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
     }
 
+    .wreck::after {
+        content: '';
+        position: absolute;
+        left: 0; right: 0;
+        height: 2px;
+        top: -2px;
+        background: color-mix(in srgb, var(--card-c) 60%, transparent);
+        box-shadow: 0 0 12px var(--card-c);
+        opacity: 0;
+    }
+    .wreck:hover::after { animation: scan 1.2s linear infinite; opacity: 1; }
+    @keyframes scan { from { top: -2px; } to { top: 100%; } }
+
     .pulse-dot {
         display: inline-block;
         width: 6px; height: 6px;
@@ -539,6 +611,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
     @media (prefers-reduced-motion: reduce) {
         .card, .split-bar span, .dmg { animation: none; }
-        .pulse-dot { animation: none; }
+        .pulse-dot, .wreck:hover::after { animation: none; }
     }
 </style>
