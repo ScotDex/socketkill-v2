@@ -12,19 +12,6 @@ const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Fronte
 
 let kill = null
 
-const EMOTES = [
-  { "key": "plus1", "src": "https://edge.socketkill.com/1.0.webp" },
-  { key: 'f',         glyph: 'F' },
-  { key: 'nice-feed', glyph: 'Nice Feed' },
-  { key: 'o7',        glyph: 'o7' },
-  { key: 'gf',        glyph: 'gf' },
-  { key: '67',        glyph: '67' },
-  { key: 'lol',       glyph: 'lol' },
-  { key: 'RMT',       glyph: 'RMT' },
-  { key: 'FFS',       glyph: 'FFS' },
-  { key: 'RIP',       glyph: 'RIP' },
-];
-
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
         headers: { 'User-Agent': incomingUA }
@@ -198,7 +185,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <span>// target destroyed</span>
                         <span class="tag">WRECK SCANNED</span>
                     </header>
-                    <div class="wreck relative overflow-hidden">
+                    <div class="wreck">
                         <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
                     </div>
                     <div class="p-3 border-t border-[var(--color-eve-border)]">
@@ -267,17 +254,24 @@ const hiddenAttackers = sortedAttackers.slice(5)
             </section>
 
             <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
-                <header class="card-h">// killmail details</header>
+                <header class="card-h flex justify-between items-center">
+                    <span>// killmail details</span>
+                    <select id="loot-filter" class="loot-filter" aria-label="Filter items">
+                        <option value="all">ALL</option>
+                        <option value="dropped">DROPPED</option>
+                        <option value="destroyed">DESTROYED</option>
+                    </select>
+                </header>
 
                 {orderedGroups.length === 0 ? (
                     <div class="ui p-4 text-sm text-[var(--color-text-faint)] italic">&gt; NO ITEMS</div>
                 ) : (
-                    <div class="p-4 space-y-5">
+                    <div id="manifest" class="p-4 space-y-5">
                         {orderedGroups.map(group => {
                             const totalDropped = group.items.reduce((sum, i) => sum + (i.dropped || 0), 0)
                             const totalDestroyed = group.items.reduce((sum, i) => sum + (i.destroyed || 0), 0)
                             return (
-                                <div>
+                                <div class="item-group" data-group>
                                     <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] pb-1 mb-2">
                                         <span class="grp">{group.label}</span>
                                         <span class="font-mono text-[10px] tabular-nums text-[var(--color-text-faint)]">
@@ -290,7 +284,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
         : item.dropped > 0 ? 'var(--color-neon-green)'
         : 'var(--color-isk-billion)'
     return (
-    <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors pl-2 pr-1 -mx-1 border-l-2" style={`border-color: ${accent}`}>
+    <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors pl-2 pr-1 -mx-1 border-l-2" style={`border-color: ${accent}`} data-row data-dropped={item.dropped > 0 ? '1' : undefined} data-destroyed={item.destroyed > 0 ? '1' : undefined}>
                                                 <img
     src={`https://images.evetech.net/types/${item.typeID}/icon?size=32`}
     data-bp={`https://images.evetech.net/types/${item.typeID}/bp?size=32`}
@@ -311,6 +305,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                 </div>
                             )
                         })}
+                        <div id="manifest-empty" class="ui text-sm text-[var(--color-text-faint)] italic" hidden>&gt; NO MATCHING ITEMS</div>
                     </div>
                 )}
             </section>
@@ -354,17 +349,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
                     </div>
-                    <div class="card" style="--card-c: var(--color-neon-green); --d: 180ms">
-  <header class="card-h">// reactions</header>
-  <div id="reaction-bar" data-kill-id={id} class="flex flex-wrap gap-1.5 p-3">
-    {EMOTES.map((e) => (
-      <button type="button" class="react-btn act" data-emote={e.key}>
-        <span>{e.glyph}</span>
-        <span class="count" data-count>0</span>
-      </button>
-    ))}
-  </div>
-</div>
                 </div>
             </section>
         </main>
@@ -400,44 +384,37 @@ const hiddenAttackers = sortedAttackers.slice(5)
     setTimeout(() => { btn.textContent = orig }, 1500)
   })
 
-  const bar = document.getElementById('reaction-bar');
-if (bar) {
-  const base = `https://ws.socketkill.com/api/reactions/${bar.dataset.killId}`;
+  const filter = document.getElementById('loot-filter')
+  const manifest = document.getElementById('manifest')
+  if (filter && manifest) {
+    const groups = [...manifest.querySelectorAll('[data-group]')]
+    const empty = document.getElementById('manifest-empty')
 
-  const paint = (reactions) => {
-    bar.querySelectorAll('.react-btn').forEach((btn) => {
-      btn.querySelector('[data-count]').textContent = reactions?.[btn.dataset.emote] ?? 0;
-    });
-  };
-
-  fetch(base)                                 
-    .then((r) => (r.ok ? r.json() : null))
-    .then((d) => d && paint(d.reactions))
-    .catch(() => {});
-
-  bar.addEventListener('click', async (ev) => {
-    const btn = ev.target.closest('.react-btn');
-    if (!btn || btn.dataset.done) return;
-    btn.dataset.done = '1';                     
-    try {
-      const res = await fetch(base, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emoteKey: btn.dataset.emote }),
-      });
-      const d = await res.json();
-      paint(d.reactions);
-      btn.classList.add('reacted');
-    } catch {
-      delete btn.dataset.done;                 
+    const apply = (mode) => {
+      let anyVisible = false
+      for (const g of groups) {
+        let groupHas = false
+        for (const li of g.querySelectorAll('[data-row]')) {
+          const isDropped = li.dataset.dropped === '1'
+          const isDestroyed = li.dataset.destroyed === '1'
+          const show = mode === 'all'
+            || (mode === 'dropped' && isDropped)
+            || (mode === 'destroyed' && isDestroyed)
+          li.hidden = !show
+          if (show) groupHas = true
+        }
+        g.hidden = !groupHas
+        if (groupHas) anyVisible = true
+      }
+      if (empty) empty.hidden = anyVisible
     }
-  });
-}
 
+    filter.addEventListener('change', () => apply(filter.value))
+  }
 </script>
 
 <style>
-    
+
     details summary::-webkit-details-marker { display: none; }
     .card {
         background:
@@ -455,7 +432,7 @@ if (bar) {
         to   { opacity: 1; transform: none; }
     }
 
- 
+
     .card-h {
         font-family: var(--font-body);
         font-size: 10px;
@@ -468,9 +445,27 @@ if (bar) {
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
     }
 
-    .react-btn { display: inline-flex; align-items: center; gap: .4rem; }
-.react-btn .count { font-variant-numeric: tabular-nums; opacity: .7; }
-.react-btn.reacted { border-color: var(--color-neon-green); color: var(--color-neon-green); }
+    .loot-filter {
+        font-family: var(--font-body);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        color: var(--color-text-faint);
+        background: var(--color-feed-bg);
+        border: 1px solid var(--color-eve-border);
+        border-radius: 0;
+        padding: 0.2rem 1.4rem 0.2rem 0.5rem;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: linear-gradient(45deg, transparent 50%, var(--color-text-faint) 50%), linear-gradient(135deg, var(--color-text-faint) 50%, transparent 50%);
+        background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%;
+        background-size: 5px 5px, 5px 5px;
+        background-repeat: no-repeat;
+        transition: color 0.15s, border-color 0.15s;
+    }
+    .loot-filter:hover { color: var(--color-neon-green); border-color: var(--color-neon-green); }
+    .loot-filter option { background: var(--color-feed-bg); color: var(--color-text-body); }
 
     .card-f {
         font-family: var(--font-mono);
@@ -566,19 +561,6 @@ if (bar) {
         text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
     }
 
-    .wreck::after {
-        content: '';
-        position: absolute;
-        left: 0; right: 0;
-        height: 2px;
-        top: -2px;
-        background: color-mix(in srgb, var(--card-c) 60%, transparent);
-        box-shadow: 0 0 12px var(--card-c);
-        opacity: 0;
-    }
-    .wreck:hover::after { animation: scan 1.2s linear infinite; opacity: 1; }
-    @keyframes scan { from { top: -2px; } to { top: 100%; } }
-
     .pulse-dot {
         display: inline-block;
         width: 6px; height: 6px;
@@ -611,6 +593,6 @@ if (bar) {
 
     @media (prefers-reduced-motion: reduce) {
         .card, .split-bar span, .dmg { animation: none; }
-        .pulse-dot, .wreck:hover::after { animation: none; }
+        .pulse-dot { animation: none; }
     }
 </style>
