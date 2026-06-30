@@ -208,7 +208,7 @@ async function copyPromo() {
         <div class="flex flex-col gap-6 p-3 pt-4">
 
             <section class="flex flex-col gap-1.5">
-                <span class="lbl">// value threshold <span class="lbl-unit">isk</span></span>
+                <span class="lbl">value threshold <span class="lbl-unit">isk</span></span>
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
                     {#each valuePresets as preset}
                         <button type="button" class="seg" class:on={filters.minValue === preset.value}
@@ -221,7 +221,7 @@ async function copyPromo() {
             </section>
 
             <section class="flex flex-col gap-1.5">
-                <span class="lbl">// sec status</span>
+                <span class="lbl">sec status</span>
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
                     {#each secBands as band}
                         <button type="button" class="seg" class:on={filters.bands.includes(band.value)}
@@ -270,7 +270,7 @@ async function copyPromo() {
             <WeaponKeywordFacet bind:keyword={filters.weaponKeyword} />
 
             <section class="flex flex-col gap-1.5">
-                <span class="lbl">// network</span>
+                <span class="lbl">network</span>
                 <div class="flex gap-2">
                     <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener noreferrer"
                        class="icon-link" title="Discord" aria-label="Join the Discord">
@@ -295,7 +295,7 @@ async function copyPromo() {
 
             {#if PROMO_CODE}
 <section class="flex flex-col gap-1.5">
-    <span class="lbl">// Support the Site</span>
+    <span class="lbl">Support the Site</span>
     <button type="button" class="promo" class:copied={codeCopied} onclick={copyPromo}>
         <span class="promo-meta">use code</span>
         <span class="promo-code">{codeCopied ? 'copied' : PROMO_CODE}</span>

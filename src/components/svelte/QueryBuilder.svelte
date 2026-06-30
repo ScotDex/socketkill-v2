@@ -108,7 +108,7 @@
   <div class="flex flex-col gap-6 p-3 pt-4">
 
     <section class="flex flex-col gap-1.5">
-      <span class="lbl">// sec status</span>
+      <span class="lbl">sec status</span>
       <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
         {#each SEC_BANDS as band}
           <button type="button" class="seg" class:on={$searchFilters.space.includes(band.value)}
@@ -120,7 +120,7 @@
     </section>
 
     <section class="flex flex-col gap-1.5">
-      <span class="lbl">// value threshold <span class="lbl-unit">isk</span></span>
+      <span class="lbl">value threshold <span class="lbl-unit">isk</span></span>
       <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
         {#each VALUE_PRESETS as p}
           <button type="button" class="seg" class:on={($searchFilters.minIsk ?? null) === p.value}
@@ -136,7 +136,7 @@
     <ChipFacet label="REGION"       bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION" maxItems={3} />
 
     <section class="flex flex-col gap-1.5">
-      <span class="lbl">// attackers</span>
+      <span class="lbl">attackers</span>
       <div class="flex items-end gap-3">
         <input class="field" type="number" min="0" placeholder="MIN"
           value={$searchFilters.minAttackers ?? ''} oninput={(e) => setNum('minAttackers', e)} />
