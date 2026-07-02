@@ -191,7 +191,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
             <section class="max-w-7xl mx-auto px-4 pt-4 relative z-10 hidden md:block">
                 <div class="card fit-panel" style="--card-c: var(--color-terminal-blue); --d: 30ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>// fit analysis</span>
+                        <span>fit analysis</span>
                         <div class="flex items-center gap-3">
                             <a href={fitEditorUrl} target="_blank" rel="noopener noreferrer" class="tag link">OPEN IN EDITOR</a>
                             <button type="button" id="fit-toggle" class="tag link" aria-expanded="false" aria-controls="fit-body">[ EXPAND ]</button>
@@ -219,7 +219,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                     <header class="card-h flex justify-between items-center">
-                        <span>// target destroyed</span>
+                        <span>target destroyed</span>
                         <span class="tag">WRECK SCANNED</span>
                     </header>
                     <div class="wreck">
@@ -233,7 +233,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>// {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
+                        <span> {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
                     <div class="p-3 space-y-3">
@@ -273,7 +273,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                 <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>// attackers</span>
+                        <span>attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
                     </header>
                     <ul class="p-3 space-y-2">
@@ -292,7 +292,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
                 <header class="card-h flex justify-between items-center">
-                    <span>// killmail details</span>
+                    <span>killmail details</span>
                     <select id="loot-filter" class="loot-filter" aria-label="Filter items">
                         <option value="all">ALL</option>
                         <option value="dropped">DROPPED</option>
@@ -349,7 +349,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
-                    <header class="card-h">// location data</header>
+                    <header class="card-h">location data</header>
                     <div class="p-3 space-y-2 text-sm font-mono">
                         <div class="row"><span class="k">SYSTEM</span>
                             <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
@@ -363,7 +363,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
-                    <header class="card-h">// loot fairy gauge</header>
+                    <header class="card-h">loot fairy gauge</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
                         <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
@@ -378,7 +378,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
-                    <header class="card-h">// actions</header>
+                    <header class="card-h">actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
                         <button type="button" id="fit-jump" data-editor-url={fitEditorUrl} class="act act-primary">VIEW FIT</button>
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
