@@ -194,10 +194,10 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <span>// fit analysis</span>
                         <div class="flex items-center gap-3">
                             <a href={fitEditorUrl} target="_blank" rel="noopener noreferrer" class="tag link">OPEN IN EDITOR</a>
-                            <button type="button" id="fit-toggle" class="tag link" aria-expanded="true" aria-controls="fit-body">[ COLLAPSE ]</button>
+                            <button type="button" id="fit-toggle" class="tag link" aria-expanded="false" aria-controls="fit-body">[ EXPAND ]</button>
                         </div>
                     </header>
-                    <div id="fit-body" class="fit-body">
+                    <div id="fit-body" class="fit-body" hidden>
                         <iframe
                             id="fit-frame"
                             title={`Fit preview: ${kill.victim.ship}`}
@@ -205,7 +205,12 @@ const hiddenAttackers = sortedAttackers.slice(5)
                             loading="lazy"
                         ></iframe>
                     </div>
-                    <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; simulated via eveship.fit — all skills v</footer>
+                    <div id="fit-idle" class="fit-idle">
+                        <button type="button" id="fit-init" class="act act-primary fit-init-btn">
+                            &gt; INITIALIZE FIT PREVIEW
+                        </button>
+                        <span class="tag">SIMULATED VIA EVESHIP.FIT — ALL SKILLS V</span>
+                    </div>
                 </div>
             </section>
         )}
@@ -445,24 +450,22 @@ const hiddenAttackers = sortedAttackers.slice(5)
   }
 
   // ── fit preview panel ──────────────────────────────────────────────
+  const fitInit = document.getElementById('fit-init')
   const fitToggle = document.getElementById('fit-toggle')
   const fitBody = document.getElementById('fit-body')
+  const fitIdle = document.getElementById('fit-idle')
   const fitFrame = document.getElementById('fit-frame')
 
   const mountFit = () => {
+    // EAGER-LOAD SWITCH: to load on page view instead, call mountFit()
+    // unconditionally here (outside the click handlers) and delete fitIdle.
     if (fitFrame && !fitFrame.src) fitFrame.src = fitFrame.dataset.src
   }
-
-  // Eager mount, desktop only. The panel is display:none below md, but a
-  // hidden iframe with a src still downloads — so gate on viewport width,
-  // not CSS. 768px = Tailwind md breakpoint.
-  const fitDesktop = window.matchMedia('(min-width: 768px)')
-  if (fitDesktop.matches) mountFit()
-  fitDesktop.addEventListener?.('change', (e) => { if (e.matches) mountFit() })
 
   const openFit = () => {
     mountFit()
     if (fitBody) fitBody.hidden = false
+    if (fitIdle) fitIdle.hidden = true
     if (fitToggle) {
       fitToggle.textContent = '[ COLLAPSE ]'
       fitToggle.setAttribute('aria-expanded', 'true')
@@ -471,12 +474,14 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
   const closeFit = () => {
     if (fitBody) fitBody.hidden = true
+    if (fitIdle) fitIdle.hidden = false
     if (fitToggle) {
       fitToggle.textContent = '[ EXPAND ]'
       fitToggle.setAttribute('aria-expanded', 'false')
     }
   }
 
+  fitInit?.addEventListener('click', openFit)
   fitToggle?.addEventListener('click', () => {
     const isOpen = fitBody && !fitBody.hidden
     isOpen ? closeFit() : openFit()
@@ -536,6 +541,24 @@ const hiddenAttackers = sortedAttackers.slice(5)
         height: 100%;
         border: 0;
         background: #000;
+    }
+    .fit-idle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1.5rem 1rem;
+    }
+    .fit-idle[hidden] { display: none; }
+    .fit-init-btn {
+        border: 1px solid color-mix(in srgb, var(--color-terminal-blue) 35%, transparent);
+        padding: 0.55rem 1.4rem;
+        color: var(--color-terminal-blue);
+    }
+    .fit-init-btn:hover {
+        border-color: var(--color-terminal-blue);
+        color: var(--color-terminal-blue);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--color-terminal-blue) 50%, transparent);
     }
 
     .loot-filter {
