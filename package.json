@@ -25,7 +25,7 @@
     "tailwindcss": "^4.3.0",
     "three": "^0.184.0",
     "typescript": "^6.0.3",
-    "wrangler": "^4.104.0"
+    "wrangler": "^4.106.0"
   },
   "overrides": {
     "vite": "^7"
