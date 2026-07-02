@@ -95,6 +95,14 @@ const image = shipTypeID
     : 'https://edge.socketkill.com/socket-preview-v2.png'
 const canonicalUrl = `https://socketkill.com/kill/${id}`
 
+// eveship.fit — preview is the trimmed embed view, editor is the full site
+const fitPreviewUrl = kill.killmailHash
+    ? `https://eveship.fit/preview?fit=killmail:${id}/${kill.killmailHash}`
+    : null
+const fitEditorUrl = kill.killmailHash
+    ? `https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`
+    : null
+
 const bgStyle = shipTypeID
     ? `background-image: linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)), url(https://api.socketkill.com/kills); background-size: cover; background-position: center; background-attachment: fixed;`
     : ''
@@ -343,7 +351,14 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
                     <header class="card-h">// actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
-                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
+                        {fitPreviewUrl ? (
+                            <button type="button" id="fit-btn"
+                                data-fit-url={fitPreviewUrl}
+                                data-editor-url={fitEditorUrl}
+                                class="act act-primary">VIEW FIT</button>
+                        ) : (
+                            <span class="act" style="opacity:0.4; cursor:default">VIEW FIT</span>
+                        )}
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
                         <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
@@ -368,6 +383,24 @@ const hiddenAttackers = sortedAttackers.slice(5)
             </div>
         </footer>
     </div>
+
+    {fitPreviewUrl && (
+        <dialog id="fit-modal" class="fit-modal">
+            <header class="card-h flex justify-between items-center" style="--card-c: var(--color-terminal-blue)">
+                <span>// fit analysis</span>
+                <div class="flex items-center gap-3">
+                    <a href={fitEditorUrl} target="_blank" rel="noopener noreferrer" class="tag link">OPEN IN EDITOR</a>
+                    <button type="button" id="fit-close" class="tag link" aria-label="Close fit preview">[X]</button>
+                </div>
+            </header>
+            <iframe
+                id="fit-frame"
+                title={`Fit preview: ${kill.victim.ship}`}
+                data-src={fitPreviewUrl}
+            ></iframe>
+            <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; simulated via eveship.fit — all skills v</footer>
+        </dialog>
+    )}
 </Base>
 
    <script>
@@ -411,6 +444,33 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
     filter.addEventListener('change', () => apply(filter.value))
   }
+
+  // ── fit preview modal ──────────────────────────────────────────────
+  const fitBtn = document.getElementById('fit-btn')
+  const fitModal = document.getElementById('fit-modal')
+  const fitFrame = document.getElementById('fit-frame')
+  const fitClose = document.getElementById('fit-close')
+
+  fitBtn?.addEventListener('click', () => {
+    // Mobile fallback: their preview is fixed-width desktop content, so
+    // below Tailwind's md breakpoint open the full editor instead.
+    if (!window.matchMedia('(min-width: 768px)').matches) {
+      window.open(fitBtn.dataset.editorUrl, '_blank', 'noopener,noreferrer')
+      return
+    }
+    // Lazy mount: iframe has no src until first open, so eveship.fit's
+    // engine and data are only ever fetched on request. Reopens are free.
+    if (fitFrame && !fitFrame.src) fitFrame.src = fitFrame.dataset.src
+    fitModal?.showModal()
+  })
+
+  fitClose?.addEventListener('click', () => fitModal?.close())
+
+  // Clicking the dimmed backdrop closes. Clicks on the modal's children
+  // target those children; only a backdrop click targets the dialog itself.
+  fitModal?.addEventListener('click', (e) => {
+    if (e.target === fitModal) fitModal.close()
+  })
 </script>
 
 <style>
@@ -443,6 +503,34 @@ const hiddenAttackers = sortedAttackers.slice(5)
         padding: 0.55rem 0.75rem;
         border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+    }
+
+    /* ── fit preview modal ─────────────────────────────────────────── */
+    .fit-modal {
+        /* Sized to eveship.fit's fixed preview layout (~1150 x ~800px)
+           so the frame never scrolls on a normal desktop viewport. */
+        width: min(94vw, 1220px);
+        height: min(92vh, 860px);
+        padding: 0;
+        background: var(--color-glass-bg);
+        border: 1px solid var(--color-border-dim);
+        clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+        display: flex;
+        flex-direction: column;
+    }
+    /* dialog[open] uses our flex layout; when closed, stay hidden.
+       Without this line the display:flex above would force the closed
+       dialog visible on page load. */
+    .fit-modal:not([open]) { display: none; }
+    .fit-modal::backdrop {
+        background: rgba(10, 12, 16, 0.82);
+        backdrop-filter: blur(2px);
+    }
+    #fit-frame {
+        flex: 1;
+        width: 100%;
+        border: 0;
+        background: #000;
     }
 
     .loot-filter {
