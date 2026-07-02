@@ -95,14 +95,6 @@ const image = shipTypeID
     : 'https://edge.socketkill.com/socket-preview-v2.png'
 const canonicalUrl = `https://socketkill.com/kill/${id}`
 
-// eveship.fit integration — preview = trimmed embed view, editor = full site
-const fitPreviewUrl = kill.killmailHash
-    ? `https://eveship.fit/preview?fit=killmail:${id}/${kill.killmailHash}`
-    : null
-const fitEditorUrl = kill.killmailHash
-    ? `https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`
-    : null
-
 const bgStyle = shipTypeID
     ? `background-image: linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)), url(https://api.socketkill.com/kills); background-size: cover; background-position: center; background-attachment: fixed;`
     : ''
@@ -186,40 +178,11 @@ const hiddenAttackers = sortedAttackers.slice(5)
         <h1 class="kill-headline">{title}</h1>
         <p class="kill-sub">{kill.system.name} // {kill.system.region} -  {killTime}</p>
         </header>
-
-        {fitPreviewUrl && (
-            <section class="max-w-7xl mx-auto px-4 pt-4 relative z-10 hidden md:block">
-                <div class="card fit-panel" style="--card-c: var(--color-terminal-blue); --d: 30ms">
-                    <header class="card-h flex justify-between items-center">
-                        <span>fit analysis</span>
-                        <div class="flex items-center gap-3">
-                            <a href={fitEditorUrl} target="_blank" rel="noopener noreferrer" class="tag link">OPEN IN EDITOR</a>
-                            <button type="button" id="fit-toggle" class="tag link" aria-expanded="false" aria-controls="fit-body">[ EXPAND ]</button>
-                        </div>
-                    </header>
-                    <div id="fit-body" class="fit-body" hidden>
-                        <iframe
-                            id="fit-frame"
-                            title={`Fit preview: ${kill.victim.ship}`}
-                            data-src={fitPreviewUrl}
-                            loading="lazy"
-                        ></iframe>
-                    </div>
-                    <div id="fit-idle" class="fit-idle">
-                        <button type="button" id="fit-init" class="act act-primary fit-init-btn">
-                            &gt; INITIALIZE FIT PREVIEW
-                        </button>
-                        <span class="tag">SIMULATED VIA EVESHIP.FIT — ALL SKILLS V</span>
-                    </div>
-                </div>
-            </section>
-        )}
-
         <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                     <header class="card-h flex justify-between items-center">
-                        <span>target destroyed</span>
+                        <span>// target destroyed</span>
                         <span class="tag">WRECK SCANNED</span>
                     </header>
                     <div class="wreck">
@@ -233,7 +196,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
-                        <span> {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
+                        <span>// {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
                     <div class="p-3 space-y-3">
@@ -273,7 +236,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                 <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>attackers</span>
+                        <span>// attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
                     </header>
                     <ul class="p-3 space-y-2">
@@ -292,7 +255,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
                 <header class="card-h flex justify-between items-center">
-                    <span>killmail details</span>
+                    <span>// killmail details</span>
                     <select id="loot-filter" class="loot-filter" aria-label="Filter items">
                         <option value="all">ALL</option>
                         <option value="dropped">DROPPED</option>
@@ -349,7 +312,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
-                    <header class="card-h">location data</header>
+                    <header class="card-h">// location data</header>
                     <div class="p-3 space-y-2 text-sm font-mono">
                         <div class="row"><span class="k">SYSTEM</span>
                             <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
@@ -363,7 +326,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
-                    <header class="card-h">loot fairy gauge</header>
+                    <header class="card-h">// loot fairy gauge</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
                         <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
@@ -378,9 +341,9 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
-                    <header class="card-h">actions</header>
+                    <header class="card-h">// actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
-                        <button type="button" id="fit-jump" data-editor-url={fitEditorUrl} class="act act-primary">VIEW FIT</button>
+                        <a href={`https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`} target="_blank" rel="noopener noreferrer" class="act act-primary">VIEW FIT</a>
                         <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
                         <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
                         <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
@@ -448,58 +411,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
     filter.addEventListener('change', () => apply(filter.value))
   }
-
-  // ── fit preview panel ──────────────────────────────────────────────
-  const fitInit = document.getElementById('fit-init')
-  const fitToggle = document.getElementById('fit-toggle')
-  const fitBody = document.getElementById('fit-body')
-  const fitIdle = document.getElementById('fit-idle')
-  const fitFrame = document.getElementById('fit-frame')
-
-  const mountFit = () => {
-    // EAGER-LOAD SWITCH: to load on page view instead, call mountFit()
-    // unconditionally here (outside the click handlers) and delete fitIdle.
-    if (fitFrame && !fitFrame.src) fitFrame.src = fitFrame.dataset.src
-  }
-
-  const openFit = () => {
-    mountFit()
-    if (fitBody) fitBody.hidden = false
-    if (fitIdle) fitIdle.hidden = true
-    if (fitToggle) {
-      fitToggle.textContent = '[ COLLAPSE ]'
-      fitToggle.setAttribute('aria-expanded', 'true')
-    }
-  }
-
-  const closeFit = () => {
-    if (fitBody) fitBody.hidden = true
-    if (fitIdle) fitIdle.hidden = false
-    if (fitToggle) {
-      fitToggle.textContent = '[ EXPAND ]'
-      fitToggle.setAttribute('aria-expanded', 'false')
-    }
-  }
-
-  fitInit?.addEventListener('click', openFit)
-  fitToggle?.addEventListener('click', () => {
-    const isOpen = fitBody && !fitBody.hidden
-    isOpen ? closeFit() : openFit()
-  })
-
-  // Actions card VIEW FIT: expand the inline panel and scroll to it on
-  // desktop; on mobile (panel hidden) fall through to the full editor.
-  const fitJump = document.getElementById('fit-jump')
-  fitJump?.addEventListener('click', () => {
-    const panel = document.querySelector('.fit-panel')
-    const panelVisible = panel && panel.offsetParent !== null
-    if (panelVisible) {
-      openFit()
-      panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    } else if (fitJump.dataset.editorUrl) {
-      window.open(fitJump.dataset.editorUrl, '_blank', 'noopener,noreferrer')
-    }
-  })
 </script>
 
 <style>
@@ -532,33 +443,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
         padding: 0.55rem 0.75rem;
         border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
-    }
-
-    .fit-body { height: min(72vh, 640px); }
-    #fit-frame {
-        display: block;
-        width: 100%;
-        height: 100%;
-        border: 0;
-        background: #000;
-    }
-    .fit-idle {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 1.5rem 1rem;
-    }
-    .fit-idle[hidden] { display: none; }
-    .fit-init-btn {
-        border: 1px solid color-mix(in srgb, var(--color-terminal-blue) 35%, transparent);
-        padding: 0.55rem 1.4rem;
-        color: var(--color-terminal-blue);
-    }
-    .fit-init-btn:hover {
-        border-color: var(--color-terminal-blue);
-        color: var(--color-terminal-blue);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--color-terminal-blue) 50%, transparent);
     }
 
     .loot-filter {
