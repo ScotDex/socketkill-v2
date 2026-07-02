@@ -17,13 +17,13 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 - **Multi-channel Discord integration.** [Whale alerts, AT/officer/Rorqual sightings, Multiple Value Thresholds](https://discord.gg/UnFN8UY6Dz)
 - **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems and region to configure your own view.
 - **Atmospheric interface.** Terminal-aesthetic design from the alien franchise 
-- **Query Builder.** Coming Soon - configure your own question using the query builder module, resulting on the days killmails.
+- **Query Builder.** Configure your own question using the query builder module, resulting on the days killmails.
 
 
 ## Tech stack
 
 - **Runtime:** Node.js
-- **Transport:** Socket.io (WebSocket + polling fallback)
+- **Transport:** Socket.io 
 - **Backend:** DigitalOcean ARM VM
 - **Frontend:** Astro/Svelte/Tailwind
 - **Storage:** Cloudflare R2/KV
