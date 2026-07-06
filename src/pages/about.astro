@@ -1,51 +1,73 @@
 ---
 import Base from '../layouts/Base.astro'
 
-const faqData = [
+// Section titles are placeholder copy — rename to your own voice
+const faqSections = [
     {
-        q: "What is Socket.Kill?",
-        a: "The design is optimised to produce killmails as fast as the internet allows, streamlining every aspect of the rendering process. The ideas is to see how fast it could run from the end point to the front page"
+        title: "The Product",
+        items: [
+            {
+                q: "What is Socket.Kill?",
+                a: "The design is optimised to produce killmails as fast as the internet allows, streamlining every aspect of the rendering process. The ideas is to see how fast it could run from the end point to the front page"
+            },
+            {
+                q: "How is this different from zKill or Eve-Kill?",
+                a: "Both contribute to historical records — stats, history, deep detailed information. Socket.Kill is a live feed. They're complementary tools, not competitors. Idea is to use both."
+            },
+            {
+                q: "Can I filter the feed?",
+                a: "Yes. Type a corp, alliance, system, or region name and the feed filters to matching kills, you can also chain those options together to create your own view."
+            },
+            {
+                q: "What the hell is this search killmails engine",
+                a: "Well I had all this data lying around, figured I would use it to extend the web site, as a result you can now chain a query together and have a look at kills since 0001 UTC"
+            },
+            {
+                q: "What's with the green-on-black aesthetic?",
+                a: "A lot of interfaces opt for utility and re-usability. I did things slightly different, fusing the alient franchise with the dark industrial feel of eve online, its not perfect but its cool"
+            }
+        ]
     },
     {
-        q: "How is this different from zKill or Eve-Kill?",
-        a: "Both contribute to historical records — stats, history, deep detailed information. Socket.Kill is a live feed. They're complementary tools, not competitors. Idea is to use both."
+        title: "The Data",
+        items: [
+            {
+                q: "Where does the data come from?",
+                a: "Squizz's recently developed R2 feed from zKillboard, which is utilised by multiple EVE killmail tools. Socket.Kill renders it differently."
+            },
+            {
+                q: "Is there an API?",
+                a: "Yes. Image proxy and kill data: <a href='https://api.socketkill.com/docs/' class='text-[var(--color-neon-green)] underline'>api.socketkill.com/docs</a>."
+            },
+            {
+                q: "Is this open source?",
+                a: "The frontend is. <a href='https://github.com/ScotDex/socketkill-v2' class='text-[var(--color-neon-green)] underline'>github.com/ScotDex/socketkill-frontend</a>. I cannot permit backend open source yet — some corporations are sensitive."
+            }
+        ]
     },
     {
-        q: "Where does the data come from?",
-        a: "Squizz's recently developed R2 feed from zKillboard, which is utilised by multiple EVE killmail tools. Socket.Kill renders it differently."
-    },
-    {
-        q: "Can I filter the feed?",
-        a: "Yes. Type a corp, alliance, system, or region name and the feed filters to matching kills, you can also chain those options together to create your own view."
-    },
-    {
-        q: "What's with the green-on-black aesthetic?",
-        a: "A lot of interfaces opt for utility and re-usability. I did things slightly different, fusing the alient franchise with the dark industrial feel of eve online, its not perfect but its cool"
-    },
-    {
-        q: "Who is responsible for this witchcraft?",
-        a: "In game name is Dexomus Viliana, you may see me hanging out in twitch streams called scottishdex, come say hi :) "
-    },
-    {
-        q: "I want to say thank you, how do I do that?",
-        a: "I specifically designed this server to run on a super tiny VM so running costs are minimal, plus I am incredibly lucky in my job so all of this nonsense is very free, however feel free to toss me some isk to pay for my loki losses"
-    },
-    {
-        q: "Are you an idiot? Why would you make yet another killboard?",
-        a: "Just came up with this one day during a day of much boredom, I have no interest in competing with anyone or mainstream attention, if you like it and use it then fantastic, if not then thats okay aswell :)"
-    },
-    {
-        q: "Is there an API?",
-        a: "Yes. Image proxy and kill data: <a href='https://api.socketkill.com/docs/' class='text-[var(--color-neon-green)] underline'>api.socketkill.com/docs</a>."
-    },
-    {
-        q: "What the hell is this search killmails engine",
-        a: "Well I had all this data lying around, figured I would use it to extend the web site, as a result you can now chain a query together and have a look at kills since 0001 UTC"
-    },
-    {
-        q: "Is this open source?",
-        a: "The frontend is. <a href='https://github.com/ScotDex/socketkill-v2' class='text-[var(--color-neon-green)] underline'>github.com/ScotDex/socketkill-frontend</a>. I cannot permit backend open source yet — some corporations are sensitive."
+        title: "The Human",
+        items: [
+            {
+                q: "Who is responsible for this witchcraft?",
+                a: "In game name is Dexomus Viliana, you may see me hanging out in twitch streams called scottishdex, come say hi :) "
+            },
+            {
+                q: "I want to say thank you, how do I do that?",
+                a: "I specifically designed this server to run on a super tiny VM so running costs are minimal, plus I am incredibly lucky in my job so all of this nonsense is very free, however feel free to toss me some isk to pay for my loki losses"
+            },
+            {
+                q: "Are you an idiot? Why would you make yet another killboard?",
+                a: "Just came up with this one day during a day of much boredom, I have no interest in competing with anyone or mainstream attention, if you like it and use it then fantastic, if not then thats okay aswell :)"
+            }
+        ]
     }
+]
+
+// Add your affiliate URLs to href. Adding a 3rd/4th banner = one more object here.
+const partners = [
+    { img: "/partners/eve-banner.jpg", href: "#", alt: "EVE Online — Take Everything Together" },
+    { img: "/partners/do-badge.png",  href: "#", alt: "Powered by DigitalOcean" }
 ]
 ---
 
@@ -66,19 +88,34 @@ const faqData = [
     </header>
 
     <main class="max-w-2xl mx-auto p-6">
-        <section class="border-b border-white/5 py-6">
-            <h2 class="text-[var(--color-neon-green)] text-lg tracking-[0.2em] uppercase mb-6">Frequently Asked Questions</h2>
-            <div class="flex flex-col gap-3">
-                {faqData.map(item => (
-                    <details class="accordion-item border border-white/10 bg-black/40">
-                        <summary class="p-4 flex justify-between items-center cursor-pointer hover:text-[var(--color-neon-green)] transition list-none">
-                            <span>{item.q}</span>
-                            <span class="text-[var(--color-neon-green)] text-xl accordion-icon">+</span>
-                        </summary>
-                        <div class="px-4 pb-4 border-t border-white/10 pt-4 text-lg text-gray-400">
-                            <p set:html={item.a}></p>
-                        </div>
-                    </details>
+        {faqSections.map(section => (
+            <section class="py-8">
+                <h2 class="text-[var(--color-neon-green)] text-sm tracking-[0.3em] uppercase mb-2">{section.title}</h2>
+                <div class="divide-y divide-white/10 border-y border-white/10">
+                    {section.items.map(item => (
+                        <details>
+                            <summary class="py-5 flex justify-between items-center gap-4 cursor-pointer list-none hover:text-[var(--color-neon-green)] transition">
+                                <span class="uppercase tracking-wide font-bold">{item.q}</span>
+                                <span class="text-[var(--color-neon-green)] text-2xl accordion-icon"></span>
+                            </summary>
+                            <div class="pb-5 text-gray-400">
+                                <p set:html={item.a}></p>
+                            </div>
+                        </details>
+                    ))}
+                </div>
+            </section>
+        ))}
+
+        <section class="py-8">
+            <h2 class="text-[var(--color-neon-green)] text-sm tracking-[0.3em] uppercase mb-2">SUPPORTED BY</h2>
+            <div class="flex flex-col gap-4 pt-4">
+                {partners.map(p => (
+                    <a href={p.href} target="_blank" rel="noopener sponsored"
+                       class="block border border-white/10 bg-black/40 p-4 hover:border-[var(--color-neon-green)] transition">
+                        <img src={p.img} alt={p.alt} loading="lazy"
+                             class="mx-auto max-h-36 w-auto object-contain" />
+                    </a>
                 ))}
             </div>
         </section>
@@ -103,7 +140,6 @@ const faqData = [
 
 <style>
     details summary::-webkit-details-marker { display: none; }
-    details[open] .accordion-icon::before { content: '−'; }
     details:not([open]) .accordion-icon::before { content: '+'; }
-    details > summary > .accordion-icon { display: none; }
+    details[open] .accordion-icon::before { content: '−'; }
 </style>
