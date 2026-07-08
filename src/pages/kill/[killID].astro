@@ -73,7 +73,7 @@ const eftText = buildEft(kill)
 function buildDescription(data) {
     const victimAffiliation = data.victim.corp || data.victim.alliance
     const victimLabel = victimAffiliation ? `${data.victim.name} of ${victimAffiliation}` : data.victim.name
-    let main = `${victimLabel} lost ${article(data.victim.ship)} ${data.victim.ship} in ${data.system.name} | ${data.system.region}`
+    let main = `${victimLabel} lost ${article(data.victim.ship)} ${data.victim.ship} in ${data.system.name} // ${data.system.region}`
     if (data.totalValue) main += ` worth ${data.totalValue} ISK`
 
     if (data.finalBlow) {
@@ -108,7 +108,19 @@ const bgStyle = shipTypeID
     : ''
 
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
+
+// Placeholder: backend payload doesn't carry this yet.
+// Renders '—' until victim.damageTaken is added server-side.
 const damageTaken = kill.victim?.damageTaken ?? null
+
+// Alliance ticker isn't in the kill payload — one ESI call, cosmetic on failure.
+let allianceTicker = null
+if (kill.victim?.allianceID) {
+    try {
+        const r = await fetch(`https://esi.evetech.net/latest/alliances/${kill.victim.allianceID}/`)
+        if (r.ok) allianceTicker = (await r.json()).ticker
+    } catch { /* page renders fine without it */ }
+}
 
 function classifySecurity(system) {
     if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
@@ -186,17 +198,25 @@ const hiddenAttackers = sortedAttackers.slice(5)
         <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
             <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                 <div class="card-h flex justify-between items-center">
-                    <span>>> kill report · {killTime}</span>
+                    <span>// kill report · {killTime}</span>
                     <span class="tag">#{id}</span>
                 </div>
                 <div class="dossier">
+                    <div class="d-tile">
+                        <img src={image} alt={kill.victim.ship} loading="lazy" />
+                    </div>
                     <div class="d-tile">
                         {kill.victim.characterID && (
                             <img src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=256`} alt="" loading="lazy" />
                         )}
                     </div>
-                    <div class="d-tile">
-                        <img src={image} alt={kill.victim.ship} loading="lazy" />
+                    <div class="d-tile d-logos">
+                        {kill.victim.corporationID && (
+                            <img src={`https://images.evetech.net/corporations/${kill.victim.corporationID}/logo?size=128`} alt="" loading="lazy" />
+                        )}
+                        {kill.victim.allianceID && (
+                            <img src={`https://images.evetech.net/alliances/${kill.victim.allianceID}/logo?size=128`} alt="" loading="lazy" />
+                        )}
                     </div>
                     <div class="d-meta">
                         <h1 class="ui font-semibold text-white text-lg truncate">
@@ -210,7 +230,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                 : kill.victim.corp}
                             {kill.victim.alliance && <> · {kill.victim.allianceID
                                 ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
-                                : kill.victim.alliance}</>}
+                                : kill.victim.alliance}{allianceTicker && <span class="text-[var(--color-text-faint)]"> [{allianceTicker}]</span>}</>}
                         </div>
                         <dl class="kv">
                             <dt>SHIP</dt>
@@ -239,7 +259,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style="--card-c: var(--color-isk-billion); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>>> attackers</span>
+                        <span>// attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
                     </header>
                     <ul class="p-3 space-y-2">
@@ -258,7 +278,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
                 <header class="card-h flex justify-between items-center">
-                    <span>>> details</span>
+                    <span>// killmail details</span>
                     <select id="loot-filter" class="loot-filter" aria-label="Filter items">
                         <option value="all">ALL</option>
                         <option value="dropped">DROPPED</option>
@@ -315,7 +335,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
-                    <header class="card-h">>> loot fairy report</header>
+                    <header class="card-h">// loot fairy gauge</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
                         <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
@@ -330,7 +350,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
-                    <header class="card-h">>> actions</header>
+                    <header class="card-h">// actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
                         {fitPreviewUrl ? (
                             <button type="button" id="fit-btn"
@@ -368,7 +388,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
     {fitPreviewUrl && (
         <dialog id="fit-modal" class="fit-modal">
             <header class="card-h flex justify-between items-center" style="--card-c: var(--color-terminal-blue)">
-                <span>>> fit analysis</span>
+                <span>// fit analysis</span>
                 <div class="flex items-center gap-3">
                     <a href={fitEditorUrl} target="_blank" rel="noopener noreferrer" class="tag link">OPEN IN EDITOR</a>
                     <button type="button" id="fit-close" class="tag link" aria-label="Close fit preview">[X]</button>
@@ -425,6 +445,8 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
     filter.addEventListener('change', () => apply(filter.value))
   }
+
+  // ── fit preview modal ──────────────────────────────────────────────
   const fitBtn = document.getElementById('fit-btn')
   const fitModal = document.getElementById('fit-modal')
   const fitFrame = document.getElementById('fit-frame')
@@ -493,6 +515,13 @@ const hiddenAttackers = sortedAttackers.slice(5)
         overflow: hidden;
     }
     .d-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .d-logos { display: flex; flex-direction: column; }
+    .d-logos img {
+        flex: 1; min-height: 0; width: 100%;
+        object-fit: contain;      /* emblems, not photos — no cropping */
+        padding: 10px;
+    }
+    .d-logos img + img { border-top: 1px solid var(--color-eve-border); }
     .d-meta { padding: 0.9rem 1rem; flex: 1; min-width: 0; }
     .kv {
         margin-top: 0.6rem;
