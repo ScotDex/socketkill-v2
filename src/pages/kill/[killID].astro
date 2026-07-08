@@ -109,6 +109,10 @@ const bgStyle = shipTypeID
 
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
 
+// Placeholder: backend payload doesn't carry this yet.
+// Renders '—' until victim.damageTaken is added server-side.
+const damageTaken = kill.victim?.damageTaken ?? null
+
 function classifySecurity(system) {
     if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
     if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
@@ -182,67 +186,61 @@ const hiddenAttackers = sortedAttackers.slice(5)
 </Fragment>
 
     <div class="kill-screen" style={bgStyle}>
-    <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
-        <h1 class="kill-headline">{title}</h1>
-        <p class="kill-sub">{kill.system.name} // {kill.system.region} -  {killTime}</p>
+        <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
+            <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
+                <div class="card-h flex justify-between items-center">
+                    <span>// kill report · {killTime}</span>
+                    <span class="tag">#{id}</span>
+                </div>
+                <div class="dossier">
+                    <div class="d-tile">
+                        {kill.victim.characterID && (
+                            <img src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=256`} alt="" loading="lazy" />
+                        )}
+                    </div>
+                    <div class="d-tile">
+                        <img src={image} alt={kill.victim.ship} loading="lazy" />
+                    </div>
+                    <div class="d-meta">
+                        <h1 class="ui font-semibold text-white text-lg truncate">
+                            {kill.victim.characterID
+                                ? <a href={externalLink('character', kill.victim.characterID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.name}</a>
+                                : kill.victim.name}
+                        </h1>
+                        <div class="ui text-sm text-[var(--color-text-faint)] truncate">
+                            {kill.victim.corporationID
+                                ? <a href={externalLink('corp', kill.victim.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.corp}</a>
+                                : kill.victim.corp}
+                            {kill.victim.alliance && <> · {kill.victim.allianceID
+                                ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
+                                : kill.victim.alliance}</>}
+                        </div>
+                        <dl class="kv">
+                            <dt>SHIP</dt>
+                            <dd>{shipTypeID
+                                ? <a href={externalLink('type', shipTypeID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.ship}</a>
+                                : kill.victim.ship}</dd>
+                            <dt>SYSTEM</dt>
+                            <dd>
+                                <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="link">{kill.system.name}</a>
+                                {' · '}
+                                <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="link">{kill.system.region}</a>
+                                {' '}<span class="chip" style={`--c:${sec.color}`}>{sec.label}</span>
+                            </dd>
+                            <dt>DAMAGE</dt>
+                            <dd style={damageTaken ? 'color: var(--color-isk-billion)' : 'color: var(--color-text-faint)'}>
+                                {damageTaken ? `${damageTaken} taken` : '—'}
+                            </dd>
+                            <dt>ATTACKERS</dt>
+                            <dd>{kill.attackerCount}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
         </header>
         <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
             <section class="md:col-span-3 flex flex-col gap-4">
-                <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
-                    <header class="card-h flex justify-between items-center">
-                        <span>// target destroyed</span>
-                        <span class="tag">WRECK SCANNED</span>
-                    </header>
-                    <div class="wreck">
-                        <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
-                    </div>
-                    <div class="p-3 border-t border-[var(--color-eve-border)]">
-                        <div class="ui font-semibold text-white text-lg">{kill.victim.ship}</div>
-                        <div class="font-mono font-bold tabular-nums" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</div>
-                    </div>
-                </div>
-
-                <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
-                    <header class="card-h flex justify-between items-center">
-                        <span>// {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
-                        <span class="tag">LOSS RECORDED</span>
-                    </header>
-                    <div class="p-3 space-y-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-black border border-[var(--color-eve-border)] overflow-hidden flex-shrink-0">
-                                {kill.victim.characterID && <img src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=64`} class="w-full h-full object-cover" alt="" loading="lazy" />}
-                            </div>
-                            <div class="ui font-semibold text-white text-[15px] truncate">
-                                {kill.victim.characterID
-                                    ? <a href={externalLink('character', kill.victim.characterID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.name}</a>
-                                    : kill.victim.name}
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 flex-shrink-0">
-                                <img src={`https://images.evetech.net/corporations/${kill.victim.corporationID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />
-                            </div>
-                            <div class="ui font-semibold text-white/90 text-sm truncate">
-                                {kill.victim.corporationID
-                                    ? <a href={externalLink('corp', kill.victim.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.corp}</a>
-                                    : kill.victim.corp}
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 flex-shrink-0">
-                                {kill.victim.allianceID && <img src={`https://images.evetech.net/alliances/${kill.victim.allianceID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />}
-                            </div>
-                            <div class="ui font-semibold text-white/90 text-sm truncate">
-                                {kill.victim.allianceID
-                                    ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
-                                    : (kill.victim.alliance || 'Non Affiliate')}
-                            </div>
-                        </div>
-                    </div>
-                    <footer class="card-f" style="color: var(--color-isk-billion)"><span class="pulse-dot"></span> status: dead</footer>
-                </div>
-
-                <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
+                <div class="card" style="--card-c: var(--color-isk-billion); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
                         <span>// attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
@@ -319,20 +317,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
             </section>
 
             <section class="md:col-span-3 flex flex-col gap-4">
-                <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
-                    <header class="card-h">// location data</header>
-                    <div class="p-3 space-y-2 text-sm font-mono">
-                        <div class="row"><span class="k">SYSTEM</span>
-                            <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
-                        <div class="row"><span class="k">REGION</span>
-                            <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.region}</a></div>
-                        <div class="row"><span class="k">SEC.STATUS</span>
-                            <span class="chip" style={`--c:${sec.color}`}>{sec.label}</span></div>
-                        <div class="row"><span class="k">TIME</span><span class="v text-xs tabular-nums">{killTime}</span></div>
-                    </div>
-                    <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; coordinates logged</footer>
-                </div>
-
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
                     <header class="card-h">// loot fairy gauge</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
@@ -503,6 +487,33 @@ const hiddenAttackers = sortedAttackers.slice(5)
         padding: 0.55rem 0.75rem;
         border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
         text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+    }
+
+    /* ── victim dossier header ─────────────────────────────────────── */
+    .dossier { display: flex; }
+    .d-tile {
+        width: 150px; height: 150px; flex: none;
+        background: #000;
+        border-right: 1px solid var(--color-eve-border);
+        overflow: hidden;
+    }
+    .d-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .d-meta { padding: 0.9rem 1rem; flex: 1; min-width: 0; }
+    .kv {
+        margin-top: 0.6rem;
+        display: grid; grid-template-columns: max-content 1fr;
+        gap: 2px 14px;
+        font-family: var(--font-mono); font-size: 0.85rem;
+    }
+    .kv dt {
+        font-family: var(--font-body); font-size: 10px; font-weight: 500;
+        letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--color-text-faint); padding-top: 3px;
+    }
+    .kv dd { color: var(--color-text-body); min-width: 0; }
+
+    @media (max-width: 640px) {
+        .d-tile { width: 96px; height: 96px; }
     }
 
     /* ── fit preview modal ─────────────────────────────────────────── */
