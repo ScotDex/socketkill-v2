@@ -354,6 +354,12 @@ const hiddenAttackers = sortedAttackers.slice(5)
                     </div>
                 </div>
 
+                <div class="card" style="--card-c: var(--color-neon-green); --d: 90ms">
+    <header class="card-h">crowd verdict</header>
+    <ul id="react-list" class="p-3 space-y-1 text-sm font-mono" data-kill={id}></ul>
+    <footer class="card-f" style="color: var(--color-neon-green)">&gt; votes logged</footer>
+</div>
+
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
                     <header class="card-h">actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
@@ -491,6 +497,59 @@ const hiddenAttackers = sortedAttackers.slice(5)
 }
 loadActivity('sys-activity', 'system')
 loadActivity('reg-activity', 'region')
+
+
+const EMOTES = [
+    { key: 'plus1', label: '+1' },
+    { key: 'f', label: 'F' },
+    { key: 'nice-feed', label: 'nice feed' },
+    { key: 'o7', label: 'o7' },
+    { key: 'gf', label: 'gf' },
+    { key: '67', label: '67' },
+    { key: 'lol', label: 'lol' },
+    { key: 'RMT', label: 'RMT' },
+    { key: 'FFS', label: 'FFS' },
+    { key: 'RIP', label: 'RIP' },
+]
+
+const list = document.getElementById('react-list')
+const killId = list?.dataset.kill
+
+function renderReactions(counts) {
+    if (!list) return
+    const rows = EMOTES
+        .map(e => ({ ...e, count: counts[e.key] || 0 }))
+        .sort((a, b) => b.count - a.count)
+    list.innerHTML = rows.map(r => `
+        <li class="row">
+            <button type="button" class="react-btn link" data-key="${r.key}">▲ ${r.label}</button>
+            <span class="v tabular-nums">${r.count}</span>
+        </li>`).join('')
+}
+
+async function loadReactions() {
+    if (!killId) return
+    try {
+        const res = await fetch(`https://ws.socketkill.com/api/reactions/${killId}`)
+        if (!res.ok) return
+        renderReactions((await res.json()).reactions || {})
+    } catch { /* card stays empty */ }
+}
+
+list?.addEventListener('click', async (e) => {
+    const key = e.target.closest('.react-btn')?.dataset.key
+    if (!key) return
+    try {
+        const res = await fetch(`https://ws.socketkill.com/api/reactions/${killId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emoteKey: key }),
+        })
+        if (res.ok) renderReactions((await res.json()).reactions || {})
+    } catch { /* silent */ }
+})
+
+loadReactions()
 </script>
 
 <style>
