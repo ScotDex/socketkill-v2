@@ -73,7 +73,7 @@ const eftText = buildEft(kill)
 function buildDescription(data) {
     const victimAffiliation = data.victim.corp || data.victim.alliance
     const victimLabel = victimAffiliation ? `${data.victim.name} of ${victimAffiliation}` : data.victim.name
-    let main = `${victimLabel} lost ${article(data.victim.ship)} ${data.victim.ship} in ${data.system.name} // ${data.system.region}`
+    let main = `${victimLabel} lost ${article(data.victim.ship)} ${data.victim.ship} in ${data.system.name} | ${data.system.region}`
     if (data.totalValue) main += ` worth ${data.totalValue} ISK`
 
     if (data.finalBlow) {
@@ -95,7 +95,6 @@ const image = shipTypeID
     : 'https://edge.socketkill.com/socket-preview-v2.png'
 const canonicalUrl = `https://socketkill.com/kill/${id}`
 
-// eveship.fit — preview is the trimmed embed view, editor is the full site
 const fitPreviewUrl = kill.killmailHash
     ? `https://eveship.fit/preview?fit=killmail:${id}/${kill.killmailHash}`
     : null
@@ -184,13 +183,13 @@ const hiddenAttackers = sortedAttackers.slice(5)
     <div class="kill-screen" style={bgStyle}>
     <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
         <h1 class="kill-headline">{title}</h1>
-        <p class="kill-sub">{kill.system.name} // {kill.system.region} -  {killTime}</p>
+        <p class="kill-sub">{kill.system.name} | {kill.system.region} -  {killTime}</p>
         </header>
         <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                     <header class="card-h flex justify-between items-center">
-                        <span>// target destroyed</span>
+                        <span> target destroyed</span>
                         <span class="tag">WRECK SCANNED</span>
                     </header>
                     <div class="wreck">
@@ -204,7 +203,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>// {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
+                        <span> {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
                     <div class="p-3 space-y-3">
@@ -244,7 +243,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                 <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
                     <header class="card-h flex justify-between items-center">
-                        <span>// attackers</span>
+                        <span>attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
                     </header>
                     <ul class="p-3 space-y-2">
@@ -263,7 +262,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
                 <header class="card-h flex justify-between items-center">
-                    <span>// killmail details</span>
+                    <span> details</span>
                     <select id="loot-filter" class="loot-filter" aria-label="Filter items">
                         <option value="all">ALL</option>
                         <option value="dropped">DROPPED</option>
@@ -320,7 +319,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
             <section class="md:col-span-3 flex flex-col gap-4">
                 <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
-                    <header class="card-h">// location data</header>
+                    <header class="card-h">location data</header>
                     <div class="p-3 space-y-2 text-sm font-mono">
                         <div class="row"><span class="k">SYSTEM</span>
                             <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
@@ -334,12 +333,13 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
-                    <header class="card-h">// loot fairy gauge</header>
+                    <header class="card-h">loot fairy gauge</header>
                     <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
                         <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DESTROYED</span><span style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">VERDICT</span><span class="v">PLACEHOLDER</span></div>
                         {splitTotal > 0 && (
                             <div class="split-bar" title={`${droppedPct}% dropped`}>
                                 <span style={`width:${droppedPct}%`}></span>
@@ -349,7 +349,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
 
                 <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
-                    <header class="card-h">// actions</header>
+                    <header class="card-h">actions</header>
                     <div class="grid grid-cols-2 gap-1.5 p-3">
                         {fitPreviewUrl ? (
                             <button type="button" id="fit-btn"
@@ -387,7 +387,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
     {fitPreviewUrl && (
         <dialog id="fit-modal" class="fit-modal">
             <header class="card-h flex justify-between items-center" style="--card-c: var(--color-terminal-blue)">
-                <span>// fit analysis</span>
+                <span>fit analysis</span>
                 <div class="flex items-center gap-3">
                     <a href={fitEditorUrl} target="_blank" rel="noopener noreferrer" class="tag link">OPEN IN EDITOR</a>
                     <button type="button" id="fit-close" class="tag link" aria-label="Close fit preview">[X]</button>
@@ -445,7 +445,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
     filter.addEventListener('change', () => apply(filter.value))
   }
 
-  // ── fit preview modal ──────────────────────────────────────────────
   const fitBtn = document.getElementById('fit-btn')
   const fitModal = document.getElementById('fit-modal')
   const fitFrame = document.getElementById('fit-frame')
@@ -590,8 +589,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
         font-weight: 600;
         letter-spacing: 0.1em;
         color: var(--c);
-        border-bottom: 2px solid var(--c);
-        padding-bottom: 1px;
         text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
     }
     .split-bar {
