@@ -328,10 +328,10 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <div class="row"><span class="k">SEC.STATUS</span>
                             <span class="chip" style={`--c:${sec.color}`}>{sec.label}</span></div>
                         <div class="row"><span class="k">TIME</span><span class="v text-xs tabular-nums">{killTime}</span></div>
-                        <div class="row" id="sys-activity" hidden>
+                        <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
                         <span class="k">SYSTEM STATS</span>
                         <span class="v tabular-nums" data-count></span></div>
-                        <div class="row" id="reg-activity" hidden>
+                        <div class="row" id="reg-activity" data-id={kill.system?.regionID ?? ''} hidden>
                         <span class="k">REGION STATS</span>
                         <span class="v tabular-nums" data-count></span></div>
                     </div>
