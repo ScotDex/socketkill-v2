@@ -328,6 +328,12 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <div class="row"><span class="k">SEC.STATUS</span>
                             <span class="chip" style={`--c:${sec.color}`}>{sec.label}</span></div>
                         <div class="row"><span class="k">TIME</span><span class="v text-xs tabular-nums">{killTime}</span></div>
+                        <div class="row" id="sys-activity" hidden>
+                        <span class="k">SYSTEM STATS</span>
+                        <span class="v tabular-nums" data-count></span></div>
+                        <div class="row" id="reg-activity" hidden>
+                        <span class="k">REGION STATS</span>
+                        <span class="v tabular-nums" data-count></span></div>
                     </div>
                     <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; coordinates logged</footer>
                 </div>
@@ -470,6 +476,21 @@ const hiddenAttackers = sortedAttackers.slice(5)
   fitModal?.addEventListener('click', (e) => {
     if (e.target === fitModal) fitModal.close()
   })
+
+  async function loadActivity(rowId, param) {
+    const row = document.getElementById(rowId)
+    const id = row?.dataset.id
+    if (!id) return
+    try {
+        const res = await fetch(`https://ws.socketkill.com/api/search?${param}=${id}&window=1h`)
+        if (!res.ok) return
+        const data = await res.json()
+        row.querySelector('[data-count]').textContent = `${data.total} KILLS/HR`
+        row.hidden = false
+    } catch { /* strip stays hidden */ }
+}
+loadActivity('sys-activity', 'system')
+loadActivity('reg-activity', 'region')
 </script>
 
 <style>
