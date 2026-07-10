@@ -9,6 +9,7 @@
     import BootSequence from './BootSequence.svelte'
     import WeaponKeywordFacet from './WeaponKeywordFacet.svelte'
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
+    import { filtersToParams, paramsToFilters } from '../../lib/filter-url.js'
     import {
         passesFilter,
         getUtcTimestamp,
@@ -28,6 +29,7 @@
     let killBuffer = $state([])
     let corpCache = $state(new Set())
     let allianceCache = $state(new Set())
+    
 
     let filters = $state({
         minValue: 0,
@@ -51,6 +53,26 @@ async function copyPromo() {
         console.warn('Clipboard write failed:', e)
     }
 }
+
+let filterCopied = $state(false)
+
+async function copyFilterUrl() {
+    try {
+        await navigator.clipboard.writeText(window.location.href)
+        filterCopied = true
+        setTimeout(() => filterCopied = false, 1500)
+    } catch (e) {
+        console.warn('Clipboard write failed:', e)
+    }
+}
+
+let urlSyncReady = $state(false)
+$effect(() => {
+    const qs = filtersToParams(filters).toString()
+    if (!urlSyncReady) return
+    const url = qs ? `?${qs}` : window.location.pathname
+    history.replaceState(null, '', url)
+    })
 
     const sdeRegionNames = $derived(
         $filterSource.loaded
@@ -115,6 +137,10 @@ async function copyPromo() {
 
     onMount(async () => {
         loadFilterSource()
+        if (window.location.search) {
+        filters = paramsToFilters(window.location.search)
+        }
+        urlSyncReady = true
         try {
             const res = await fetch('https://ws.socketkill.com/api/stats')
             if (res.ok) {
@@ -307,10 +333,13 @@ async function copyPromo() {
         </div>
 
         {#if hasActiveFilters}
-            <footer class="p-3 pt-0" transition:fade={{ duration: 120 }}>
-                <button type="button" class="flush" onclick={clearFilters}>Flush filters ✕</button>
-            </footer>
-        {/if}
+    <footer class="p-3 pt-0 flex flex-col gap-1.5" transition:fade={{ duration: 120 }}>
+        <button type="button" class="flush share" onclick={copyFilterUrl}>
+            {filterCopied ? 'LINK COPIED ✓' : 'SHARE FILTER ⧉'}
+        </button>
+        <button type="button" class="flush" onclick={clearFilters}>Flush filters ✕</button>
+    </footer>
+{/if}
 
     </aside>
     <div class="lg:flex-1 lg:self-start">
@@ -384,6 +413,7 @@ async function copyPromo() {
         background: color-mix(in srgb, var(--c) 10%, var(--color-feed-bg));
         text-shadow: 0 0 8px color-mix(in srgb, var(--c) 55%, transparent);
     }
+    .share:hover { color: var(--color-neon-green); border-bottom-color: var(--color-neon-green); }
 
     .flush {
         width: 100%;
