@@ -52,7 +52,6 @@
   const regionName = (id) => $filterSource?.regions?.[id]?.name ?? `Region ${id}`;
   const itemName   = (id) => $filterSource?.items?.[id]?.name   ?? `Type ${id}`;
 
-  // Sample count rolls when the 60s refresh lands
   const sampleTween = new Tween(0, { duration: 600, easing: cubicOut });
   $effect(() => { sampleTween.set(data?.sampleSize ?? 0); });
   const shownSample = $derived(Math.round(sampleTween.current).toLocaleString());
@@ -60,7 +59,7 @@
 
 {#snippet metricCard(title, items, labelFn, accent = 'var(--color-neon-green)')}
   <section class="card fade-card flex flex-col overflow-hidden h-full" style="--card-c:{accent}">
-    <header class="card-h">// {title}</header>
+    <header class="card-h">{title}</header>
     <div class="flex-1 overflow-y-auto">
       {@render rankList(items || [], labelFn)}
     </div>
@@ -87,7 +86,7 @@
 
   <header class="flex flex-col sm:flex-row items-start sm:items-baseline justify-between border-b border-border-dim pb-4 gap-2">
     <div class="space-y-1">
-      <h1 class="font-mono tracking-[0.18em] text-2xl text-neon-green glow">&gt; TOP 10 <span class="text-neon-green/40">// LAST HOUR</span></h1>
+      <h1 class="font-mono tracking-[0.18em] text-2xl text-neon-green glow">&gt; TOP 10 <span class="text-neon-green/40">LAST HOUR</span></h1>
       <p class="ui text-[10px] tracking-[0.22em] text-text-faint uppercase">Rolling 1h window · auto-refreshes every 60s</p>
     </div>
     {#if data}
@@ -111,7 +110,7 @@
   {:else if initialized}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
       <section class="card fade-card overflow-hidden md:col-span-2 flex flex-col h-full" style="--card-c:var(--color-whale-accent)">
-        <header class="card-h">// Most valuable kills</header>
+        <header class="card-h"> Most valuable kills</header>
         <ol class="flex flex-col flex-1 divide-y divide-eve-border">
           {#each data.topValue as k, i (k.killID)}
             <li class="h-full">

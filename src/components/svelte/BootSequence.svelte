@@ -3,14 +3,14 @@
 
     const bootLines = [
         '> INITIALIZING GRID MONITOR...',
-        '> CONNECTING TO DATASOURCE...',
+        '> CONNECTING TO DATASTREAM...',
         '> CREW EXPENDABLE — PRIORITY ONE OVERRIDE',
         '> UPLINK ESTABLISHED',
         '> AWAITING DATA STREAM'
     ]
     const fullText = bootLines.join('\n')
 
-    const chars = new Tween(0, { duration: fullText.length * 40 }) // linear by default
+    const chars = new Tween(0, { duration: fullText.length * 40 })
     chars.set(fullText.length)
 
     const shown = $derived(fullText.slice(0, Math.floor(chars.current)))

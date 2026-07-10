@@ -1,208 +1,289 @@
+details summary::-webkit-details-marker {
+    display: none;
+}
 
+.card {
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
+        var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: var(--shadow-feed);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    overflow: hidden;
+    animation: card-rise 0.35s ease-out both;
+    animation-delay: var(--d, 0ms);
+}
 
-    details summary::-webkit-details-marker { display: none; }
-    .card {
-        background:
-            linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
-            var(--color-glass-bg);
-        border: 1px solid var(--color-border-dim);
-        box-shadow: var(--shadow-feed);
-        clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-        overflow: hidden;
-        animation: card-rise 0.35s ease-out both;
-        animation-delay: var(--d, 0ms);
-    }
-    @keyframes card-rise {
-        from { opacity: 0; transform: translateY(8px); }
-        to   { opacity: 1; transform: none; }
-    }
-
-
-    .card-h {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: var(--card-c);
-        padding: 0.55rem 0.75rem;
-        border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+@keyframes card-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
     }
 
-    /* ── fit preview modal ─────────────────────────────────────────── */
-    .fit-modal {
-        /* Sized to eveship.fit's fixed preview layout (~1150 x ~800px)
-           so the frame never scrolls on a normal desktop viewport. */
-        width: min(94vw, 1220px);
-        height: min(92vh, 860px);
-        padding: 0;
-        background: var(--color-glass-bg);
-        border: 1px solid var(--color-border-dim);
-        clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-        display: flex;
-        flex-direction: column;
+    to {
+        opacity: 1;
+        transform: none;
     }
-    /* dialog[open] uses our flex layout; when closed, stay hidden.
-       Without this line the display:flex above would force the closed
-       dialog visible on page load. */
-    .fit-modal:not([open]) { display: none; }
-    .fit-modal::backdrop {
-        background: rgba(10, 12, 16, 0.82);
-        backdrop-filter: blur(2px);
-    }
-    #fit-frame {
-        flex: 1;
-        width: 100%;
-        border: 0;
-        background: #000;
+}
+
+
+.card-h {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--card-c);
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+}
+
+.fit-modal {
+    width: min(94vw, 1220px);
+    height: min(92vh, 860px);
+    padding: 0;
+    background: var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.fit-modal:not([open]) {
+    display: none;
+}
+
+.fit-modal::backdrop {
+    background: rgba(10, 12, 16, 0.82);
+    backdrop-filter: blur(2px);
+}
+
+#fit-frame {
+    flex: 1;
+    width: 100%;
+    border: 0;
+    background: #000;
+}
+
+.loot-filter {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 1px solid var(--color-eve-border);
+    border-radius: 0;
+    padding: 0.2rem 1.4rem 0.2rem 0.5rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-text-faint) 50%), linear-gradient(135deg, var(--color-text-faint) 50%, transparent 50%);
+    background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.loot-filter:hover {
+    color: var(--color-neon-green);
+    border-color: var(--color-neon-green);
+}
+
+.loot-filter option {
+    background: var(--color-feed-bg);
+    color: var(--color-text-body);
+}
+
+.card-f {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    border-top: 1px solid var(--color-eve-border);
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.tag {
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--color-text-faint);
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: baseline;
+}
+
+.k {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--color-text-faint);
+}
+
+.v {
+    color: var(--color-text-body);
+}
+
+.link {
+    transition: color 0.15s, text-shadow 0.15s;
+}
+
+.link:hover {
+    color: var(--color-neon-green);
+    text-shadow: var(--shadow-phosphor);
+}
+
+.chip {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--c);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+.split-bar {
+    height: 4px;
+    margin-top: 0.6rem;
+    background: color-mix(in srgb, var(--color-isk-billion) 30%, transparent);
+    overflow: hidden;
+}
+
+.split-bar span {
+    display: block;
+    height: 100%;
+    background: var(--color-neon-green);
+    animation: grow 0.6s ease-out 0.3s both;
+    transform-origin: left;
+}
+
+@keyframes grow {
+    from {
+        transform: scaleX(0);
     }
 
-    .loot-filter {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.14em;
-        color: var(--color-text-faint);
-        background: var(--color-feed-bg);
-        border: 1px solid var(--color-eve-border);
-        border-radius: 0;
-        padding: 0.2rem 1.4rem 0.2rem 0.5rem;
-        cursor: pointer;
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: linear-gradient(45deg, transparent 50%, var(--color-text-faint) 50%), linear-gradient(135deg, var(--color-text-faint) 50%, transparent 50%);
-        background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%;
-        background-size: 5px 5px, 5px 5px;
-        background-repeat: no-repeat;
-        transition: color 0.15s, border-color 0.15s;
+    to {
+        transform: scaleX(1);
     }
-    .loot-filter:hover { color: var(--color-neon-green); border-color: var(--color-neon-green); }
-    .loot-filter option { background: var(--color-feed-bg); color: var(--color-text-body); }
+}
 
-    .card-f {
-        font-family: var(--font-mono);
-        font-size: 10px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        padding: 0.35rem 0.75rem;
-        border-top: 1px solid var(--color-eve-border);
-        background: rgba(0, 0, 0, 0.25);
-    }
+.dmg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background: color-mix(in srgb, var(--color-isk-billion) 8%, transparent);
+    animation: grow 0.5s ease-out 0.25s both;
+    transform-origin: left;
+}
 
-    .tag {
-        font-family: var(--font-body);
-        font-size: 9px;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        color: var(--color-text-faint);
-    }
-    .row { display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline; }
-    .k {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        color: var(--color-text-faint);
-    }
-    .v { color: var(--color-text-body); }
-    .link { transition: color 0.15s, text-shadow 0.15s; }
-    .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+.fb {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-isk-billion);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+}
 
-    .chip {
-        font-family: var(--font-body);
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        color: var(--c);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+.more {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    list-style: none;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.more:hover {
+    color: var(--color-isk-billion);
+    border-bottom-color: var(--color-isk-billion);
+}
+
+.grp {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-neon-green);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
+}
+
+.pulse-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-isk-billion);
+    box-shadow: 0 0 6px var(--color-isk-billion);
+    margin-right: 4px;
+    vertical-align: middle;
+    animation: blink 1.4s steps(2) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.2;
     }
-    .split-bar {
-        height: 4px;
-        margin-top: 0.6rem;
-        background: color-mix(in srgb, var(--color-isk-billion) 30%, transparent);
-        overflow: hidden;
-    }
-    .split-bar span {
-        display: block;
-        height: 100%;
-        background: var(--color-neon-green);
-        animation: grow 0.6s ease-out 0.3s both;
-        transform-origin: left;
-    }
-    @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+}
+
+.act {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-align: center;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border-bottom: 2px solid transparent;
+    padding: 0.45rem 0.5rem;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.act:hover {
+    color: var(--color-text-body);
+    border-bottom-color: var(--color-text-faint);
+    background: #1b212b;
+}
+
+.act-primary {
+    color: var(--color-neon-green);
+}
+
+.act-primary:hover {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+    text-shadow: var(--shadow-phosphor);
+}
+
+.ui {
+    font-family: var(--font-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .card,
+    .split-bar span,
     .dmg {
-        position: absolute;
-        top: 0; bottom: 0; left: 0;
-        background: color-mix(in srgb, var(--color-isk-billion) 8%, transparent);
-        animation: grow 0.5s ease-out 0.25s both;
-        transform-origin: left;
-    }
-    .fb {
-        font-family: var(--font-mono);
-        font-size: 10px;
-        color: var(--color-isk-billion);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
-    }
-
-    .more {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        color: var(--color-text-faint);
-        background: var(--color-feed-bg);
-        border: 0;
-        border-bottom: 2px solid transparent;
-        padding: 0.4rem;
-        text-align: center;
-        cursor: pointer;
-        list-style: none;
-        transition: color 0.15s, border-color 0.15s;
-    }
-    .more:hover { color: var(--color-isk-billion); border-bottom-color: var(--color-isk-billion); }
-
-    .grp {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--color-neon-green);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
+        animation: none;
     }
 
     .pulse-dot {
-        display: inline-block;
-        width: 6px; height: 6px;
-        border-radius: 50%;
-        background: var(--color-isk-billion);
-        box-shadow: 0 0 6px var(--color-isk-billion);
-        margin-right: 4px;
-        vertical-align: middle;
-        animation: blink 1.4s steps(2) infinite;
+        animation: none;
     }
-    @keyframes blink { 50% { opacity: 0.2; } }
-
-    .act {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        text-align: center;
-        color: var(--color-text-faint);
-        background: var(--color-feed-bg);
-        border-bottom: 2px solid transparent;
-        padding: 0.45rem 0.5rem;
-        transition: color 0.15s, border-color 0.15s, background 0.15s;
-    }
-    .act:hover { color: var(--color-text-body); border-bottom-color: var(--color-text-faint); background: #1b212b; }
-    .act-primary { color: var(--color-neon-green); }
-    .act-primary:hover { color: var(--color-neon-green); border-bottom-color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
-
-    .ui { font-family: var(--font-body); }
-
-    @media (prefers-reduced-motion: reduce) {
-        .card, .split-bar span, .dmg { animation: none; }
-        .pulse-dot { animation: none; }
-    }
+}
