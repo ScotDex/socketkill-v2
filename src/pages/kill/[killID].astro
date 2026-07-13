@@ -346,7 +346,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DESTROYED</span><span style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
-                        <div class="row"><span class="k">VERDICT</span><span class="v">PLACEHOLDER</span></div>
                         {splitTotal > 0 && (
                             <div class="split-bar" title={`${droppedPct}% dropped`}>
                                 <span style={`width:${droppedPct}%`}></span>
