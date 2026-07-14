@@ -1,5 +1,5 @@
 details {
-    interpolate-size: allow-keywords; /* Future-proofing for standard height transitions */
+    interpolate-size: allow-keywords; 
 }
 
 details::details-content {
@@ -257,9 +257,6 @@ details[open]::details-content {
     font-family: var(--font-body);
 }
 
-/* ============================================================
-   Manifest tabs (replaces .loot-filter dropdown)
-   ============================================================ */
 .tabs {
     display: flex;
     gap: 2px;
@@ -295,9 +292,6 @@ details[open]::details-content {
     text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
 }
 
-/* ============================================================
-   Victim dossier
-   ============================================================ */
 .cover {
     position: relative;
     aspect-ratio: 16 / 7;
@@ -319,7 +313,7 @@ details[open]::details-content {
     align-items: flex-end;
     gap: 0.75rem;
     padding: 0 0.75rem;
-    margin-top: -2.6rem; /* pulls the portrait up over the cover; ~half the portrait height */
+    margin-top: -2.6rem; 
     position: relative;
 }
 
