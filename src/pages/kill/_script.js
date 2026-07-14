@@ -1,5 +1,7 @@
 // --- EFT export copy (unchanged) ---
 const btn = document.getElementById('eft-btn')
+const eftLabel = btn?.textContent
+let eftTimer
 btn?.addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(btn.dataset.eft || '') }
   catch {
@@ -7,12 +9,11 @@ btn?.addEventListener('click', async () => {
     ta.value = btn.dataset.eft || ''; document.body.appendChild(ta)
     ta.select(); document.execCommand('copy'); ta.remove()
   }
-  const orig = btn.textContent
+  clearTimeout(eftTimer)
   btn.textContent = 'COPIED ✓'
-  setTimeout(() => { btn.textContent = orig }, 1500)
+  eftTimer = setTimeout(() => { btn.textContent = eftLabel }, 1500)
 })
 
-// --- Manifest tabs (replaces the loot-filter dropdown) ---
 const tabs = document.getElementById('loot-tabs')
 const manifest = document.getElementById('manifest')
 if (tabs && manifest) {
@@ -49,7 +50,6 @@ if (tabs && manifest) {
   })
 }
 
-// --- Fit preview modal (unchanged) ---
 const fitBtn = document.getElementById('fit-btn')
 const fitModal = document.getElementById('fit-modal')
 const fitFrame = document.getElementById('fit-frame')
@@ -70,7 +70,6 @@ fitModal?.addEventListener('click', (e) => {
   if (e.target === fitModal) fitModal.close()
 })
 
-// --- System/region activity (kept: no-ops if the rows aren't in the markup) ---
 async function loadActivity(rowId, param) {
   const row = document.getElementById(rowId)
   const id = row?.dataset.id
@@ -79,7 +78,7 @@ async function loadActivity(rowId, param) {
     const res = await fetch(`https://ws.socketkill.com/api/search?${param}=${id}&window=1h`)
     if (!res.ok) return
     const data = await res.json()
-    row.querySelector('[data-count]').textContent = `${data.total} KILLS/HR`
+    row.querySelector('[data-count]').textContent = `${data.total} HR`
     row.hidden = false
   } catch { }
 }
