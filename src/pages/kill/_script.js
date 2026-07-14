@@ -1,4 +1,4 @@
-
+// --- EFT export copy (unchanged) ---
 const btn = document.getElementById('eft-btn')
 btn?.addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(btn.dataset.eft || '') }
@@ -12,9 +12,10 @@ btn?.addEventListener('click', async () => {
   setTimeout(() => { btn.textContent = orig }, 1500)
 })
 
-const filter = document.getElementById('loot-filter')
+// --- Manifest tabs (replaces the loot-filter dropdown) ---
+const tabs = document.getElementById('loot-tabs')
 const manifest = document.getElementById('manifest')
-if (filter && manifest) {
+if (tabs && manifest) {
   const groups = [...manifest.querySelectorAll('[data-group]')]
   const empty = document.getElementById('manifest-empty')
 
@@ -37,32 +38,39 @@ if (filter && manifest) {
     if (empty) empty.hidden = anyVisible
   }
 
-  filter.addEventListener('change', () => apply(filter.value))
+  tabs.addEventListener('click', (e) => {
+    const active = e.target.closest('.tab')
+    if (!active) return
+    for (const t of tabs.querySelectorAll('.tab')) {
+      t.classList.toggle('is-active', t === active)
+      t.setAttribute('aria-selected', t === active ? 'true' : 'false')
+    }
+    apply(active.dataset.mode)
+  })
 }
 
+// --- Fit preview modal (unchanged) ---
 const fitBtn = document.getElementById('fit-btn')
 const fitModal = document.getElementById('fit-modal')
 const fitFrame = document.getElementById('fit-frame')
 const fitClose = document.getElementById('fit-close')
 
 fitBtn?.addEventListener('click', () => {
-
   if (!window.matchMedia('(min-width: 768px)').matches) {
     window.open(fitBtn.dataset.editorUrl, '_blank', 'noopener,noreferrer')
     return
   }
-
   if (fitFrame && !fitFrame.src) fitFrame.src = fitFrame.dataset.src
   fitModal?.showModal()
 })
 
 fitClose?.addEventListener('click', () => fitModal?.close())
 
-
 fitModal?.addEventListener('click', (e) => {
   if (e.target === fitModal) fitModal.close()
 })
 
+// --- System/region activity (kept: no-ops if the rows aren't in the markup) ---
 async function loadActivity(rowId, param) {
   const row = document.getElementById(rowId)
   const id = row?.dataset.id
@@ -77,58 +85,3 @@ async function loadActivity(rowId, param) {
 }
 loadActivity('sys-activity', 'system')
 loadActivity('reg-activity', 'region')
-
-
-const EMOTES = [
-  { key: 'plus1', label: '+1' },
-  { key: 'f', label: 'F' },
-  { key: 'nice-feed', label: 'nice feed' },
-  { key: 'o7', label: 'o7' },
-  { key: 'gf', label: 'gf' },
-  { key: '67', label: '67' },
-  { key: 'lol', label: 'lol' },
-  { key: 'RMT', label: 'RMT' },
-  { key: 'FFS', label: 'FFS' },
-  { key: 'RIP', label: 'RIP' },
-  { key: 'Skill Issue', label: 'Skill Issue' },
-  { key: 'Loot fairy says GTF', label: 'Loot fairy says GTF' },
-]
-
-const list = document.getElementById('react-list')
-const killId = list?.dataset.kill
-
-function renderReactions(counts) {
-  if (!list) return
-  const rows = EMOTES
-    .map(e => ({ ...e, count: counts[e.key] || 0 }))
-    .sort((a, b) => b.count - a.count)
-  list.innerHTML = rows.map(r => `
-        <li class="row">
-            <button type="button" class="react-btn link" data-key="${r.key}">▲ ${r.label}</button>
-            <span class="v tabular-nums">${r.count}</span>
-        </li>`).join('')
-}
-
-async function loadReactions() {
-  if (!killId) return
-  try {
-    const res = await fetch(`https://ws.socketkill.com/api/reactions/${killId}`)
-    if (!res.ok) return
-    renderReactions((await res.json()).reactions || {})
-  } catch { }
-}
-
-list?.addEventListener('click', async (e) => {
-  const key = e.target.closest('.react-btn')?.dataset.key
-  if (!key) return
-  try {
-    const res = await fetch(`https://ws.socketkill.com/api/reactions/${killId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ emoteKey: key }),
-    })
-    if (res.ok) renderReactions((await res.json()).reactions || {})
-  } catch { /* silent */ }
-})
-
-loadReactions()

@@ -186,63 +186,108 @@ const hiddenAttackers = sortedAttackers.slice(5)
         <h1 class="kill-headline">{title}</h1>
         <p class="kill-sub">{kill.system.name} | {kill.system.region} -  {killTime}</p>
         </header>
-        <main class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto relative z-10">
-            <section class="md:col-span-3 flex flex-col gap-4">
+        <main class="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-4 p-4 max-w-7xl mx-auto relative z-10">
+
+            <!-- SIDEBAR -->
+            <section class="flex flex-col gap-4">
+
+                <!-- VICTIM DOSSIER -->
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                     <header class="card-h flex justify-between items-center">
-                        <span> target destroyed</span>
-                        <span class="tag">WRECK SCANNED</span>
-                    </header>
-                    <div class="wreck">
-                        <img src={image} class="w-full h-auto" alt={kill.victim.ship} loading="lazy" />
-                    </div>
-                    <div class="p-3 border-t border-[var(--color-eve-border)]">
-                        <div class="ui font-semibold text-white text-lg">{kill.victim.ship}</div>
-                        <div class="font-mono font-bold tabular-nums" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</div>
-                    </div>
-                </div>
-
-                <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
-                    <header class="card-h flex justify-between items-center">
-                        <span> {kill.victim.characterID ? 'pilot id' : 'corp id'}</span>
+                        <span>victim dossier</span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
-                    <div class="p-3 space-y-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-black border border-[var(--color-eve-border)] overflow-hidden flex-shrink-0">
-                                {kill.victim.characterID && <img src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=64`} class="w-full h-full object-cover" alt="" loading="lazy" />}
-                            </div>
-                            <div class="ui font-semibold text-white text-[15px] truncate">
+
+                    {shipTypeID && (
+                        <div class="cover">
+                            <img src={image} alt={kill.victim.ship} loading="lazy" />
+                        </div>
+                    )}
+
+                    <div class="ident">
+                        {kill.victim.characterID && (
+                            <img class="portrait-sm" src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=128`} alt={kill.victim.name} loading="lazy" />
+                        )}
+                        <div class="who">
+                            <div class="nm">
                                 {kill.victim.characterID
                                     ? <a href={externalLink('character', kill.victim.characterID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.name}</a>
                                     : kill.victim.name}
                             </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 flex-shrink-0">
-                                <img src={`https://images.evetech.net/corporations/${kill.victim.corporationID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />
-                            </div>
-                            <div class="ui font-semibold text-white/90 text-sm truncate">
+                            <div class="af">
                                 {kill.victim.corporationID
                                     ? <a href={externalLink('corp', kill.victim.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.corp}</a>
                                     : kill.victim.corp}
                             </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 flex-shrink-0">
-                                {kill.victim.allianceID && <img src={`https://images.evetech.net/alliances/${kill.victim.allianceID}/logo?size=64`} class="w-full h-full object-contain" alt="" loading="lazy" />}
-                            </div>
-                            <div class="ui font-semibold text-white/90 text-sm truncate">
+                            <div class="af">
                                 {kill.victim.allianceID
                                     ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
                                     : (kill.victim.alliance || 'Non Affiliate')}
                             </div>
                         </div>
+                        <div class="dossier-badges">
+                            {kill.victim.corporationID && (
+                                <img src={`https://images.evetech.net/corporations/${kill.victim.corporationID}/logo?size=64`} alt="" loading="lazy" />
+                            )}
+                            {kill.victim.allianceID && (
+                                <img src={`https://images.evetech.net/alliances/${kill.victim.allianceID}/logo?size=64`} alt="" loading="lazy" />
+                            )}
+                        </div>
                     </div>
+
+                    <div class="dossier-rows">
+                        <div class="row"><span class="k">SHIP</span><span class="v">{kill.victim.ship}</span></div>
+                        <div class="row"><span class="k">SYSTEM</span>
+                            <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
+                        <div class="row"><span class="k">REGION</span>
+                            <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.region}</a></div>
+                        <div class="row"><span class="k">SEC.STATUS</span>
+                            <span class="chip" style={`--c:${sec.color}`}>{sec.label}</span></div>
+                        <div class="row"><span class="k">TIME</span><span class="v text-xs">{killTime}</span></div>
+                        {kill.victim.damageTaken != null && (
+                            <div class="row"><span class="k">DAMAGE TAKEN</span>
+                                <span class="v" style="color: var(--color-isk-billion)">{kill.victim.damageTaken.toLocaleString()}</span></div>
+                        )}
+                        <div class="row"><span class="k">ATTACKERS</span><span class="v">{kill.attackerCount}</span></div>
+                        <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
+                            <span class="k">SYSTEM STATS</span>
+                            <span class="v" data-count></span></div>
+                        <div class="row" id="reg-activity" data-id={kill.system?.regionID ?? ''} hidden>
+                            <span class="k">REGION STATS</span>
+                            <span class="v" data-count></span></div>
+
+                        <div class="row mt-2"><span class="k">TOTAL VALUE</span>
+                            <span class="v" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">DROPPED</span>
+                            <span class="v" style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">DESTROYED</span>
+                            <span class="v" style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
+                        <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
+                        {splitTotal > 0 && (
+                            <div class="split-bar" title={`${droppedPct}% dropped`}>
+                                <span style={`width:${droppedPct}%`}></span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div class="dossier-actions">
+                        {fitPreviewUrl ? (
+                            <button type="button" id="fit-btn"
+                                data-fit-url={fitPreviewUrl}
+                                data-editor-url={fitEditorUrl}
+                                class="act act-primary">VIEW FIT</button>
+                        ) : (
+                            <span class="act" style="opacity:0.4; cursor:default">VIEW FIT</span>
+                        )}
+                        <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
+                        <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary">SHARE ON X</a>
+                    </div>
+
                     <footer class="card-f" style="color: var(--color-isk-billion)"><span class="pulse-dot"></span> status: dead</footer>
                 </div>
 
-                <div class="card" style="--card-c: var(--color-isk-billion); --d: 120ms">
+                <!-- ATTACKERS -->
+                <div class="card" style="--card-c: var(--color-isk-billion); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
                         <span>attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
@@ -261,14 +306,15 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 </div>
             </section>
 
-            <section class="md:col-span-6 card self-start" style="--card-c: var(--color-neon-green); --d: 90ms">
+            <!-- MAIN: MANIFEST -->
+            <section class="card self-start" style="--card-c: var(--color-neon-green); --d: 45ms">
                 <header class="card-h flex justify-between items-center">
                     <span> details</span>
-                    <select id="loot-filter" class="loot-filter" aria-label="Filter items">
-                        <option value="all">ALL</option>
-                        <option value="dropped">DROPPED</option>
-                        <option value="destroyed">DESTROYED</option>
-                    </select>
+                    <div class="tabs" id="loot-tabs" role="tablist">
+                        <button type="button" class="tab is-active" data-mode="all" role="tab" aria-selected="true">ALL</button>
+                        <button type="button" class="tab" data-mode="dropped" role="tab" aria-selected="false">DROPPED</button>
+                        <button type="button" class="tab" data-mode="destroyed" role="tab" aria-selected="false">DESTROYED</button>
+                    </div>
                 </header>
 
                 {orderedGroups.length === 0 ? (
@@ -316,67 +362,13 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <div id="manifest-empty" class="ui text-sm text-[var(--color-text-faint)] italic" hidden>&gt; NO MATCHING ITEMS</div>
                     </div>
                 )}
-            </section>
 
-            <section class="md:col-span-3 flex flex-col gap-4">
-                <div class="card" style="--card-c: var(--color-terminal-blue); --d: 0ms">
-                    <header class="card-h">location data</header>
-                    <div class="p-3 space-y-2 text-sm font-mono">
-                        <div class="row"><span class="k">SYSTEM</span>
-                            <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.name}</a></div>
-                        <div class="row"><span class="k">REGION</span>
-                            <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.region}</a></div>
-                        <div class="row"><span class="k">SEC.STATUS</span>
-                            <span class="chip" style={`--c:${sec.color}`}>{sec.label}</span></div>
-                        <div class="row"><span class="k">TIME</span><span class="v text-xs tabular-nums">{killTime}</span></div>
-                        <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
-                        <span class="k">SYSTEM STATS</span>
-                        <span class="v tabular-nums" data-count></span></div>
-                        <div class="row" id="reg-activity" data-id={kill.system?.regionID ?? ''} hidden>
-                        <span class="k">REGION STATS</span>
-                        <span class="v tabular-nums" data-count></span></div>
-                    </div>
-                    <footer class="card-f" style="color: var(--color-terminal-blue)">&gt; coordinates logged</footer>
-                </div>
-
-                <div class="card" style={`--card-c: ${valueTier}; --d: 60ms`}>
-                    <header class="card-h">loot fairy gauge</header>
-                    <div class="p-3 space-y-2 text-sm font-mono tabular-nums">
-                        <div class="row"><span class="k">TOTAL VALUE</span><span class="font-bold" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
-                        <div class="row"><span class="k">DROPPED</span><span style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
-                        <div class="row"><span class="k">DESTROYED</span><span style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
-                        <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
-                        {splitTotal > 0 && (
-                            <div class="split-bar" title={`${droppedPct}% dropped`}>
-                                <span style={`width:${droppedPct}%`}></span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div class="card" style="--card-c: var(--color-neon-green); --d: 90ms">
-    <header class="card-h">crowd verdict</header>
-    <ul id="react-list" class="p-3 space-y-1 text-sm font-mono" data-kill={id}></ul>
-    <footer class="card-f" style="color: var(--color-neon-green)">&gt; votes logged</footer>
-</div>
-
-                <div class="card" style="--card-c: var(--color-neon-green); --d: 120ms">
-                    <header class="card-h">actions</header>
-                    <div class="grid grid-cols-2 gap-1.5 p-3">
-                        {fitPreviewUrl ? (
-                            <button type="button" id="fit-btn"
-                                data-fit-url={fitPreviewUrl}
-                                data-editor-url={fitEditorUrl}
-                                class="act act-primary">VIEW FIT</button>
-                        ) : (
-                            <span class="act" style="opacity:0.4; cursor:default">VIEW FIT</span>
-                        )}
-                        <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">ZKILLBOARD</a>
-                        <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
-                        <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="act">EVE-KILL</a>
-                        <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary col-span-2">SHARE ON X</a>
-                    </div>
-                </div>
+                <footer class="card-f" style="color: var(--color-text-faint)">
+                    &gt; cross-ref:
+                    <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="link">ZKILLBOARD</a>
+                    ·
+                    <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="link">EVE-KILL</a>
+                </footer>
             </section>
         </main>
 

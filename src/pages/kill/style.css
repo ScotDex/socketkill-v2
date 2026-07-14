@@ -66,36 +66,6 @@ details summary::-webkit-details-marker {
     background: #000;
 }
 
-.loot-filter {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    color: var(--color-text-faint);
-    background: var(--color-feed-bg);
-    border: 1px solid var(--color-eve-border);
-    border-radius: 0;
-    padding: 0.2rem 1.4rem 0.2rem 0.5rem;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--color-text-faint) 50%), linear-gradient(135deg, var(--color-text-faint) 50%, transparent 50%);
-    background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
-    transition: color 0.15s, border-color 0.15s;
-}
-
-.loot-filter:hover {
-    color: var(--color-neon-green);
-    border-color: var(--color-neon-green);
-}
-
-.loot-filter option {
-    background: var(--color-feed-bg);
-    color: var(--color-text-body);
-}
-
 .card-f {
     font-family: var(--font-mono);
     font-size: 10px;
@@ -273,6 +243,147 @@ details summary::-webkit-details-marker {
 
 .ui {
     font-family: var(--font-body);
+}
+
+/* ============================================================
+   Manifest tabs (replaces .loot-filter dropdown)
+   ============================================================ */
+.tabs {
+    display: flex;
+    gap: 2px;
+}
+
+.tab {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+    color: var(--color-text-body);
+}
+
+.tab.is-active {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+    text-shadow: var(--shadow-phosphor);
+}
+
+.tab[data-mode="destroyed"].is-active {
+    color: var(--color-isk-billion);
+    border-bottom-color: var(--color-isk-billion);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+}
+
+/* ============================================================
+   Victim dossier
+   ============================================================ */
+.cover {
+    position: relative;
+    aspect-ratio: 16 / 7;
+    overflow: hidden;
+}
+
+.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+    mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+
+.ident {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 0 0.75rem;
+    margin-top: -2.6rem; /* pulls the portrait up over the cover; ~half the portrait height */
+    position: relative;
+}
+
+.ident .portrait-sm {
+    width: 4.5rem;
+    height: 4.5rem;
+    flex-shrink: 0;
+    border: 1px solid var(--color-eve-border);
+    background: #000;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+
+.ident .who {
+    min-width: 0;
+    flex: 1;
+    padding-bottom: 0.1rem;
+}
+
+.ident .who .nm {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1.15;
+}
+
+.ident .who .af {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--color-text-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dossier-badges {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    padding-bottom: 0.15rem;
+}
+
+.dossier-badges img {
+    width: 2.1rem;
+    height: 2.1rem;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid var(--color-eve-border);
+    padding: 2px;
+}
+
+.dossier-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.75rem;
+    font-size: 13px;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.dossier-rows .v {
+    font-weight: 600;
+    color: #fff;
+    text-align: right;
+}
+
+.dossier-rows .v .sub {
+    font-weight: 400;
+    color: var(--color-text-faint);
+}
+
+.dossier-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    padding: 0.5rem 0.75rem 0.75rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
