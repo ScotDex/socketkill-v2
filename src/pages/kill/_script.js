@@ -78,7 +78,7 @@ async function loadActivity(rowId, param) {
     const res = await fetch(`https://ws.socketkill.com/api/search?${param}=${id}&window=1h`)
     if (!res.ok) return
     const data = await res.json()
-    row.querySelector('[data-count]').textContent = `${data.total} HR`
+    row.querySelector('[data-count]').textContent = `${data.total} KILLS/HR`
     row.hidden = false
   } catch { }
 }
