@@ -94,6 +94,10 @@ const shipTypeID = kill.victim?.shipTypeID ?? null
 const image = shipTypeID
     ? `https://ws.socketkill.com/og/${id}`
     : 'https://edge.socketkill.com/socket-preview-v2.png'
+
+const shipRenderUrl = shipTypeID
+    ? `https://images.evetech.net/types/${shipTypeID}/render?size=512`
+    : null
 const canonicalUrl = `https://socketkill.com/kill/${id}`
 
 const fitPreviewUrl = kill.killmailHash
@@ -201,7 +205,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
 
                     {shipTypeID && (
                         <div class="cover">
-                            <img src={image} alt={kill.victim.ship} loading="lazy" />
+                            <img src={shipRenderUrl} alt={kill.victim.ship} loading="lazy" />
                         </div>
                     )}
 
