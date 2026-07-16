@@ -92,7 +92,7 @@ const description = buildDescription(kill)
 
 const shipTypeID = kill.victim?.shipTypeID ?? null
 const image = shipTypeID
-    ? `https://images.evetech.net/types/${shipTypeID}/render?size=512`
+    ? `https://ws.socketkill.com/og/${id}`
     : 'https://edge.socketkill.com/socket-preview-v2.png'
 const canonicalUrl = `https://socketkill.com/kill/${id}`
 
