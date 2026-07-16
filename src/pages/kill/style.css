@@ -1,5 +1,5 @@
 details {
-    interpolate-size: allow-keywords; 
+    interpolate-size: allow-keywords;
 }
 
 details::details-content {
@@ -12,6 +12,7 @@ details::details-content {
 details[open]::details-content {
     block-size: auto;
 }
+
 .card {
     background:
         linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
@@ -315,7 +316,7 @@ details[open]::details-content {
     align-items: flex-end;
     gap: 0.75rem;
     padding: 0 0.75rem;
-    margin-top: -2.6rem; 
+    margin-top: -2.6rem;
     position: relative;
 }
 
@@ -377,8 +378,8 @@ details[open]::details-content {
 }
 
 .dossier-rows .v {
-    font-weight: 600;
-    color: #fff;
+    font-weight: 400;
+    color: var(--color-text-body);
     text-align: right;
 }
 
@@ -397,8 +398,8 @@ details[open]::details-content {
 @media (prefers-reduced-motion: reduce) {
 
     details::details-content {
-    transition: none;
-}
+        transition: none;
+    }
 
     .card,
     .split-bar span,
