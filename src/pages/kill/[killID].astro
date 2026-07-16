@@ -87,8 +87,28 @@ function buildDescription(data) {
     return main
 }
 
+function buildOgDescription(data) {
+    const parts = []
+
+    if (data.finalBlow && data.finalBlow.name && data.finalBlow.name !== 'Unknown') {
+        const fbAffiliation = data.finalBlow.corp || data.finalBlow.alliance
+        const fbLabel = fbAffiliation ? `${data.finalBlow.name} of ${fbAffiliation}` : data.finalBlow.name
+        let fb = `Final blow by ${fbLabel} in ${article(data.finalBlow.ship)} ${data.finalBlow.ship}`
+        if (data.attackerCount > 1) fb += ` — ${data.attackerCount} attackers`
+        else if (data.attackerCount === 1) fb += ` — solo kill`
+        parts.push(fb)
+    } else {
+        // NPC / unresolvable killer: lead with the weapon-ship instead of "Unknown of Unknown"
+        parts.push(`Destroyed by ${article(data.finalBlow?.ship)} ${data.finalBlow?.ship || 'unknown assailant'}`)
+    }
+
+    if (data.droppedValue) parts.push(`${data.droppedValue} ISK dropped`)
+
+    return parts.join('. ') + '.'
+}
+
 const title = buildTitle(kill)
-const description = buildDescription(kill)
+const description = buildOgDescription(kill)
 
 const shipTypeID = kill.victim?.shipTypeID ?? null
 const image = shipTypeID
