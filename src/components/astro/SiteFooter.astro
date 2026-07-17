@@ -56,10 +56,10 @@
         const el = document.getElementById('npc-count')
         if (!el) return
         try {
-            const res = await fetch('https://api.socketkill.com/stats/npc-kills')
+            const res = await fetch('https://ws.socketkill.com/stats/npc-kills')
             const data = await res.json()
-            if (data?.lifetimeTotal) {
-                el.innerText = data.lifetimeTotal.toLocaleString()
+            if (data?.total) {
+                el.innerText = data.total.toLocaleString()
                 el.style.opacity = '0.5'
                 setTimeout(() => (el.style.opacity = '1'), 200)
             }
