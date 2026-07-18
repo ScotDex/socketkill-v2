@@ -127,8 +127,11 @@ const fitEditorUrl = kill.killmailHash
     ? `https://eveship.fit/?fit=killmail:${id}/${kill.killmailHash}`
     : null
 
+const KILLS_BG_COUNT = 24
+const killsBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.random() * KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
+
 const bgStyle = shipTypeID
-    ? `background-image: linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)), url(https://api.socketkill.com/kills); background-size: cover; background-position: center; background-attachment: fixed;`
+    ? `background-image: linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)), url(${killsBg}); background-size: cover; background-position: center; background-attachment: fixed;`
     : ''
 
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
