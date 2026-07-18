@@ -169,12 +169,32 @@ const splitTotal = droppedIsk + destroyedIsk
 const droppedPct = splitTotal > 0 ? (droppedIsk / splitTotal * 100).toFixed(1) : 0
 const GROUP_LABELS = {
     high: 'HIGH SLOTS', mid: 'MID SLOTS', low: 'LOW SLOTS', rig: 'RIGS',
-    subsystem: 'SUBSYSTEMS', drone: 'DRONE BAY', fighter: 'FIGHTER BAY',
-    cargo: 'CARGO HOLD', implant: 'IMPLANTS', other: 'OTHER'
+    subsystem: 'SUBSYSTEMS', service: 'SERVICE SLOTS',
+    drone: 'DRONE BAY', fighter: 'FIGHTER BAY', booster: 'BOOSTER BAY',
+    frigateBay: 'FRIGATE ESCAPE BAY', corpseBay: 'CORPSE BAY', implant: 'IMPLANTS',
+    cargo: 'CARGO HOLD', fuelBay: 'FUEL BAY', structureFuel: 'STRUCTURE FUEL',
+    oreHold: 'ORE HOLD', gasHold: 'GAS HOLD', mineralHold: 'MINERAL HOLD',
+    salvageHold: 'SALVAGE HOLD', shipHold: 'SHIP HOLD', ammoHold: 'AMMO HOLD',
+    planetaryHold: 'PLANETARY HOLD', materialBay: 'MATERIAL BAY',
+    fleetHangar: 'FLEET HANGAR', shipHangar: 'SHIP HANGAR',
+    mobileDepotHold: 'MOBILE DEPOT', moonMaterialBay: 'MOON MATERIAL BAY',
+    iceHold: 'ICE HOLD', asteroidHold: 'ASTEROID HOLD',
+    expeditionHold: 'EXPEDITION HOLD', other: 'OTHER'
 }
-const GROUP_ORDER = ['high', 'mid', 'low', 'rig', 'subsystem', 'drone', 'fighter', 'cargo', 'implant', 'other']
+const GROUP_ORDER = [
+    'high', 'mid', 'low', 'rig', 'subsystem', 'service',
+    'booster', 'drone', 'fighter', 'frigateBay', 'implant',
+    'cargo', 'fuelBay', 'structureFuel', 'ammoHold',
+    'oreHold', 'gasHold', 'mineralHold', 'iceHold', 'asteroidHold',
+    'salvageHold', 'planetaryHold', 'materialBay', 'moonMaterialBay',
+    'expeditionHold', 'shipHold', 'mobileDepotHold',
+    'fleetHangar', 'shipHangar', 'corpseBay', 'other'
+]
 const groups = kill.items?.groups || {}
-const orderedGroups = GROUP_ORDER.filter(g => groups[g]?.length).map(g => ({ key: g, label: GROUP_LABELS[g], items: groups[g] }))
+const knownKeys = GROUP_ORDER.filter(g => groups[g]?.length)
+const unknownKeys = Object.keys(groups).filter(g => groups[g]?.length && !GROUP_ORDER.includes(g))
+const orderedGroups = [...knownKeys.filter(g => g !== 'other'), ...unknownKeys, ...(knownKeys.includes('other') ? ['other'] : [])]
+    .map(g => ({ key: g, label: GROUP_LABELS[g] || g.toUpperCase(), items: groups[g] }))
 const attackers = kill.attackers || []
 const sortedAttackers = [...attackers].sort((a, b) => {
     if (a.finalBlow === b.finalBlow) return 0
