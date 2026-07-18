@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro'
 import TopTen from '../components/svelte/TopTen.svelte'
 import SiteFooter from '../components/astro/SiteFooter.astro'
 
-const KILLS_BG_COUNT = 24; // ← your actual count
+const KILLS_BG_COUNT = 24; 
 const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.random() * KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`;
 ---
 

@@ -107,7 +107,6 @@
         <a href={`/kill/${k.killID}`} target="_blank" rel="noopener noreferrer"
           class="group grid grid-cols-1 md:grid-cols-12 gap-3 p-3 hover:bg-white/5 transition-colors items-center text-sm cursor-pointer block w-full">
 
-          <!-- time + sec band -->
           <div class="md:col-span-2 flex flex-col gap-1">
             <span class="font-mono text-xs tabular-nums text-[var(--color-text-faint)]">{formatTime(k.time)}</span>
             <span class="sec-chip" style="--c:{SEC_COLORS[k.space] ?? 'var(--color-text-faint)'}">
@@ -115,7 +114,6 @@
             </span>
           </div>
 
-          <!-- ship image + name + victim/corp -->
           <div class="md:col-span-5 flex items-center gap-3 min-w-0">
             <img src={`https://images.evetech.net/types/${k.shipID}/render?size=64`}
               alt="" loading="lazy" width="48" height="48"
