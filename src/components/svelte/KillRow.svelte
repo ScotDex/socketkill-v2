@@ -1,6 +1,5 @@
 <script>
     import { formatIsk } from '../../lib/filter-logic.js'
-    import { onMount } from 'svelte'
 
     let { kill } = $props()
 
@@ -17,7 +16,6 @@
 
 <div
     class="kill-row group relative overflow-hidden flex items-center justify-between border-b border-[#1c2128] border-l-2 border-l-transparent hover:border-l-[var(--color-neon-green)] py-2 px-4 min-h-[64px] {isWhale ? 'whale-row' : ''}"
-    bind:this={rowElement}
     onmousemove={(e) => {
         const r = e.currentTarget.getBoundingClientRect()
         e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
