@@ -1,0 +1,265 @@
+---
+// /src/pages/whoami.astro
+// SWAP: replace with your actual layout import, e.g.:
+// import Base from '../layouts/Base.astro';
+const title = 'whoami — SocketKill';
+---
+
+<!-- SWAP: wrap in <Base title={title}> once import above is fixed -->
+<main class="term">
+
+  <!-- Prompt line — the whole page until a search happens -->
+  <div class="prompt-row">
+    <span class="prompt-label">pilot@socketkill:~$&nbsp;whoami&nbsp;</span>
+    <input
+      id="pilot-input"
+      class="prompt-input"
+      type="text"
+      autocomplete="off"
+      spellcheck="false"
+      autofocus
+      aria-label="Search pilot name"
+    />
+    <span id="block-cursor" class="block-cursor" aria-hidden="true">▮</span>
+  </div>
+
+  <!-- Output stream — lines get printed here -->
+  <div id="output" class="output" aria-live="polite"></div>
+
+  <!-- Identity card template, cloned on successful resolve -->
+  <template id="identity-tpl">
+    <section class="identity">
+      <img class="id-portrait" alt="" width="128" height="128" />
+      <div class="id-meta">
+        <h1 class="id-name"></h1>
+        <p class="id-corp"><img class="id-corp-logo" alt="" width="24" height="24" /><span></span></p>
+        <p class="id-alliance" hidden><img class="id-alliance-logo" alt="" width="24" height="24" /><span></span></p>
+      </div>
+    </section>
+    <section class="losses">
+      <h2 class="losses-head">// RECENT LOSSES — 7D WINDOW</h2>
+      <div class="losses-body"></div>
+    </section>
+  </template>
+
+</main>
+
+<script>
+  const input = document.getElementById('pilot-input');
+  const cursor = document.getElementById('block-cursor');
+  const output = document.getElementById('output');
+  const tpl = document.getElementById('identity-tpl');
+
+  // Block cursor only shows when the input is empty
+  input.addEventListener('input', () => {
+    cursor.hidden = input.value.length > 0;
+  });
+
+  function print(text, cls = '') {
+    const line = document.createElement('p');
+    line.className = `line ${cls}`;
+    line.textContent = text;
+    output.appendChild(line);
+    return line;
+  }
+
+  function clearOutput() {
+    output.innerHTML = '';
+  }
+
+  input.addEventListener('keydown', async (e) => {
+    if (e.key !== 'Enter') return;
+    const name = input.value.trim();
+    if (!name) return;
+
+    clearOutput();
+    const status = print(`resolving "${name}" …`, 'dim');
+
+    try {
+      // 1. Name -> character ID (public ESI, CORS-enabled)
+      const idsRes = await fetch('https://esi.evetech.net/latest/universe/ids/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify([name]),
+      });
+      if (!idsRes.ok) throw new Error(`ESI ${idsRes.status}`);
+      const ids = await idsRes.json();
+      const char = ids.characters?.[0];
+
+      if (!char) {
+        status.remove();
+        print(`no capsuleer found matching "${name}"`, 'err');
+        print('check spelling — ESI name resolution is exact-match', 'dim');
+        return;
+      }
+
+      // 2. Character public info -> corp / alliance IDs
+      const infoRes = await fetch(`https://esi.evetech.net/latest/characters/${char.id}/`);
+      if (!infoRes.ok) throw new Error(`ESI ${infoRes.status}`);
+      const info = await infoRes.json();
+
+      // 3. Corp (+ alliance) names in parallel
+      const [corp, alliance] = await Promise.all([
+        fetch(`https://esi.evetech.net/latest/corporations/${info.corporation_id}/`).then(r => r.ok ? r.json() : null),
+        info.alliance_id
+          ? fetch(`https://esi.evetech.net/latest/alliances/${info.alliance_id}/`).then(r => r.ok ? r.json() : null)
+          : Promise.resolve(null),
+      ]);
+
+      status.remove();
+      renderIdentity(char.id, info, corp, alliance);
+      loadLosses(char.id);
+
+    } catch (err) {
+      status.remove();
+      print('uplink error — ESI unreachable or throttled', 'err');
+      print(String(err.message || err), 'dim');
+    }
+  });
+
+  function renderIdentity(charId, info, corp, alliance) {
+    const node = tpl.content.cloneNode(true);
+
+    const portrait = node.querySelector('.id-portrait');
+    portrait.src = `https://images.evetech.net/characters/${charId}/portrait?size=128`;
+    portrait.alt = info.name;
+
+    node.querySelector('.id-name').textContent = info.name;
+
+    const corpRow = node.querySelector('.id-corp');
+    corpRow.querySelector('img').src = `https://images.evetech.net/corporations/${info.corporation_id}/logo?size=32`;
+    corpRow.querySelector('span').textContent = corp?.name ?? `Corp #${info.corporation_id}`;
+
+    if (alliance) {
+      const aRow = node.querySelector('.id-alliance');
+      aRow.hidden = false;
+      aRow.querySelector('img').src = `https://images.evetech.net/alliances/${info.alliance_id}/logo?size=32`;
+      aRow.querySelector('span').textContent = alliance.name;
+    }
+
+    output.appendChild(node);
+  }
+
+  async function loadLosses(charId) {
+    const body = output.querySelector('.losses-body');
+    if (!body) return;
+    body.innerHTML = '<p class="line dim">querying loss uplink …</p>';
+    try {
+      // Backend param does not exist yet — this degrades gracefully
+      // and lights up when the character filter ships server-side.
+      const res = await fetch(`https://ws.socketkill.com/api/search?character=${charId}&window=7d`);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!data.results?.length) {
+        body.innerHTML = '<p class="line dim">no losses in window — clean sheet</p>';
+        return;
+      }
+      body.innerHTML = '';
+      for (const k of data.results) {
+        const line = document.createElement('p');
+        line.className = 'line loss';
+        line.textContent = `[${k.time ?? '—'}]  ${k.victimName ?? ''}  lost hull #${k.shipID ?? '?'}  in system #${k.systemID ?? '?'}`;
+        body.appendChild(line);
+      }
+    } catch {
+      body.innerHTML = '<p class="line dim">LOSS UPLINK OFFLINE — awaiting backend deploy</p>';
+    }
+  }
+</script>
+
+<style>
+  /* ── Tokens ─────────────────────────────────────────────
+     SWAP: replace these locals with your global.css tokens.
+     Each var below is namespaced --wai- so nothing collides;
+     point them at your real variables, e.g.
+     --wai-bg: var(--sk-bg);                                */
+  .term {
+    --wai-bg: #060a08;        /* green-black, not pure black */
+    --wai-fg: #c8d6cf;        /* dim phosphor */
+    --wai-accent: #35e07c;    /* your green */
+    --wai-dim: #4a5a52;
+    --wai-danger: #ff4d5e;    /* losses */
+    --wai-mono: ui-monospace, 'Cascadia Mono', 'JetBrains Mono', Menlo, monospace;
+
+    min-height: 100vh;
+    background: var(--wai-bg);
+    color: var(--wai-fg);
+    font-family: var(--wai-mono);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem clamp(1rem, 8vw, 6rem);
+  }
+
+  /* ── Prompt ── */
+  .prompt-row {
+    display: flex;
+    align-items: baseline;
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+  }
+  .prompt-label { color: var(--wai-accent); white-space: nowrap; }
+  .prompt-input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--wai-fg);
+    font: inherit;
+    caret-color: var(--wai-accent);
+  }
+  .block-cursor {
+    color: var(--wai-accent);
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── Output ── */
+  .output { margin-top: 2.5rem; }
+  .line { margin: 0.15rem 0; font-size: 0.95rem; }
+  .line.dim { color: var(--wai-dim); }
+  .line.err { color: var(--wai-danger); }
+  .line.loss { color: var(--wai-danger); }
+
+  /* ── Identity card ── */
+  .identity {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid var(--wai-dim);
+  }
+  .id-portrait { display: block; }
+  .id-name {
+    margin: 0 0 0.4rem;
+    font-size: 1.3rem;
+    color: var(--wai-accent);
+    font-weight: 600;
+  }
+  .id-corp, .id-alliance {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+  }
+
+  /* ── Losses ── */
+  .losses-head {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    color: var(--wai-dim);
+    margin: 1.5rem 0 0.5rem;
+    font-weight: 400;
+  }
+
+  /* ── Quality floor ── */
+  .prompt-input:focus-visible { outline: none; } /* caret is the focus signal */
+  @media (prefers-reduced-motion: reduce) {
+    .block-cursor { animation: none; }
+  }
+  @media (max-width: 640px) {
+    .identity { flex-direction: column; align-items: flex-start; }
+  }
+</style>
