@@ -117,7 +117,7 @@
 
           <!-- ship image + name + victim/corp -->
           <div class="md:col-span-5 flex items-center gap-3 min-w-0">
-            <img src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
+            <img src={`https://images.evetech.net/types/${k.shipID}/render?size=64`}
               alt="" loading="lazy" width="48" height="48"
               class="w-12 h-12 flex-shrink-0 bg-black border border-[var(--color-eve-border)] object-cover"
               onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
@@ -125,7 +125,7 @@
               <span class="ui font-semibold text-[15px] text-[var(--color-text-body)] group-hover:text-[var(--color-neon-green)] transition-colors truncate">{shipName(k)}</span>
               <span class="ui text-xs text-[var(--color-text-faint)] truncate flex items-center gap-1.5">
                 {#if k.victimCorpID}
-                  <img src={`https://api.socketkill.com/render/corp/${k.victimCorpID}?size=32`}
+                  <img src={`https://images.evetech.net/corporations/${k.victimCorpID}/logo?size=32`}
                     alt="" loading="lazy" width="16" height="16" class="w-4 h-4 flex-shrink-0"
                     onerror={(e) => { e.currentTarget.style.display = 'none' }} />
                 {/if}

@@ -118,7 +118,7 @@
                  class="group flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 transition-colors h-full">
                 <span class="w-4 flex-shrink-0 font-mono text-xs tabular-nums text-whale-accent/45">{i + 1}</span>
                 <div class="relative w-9 h-9 flex-shrink-0 bg-black border border-eve-border overflow-hidden">
-                  <img src={`https://api.socketkill.com/render/ship/${k.shipID}?size=64`}
+                  <img src={`https://images.evetech.net/types/${k.shipID}/render?size=64`}
                        alt="" loading="lazy" width="36" height="36"
                        class="w-full h-full object-cover"
                        onerror={(e) => { e.currentTarget.style.display = 'none' }} />

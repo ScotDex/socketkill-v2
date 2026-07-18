@@ -1,35 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-    --color-neon-green: #3fb950;        
-    --color-terminal-blue: #58a6ff;    
-    --color-dark-bg: #0a0b0e;           
+    --color-neon-green: #3fb950;
+    --color-terminal-blue: #58a6ff;
+    --color-dark-bg: #0a0b0e;
     --color-border-dim: rgba(63, 185, 80, 0.2);
     --color-border-mid: rgba(63, 185, 80, 0.4);
     --color-border-bright: rgba(63, 185, 80, 0.6);
     --color-text-body: #c9d1d9;
-    --color-whale-accent: #f2cc60;      
-    --color-isk-billion: #ff7b72;       
-    --color-eve-accent: #3fb950;        
+    --color-whale-accent: #f2cc60;
+    --color-isk-billion: #ff7b72;
+    --color-eve-accent: #3fb950;
     --color-eve-dark: #0a0b0e;
     --color-eve-border: rgba(255, 255, 255, 0.1);
 
-    --font-mono: 'Share Tech Mono', monospace;   
+    --font-mono: 'Share Tech Mono', monospace;
     --font-body: 'Exo 2', sans-serif;
 
-    --color-glass-bg: #0d0f13;          
-    --color-feed-bg: #161b22;           
-    --color-text-faint: rgba(255, 255, 255, 0.55); 
+    --color-glass-bg: #0d0f13;
+    --color-feed-bg: #161b22;
+    --color-text-faint: rgba(255, 255, 255, 0.55);
     --color-whale: rgba(242, 204, 96, 0.05);
 
     --shadow-phosphor:
         0 0 2px rgba(63, 185, 80, 0.6),
         0 0 4px rgba(63, 185, 80, 0.3),
-        0 0 1px rgba(255, 255, 255, 0.2);   
+        0 0 1px rgba(255, 255, 255, 0.2);
 
     --shadow-feed:
         0 8px 24px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(255, 255, 255, 0.04);  
+        0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 @font-face {
@@ -43,8 +43,8 @@
 
 .art-bg {
     background-image:
-        linear-gradient(rgba(10,12,16,0.85), rgba(10,12,16,0.95)),
-        url(https://api.socketkill.com/kills);
+        linear-gradient(rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0.95)),
+        var(--art-bg-url, url(https://edge.socketkill.com/kills/kills-001.webp));
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -112,21 +112,22 @@ body {
 }
 
 .kill-headline {
-        font-family: var(--font-body);
-        font-size: 1.15rem;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--color-text-body);
-        text-shadow: 0 0 10px color-mix(in srgb, var(--color-neon-green) 25%, transparent);
-    }
-    .kill-sub {
-        font-family: var(--font-mono);
-        font-size: 11px;
-        letter-spacing: 0.14em;
-        color: var(--color-text-faint);
-        margin-top: 0.25rem;
-    }
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-body);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--color-neon-green) 25%, transparent);
+}
+
+.kill-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--color-text-faint);
+    margin-top: 0.25rem;
+}
 
 @keyframes fade-card-in {
     from {
@@ -210,6 +211,7 @@ body {
         padding-right: 0.5rem;
         min-height: 56px;
     }
+
     header {
         display: none;
     }
@@ -223,9 +225,11 @@ body {
         height: 48px;
         margin-right: 0.5rem;
     }
+
     .kill-row a>div:nth-child(2) {
         margin-left: 0;
     }
+
     .kill-row .ship-name {
         font-size: 0.875rem;
         /* text-sm */

@@ -2,6 +2,9 @@
 // src/pages/search.astro
 import Base from '../layouts/Base.astro'
 import SearchResults from '../components/svelte/SearchResults.svelte'
+
+const KILLS_BG_COUNT = 24;
+const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.random() * KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`;
 ---
 
 <Base
@@ -10,7 +13,7 @@ import SearchResults from '../components/svelte/SearchResults.svelte'
   ogDescription="Review all killmails from 0001 UTC onwards, configure your own filter to view whatever kills you have in mind"
   ogUrl="https://socketkill.com/search"
 >
-<main class="art-bg min-h-screen">
+<main class="art-bg min-h-screen" style={`--art-bg-url: url(${artBg})`}>
   <div class="search-page">
     <SearchResults client:load />
   </div>
