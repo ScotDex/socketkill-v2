@@ -8,7 +8,7 @@ const {
     ogImageWidth="1200",
     ogImageHeight="630",
     ogType = "website",
-    twitterCard="summary_large_image"
+    twitterCard="summary"
 } = Astro.props
 
 
@@ -56,9 +56,6 @@ const jsonLd = {
         <meta name="theme-color" content="#0a0b0e" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:image:alt" content="Socket.Kill live kill feed preview" />
-
-
-        <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "9a7b8334fd974f46a3b570cbc18d90b1"}'></script>
         {Astro.url.pathname === '/' && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
         <slot name="head"/>
     </head>

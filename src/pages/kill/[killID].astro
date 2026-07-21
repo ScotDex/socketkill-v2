@@ -71,21 +71,6 @@ function buildEft(kill) {
 }
 const eftText = buildEft(kill)
 
-function buildDescription(data) {
-    const victimAffiliation = data.victim.corp || data.victim.alliance
-    const victimLabel = victimAffiliation ? `${data.victim.name} of ${victimAffiliation}` : data.victim.name
-    let main = `${victimLabel} lost ${article(data.victim.ship)} ${data.victim.ship} in ${data.system.name} | ${data.system.region}`
-    if (data.totalValue) main += ` worth ${data.totalValue} ISK`
-
-    if (data.finalBlow) {
-        const fbAffiliation = data.finalBlow.corp || data.finalBlow.alliance
-        const fbLabel = fbAffiliation ? `${data.finalBlow.name} of ${fbAffiliation}` : data.finalBlow.name
-        let fb = `Final blow by ${fbLabel} in ${article(data.finalBlow.ship)} ${data.finalBlow.ship}`
-        if (data.attackerCount > 1) fb += ` with ${data.attackerCount} attackers`
-        return `${main}: ${fb}`
-    }
-    return main
-}
 
 function buildOgDescription(data) {
     const parts = []
@@ -98,7 +83,6 @@ function buildOgDescription(data) {
         else if (data.attackerCount === 1) fb += ` — solo kill`
         parts.push(fb)
     } else {
-        // NPC / unresolvable killer: lead with the weapon-ship instead of "Unknown of Unknown"
         parts.push(`Destroyed by ${article(data.finalBlow?.ship)} ${data.finalBlow?.ship || 'unknown assailant'}`)
     }
 
@@ -141,9 +125,9 @@ function classifySecurity(system) {
     if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
     if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', color: '#b07ce8' }
     const s = system.security
-    if (s >= 0.5) return { label: `HIGHSEC ${s.toFixed(1)}`, color: 'var(--color-neon-green)' }
-    if (s > 0.0)  return { label: `LOWSEC ${s.toFixed(1)}`, color: 'var(--color-whale-accent)' }
-    return { label: `NULLSEC ${s.toFixed(1)}`, color: 'var(--color-isk-billion)' }
+    if (s >= 0.5) return { label: `HS ${s.toFixed(1)}`, color: 'var(--color-neon-green)' }
+    if (s > 0.0)  return { label: `LS ${s.toFixed(1)}`, color: 'var(--color-whale-accent)' }
+    return { label: `NULL ${s.toFixed(1)}`, color: 'var(--color-isk-billion)' }
 }
 const sec = classifySecurity(kill.system)
 const secShort = kill.system?.security != null ? kill.system.security.toFixed(1) : '?'
@@ -232,26 +216,20 @@ const hiddenAttackers = sortedAttackers.slice(5)
     <div class="kill-screen" style={bgStyle}>
     <header class="max-w-7xl mx-auto px-4 pt-6 relative z-10">
         <h1 class="kill-headline">{title}</h1>
-        <p class="kill-sub">{kill.system.name} | {kill.system.region} -  {killTime}</p>
+        <p class="kill-sub">{kill.system.name} | {kill.system.region} - {killTime}</p>
         </header>
         <main class="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-4 p-4 max-w-7xl mx-auto relative z-10">
-
-            <!-- SIDEBAR -->
             <section class="flex flex-col gap-4">
-
-                <!-- VICTIM DOSSIER -->
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                     <header class="card-h flex justify-between items-center">
                         <span>victim dossier</span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
-
                     {shipTypeID && (
                         <div class="cover">
                             <img src={shipRenderUrl} alt={kill.victim.ship} loading="lazy" />
                         </div>
                     )}
-
                     <div class="ident">
                         {kill.victim.characterID && (
                             <img class="portrait-sm" src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=128`} alt={kill.victim.name} loading="lazy" />
@@ -282,7 +260,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
                             )}
                         </div>
                     </div>
-
                     <div class="dossier-rows">
                         <div class="row"><span class="k">SHIP</span><span class="v">{kill.victim.ship}</span></div>
                         <div class="row"><span class="k">SYSTEM</span>
@@ -317,7 +294,6 @@ const hiddenAttackers = sortedAttackers.slice(5)
                             </div>
                         )}
                     </div>
-
                     <div class="dossier-actions">
                         {fitPreviewUrl ? (
                             <button type="button" id="fit-btn"
@@ -330,11 +306,8 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act act-primary">SHARE ON X</a>
                     </div>
-
                     <footer class="card-f" style="color: var(--color-isk-billion)"><span class="pulse-dot"></span> status: dead</footer>
                 </div>
-
-                <!-- ATTACKERS -->
                 <div class="card" style="--card-c: var(--color-isk-billion); --d: 60ms">
                     <header class="card-h flex justify-between items-center">
                         <span>attackers</span>
