@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro'
+---
+
+<Base title="Ticker — Live Kill Overlay for OBS | Socketkill.com">
+    <div class="kill-screen">
+        <main class="relative z-10 max-w-3xl mx-auto px-4 py-10">
+
+            <!-- HEADER -->
+            <header class="fade-card border-b border-[var(--color-border-dim)] pb-4 mb-8">
+                <h1 class="kill-headline">&gt; SocketKill Ticker <span class="text-[var(--color-neon-green)]/40">// LIVE KILL OVERLAY FOR OBS</span></h1>
+                <p class="kill-sub">TRANSPARENT · REAL-TIME · NO POLLING</p>
+            </header>
+
+            <!-- INTRO -->
+            <section class="fade-card mb-8 text-sm leading-relaxed text-[var(--color-text-body)]">
+                <p>The Ticker is a transparent overlay that shows a single EVE character's kills and losses in real time, designed to sit on top of your stream in OBS. It updates the instant a killmail is processed — no refreshing, no polling.</p>
+                <p class="mt-3 text-[var(--color-text-faint)]">This guide covers setting it up. No coding required.</p>
+            </section>
+
+            <!-- URL BUILDER -->
+            <section class="fade-card mb-8 border border-[var(--color-border-mid)] bg-[var(--color-feed-bg)]/60">
+                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] font-mono text-xs tracking-[0.18em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">// build your overlay url</header>
+                <div class="p-4 space-y-4">
+                    <div>
+                        <label for="char-id" class="block font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)] mb-1.5">Character ID</label>
+                        <input
+                            id="char-id"
+                            type="text"
+                            inputmode="numeric"
+                            placeholder="909008587"
+                            autocomplete="off"
+                            class="w-full bg-[var(--color-dark-bg)] border border-[var(--color-border-dim)] focus:border-[var(--color-border-bright)] outline-none px-3 py-2 font-mono text-sm text-[var(--color-text-body)] placeholder:text-[var(--color-text-faint)]/40"
+                        />
+                    </div>
+
+                    <label class="flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--color-text-faint)] cursor-pointer select-none">
+                        <input id="hide-ship" type="checkbox" class="accent-[var(--color-neon-green)]" />
+                        Hide ship names <span class="text-[var(--color-text-faint)]/50">(tighter overlay)</span>
+                    </label>
+
+                    <div>
+                        <span class="block font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)] mb-1.5">Your URL</span>
+                        <div class="flex gap-2">
+                            <code id="url-out" class="flex-1 min-w-0 truncate bg-[var(--color-dark-bg)] border border-[var(--color-border-dim)] px-3 py-2 font-mono text-xs text-[var(--color-text-faint)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code>
+                            <button id="copy-btn" type="button" class="filter-btn shrink-0 px-4 py-2 font-mono text-xs tracking-[0.14em] uppercase border border-[var(--color-border-mid)] text-[var(--color-text-body)] hover:border-[var(--color-border-bright)] transition-colors">COPY</button>
+                        </div>
+                        <p id="url-hint" class="mt-1.5 font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)]/60">&gt; enter your character id above</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUICK START -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// quick start</h2>
+                <ol class="list-decimal pl-5 space-y-2 text-sm leading-relaxed text-[var(--color-text-body)]">
+                    <li>Find your character ID (see below).</li>
+                    <li>Build your overlay URL:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code></li>
+                    <li>In OBS: Sources → + → Browser, paste the URL, set a width and height.</li>
+                    <li>Position it on your scene. Done — kills and losses appear live.</li>
+                </ol>
+            </section>
+
+            <!-- SCREENSHOT PLACEHOLDER -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// how does it look on screen?</h2>
+                <!-- TODO(Gillen): swap src for a real screenshot on edge.socketkill.com -->
+                <div class="border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/40 min-h-[120px] flex items-center justify-center">
+                    <span class="font-mono text-xs tracking-[0.2em] uppercase text-[var(--color-text-faint)] animate-pulse">&gt; SCREENSHOT PENDING &lt;</span>
+                </div>
+            </section>
+
+            <!-- FINDING YOUR ID -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// finding your character id</h2>
+                <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
+                    <p>The Ticker needs your numeric character ID, not your character name. The easiest way to find it:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li>Go to zKillboard and search your character name.</li>
+                        <li>Open your character page.</li>
+                        <li>The number in the URL is your ID. For example, in <code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://zkillboard.com/character/909008587/</code>, the ID is <code class="font-mono text-xs text-[var(--color-terminal-blue)]">909008587</code>.</li>
+                    </ol>
+                    <p>That number goes after <code class="font-mono text-xs text-[var(--color-terminal-blue)]">?character=</code> in your overlay URL.</p>
+                </div>
+            </section>
+
+            <!-- OBS SETUP -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// setting it up in obs</h2>
+                <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li>In OBS, under Sources, click the + and choose Browser.</li>
+                        <li>Give it a name (e.g. "Kill Ticker") and click OK.</li>
+                        <li>In the properties window:
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li><span class="text-[var(--color-text-faint)]">URL:</span> paste your overlay URL (with your character ID).</li>
+                                <li><span class="text-[var(--color-text-faint)]">Width / Height:</span> start with something like 800 × 120 for a horizontal strip. Adjust to taste.</li>
+                                <li>Leave "Local file" unchecked — this is a hosted URL.</li>
+                            </ul>
+                        </li>
+                        <li>Click OK.</li>
+                        <li>Drag the source to where you want it on your scene.</li>
+                    </ol>
+                    <p class="text-[var(--color-text-faint)]">The overlay background is transparent, so only the kill cards show over your stream — there's no box or panel behind them.</p>
+                </div>
+            </section>
+
+            <!-- WHAT YOU'LL SEE -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// what you'll see</h2>
+                <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
+                    <p>Each event appears as a card showing the ship and ISK value:</p>
+                    <ul class="pl-1 space-y-2">
+                        <li class="border-l-[3px] border-[#51cf66] pl-3"><span class="text-[var(--color-neon-green)] font-semibold">Green left border</span> — a kill (your character was involved in destroying the ship).</li>
+                        <li class="border-l-[3px] border-[#ff6b6b] pl-3"><span class="text-[var(--color-isk-billion)] font-semibold">Red left border</span> — a loss (your character's ship was destroyed).</li>
+                    </ul>
+                    <p>ISK values are abbreviated for space: <code class="font-mono text-xs text-[var(--color-whale-accent)]">25.02m</code>, <code class="font-mono text-xs text-[var(--color-whale-accent)]">1.33b</code>, and so on.</p>
+                    <p>The newest event appears on the left, and older ones scroll off as new kills come in. The overlay holds a limited number of recent events so it stays clean during busy fights.</p>
+                </div>
+            </section>
+
+            <!-- OPTIONS -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// options</h2>
+                <p class="text-sm text-[var(--color-text-body)] mb-3">You can adjust the overlay by adding parameters to the URL. Chain extra parameters with <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;</code>.</p>
+                <div class="border border-[var(--color-border-dim)]">
+                    <div class="grid grid-cols-[auto_auto_1fr] font-mono text-xs">
+                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Parameter</div>
+                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Values</div>
+                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Effect</div>
+
+                        <div class="px-3 py-2 text-[var(--color-terminal-blue)]">character</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)]">a character ID</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)] font-sans text-sm"><span class="text-[var(--color-neon-green)]">Required.</span> The character to track.</div>
+
+                        <div class="px-3 py-2 text-[var(--color-terminal-blue)] border-t border-[var(--color-border-dim)]/50">ship</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50">false</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-sans text-sm">Hides the ship name, leaving just the icon and ISK value. Useful for a tighter overlay.</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-[var(--color-text-body)] space-y-2">
+                    <p class="font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)]">Examples</p>
+                    <p>Track a character, showing everything:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=909008587</code></p>
+                    <p>Track a character, hiding ship names:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=909008587&amp;ship=false</code></p>
+                </div>
+            </section>
+
+            <!-- TROUBLESHOOTING -->
+            <section class="fade-card mb-8">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// troubleshooting</h2>
+                <dl class="text-sm leading-relaxed space-y-4">
+                    <div>
+                        <dt class="font-semibold text-[var(--color-text-body)]">Nothing appears.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">This is usually normal — the overlay only shows events as they happen. If your character hasn't had a kill or loss since you loaded it, the overlay stays empty until the next one. It is not broken; it's waiting.</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-[var(--color-text-body)]">Still nothing after a kill.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">Double-check your character ID is correct (the number from your zKillboard URL). A wrong or mistyped ID means the overlay is listening for a character that isn't getting kills.</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-[var(--color-text-body)]">The overlay shows a background box.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">Make sure you're loading it as a URL in OBS, not as a local file, and that the Browser Source isn't sitting on a coloured background in your scene. The overlay itself is transparent.</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-[var(--color-text-body)]">It looks cut off or cards run off the edge.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">Increase the Browser Source width, or hide ship names with <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;ship=false</code> to make each card narrower.</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <!-- HOW IT WORKS -->
+            <section class="fade-card mb-8 border border-[var(--color-border-dim)] bg-[var(--color-eve-dark)]/40 p-4">
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)] mb-3">// how it works (the short version)</h2>
+                <div class="text-sm leading-relaxed text-[var(--color-text-faint)] space-y-3">
+                    <p>For the curious: the overlay opens a live connection to SocketKill's servers and asks for events involving one specific character. SocketKill processes every killmail in EVE as it happens, and pushes only the ones matching your character down to your overlay. Nothing is polled or refreshed — events arrive the moment they're processed.</p>
+                    <p>Because it's filtered server-side, your overlay only ever receives your character's events, not the whole firehose.</p>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="border-t border-[var(--color-eve-border)] pt-4 text-center">
+                <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
+                    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
+                    <a href="/about" class="hover:text-[var(--color-neon-green)] transition-colors">ABOUT</a>
+                    <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="hover:text-[var(--color-neon-green)] transition-colors">DISCORD</a>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+</Base>
+
+<script>
+    const input = document.getElementById('char-id')
+    const hideShip = document.getElementById('hide-ship')
+    const urlOut = document.getElementById('url-out')
+    const copyBtn = document.getElementById('copy-btn')
+    const hint = document.getElementById('url-hint')
+
+    const BASE = 'https://ws.socketkill.com/ticker.html'
+
+    function buildUrl() {
+        const id = input.value.trim()
+        const valid = /^\d+$/.test(id)
+        let url
+        if (valid) {
+            url = `${BASE}?character=${id}` + (hideShip.checked ? '&ship=false' : '')
+            urlOut.textContent = url
+            urlOut.style.color = 'var(--color-neon-green)'
+            hint.textContent = '> url ready — copy it into an obs browser source'
+        } else {
+            urlOut.textContent = `${BASE}?character=YOUR_CHARACTER_ID`
+            urlOut.style.color = ''
+            hint.textContent = id.length
+                ? '> character id must be numbers only'
+                : '> enter your character id above'
+        }
+        return valid ? url : null
+    }
+
+    input.addEventListener('input', buildUrl)
+    hideShip.addEventListener('change', buildUrl)
+
+    copyBtn.addEventListener('click', async () => {
+        const url = buildUrl()
+        if (!url) {
+            hint.textContent = '> enter a valid character id first'
+            return
+        }
+        try {
+            await navigator.clipboard.writeText(url)
+            copyBtn.textContent = 'COPIED'
+            setTimeout(() => { copyBtn.textContent = 'COPY' }, 1500)
+        } catch {
+            hint.textContent = '> copy failed — select the url and copy manually'
+        }
+    })
+</script>
