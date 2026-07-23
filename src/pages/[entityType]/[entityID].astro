@@ -3,79 +3,95 @@ import Base from '../../layouts/Base.astro'
 import { externalLink } from '../../lib/entity-links.js'
 import { formatIsk } from '../../lib/filter-logic.js'
 
-const { characterID } = Astro.params
-const id = parseInt(characterID)
-if (!/^\d+$/.test(characterID ?? '') || !Number.isFinite(id) || id <= 0) {
-    return new Response('Invalid characterID', { status: 400 })
-}
-
-// ── DATA CONTRACT (backend implements this tomorrow) ─────────────────
-// GET https://ws.socketkill.com/api/pilot/{characterID}
-// 200: {
-//   characterID, name, corpID, corpName, allianceID, allianceName,   // identity (from ESI cache)
-//   windowDays: 30,
-//   events: [{
-//     killID, isLoss,                     // bool — victim === this pilot
-//     shipTypeID, shipName,               // victim ship on losses, THIS pilot's ship on kills if known, else victim ship
-//     systemName, regionName, space,      // space: 'high'|'low'|'null'|'wh'|'pochven'
-//     totalValue,                         // NUMBER (raw isk) — page formats via formatIsk
-//     time,                               // ISO string
-//     attackerCount
-//   }]  // newest first, capped at window
-// }
-// 404: pilot has no events in window AND identity unknown → page falls back to ESI
+// ── ROUTE: src/pages/[entityType]/[entityID].astro ───────────────────
+// Serves /pilot/{id}, /corp/{id}, /alliance/{id}
+// Static routes (/kill/, /about, /obs, /search) take priority in Astro,
+// so this only catches the three whitelisted types below.
+//
+// DATA CONTRACT — implemented in webServer.js:
+// GET https://ws.socketkill.com/api/entity/{type}/{id}
+// 200: { windowDays, events: [{ killID, isLoss, shipTypeID, shipName,
+//        systemName, regionName, space, totalValue, time, attackerCount }] }
+// Identity is resolved here via public ESI, not by the endpoint.
 // ─────────────────────────────────────────────────────────────────────
 
-const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
+const ENTITY = {
+    pilot: {
+        label: 'PILOT',
+        esiPath: id => `https://esi.evetech.net/latest/characters/${id}/`,
+        image: id => `https://images.evetech.net/characters/${id}/portrait?size=128`,
+        zkillType: 'character',
+        lossWord: 'LOSS',
+    },
+    corp: {
+        label: 'CORPORATION',
+        esiPath: id => `https://esi.evetech.net/latest/corporations/${id}/`,
+        image: id => `https://images.evetech.net/corporations/${id}/logo?size=128`,
+        zkillType: 'corp',
+        lossWord: 'LOSS',
+    },
+    alliance: {
+        label: 'ALLIANCE',
+        esiPath: id => `https://esi.evetech.net/latest/alliances/${id}/`,
+        image: id => `https://images.evetech.net/alliances/${id}/logo?size=128`,
+        zkillType: 'alliance',
+        lossWord: 'LOSS',
+    },
+}
 
-let pilot = null
-let feedOnline = false
+const { entityType, entityID } = Astro.params
+const conf = ENTITY[entityType]
+const id = parseInt(entityID)
+if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
+    return new Response('Not found', { status: 404 })
+}
 
+// ── IDENTITY (public ESI) ────────────────────────────────────────────
+let identity = null
 try {
-    const res = await fetch(`https://ws.socketkill.com/api/pilot/${id}`, {
-        headers: { 'User-Agent': incomingUA }
+    const res = await fetch(conf.esiPath(id))
+    if (!res.ok) return new Response('Entity not found', { status: 404 })
+    const data = await res.json()
+
+    identity = {
+        name: data.name,
+        ticker: data.ticker ?? null,
+        corpID: entityType === 'pilot' ? (data.corporation_id ?? null) : null,
+        allianceID: entityType !== 'alliance' ? (data.alliance_id ?? null) : null,
+        corpName: null,
+        allianceName: null,
+    }
+
+    if (identity.corpID) {
+        const r = await fetch(`https://esi.evetech.net/latest/corporations/${identity.corpID}/`)
+        if (r.ok) identity.corpName = (await r.json()).name
+    }
+    if (identity.allianceID) {
+        const r = await fetch(`https://esi.evetech.net/latest/alliances/${identity.allianceID}/`)
+        if (r.ok) identity.allianceName = (await r.json()).name
+    }
+} catch {
+    return new Response('Entity lookup failed', { status: 502 })
+}
+
+// ── EVENTS (SocketKill D1 endpoint) ──────────────────────────────────
+let events = []
+let windowDays = 30
+let feedOnline = false
+try {
+    const res = await fetch(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, {
+        headers: { 'User-Agent': Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0' }
     })
     if (res.ok) {
-        pilot = await res.json()
+        const data = await res.json()
+        events = data.events ?? []
+        windowDays = data.windowDays ?? 30
         feedOnline = true
     }
-} catch { /* endpoint not live yet — fall through to ESI identity */ }
-
-// Fallback: resolve identity from public ESI so the page works before the backend ships
-if (!pilot) {
-    try {
-        const charRes = await fetch(`https://esi.evetech.net/latest/characters/${id}/`)
-        if (!charRes.ok) return new Response('Pilot not found', { status: 404 })
-        const char = await charRes.json()
-
-        let corpName = null, allianceName = null
-        if (char.corporation_id) {
-            const corpRes = await fetch(`https://esi.evetech.net/latest/corporations/${char.corporation_id}/`)
-            if (corpRes.ok) corpName = (await corpRes.json()).name
-        }
-        if (char.alliance_id) {
-            const allRes = await fetch(`https://esi.evetech.net/latest/alliances/${char.alliance_id}/`)
-            if (allRes.ok) allianceName = (await allRes.json()).name
-        }
-
-        pilot = {
-            characterID: id,
-            name: char.name,
-            corpID: char.corporation_id ?? null,
-            corpName,
-            allianceID: char.alliance_id ?? null,
-            allianceName,
-            windowDays: 30,
-            events: []
-        }
-    } catch {
-        return new Response('Pilot lookup failed', { status: 502 })
-    }
-}
+} catch { /* endpoint unreachable — offline state below */ }
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=60')
 
-const events = pilot.events ?? []
 const kills = events.filter(e => !e.isLoss)
 const losses = events.filter(e => e.isLoss)
 
@@ -103,46 +119,49 @@ function valueColor(v) {
     return 'var(--color-neon-green)'
 }
 
-const title = `${pilot.name} — Pilot Activity`
+const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
+const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1).toLowerCase()} Activity`
 ---
 
 <Base title={`${title} | Socketkill.com`} ogTitle={title}
-    ogDescription={`Recent kills and losses for ${pilot.name} — last ${pilot.windowDays} days, live from SocketKill.`}>
+    ogDescription={`Recent kills and losses for ${identity.name} — last ${windowDays} days, live from SocketKill.`}>
     <div class="kill-screen">
         <main class="relative z-10 max-w-4xl mx-auto px-4 py-8">
 
             <!-- IDENTITY -->
             <header class="fade-card flex items-center gap-4 border-b border-[var(--color-border-dim)] pb-5 mb-6">
                 <img
-                    src={`https://images.evetech.net/characters/${pilot.characterID}/portrait?size=128`}
-                    alt={pilot.name}
+                    src={conf.image(id)}
+                    alt={identity.name}
                     class="w-20 h-20 border border-[var(--color-border-mid)]"
                     loading="eager"
                 />
                 <div class="min-w-0 flex-1">
-                    <h1 class="kill-headline truncate">{pilot.name}</h1>
+                    <p class="font-mono text-[10px] tracking-[0.24em] uppercase text-[var(--color-text-faint)]">{conf.label}</p>
+                    <h1 class="kill-headline truncate">{displayName}</h1>
                     <p class="kill-sub truncate">
-                        {pilot.corpID
-                            ? <a href={externalLink('corp', pilot.corpID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">{pilot.corpName ?? '—'}</a>
-                            : (pilot.corpName ?? '—')}
-                        {pilot.allianceName && <span> // {pilot.allianceID
-                            ? <a href={externalLink('alliance', pilot.allianceID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">{pilot.allianceName}</a>
-                            : pilot.allianceName}</span>}
+                        {identity.corpID
+                            ? <a href={externalLink('corp', identity.corpID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">{identity.corpName ?? '—'}</a>
+                            : identity.corpName}
+                        {identity.allianceName && <span> {identity.corpName ? '// ' : ''}{identity.allianceID
+                            ? <a href={externalLink('alliance', identity.allianceID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">{identity.allianceName}</a>
+                            : identity.allianceName}</span>}
                     </p>
                 </div>
                 <div class="flex gap-2 shrink-0">
-                    {pilot.corpID && <img src={`https://images.evetech.net/corporations/${pilot.corpID}/logo?size=64`} alt="" class="w-10 h-10" loading="lazy" />}
-                    {pilot.allianceID && <img src={`https://images.evetech.net/alliances/${pilot.allianceID}/logo?size=64`} alt="" class="w-10 h-10" loading="lazy" />}
+                    {identity.corpID && <img src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=64`} alt="" class="w-10 h-10" loading="lazy" />}
+                    {identity.allianceID && <img src={`https://images.evetech.net/alliances/${identity.allianceID}/logo?size=64`} alt="" class="w-10 h-10" loading="lazy" />}
                 </div>
             </header>
 
             <!-- WINDOW BANNER — the radar-not-ledger declaration, always visible -->
             <div class="fade-card flex items-center justify-between mb-5 font-mono text-[11px] tracking-[0.2em] uppercase">
-                <span class="text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">&gt; RECENT ACTIVITY // LAST {pilot.windowDays} DAYS</span>
+                <span class="text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">&gt; RECENT ACTIVITY // LAST {windowDays} DAYS</span>
                 <span class="text-[var(--color-text-faint)] tabular-nums">
                     <span class="text-[var(--color-neon-green)]">{kills.length} KILLS</span>
                     <span class="mx-1 text-white/20">/</span>
                     <span class="text-[var(--color-isk-billion)]">{losses.length} LOSSES</span>
+                    {events.length >= 100 && <span class="ml-2 text-[var(--color-text-faint)]/60">(LATEST 100)</span>}
                 </span>
             </div>
 
@@ -150,11 +169,11 @@ const title = `${pilot.name} — Pilot Activity`
             {!feedOnline ? (
                 <div class="fade-card flex flex-col items-center justify-center min-h-[240px] border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/30">
                     <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)] animate-pulse">&gt; ACTIVITY UPLINK OFFLINE</span>
-                    <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] mt-2">pilot record found — activity feed coming online soon</span>
+                    <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] mt-2">record found — activity feed unavailable, try again shortly</span>
                 </div>
             ) : events.length === 0 ? (
                 <div class="fade-card flex flex-col items-center justify-center min-h-[240px] border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/30">
-                    <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-text-faint)]">&gt; NO ACTIVITY IN THE LAST {pilot.windowDays} DAYS &lt;</span>
+                    <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-text-faint)]">&gt; NO ACTIVITY IN THE LAST {windowDays} DAYS &lt;</span>
                     <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)]/60 mt-2">quiet skies — or flying safe</span>
                 </div>
             ) : (
@@ -172,7 +191,7 @@ const title = `${pilot.name} — Pilot Activity`
                                     <div class="flex items-baseline gap-2">
                                         <span class="font-mono text-[10px] tracking-[0.16em] uppercase shrink-0"
                                               style={`color: ${e.isLoss ? 'var(--color-isk-billion)' : 'var(--color-neon-green)'}`}>
-                                            {e.isLoss ? 'LOSS' : 'KILL'}
+                                            {e.isLoss ? conf.lossWord : 'KILL'}
                                         </span>
                                         <span class="ship-name text-sm font-semibold text-[var(--color-text-body)] truncate">{e.shipName}</span>
                                     </div>
@@ -200,14 +219,14 @@ const title = `${pilot.name} — Pilot Activity`
 
             <!-- RADAR DISCLAIMER -->
             <p class="fade-card mt-4 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--color-text-faint)]/50 text-center">
-                socketkill is a radar, not a record — activity older than {pilot.windowDays} days is not retained
+                socketkill is a radar, not a record — activity older than {windowDays} days is not retained
             </p>
 
             <!-- FOOTER -->
             <footer class="mt-8 border-t border-[var(--color-eve-border)] pt-4 text-center">
                 <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
                     <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
-                    <a href={externalLink('character', pilot.characterID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">FULL HISTORY ON ZKILLBOARD</a>
+                    <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">FULL HISTORY ON ZKILLBOARD</a>
                 </div>
             </footer>
 
