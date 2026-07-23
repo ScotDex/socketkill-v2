@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro'
+---
+
+<Base title="Search — Pilots, Corps & Alliances | Socketkill.com">
+    <div class="kill-screen">
+        <main class="relative z-10 min-h-screen flex items-start justify-center px-4 pt-[12vh] pb-16">
+
+            <div class="fade-card w-full max-w-md border border-[var(--color-border-mid)] bg-[var(--color-glass-bg)]/95 shadow-[var(--shadow-feed)]">
+
+                <!-- HEADER BAR -->
+                <header class="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border-dim)] bg-[var(--color-feed-bg)]/60">
+                    <span class="font-mono text-sm tracking-[0.22em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">&gt; SEARCH</span>
+                    <span class="font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">// UPLINK: NEW EDEN REGISTRY</span>
+                </header>
+
+                <!-- BODY -->
+                <div class="p-5 space-y-4">
+                    <div class="text-center">
+                        <h1 class="font-body text-base font-semibold tracking-[0.08em] uppercase text-[var(--color-text-body)]">Identify a target</h1>
+                        <p class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] mt-1">pilots · corporations · alliances</p>
+                    </div>
+
+                    <div>
+                        <input
+                            id="search-input"
+                            type="text"
+                            placeholder="Exact name, e.g. Dexomus Viliana"
+                            autocomplete="off"
+                            spellcheck="false"
+                            class="w-full bg-[var(--color-dark-bg)] border border-[var(--color-border-dim)] focus:border-[var(--color-border-bright)] outline-none px-3 py-2.5 font-mono text-sm text-[var(--color-text-body)] placeholder:text-[var(--color-text-faint)]/40"
+                        />
+                        <p class="font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)]/60 mt-1.5">&gt; exact names only — capitalisation doesn't matter, spelling does</p>
+                    </div>
+
+                    <button id="search-btn" type="button"
+                        class="w-full py-2.5 font-mono text-sm tracking-[0.2em] uppercase border border-[var(--color-border-mid)] text-[var(--color-neon-green)] hover:border-[var(--color-border-bright)] hover:bg-[var(--color-neon-green)]/5 transition-colors"
+                        style="text-shadow: var(--shadow-phosphor)">
+                        RUN LOOKUP
+                    </button>
+
+                    <!-- STATUS LINE -->
+                    <p id="status" class="font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] text-center min-h-[1em]"></p>
+
+                    <!-- RESULTS -->
+                    <ul id="results" class="space-y-2 hidden"></ul>
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="px-4 py-2.5 border-t border-[var(--color-border-dim)] font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)]/60 flex justify-between">
+                    <span>&gt; resolution via esi</span>
+                    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; back to feed</a>
+                </footer>
+            </div>
+
+        </main>
+    </div>
+</Base>
+
+<script>
+    const input = document.getElementById('search-input')
+    const btn = document.getElementById('search-btn')
+    const status = document.getElementById('status')
+    const results = document.getElementById('results')
+
+    const CATEGORY = {
+        characters:   { label: 'PILOT',    internal: id => `/pilot/${id}`,                              img: id => `https://images.evetech.net/characters/${id}/portrait?size=64` },
+        corporations: { label: 'CORP',     internal: id => `https://zkillboard.com/corporation/${id}/`, img: id => `https://images.evetech.net/corporations/${id}/logo?size=64`,  external: true },
+        alliances:    { label: 'ALLIANCE', internal: id => `https://zkillboard.com/alliance/${id}/`,    img: id => `https://images.evetech.net/alliances/${id}/logo?size=64`,     external: true },
+    }
+
+    function setStatus(msg) { status.textContent = msg }
+
+    function renderResult(cat, entry) {
+        const conf = CATEGORY[cat]
+        const li = document.createElement('li')
+        const a = document.createElement('a')
+        a.href = conf.internal(entry.id)
+        if (conf.external) { a.target = '_blank'; a.rel = 'noopener noreferrer' }
+        a.className = 'flex items-center gap-3 px-3 py-2 border border-[var(--color-border-dim)] border-l-[3px] border-l-[var(--color-neon-green)] bg-[var(--color-feed-bg)]/40 hover:bg-white/[0.03] transition-colors'
+
+        const img = document.createElement('img')
+        img.src = conf.img(entry.id)
+        img.alt = ''
+        img.loading = 'lazy'
+        img.className = 'w-9 h-9 shrink-0'
+
+        const info = document.createElement('div')
+        info.className = 'min-w-0 flex-1'
+        const name = document.createElement('div')
+        name.className = 'ship-name text-sm font-semibold text-[var(--color-text-body)] truncate'
+        name.textContent = entry.name
+        const tag = document.createElement('div')
+        tag.className = 'font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--color-text-faint)]'
+        tag.textContent = conf.label + (conf.external ? ' · OPENS ZKILLBOARD' : ' · RECENT ACTIVITY')
+        info.append(name, tag)
+
+        a.append(img, info)
+        li.append(a)
+        results.append(li)
+    }
+
+    async function runLookup() {
+        const query = input.value.trim()
+        results.innerHTML = ''
+        results.classList.add('hidden')
+
+        if (query.length < 3) {
+            setStatus('> enter at least 3 characters')
+            return
+        }
+
+        setStatus('> resolving…')
+        btn.disabled = true
+
+        try {
+            const res = await fetch('https://esi.evetech.net/latest/universe/ids/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify([query])
+            })
+            if (!res.ok) throw new Error(`ESI ${res.status}`)
+            const data = await res.json()
+
+            let count = 0
+            for (const cat of Object.keys(CATEGORY)) {
+                for (const entry of data[cat] ?? []) {
+                    renderResult(cat, entry)
+                    count++
+                }
+            }
+
+            if (count === 0) {
+                setStatus('> no match — exact names only, check spelling')
+            } else {
+                setStatus(`> ${count} match${count > 1 ? 'es' : ''} found`)
+                results.classList.remove('hidden')
+            }
+        } catch {
+            setStatus('> lookup failed — esi unreachable, try again')
+        } finally {
+            btn.disabled = false
+        }
+    }
+
+    btn.addEventListener('click', runLookup)
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') runLookup() })
+    input.focus()
+</script>
