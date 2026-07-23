@@ -5,8 +5,13 @@ import { formatIsk } from '../../lib/filter-logic.js'
 
 // ── ROUTE: src/pages/[entityType]/[entityID].astro ───────────────────
 // Serves /pilot/{id}, /corp/{id}, /alliance/{id}
-// Static routes (/kill/, /about, /obs, /search) take priority in Astro,
+// Static routes (/kill/, /about, /obs) take priority in Astro,
 // so this only catches the three whitelisted types below.
+//
+// STATUS: BASELINE / BETA. Vibe-coded first pass — functional, not final.
+// Structure is deliberately loose to leave room for iteration on the
+// existing surface (rows, states, identity block). Do NOT grow this into
+// stats/graphs/ratios — that is ledger territory, out of scope by design.
 //
 // DATA CONTRACT — implemented in webServer.js:
 // GET https://ws.socketkill.com/api/entity/{type}/{id}
@@ -128,6 +133,16 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
     <div class="kill-screen">
         <main class="relative z-10 max-w-4xl mx-auto px-4 py-8">
 
+            <!-- DEV NOTICE — self-contained, dismissible, session-only -->
+            <div id="beta-notice" class="fade-card mb-5 flex items-start gap-3 border border-[var(--color-terminal-blue)]/40 bg-[var(--color-terminal-blue)]/[0.04] px-4 py-3">
+                <span class="font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-terminal-blue)] shrink-0 mt-0.5" style="text-shadow: 0 0 6px color-mix(in srgb, var(--color-terminal-blue) 40%, transparent)">&#9679; BETA</span>
+                <p class="font-mono text-[11px] leading-relaxed text-[var(--color-text-faint)] flex-1">
+                    Entity profiles are an early baseline — functional, not finished. Layout and detail will change as this is built out. Activity reflects the last {windowDays} days only; this is a live radar, not a historical record.
+                </p>
+                <button type="button" id="beta-dismiss" aria-label="Dismiss notice"
+                    class="shrink-0 font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] hover:text-[var(--color-terminal-blue)] transition-colors">[X]</button>
+            </div>
+
             <!-- IDENTITY -->
             <header class="fade-card flex items-center gap-4 border-b border-[var(--color-border-dim)] pb-5 mb-6">
                 <img
@@ -137,7 +152,10 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
                     loading="eager"
                 />
                 <div class="min-w-0 flex-1">
-                    <p class="font-mono text-[10px] tracking-[0.24em] uppercase text-[var(--color-text-faint)]">{conf.label}</p>
+                    <p class="font-mono text-[10px] tracking-[0.24em] uppercase text-[var(--color-text-faint)] flex items-center gap-2">
+                        {conf.label}
+                        <span class="px-1.5 py-0.5 border border-[var(--color-terminal-blue)]/50 text-[var(--color-terminal-blue)] tracking-[0.18em] text-[9px]" style="text-shadow: 0 0 6px color-mix(in srgb, var(--color-terminal-blue) 40%, transparent)">BETA</span>
+                    </p>
                     <h1 class="kill-headline truncate">{displayName}</h1>
                     <p class="kill-sub truncate">
                         {identity.corpID
@@ -233,3 +251,13 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
         </main>
     </div>
 </Base>
+
+<script>
+    // Dev notice dismiss — session-scoped, in-memory only (no storage APIs).
+    // Re-appears on hard refresh by design; it's a beta signal, not a nag.
+    const notice = document.getElementById('beta-notice')
+    const dismiss = document.getElementById('beta-dismiss')
+    if (notice && dismiss) {
+        dismiss.addEventListener('click', () => notice.remove())
+    }
+</script>
