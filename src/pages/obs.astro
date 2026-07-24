@@ -2,11 +2,14 @@
 import Base from '../layouts/Base.astro'
 ---
 
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
 <Base title="Live Kill Overlay for OBS | Socketkill.com">
     <div class="kill-screen">
         <main class="relative z-10 max-w-3xl mx-auto px-4 py-10">
             <header class="fade-card border-b border-[var(--color-border-dim)] pb-4 mb-8">
-                <h1 class="kill-headline">&gt; SocketKill Ticker <span class="text-[var(--color-neon-green)]/40">LIVE KILL OVERLAY FOR OBS</span></h1>
+                <h1 class="kill-headline">&gt; SocketKill | <span class="text-[var(--color-neon-green)]/40">LIVE KILL OVERLAY FOR OBS</span></h1>
                 <p class="kill-sub">TRANSPARENT · REAL-TIME · NO POLLING</p>
             </header>
             <section class="fade-card mb-8 text-sm leading-relaxed text-[var(--color-text-body)]">
@@ -14,7 +17,7 @@ import Base from '../layouts/Base.astro'
                 <p class="mt-3 text-[var(--color-text-faint)]">This guide covers setting it up. No coding required.</p>
             </section>
             <section class="fade-card mb-8 border border-[var(--color-border-mid)] bg-[var(--color-feed-bg)]/60">
-                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">// build your overlay url</header>
+                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">build your overlay url</header>
                 <div class="p-4 space-y-4">
                     <div>
                         <label for="char-id" class="block font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)] mb-1.5">Character ID</label>
@@ -162,6 +165,12 @@ import Base from '../layouts/Base.astro'
         </main>
     </div>
 </Base>
+
+<style>
+    .kill-screen {
+        font-family: 'Chakra Petch', sans-serif;
+    }
+</style>
 
 <script>
     const input = document.getElementById('char-id')
