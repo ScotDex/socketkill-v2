@@ -2,25 +2,19 @@
 import Base from '../layouts/Base.astro'
 ---
 
-<Base title="Ticker — Live Kill Overlay for OBS | Socketkill.com">
+<Base title="Live Kill Overlay for OBS | Socketkill.com">
     <div class="kill-screen">
         <main class="relative z-10 max-w-3xl mx-auto px-4 py-10">
-
-            <!-- HEADER -->
             <header class="fade-card border-b border-[var(--color-border-dim)] pb-4 mb-8">
-                <h1 class="kill-headline">&gt; SocketKill Ticker <span class="text-[var(--color-neon-green)]/40">// LIVE KILL OVERLAY FOR OBS</span></h1>
+                <h1 class="kill-headline">&gt; SocketKill Ticker <span class="text-[var(--color-neon-green)]/40">LIVE KILL OVERLAY FOR OBS</span></h1>
                 <p class="kill-sub">TRANSPARENT · REAL-TIME · NO POLLING</p>
             </header>
-
-            <!-- INTRO -->
             <section class="fade-card mb-8 text-sm leading-relaxed text-[var(--color-text-body)]">
                 <p>The Ticker is a transparent overlay that shows a single EVE character's kills and losses in real time, designed to sit on top of your stream in OBS. It updates the instant a killmail is processed — no refreshing, no polling.</p>
                 <p class="mt-3 text-[var(--color-text-faint)]">This guide covers setting it up. No coding required.</p>
             </section>
-
-            <!-- URL BUILDER -->
             <section class="fade-card mb-8 border border-[var(--color-border-mid)] bg-[var(--color-feed-bg)]/60">
-                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] font-mono text-xs tracking-[0.18em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">// build your overlay url</header>
+                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">// build your overlay url</header>
                 <div class="p-4 space-y-4">
                     <div>
                         <label for="char-id" class="block font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)] mb-1.5">Character ID</label>
@@ -49,10 +43,8 @@ import Base from '../layouts/Base.astro'
                     </div>
                 </div>
             </section>
-
-            <!-- QUICK START -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// quick start</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">quick start</h2>
                 <ol class="list-decimal pl-5 space-y-2 text-sm leading-relaxed text-[var(--color-text-body)]">
                     <li>Find your character ID (see below).</li>
                     <li>Build your overlay URL:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code></li>
@@ -60,19 +52,14 @@ import Base from '../layouts/Base.astro'
                     <li>Position it on your scene. Done — kills and losses appear live.</li>
                 </ol>
             </section>
-
-            <!-- SCREENSHOT PLACEHOLDER -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// how does it look on screen?</h2>
-                <!-- TODO(Gillen): swap src for a real screenshot on edge.socketkill.com -->
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">how does it look on screen?</h2>
                 <div class="border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/40 min-h-[120px] flex items-center justify-center">
                     <span class="font-mono text-xs tracking-[0.2em] uppercase text-[var(--color-text-faint)] animate-pulse">&gt; SCREENSHOT PENDING &lt;</span>
                 </div>
             </section>
-
-            <!-- FINDING YOUR ID -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// finding your character id</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">finding your character id</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <p>The Ticker needs your numeric character ID, not your character name. The easiest way to find it:</p>
                     <ol class="list-decimal pl-5 space-y-2">
@@ -83,14 +70,12 @@ import Base from '../layouts/Base.astro'
                     <p>That number goes after <code class="font-mono text-xs text-[var(--color-terminal-blue)]">?character=</code> in your overlay URL.</p>
                 </div>
             </section>
-
-            <!-- OBS SETUP -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// setting it up in obs</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">setting it up in obs</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <ol class="list-decimal pl-5 space-y-2">
                         <li>In OBS, under Sources, click the + and choose Browser.</li>
-                        <li>Give it a name (e.g. "Kill Ticker") and click OK.</li>
+                        <li>Give it a name (e.g. "Kill Tracker") and click OK.</li>
                         <li>In the properties window:
                             <ul class="list-disc pl-5 mt-1 space-y-1">
                                 <li><span class="text-[var(--color-text-faint)]">URL:</span> paste your overlay URL (with your character ID).</li>
@@ -104,10 +89,8 @@ import Base from '../layouts/Base.astro'
                     <p class="text-[var(--color-text-faint)]">The overlay background is transparent, so only the kill cards show over your stream — there's no box or panel behind them.</p>
                 </div>
             </section>
-
-            <!-- WHAT YOU'LL SEE -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// what you'll see</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)"> what you'll see</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <p>Each event appears as a card showing the ship and ISK value:</p>
                     <ul class="pl-1 space-y-2">
@@ -118,21 +101,17 @@ import Base from '../layouts/Base.astro'
                     <p>The newest event appears on the left, and older ones scroll off as new kills come in. The overlay holds a limited number of recent events so it stays clean during busy fights.</p>
                 </div>
             </section>
-
-            <!-- OPTIONS -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// options</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">options</h2>
                 <p class="text-sm text-[var(--color-text-body)] mb-3">You can adjust the overlay by adding parameters to the URL. Chain extra parameters with <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;</code>.</p>
                 <div class="border border-[var(--color-border-dim)]">
                     <div class="grid grid-cols-[auto_auto_1fr] font-mono text-xs">
                         <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Parameter</div>
                         <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Values</div>
                         <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Effect</div>
-
                         <div class="px-3 py-2 text-[var(--color-terminal-blue)]">character</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)]">a character ID</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] font-sans text-sm"><span class="text-[var(--color-neon-green)]">Required.</span> The character to track.</div>
-
                         <div class="px-3 py-2 text-[var(--color-terminal-blue)] border-t border-[var(--color-border-dim)]/50">ship</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50">false</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-sans text-sm">Hides the ship name, leaving just the icon and ISK value. Useful for a tighter overlay.</div>
@@ -144,10 +123,8 @@ import Base from '../layouts/Base.astro'
                     <p>Track a character, hiding ship names:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=909008587&amp;ship=false</code></p>
                 </div>
             </section>
-
-            <!-- TROUBLESHOOTING -->
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">// troubleshooting</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">troubleshooting</h2>
                 <dl class="text-sm leading-relaxed space-y-4">
                     <div>
                         <dt class="font-semibold text-[var(--color-text-body)]">Nothing appears.</dt>
@@ -167,17 +144,13 @@ import Base from '../layouts/Base.astro'
                     </div>
                 </dl>
             </section>
-
-            <!-- HOW IT WORKS -->
             <section class="fade-card mb-8 border border-[var(--color-border-dim)] bg-[var(--color-eve-dark)]/40 p-4">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)] mb-3">// how it works (the short version)</h2>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)] mb-3">how it works (the short version)</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-faint)] space-y-3">
-                    <p>For the curious: the overlay opens a live connection to SocketKill's servers and asks for events involving one specific character. SocketKill processes every killmail in EVE as it happens, and pushes only the ones matching your character down to your overlay. Nothing is polled or refreshed — events arrive the moment they're processed.</p>
-                    <p>Because it's filtered server-side, your overlay only ever receives your character's events, not the whole firehose.</p>
+                    <p>For the curious: the overlay opens a live connection to SocketKill's server and asks for events involving one specific character. SocketKill processes every killmail as soon as possible, and pushes only the ones matching your character down to your overlay. Nothing is polled or refreshed — events arrive the moment they're processed.</p>
+                    <p>Because it's filtered server-side, your overlay only ever receives your character's events, not the whole stream.</p>
                 </div>
             </section>
-
-            <!-- FOOTER -->
             <footer class="border-t border-[var(--color-eve-border)] pt-4 text-center">
                 <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
                     <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
@@ -196,9 +169,7 @@ import Base from '../layouts/Base.astro'
     const urlOut = document.getElementById('url-out')
     const copyBtn = document.getElementById('copy-btn')
     const hint = document.getElementById('url-hint')
-
     const BASE = 'https://ws.socketkill.com/ticker.html'
-
     function buildUrl() {
         const id = input.value.trim()
         const valid = /^\d+$/.test(id)
@@ -217,10 +188,8 @@ import Base from '../layouts/Base.astro'
         }
         return valid ? url : null
     }
-
     input.addEventListener('input', buildUrl)
     hideShip.addEventListener('change', buildUrl)
-
     copyBtn.addEventListener('click', async () => {
         const url = buildUrl()
         if (!url) {
