@@ -549,3 +549,331 @@ body.signal-interference {
         opacity: 0;
     }
 }
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   APPEND TO src/styles/global.css
+   Section A promotes primitives that were trapped in scoped
+   <style> blocks. Section B is entity-page specific (ent-* prefix).
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ── A. SHARED PRIMITIVES ──────────────────────────────────────
+   These already exist scoped inside kill/[killID].astro. Astro
+   scoping means they never reached any other page. Promoting them
+   is additive: the scoped copies keep higher specificity, so the
+   kill page renders exactly as it does today.
+   ─────────────────────────────────────────────────────────────── */
+
+.link {
+    transition: color 0.15s, text-shadow 0.15s;
+}
+
+.link:hover {
+    color: var(--color-neon-green);
+    text-shadow: var(--shadow-phosphor);
+}
+
+/* Sec-band / space chip. Consumer sets --c. */
+.chip {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--c);
+    border-bottom: 2px solid var(--c);
+    padding-bottom: 1px;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+/* Two-class selector so it beats .chip on font-size without !important. */
+.chip.sm {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    border-bottom-width: 1px;
+}
+
+/* fade-card only had delays for children 1-4. Anything past that
+   animated at delay 0 and landed BEFORE the header. Extended to 8. */
+.fade-card:nth-child(5) {
+    animation-delay: 0.32s;
+}
+
+.fade-card:nth-child(6) {
+    animation-delay: 0.40s;
+}
+
+.fade-card:nth-child(7) {
+    animation-delay: 0.48s;
+}
+
+.fade-card:nth-child(8) {
+    animation-delay: 0.56s;
+}
+
+
+/* ── B. ENTITY PAGE ────────────────────────────────────────────
+   Panel shell reuses the kill page's clip-corner + gradient-wash
+   language so the two pages read as the same product.
+   Accent is driven by --p-c, defaulting to phosphor green.
+   ─────────────────────────────────────────────────────────────── */
+
+.ent-panel {
+    --p-c: var(--color-neon-green);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--p-c) 5%, transparent), transparent 44px),
+        var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: var(--shadow-feed);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+.ent-panel-h {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--p-c);
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--p-c) 25%, transparent);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--p-c) 40%, transparent);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.ent-panel-h .hint {
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--color-text-faint);
+    text-shadow: none;
+}
+
+/* Ranked row with a proportional fill behind the text.
+   Width is set inline as --w so it scales to the top entry. */
+.ent-rank {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.34rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    overflow: hidden;
+}
+
+.ent-rank::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--w, 0%);
+    background: color-mix(in srgb, var(--p-c) 11%, transparent);
+    transform-origin: left;
+    animation: ent-fill 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) 0.2s both;
+}
+
+@keyframes ent-fill {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+.ent-rank>* {
+    position: relative;
+}
+
+.ent-rank .n {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    color: var(--p-c);
+    font-size: 11px;
+}
+
+
+/* ── STATUS READOUT ────────────────────────────────────────────
+   The single glanceable verdict. Consumer sets --s-c.
+   ─────────────────────────────────────────────────────────────── */
+
+.ent-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--s-c);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--s-c) 55%, transparent);
+}
+
+.ent-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--s-c);
+    box-shadow: 0 0 8px var(--s-c), 0 0 16px color-mix(in srgb, var(--s-c) 50%, transparent);
+    flex-shrink: 0;
+}
+
+.ent-status.live::before {
+    animation: ent-blink 1.4s steps(2) infinite;
+}
+
+@keyframes ent-blink {
+    50% {
+        opacity: 0.15;
+    }
+}
+
+
+/* ── 30-DAY PULSE ──────────────────────────────────────────────
+   Signature element. One column per day. Kills rise from the
+   centre line, losses fall below it. Column count is set inline
+   because the window length comes from the API.
+   ─────────────────────────────────────────────────────────────── */
+
+.ent-pulse {
+    display: grid;
+    gap: 2px;
+    height: 52px;
+    position: relative;
+}
+
+/* the horizon */
+.ent-pulse::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--color-border-dim);
+    pointer-events: none;
+}
+
+.ent-day {
+    position: relative;
+    height: 100%;
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0.022) 0 50%,
+            rgba(255, 255, 255, 0.045) 50% 100%);
+}
+
+.ent-day .k,
+.ent-day .l {
+    position: absolute;
+    left: 0;
+    right: 0;
+    animation: ent-rise 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) 0.3s both;
+    transform-origin: bottom;
+}
+
+.ent-day .k {
+    bottom: 50%;
+    height: var(--h);
+    background: var(--color-neon-green);
+    box-shadow: 0 0 7px color-mix(in srgb, var(--color-neon-green) 65%, transparent);
+}
+
+.ent-day .l {
+    top: 50%;
+    height: var(--h);
+    background: var(--color-isk-billion);
+    box-shadow: 0 0 7px color-mix(in srgb, var(--color-isk-billion) 65%, transparent);
+    transform-origin: top;
+}
+
+@keyframes ent-rise {
+    from {
+        transform: scaleY(0);
+    }
+
+    to {
+        transform: scaleY(1);
+    }
+}
+
+
+/* ── SPACE BAND DISTRIBUTION ───────────────────────────────────
+   Single segmented bar. Proportion is the message, not the number.
+   ─────────────────────────────────────────────────────────────── */
+
+.ent-bands {
+    display: flex;
+    height: 5px;
+    gap: 1px;
+    overflow: hidden;
+}
+
+.ent-bands span {
+    background: var(--c);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--c) 55%, transparent);
+    animation: ent-fill 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) 0.35s both;
+    transform-origin: left;
+}
+
+
+/* ── EVENT FEED ROW ────────────────────────────────────────────
+   Named class instead of inline border colour so hover state can
+   pick up the accent without repeating it in markup. --r-c is set
+   inline per row (kill vs loss).
+   ─────────────────────────────────────────────────────────────── */
+
+.ent-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.7rem;
+    border-left: 3px solid var(--r-c);
+    transition: background 0.12s ease, transform 0.16s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.ent-row:hover {
+    background: color-mix(in srgb, var(--r-c) 7%, transparent);
+    transform: translateX(3px);
+}
+
+.ent-row:focus-visible {
+    outline: 1px solid var(--r-c);
+    outline-offset: -1px;
+}
+
+.ent-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--r-c);
+    flex-shrink: 0;
+}
+
+
+/* ── ACCESSIBILITY FLOOR ───────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ent-rank::before,
+    .ent-day .k,
+    .ent-day .l,
+    .ent-bands span {
+        animation: none;
+    }
+
+    .ent-status.live::before {
+        animation: none;
+    }
+
+    .ent-row:hover {
+        transform: none;
+    }
+}

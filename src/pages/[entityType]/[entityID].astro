@@ -5,42 +5,54 @@ import { formatIsk } from '../../lib/filter-logic.js'
 
 // ── ROUTE: src/pages/[entityType]/[entityID].astro ───────────────────
 // Serves /pilot/{id}, /corp/{id}, /alliance/{id}
-// Static routes (/kill/, /about, /obs) take priority in Astro,
-// so this only catches the three whitelisted types below.
 //
-// STATUS: BASELINE / BETA. Vibe-coded first pass — functional, not final.
-// Structure is deliberately loose to leave room for iteration on the
-// existing surface (rows, states, identity block). Do NOT grow this into
-// stats/graphs/ratios — that is ledger territory, out of scope by design.
+// DESIGN INTENT: threat assessment, not statistics.
+// The page answers three questions in under three seconds:
+//   1. Are they active right now?      → status verdict + pulse
+//   2. Where are they operating?       → top systems + space bands
+//   3. What do they fly / hunt?        → hull readouts
+//
+// Every value below is DERIVED from the same 30-day event array the
+// old page already rendered. No new API fields. No ratios, no ranks,
+// no lifetime totals — those are ledger, and ledger is zKillboard's.
 //
 // DATA CONTRACT — implemented in webServer.js:
 // GET https://ws.socketkill.com/api/entity/{type}/{id}
 // 200: { windowDays, events: [{ killID, isLoss, shipTypeID, shipName,
 //        systemName, regionName, space, totalValue, time, attackerCount }] }
 // Identity is resolved here via public ESI, not by the endpoint.
+//
+// NOTE: does not use a <header> element. global.css hides ALL <header>
+// under 1024px via an unqualified selector.
 // ─────────────────────────────────────────────────────────────────────
+
+const UA = 'SocketKill/1.0 (+https://socketkill.com; Dexomus Viliana)'
+const esiFetch = url => fetch(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(5000) })
 
 const ENTITY = {
     pilot: {
         label: 'PILOT',
         esiPath: id => `https://esi.evetech.net/latest/characters/${id}/`,
-        image: id => `https://images.evetech.net/characters/${id}/portrait?size=128`,
+        image: id => `https://images.evetech.net/characters/${id}/portrait?size=256`,
         zkillType: 'character',
-        lossWord: 'LOSS',
+        flies: 'HULLS FLOWN',
+        hunts: 'HULLS KILLED',
     },
     corp: {
         label: 'CORPORATION',
         esiPath: id => `https://esi.evetech.net/latest/corporations/${id}/`,
-        image: id => `https://images.evetech.net/corporations/${id}/logo?size=128`,
+        image: id => `https://images.evetech.net/corporations/${id}/logo?size=256`,
         zkillType: 'corp',
-        lossWord: 'LOSS',
+        flies: 'HULLS LOST',
+        hunts: 'HULLS KILLED',
     },
     alliance: {
         label: 'ALLIANCE',
         esiPath: id => `https://esi.evetech.net/latest/alliances/${id}/`,
-        image: id => `https://images.evetech.net/alliances/${id}/logo?size=128`,
+        image: id => `https://images.evetech.net/alliances/${id}/logo?size=256`,
         zkillType: 'alliance',
-        lossWord: 'LOSS',
+        flies: 'HULLS LOST',
+        hunts: 'HULLS KILLED',
     },
 }
 
@@ -54,26 +66,27 @@ if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
 // ── IDENTITY (public ESI) ────────────────────────────────────────────
 let identity = null
 try {
-    const res = await fetch(conf.esiPath(id))
+    const res = await esiFetch(conf.esiPath(id))
     if (!res.ok) return new Response('Entity not found', { status: 404 })
     const data = await res.json()
+
+    const corpID = entityType === 'pilot' ? (data.corporation_id ?? null) : null
+    const allianceID = entityType !== 'alliance' ? (data.alliance_id ?? null) : null
+
+    // Parallel, not sequential — these are independent lookups.
+    const [corpRes, allyRes] = await Promise.all([
+        corpID ? esiFetch(`https://esi.evetech.net/latest/corporations/${corpID}/`).catch(() => null) : null,
+        allianceID ? esiFetch(`https://esi.evetech.net/latest/alliances/${allianceID}/`).catch(() => null) : null,
+    ])
 
     identity = {
         name: data.name,
         ticker: data.ticker ?? null,
-        corpID: entityType === 'pilot' ? (data.corporation_id ?? null) : null,
-        allianceID: entityType !== 'alliance' ? (data.alliance_id ?? null) : null,
-        corpName: null,
-        allianceName: null,
-    }
-
-    if (identity.corpID) {
-        const r = await fetch(`https://esi.evetech.net/latest/corporations/${identity.corpID}/`)
-        if (r.ok) identity.corpName = (await r.json()).name
-    }
-    if (identity.allianceID) {
-        const r = await fetch(`https://esi.evetech.net/latest/alliances/${identity.allianceID}/`)
-        if (r.ok) identity.allianceName = (await r.json()).name
+        secStatus: typeof data.security_status === 'number' ? data.security_status : null,
+        corpID,
+        allianceID,
+        corpName: corpRes?.ok ? (await corpRes.json()).name : null,
+        allianceName: allyRes?.ok ? (await allyRes.json()).name : null,
     }
 } catch {
     return new Response('Entity lookup failed', { status: 502 })
@@ -85,11 +98,12 @@ let windowDays = 30
 let feedOnline = false
 try {
     const res = await fetch(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, {
-        headers: { 'User-Agent': Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0' }
+        headers: { 'User-Agent': Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0' },
+        signal: AbortSignal.timeout(6000),
     })
     if (res.ok) {
         const data = await res.json()
-        events = data.events ?? []
+        events = Array.isArray(data.events) ? data.events : []
         windowDays = data.windowDays ?? 30
         feedOnline = true
     }
@@ -97,18 +111,56 @@ try {
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=60')
 
-const kills = events.filter(e => !e.isLoss)
-const losses = events.filter(e => e.isLoss)
+// ── DERIVATIONS ──────────────────────────────────────────────────────
+// Sort defensively: the contract does not guarantee ordering.
+const ordered = [...events].sort((a, b) => new Date(b.time) - new Date(a.time))
+const kills = ordered.filter(e => !e.isLoss)
+const losses = ordered.filter(e => e.isLoss)
+
+const now = Date.now()
+const lastSeenMs = ordered.length ? new Date(ordered[0].time).getTime() : null
+
+const iskKilled = kills.reduce((s, e) => s + (Number(e.totalValue) || 0), 0)
+const iskLost = losses.reduce((s, e) => s + (Number(e.totalValue) || 0), 0)
+
+// Status verdict — the one thing a reader should get without reading.
+function verdict(ms) {
+    if (ms === null) return { label: 'NO CONTACT', color: 'var(--color-text-faint)', live: false }
+    const h = (now - ms) / 3.6e6
+    if (h < 24) return { label: 'ACTIVE', color: 'var(--color-neon-green)', live: true }
+    if (h < 72) return { label: 'RECENT', color: 'var(--color-terminal-blue)', live: false }
+    if (h < 168) return { label: 'QUIET', color: 'var(--color-whale-accent)', live: false }
+    return { label: 'DORMANT', color: 'var(--color-text-faint)', live: false }
+}
+const status = verdict(lastSeenMs)
 
 function relativeTime(iso) {
-    const diff = Date.now() - new Date(iso).getTime()
-    const m = Math.floor(diff / 60000)
+    const m = Math.floor((now - new Date(iso).getTime()) / 60000)
     if (m < 1) return 'JUST NOW'
     if (m < 60) return `${m}M AGO`
     const h = Math.floor(m / 60)
     if (h < 24) return `${h}H AGO`
     return `${Math.floor(h / 24)}D AGO`
 }
+
+// Frequency ranking. `sub` carries a secondary line (region under system).
+function topN(list, key, subKey = null, n = 4) {
+    const m = new Map()
+    for (const e of list) {
+        const k = e[key]
+        if (!k) continue
+        const hit = m.get(k) ?? { label: k, sub: subKey ? e[subKey] : null, count: 0 }
+        hit.count++
+        m.set(k, hit)
+    }
+    const rows = [...m.values()].sort((a, b) => b.count - a.count).slice(0, n)
+    const max = rows[0]?.count || 1
+    return rows.map(r => ({ ...r, pct: Math.round((r.count / max) * 100) }))
+}
+
+const topSystems = topN(ordered, 'systemName', 'regionName')
+const topFlown = topN(losses, 'shipName')   // they died in it → they fly it
+const topHunted = topN(kills, 'shipName')   // victim's hull → they hunt it
 
 const SPACE_CHIP = {
     high:    { label: 'HS',   color: 'var(--color-neon-green)' },
@@ -117,147 +169,273 @@ const SPACE_CHIP = {
     wh:      { label: 'WH',   color: 'var(--color-terminal-blue)' },
     pochven: { label: 'PCH',  color: '#b07ce8' },
 }
+const UNKNOWN_CHIP = { label: '??', color: 'var(--color-text-faint)' }
+
+// Space band distribution, ordered by SPACE_CHIP key order for stability.
+const bandTotals = Object.keys(SPACE_CHIP)
+    .map(k => ({ key: k, ...SPACE_CHIP[k], count: ordered.filter(e => e.space === k).length }))
+    .filter(b => b.count > 0)
+const bandSum = bandTotals.reduce((s, b) => s + b.count, 0) || 1
+
+// 30-day pulse. One bucket per UTC day, oldest → newest.
+const DAY = 86400000
+const todayIdx = Math.floor(now / DAY)
+const pulse = Array.from({ length: windowDays }, () => ({ k: 0, l: 0 }))
+for (const e of ordered) {
+    const i = windowDays - 1 - (todayIdx - Math.floor(new Date(e.time).getTime() / DAY))
+    if (i >= 0 && i < windowDays) e.isLoss ? pulse[i].l++ : pulse[i].k++
+}
+const pulseMax = Math.max(1, ...pulse.flatMap(d => [d.k, d.l]))
+const busiest = pulse.reduce((s, d) => Math.max(s, d.k + d.l), 0)
 
 function valueColor(v) {
     if (v >= 10_000_000_000) return 'var(--color-whale-accent)'
     if (v >= 1_000_000_000) return 'var(--color-isk-billion)'
     return 'var(--color-neon-green)'
 }
+function secColor(s) {
+    if (s === null) return 'var(--color-text-faint)'
+    if (s >= 0) return 'var(--color-neon-green)'
+    if (s > -5) return 'var(--color-whale-accent)'
+    return 'var(--color-isk-billion)'
+}
 
 const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
-const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1).toLowerCase()} Activity`
+const titleCase = conf.label.charAt(0) + conf.label.slice(1).toLowerCase()
+const title = `${identity.name} — ${titleCase} Activity`
 ---
 
 <Base title={`${title} | Socketkill.com`} ogTitle={title}
     ogDescription={`Recent kills and losses for ${identity.name} — last ${windowDays} days, live from SocketKill.`}>
     <div class="kill-screen">
-        <main class="relative z-10 max-w-4xl mx-auto px-4 py-8">
+        <main class="relative z-10 max-w-5xl mx-auto px-4 py-6 space-y-4">
 
-            <!-- DEV NOTICE — self-contained, dismissible, session-only -->
-            <div id="beta-notice" class="fade-card mb-5 flex items-start gap-3 border border-[var(--color-terminal-blue)]/40 bg-[var(--color-terminal-blue)]/[0.04] px-4 py-3">
-                <span class="font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-terminal-blue)] shrink-0 mt-0.5" style="text-shadow: 0 0 6px color-mix(in srgb, var(--color-terminal-blue) 40%, transparent)">&#9679; BETA</span>
-                <p class="font-mono text-[11px] leading-relaxed text-[var(--color-text-faint)] flex-1">
-                    Entity profiles are an early baseline — functional, not finished. Layout and detail will change as this is built out. Activity reflects the last {windowDays} days only; this is a live radar, not a historical record.
-                </p>
-                <button type="button" id="beta-dismiss" aria-label="Dismiss notice"
-                    class="shrink-0 font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] hover:text-[var(--color-terminal-blue)] transition-colors">[X]</button>
-            </div>
+            <!-- ═══ 1. IDENTITY ═══════════════════════════════════════
+                 <section>, not <header> — global.css hides header on mobile. -->
+            <section class="fade-card flex items-center gap-4">
+                <img src={conf.image(id)} alt={identity.name} width="80" height="80" loading="eager"
+                     class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 border border-[var(--color-border-mid)] bg-black/40" />
 
-            <!-- IDENTITY -->
-            <header class="fade-card flex items-center gap-4 border-b border-[var(--color-border-dim)] pb-5 mb-6">
-                <img
-                    src={conf.image(id)}
-                    alt={identity.name}
-                    class="w-20 h-20 border border-[var(--color-border-mid)]"
-                    loading="eager"
-                />
                 <div class="min-w-0 flex-1">
                     <p class="font-mono text-[10px] tracking-[0.24em] uppercase text-[var(--color-text-faint)] flex items-center gap-2">
                         {conf.label}
-                        <span class="px-1.5 py-0.5 border border-[var(--color-terminal-blue)]/50 text-[var(--color-terminal-blue)] tracking-[0.18em] text-[9px]" style="text-shadow: 0 0 6px color-mix(in srgb, var(--color-terminal-blue) 40%, transparent)">BETA</span>
+                        {identity.secStatus !== null && (
+                            <span class="tabular-nums" style={`color:${secColor(identity.secStatus)}`}>
+                                SEC {identity.secStatus.toFixed(2)}
+                            </span>
+                        )}
                     </p>
                     <h1 class="kill-headline truncate">{displayName}</h1>
                     <p class="kill-sub truncate">
                         {identity.corpID
-                            ? <a href={externalLink('corp', identity.corpID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">{identity.corpName ?? '—'}</a>
+                            ? <a href={externalLink('corp', identity.corpID)} target="_blank" rel="noopener noreferrer" class="link">{identity.corpName ?? '—'}</a>
                             : identity.corpName}
-                        {identity.allianceName && <span> {identity.corpName ? '// ' : ''}{identity.allianceID
-                            ? <a href={externalLink('alliance', identity.allianceID)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">{identity.allianceName}</a>
-                            : identity.allianceName}</span>}
+                        {identity.allianceName && (
+                            <span>{identity.corpName ? ' // ' : ''}
+                                {identity.allianceID
+                                    ? <a href={externalLink('alliance', identity.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{identity.allianceName}</a>
+                                    : identity.allianceName}
+                            </span>
+                        )}
                     </p>
                 </div>
-                <div class="flex gap-2 shrink-0">
-                    {identity.corpID && <img src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=64`} alt="" class="w-10 h-10" loading="lazy" />}
-                    {identity.allianceID && <img src={`https://images.evetech.net/alliances/${identity.allianceID}/logo?size=64`} alt="" class="w-10 h-10" loading="lazy" />}
-                </div>
-            </header>
 
-            <!-- WINDOW BANNER — the radar-not-ledger declaration, always visible -->
-            <div class="fade-card flex items-center justify-between mb-5 font-mono text-[11px] tracking-[0.2em] uppercase">
-                <span class="text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">&gt; RECENT ACTIVITY // LAST {windowDays} DAYS</span>
-                <span class="text-[var(--color-text-faint)] tabular-nums">
-                    <span class="text-[var(--color-neon-green)]">{kills.length} KILLS</span>
-                    <span class="mx-1 text-white/20">/</span>
-                    <span class="text-[var(--color-isk-billion)]">{losses.length} LOSSES</span>
-                    {events.length >= 100 && <span class="ml-2 text-[var(--color-text-faint)]/60">(LATEST 100)</span>}
-                </span>
+                <div class="hidden sm:flex gap-2 shrink-0">
+                    {identity.corpID && <img src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=64`} alt="" width="40" height="40" class="w-10 h-10" loading="lazy" />}
+                    {identity.allianceID && <img src={`https://images.evetech.net/alliances/${identity.allianceID}/logo?size=64`} alt="" width="40" height="40" class="w-10 h-10" loading="lazy" />}
+                </div>
+            </section>
+
+            <!-- ═══ 2. STATUS + PULSE ═════════════════════════════════
+                 The verdict panel. Everything above the fold answers
+                 "is this pilot a live threat right now". -->
+            <section class="fade-card ent-panel" style={`--p-c:${status.color}`}>
+                <div class="ent-panel-h">
+                    <span>// contact status</span>
+                    <span class="hint">last {windowDays} days</span>
+                </div>
+
+                <div class="p-3 sm:p-4">
+                    <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-4">
+                        <span class="ent-status" class:list={{ live: status.live }} style={`--s-c:${status.color}`}>
+                            {status.label}
+                        </span>
+                        <span class="font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-text-faint)]">
+                            last seen <span class="text-[var(--color-text-body)]">{lastSeenMs ? relativeTime(ordered[0].time) : '—'}</span>
+                        </span>
+                        <span class="font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] tabular-nums">
+                            <span class="text-[var(--color-neon-green)]">{kills.length} kills</span>
+                            <span class="text-white/20 mx-1">/</span>
+                            <span class="text-[var(--color-isk-billion)]">{losses.length} losses</span>
+                        </span>
+                        <span class="font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] tabular-nums">
+                            <span class="text-[var(--color-neon-green)]">{formatIsk(iskKilled)}</span> destroyed
+                            <span class="text-white/20 mx-1">/</span>
+                            <span class="text-[var(--color-isk-billion)]">{formatIsk(iskLost)}</span> lost
+                        </span>
+                    </div>
+
+                    <!-- SIGNATURE: kills rise, losses fall, one column per day -->
+                    <div class="ent-pulse" style={`grid-template-columns: repeat(${windowDays}, 1fr)`}>
+                        {pulse.map((d, i) => {
+                            const age = windowDays - 1 - i
+                            const day = new Date(now - age * DAY).toISOString().slice(0, 10)
+                            return (
+                                <div class="ent-day" title={`${day} — ${d.k} kills, ${d.l} losses`}>
+                                    {d.k > 0 && <span class="k" style={`--h:${Math.max(8, (d.k / pulseMax) * 100)}%`}></span>}
+                                    {d.l > 0 && <span class="l" style={`--h:${Math.max(8, (d.l / pulseMax) * 100)}%`}></span>}
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div class="flex justify-between mt-1.5 font-mono text-[9px] tracking-[0.16em] uppercase text-[var(--color-text-faint)]/60">
+                        <span>{windowDays}d ago</span>
+                        <span>peak {busiest} / day</span>
+                        <span>today</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ 3. READOUTS ═══════════════════════════════════════
+                 Three questions, three panels. The flies/hunts split is
+                 not a stylistic choice — the payload only ever carries
+                 the victim's hull, so a loss row IS their ship and a
+                 kill row is their prey. -->
+            <div class="fade-card grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <section class="ent-panel" style="--p-c: var(--color-terminal-blue)">
+                    <div class="ent-panel-h"><span>// operating area</span></div>
+                    {topSystems.length ? (
+                        <>
+                            <div class="py-1">
+                                {topSystems.map(s => (
+                                    <div class="ent-rank" style={`--w:${s.pct}%`}>
+                                        <a href={externalLink('system', s.label)} target="_blank" rel="noopener noreferrer"
+                                           class="link truncate text-[var(--color-text-body)]">{s.label}</a>
+                                        <span class="truncate text-[10px] text-[var(--color-text-faint)]">{s.sub}</span>
+                                        <span class="n">{s.count}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div class="px-3 pb-3 pt-1">
+                                <div class="ent-bands">
+                                    {bandTotals.map(b => (
+                                        <span style={`--c:${b.color}; flex: ${b.count}`} title={`${b.label} — ${b.count}`}></span>
+                                    ))}
+                                </div>
+                                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+                                    {bandTotals.map(b => (
+                                        <span class="chip sm" style={`--c:${b.color}`}>{b.label} {Math.round((b.count / bandSum) * 100)}%</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    ) : <p class="p-3 font-mono text-[11px] text-[var(--color-text-faint)]">No systems in window.</p>}
+                </section>
+
+                <section class="ent-panel" style="--p-c: var(--color-isk-billion)">
+                    <div class="ent-panel-h">
+                        <span>// {conf.flies}</span>
+                        <span class="hint">from losses</span>
+                    </div>
+                    {topFlown.length ? (
+                        <div class="py-1">
+                            {topFlown.map(s => (
+                                <div class="ent-rank" style={`--w:${s.pct}%`}>
+                                    <span class="truncate text-[var(--color-text-body)]">{s.label}</span>
+                                    <span class="n">{s.count}</span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : <p class="p-3 font-mono text-[11px] text-[var(--color-text-faint)]">No losses in window — nothing to read.</p>}
+                </section>
+
+                <section class="ent-panel" style="--p-c: var(--color-neon-green)">
+                    <div class="ent-panel-h">
+                        <span>// {conf.hunts}</span>
+                        <span class="hint">from kills</span>
+                    </div>
+                    {topHunted.length ? (
+                        <div class="py-1">
+                            {topHunted.map(s => (
+                                <div class="ent-rank" style={`--w:${s.pct}%`}>
+                                    <span class="truncate text-[var(--color-text-body)]">{s.label}</span>
+                                    <span class="n">{s.count}</span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : <p class="p-3 font-mono text-[11px] text-[var(--color-text-faint)]">No kills in window.</p>}
+                </section>
             </div>
 
-            <!-- FEED -->
-            {!feedOnline ? (
-                <div class="fade-card flex flex-col items-center justify-center min-h-[240px] border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/30">
-                    <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)] animate-pulse">&gt; ACTIVITY UPLINK OFFLINE</span>
-                    <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] mt-2">record found — activity feed unavailable, try again shortly</span>
-                </div>
-            ) : events.length === 0 ? (
-                <div class="fade-card flex flex-col items-center justify-center min-h-[240px] border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/30">
-                    <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-text-faint)]">&gt; NO ACTIVITY IN THE LAST {windowDays} DAYS &lt;</span>
-                    <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)]/60 mt-2">quiet skies — or flying safe</span>
-                </div>
-            ) : (
-                <ul class="fade-card border border-[var(--color-border-dim)] bg-[var(--color-feed-bg)]/40 divide-y divide-[var(--color-border-dim)]/50">
-                    {events.map(e => {
-                        const chip = SPACE_CHIP[e.space] ?? { label: '?', color: 'var(--color-text-faint)' }
-                        return (
-                        <li>
-                            <a href={`/kill/${e.killID}`}
-                               class="flex items-center gap-3 px-3 py-2.5 border-l-[3px] hover:bg-white/[0.03] transition-colors"
-                               style={`border-left-color: ${e.isLoss ? 'var(--color-isk-billion)' : 'var(--color-neon-green)'}`}>
-                                <img src={`https://images.evetech.net/types/${e.shipTypeID}/render?size=64`}
-                                     alt="" class="w-10 h-10 shrink-0" loading="lazy" />
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex items-baseline gap-2">
-                                        <span class="font-mono text-[10px] tracking-[0.16em] uppercase shrink-0"
-                                              style={`color: ${e.isLoss ? 'var(--color-isk-billion)' : 'var(--color-neon-green)'}`}>
-                                            {e.isLoss ? conf.lossWord : 'KILL'}
-                                        </span>
-                                        <span class="ship-name text-sm font-semibold text-[var(--color-text-body)] truncate">{e.shipName}</span>
-                                    </div>
-                                    <div class="font-mono text-[11px] text-[var(--color-text-faint)] truncate">
-                                        <span class="chip" style={`--c:${chip.color}; color:${chip.color}`}>{chip.label}</span>
-                                        <span class="ml-1.5">{e.systemName}</span>
-                                        <span class="text-white/25 mx-1">·</span>
-                                        <span>{e.regionName}</span>
-                                    </div>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <div class="font-mono text-sm font-bold tabular-nums" style={`color: ${valueColor(e.totalValue)}`}>{formatIsk(e.totalValue)}</div>
-                                    <div class="font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)] tabular-nums">
-                                        {e.attackerCount > 1 ? `${e.attackerCount} INV` : 'SOLO'}
-                                        <span class="text-white/25 mx-1">·</span>
-                                        {relativeTime(e.time)}
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        )
-                    })}
-                </ul>
-            )}
+            <!-- ═══ 4. EVENT FEED ═════════════════════════════════════ -->
+            <section class="fade-card">
+                {!feedOnline ? (
+                    <div class="ent-panel flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
+                        <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)]">&gt; activity uplink offline</span>
+                        <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)] mt-2">record found — feed unavailable. Reload in a moment.</span>
+                    </div>
+                ) : ordered.length === 0 ? (
+                    <div class="ent-panel flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
+                        <span class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-text-faint)]">&gt; no contact in {windowDays} days</span>
+                        <span class="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--color-text-faint)]/60 mt-2">quiet skies — or flying safe</span>
+                    </div>
+                ) : (
+                    <div class="ent-panel">
+                        <div class="ent-panel-h">
+                            <span>// event log</span>
+                            <span class="hint">{ordered.length >= 100 ? 'latest 100' : `${ordered.length} events`}</span>
+                        </div>
+                        <ul class="divide-y divide-[var(--color-border-dim)]/40">
+                            {ordered.map(e => {
+                                const chip = SPACE_CHIP[e.space] ?? UNKNOWN_CHIP
+                                const c = e.isLoss ? 'var(--color-isk-billion)' : 'var(--color-neon-green)'
+                                return (
+                                    <li>
+                                        <a href={`/kill/${e.killID}`} class="ent-row" style={`--r-c:${c}`}>
+                                            <img src={`https://images.evetech.net/types/${e.shipTypeID}/render?size=64`}
+                                                 alt="" width="40" height="40" loading="lazy"
+                                                 class="w-10 h-10 shrink-0 bg-black/40" />
+                                            <div class="min-w-0 flex-1">
+                                                <div class="flex items-baseline gap-2">
+                                                    <span class="ent-tag">{e.isLoss ? 'LOSS' : 'KILL'}</span>
+                                                    <span class="ship-name text-sm font-semibold text-[var(--color-text-body)] truncate">{e.shipName}</span>
+                                                </div>
+                                                <div class="font-mono text-[11px] text-[var(--color-text-faint)] truncate flex items-baseline gap-1.5">
+                                                    <span class="chip sm" style={`--c:${chip.color}`}>{chip.label}</span>
+                                                    <span>{e.systemName}</span>
+                                                    <span class="text-white/25">·</span>
+                                                    <span class="truncate">{e.regionName}</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-right shrink-0">
+                                                <div class="font-mono text-sm font-bold tabular-nums" style={`color:${valueColor(e.totalValue)}`}>{formatIsk(e.totalValue)}</div>
+                                                <div class="font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)] tabular-nums">
+                                                    {e.attackerCount > 1 ? `${e.attackerCount} INV` : 'SOLO'}
+                                                    <span class="text-white/25 mx-1">·</span>
+                                                    {relativeTime(e.time)}
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                )}
+            </section>
 
-            <!-- RADAR DISCLAIMER -->
-            <p class="fade-card mt-4 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--color-text-faint)]/50 text-center">
-                socketkill is a radar, not a record — activity older than {windowDays} days is not retained
-            </p>
-
-            <!-- FOOTER -->
-            <footer class="mt-8 border-t border-[var(--color-eve-border)] pt-4 text-center">
+            <!-- ═══ 5. FOOTER ═════════════════════════════════════════ -->
+            <footer class="pt-2 text-center space-y-3">
+                <p class="font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--color-text-faint)]/50">
+                    socketkill is a radar, not a record — activity older than {windowDays} days is not retained
+                </p>
                 <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
-                    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
-                    <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-neon-green)] transition-colors">FULL HISTORY ON ZKILLBOARD</a>
+                    <a href="/" class="link">&lt; back to socketkill.com</a>
+                    <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="link">full history on zkillboard</a>
                 </div>
             </footer>
 
         </main>
     </div>
 </Base>
-
-<script>
-    // Dev notice dismiss — session-scoped, in-memory only (no storage APIs).
-    // Re-appears on hard refresh by design; it's a beta signal, not a nag.
-    const notice = document.getElementById('beta-notice')
-    const dismiss = document.getElementById('beta-dismiss')
-    if (notice && dismiss) {
-        dismiss.addEventListener('click', () => notice.remove())
-    }
-</script>
