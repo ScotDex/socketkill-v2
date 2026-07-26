@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
-import { parseIsk, classifySecurity } from '../../lib/helpers.js'
+import { parseIsk, classifySecurity, buildEft } from '../../lib/helpers.js'
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
@@ -48,29 +48,6 @@ function buildTitle(data) {
     const valueClause = data.totalValue ? ` (${data.totalValue} ISK)` : ''
     return `${data.victim.name} lost ${article(data.victim.ship)} ${data.victim.ship}${valueClause}`
 }
-
-const EFT_FITTED = ['low', 'mid', 'high', 'rig', 'subsystem']
-const EFT_LOOSE  = ['drone', 'fighter', 'cargo']
-
-function buildEft(kill) {
-    const g = kill.items?.groups || {}
-    const ship = kill.victim?.ship || 'Unknown Ship'
-    const clean = it => it.name && it.name !== 'Unknown'   // skip unimportable lines
-    const lines = [`[${ship}, ${ship} - ${kill.killID ?? 'loss'}]`, '']
-
-    for (const slot of EFT_FITTED)
-        for (const it of (g[slot] || []).filter(clean))
-            for (let n = 0; n < (it.quantity || 1); n++) lines.push(it.name)
-
-    const loose = []
-    for (const slot of EFT_LOOSE)
-        for (const it of (g[slot] || []).filter(clean))
-            loose.push(it.quantity > 1 ? `${it.name} x${it.quantity}` : it.name)
-    if (loose.length) lines.push('', ...loose)
-
-    return lines.join('\n')
-}
-const eftText = buildEft(kill)
 
 
 function buildOgDescription(data) {
