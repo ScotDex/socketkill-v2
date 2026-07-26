@@ -1,4 +1,3 @@
-// --- EFT export copy (unchanged) ---
 const btn = document.getElementById('eft-btn')
 const eftLabel = btn?.textContent
 let eftTimer

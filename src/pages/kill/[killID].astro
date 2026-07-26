@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
+import { parseIsk, classifySecurity } from '../../lib/helpers.js'
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
@@ -120,27 +121,9 @@ const bgStyle = shipTypeID
 
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
 
-function classifySecurity(system) {
-    if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
-    if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
-    if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', color: '#b07ce8' }
-    const s = system.security
-    if (s >= 0.5) return { label: `HS ${s.toFixed(1)}`, color: 'var(--color-neon-green)' }
-    if (s > 0.0)  return { label: `LS ${s.toFixed(1)}`, color: 'var(--color-whale-accent)' }
-    return { label: `NULL ${s.toFixed(1)}`, color: 'var(--color-isk-billion)' }
-}
 const sec = classifySecurity(kill.system)
 const secShort = kill.system?.security != null ? kill.system.security.toFixed(1) : '?'
 
-function parseIsk(v) {
-    if (typeof v === 'number') return v
-    if (typeof v !== 'string') return 0
-    const m = v.match(/([\d.,]+)\s*([KMBT])?/i)
-    if (!m) return 0
-    const n = parseFloat(m[1].replace(/,/g, ''))
-    const mult = { K: 1e3, M: 1e6, B: 1e9, T: 1e12 }[m[2]?.toUpperCase()] ?? 1
-    return n * mult
-}
 const totalIsk = parseIsk(kill.totalValue)
 const valueTier =
     totalIsk >= 10_000_000_000 ? 'var(--color-whale-accent)'
@@ -357,7 +340,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
         : item.dropped > 0 ? 'var(--color-neon-green)'
         : 'var(--color-isk-billion)'
     return (
-    <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors pl-2 pr-1 -mx-1 border-l-2" style={`border-color: ${accent}`} data-row data-dropped={item.dropped > 0 ? '1' : undefined} data-destroyed={item.destroyed > 0 ? '1' : undefined}>
+    <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors pl-2 pr-1 -mx-1 border-l-2" style={`--accent: ${accent}`} data-row data-dropped={item.dropped > 0 ? '1' : undefined} data-destroyed={item.destroyed > 0 ? '1' : undefined}>
                                                 <img
     src={`https://images.evetech.net/types/${item.typeID}/icon?size=32`}
     data-bp={`https://images.evetech.net/types/${item.typeID}/bp?size=32`}
