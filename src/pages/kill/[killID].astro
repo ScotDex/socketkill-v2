@@ -237,17 +237,17 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <div class="who">
                             <div class="nm">
                                 {kill.victim.characterID
-                                    ? <a href={internalLink('character', kill.victim.characterID)} class="link">{kill.victim.name}</a>
+                                    ? <a href={externalLink('character', kill.victim.characterID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.name}</a>
                                     : kill.victim.name}
                             </div>
                             <div class="af">
                                 {kill.victim.corporationID
-                                    ? <a href={internalLink('corp', kill.victim.corporationID)} class="link">{kill.victim.corp}</a>
+                                    ? <a href={externalLink('corp', kill.victim.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.corp}</a>
                                     : kill.victim.corp}
                             </div>
                             <div class="af">
                                 {kill.victim.allianceID
-                                    ? <a href={internalLink('alliance', kill.victim.allianceID)} class="link">{kill.victim.alliance}</a>
+                                    ? <a href={externalLink('alliance', kill.victim.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{kill.victim.alliance}</a>
                                     : (kill.victim.alliance || 'Non Affiliate')}
                             </div>
                         </div>
