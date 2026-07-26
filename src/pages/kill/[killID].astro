@@ -49,6 +49,8 @@ function buildTitle(data) {
     return `${data.victim.name} lost ${article(data.victim.ship)} ${data.victim.ship}${valueClause}`
 }
 
+const eftText = buildEft(kill)
+
 
 function buildOgDescription(data) {
     const parts = []
