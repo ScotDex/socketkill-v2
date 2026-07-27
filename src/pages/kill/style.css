@@ -13,6 +13,13 @@ details[open]::details-content {
     block-size: auto;
 }
 
+/* FONT TEST — Nunito Sans. Delete this block to revert. */
+.kill-screen,
+.fit-modal {
+    --font-body: 'Nunito Sans', sans-serif;
+    font-family: var(--font-body);
+}
+
 .card {
     background:
         linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
