@@ -127,7 +127,7 @@
                   <span class="ui truncate text-white text-sm font-semibold group-hover:text-neon-green transition-colors">{shipName(k.shipID)}</span>
                   <span class="ui truncate text-text-body/70 text-xs mt-0.5">{k.victimName ?? 'Unknown Capsuleer'} · <span class="text-text-faint">{systemName(k.systemID)}</span></span>
                 </div>
-                <span class="flex-shrink-0 text-whale-accent font-bold font-mono tabular-nums text-sm border-b-2 border-whale-accent/60 px-1 pb-0.5">{formatIsk(k.value)}</span>
+                <span class="flex-shrink-0 text-whale-accent font-bold font-mono tabular-nums text-sm">{formatIsk(k.value)}</span>
               </a>
             </li>
           {/each}
