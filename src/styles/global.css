@@ -549,3 +549,53 @@ body.signal-interference {
         opacity: 0;
     }
 }
+
+.lookup {
+    display: flex;
+    gap: px;
+    background: var(--color-eve-border);
+    padding: 1px;
+}
+
+.lookup-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.45rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--color-text-body);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.lookup-input::placeholder {
+    color: var(--color-text-faint);
+    letter-spacing: 0.14em;
+}
+.lookup-input:focus {
+    outline: none;
+    border-bottom-color: var(--color-neon-green);
+}
+
+.lookup-go {
+    padding: 0 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.lookup-go:hover {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+    background: #1b212b;
+}
+.lookup-go:focus-visible {
+    outline: 1px solid var(--color-neon-green);
+    outline-offset: 2px;
+}

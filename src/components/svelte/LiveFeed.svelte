@@ -41,17 +41,12 @@
         weaponKeyword: ''
     })
 
-    const PROMO_CODE = 'socketkill' 
-let codeCopied = $state(false)
+let searchTerm = $state('')
 
-async function copyPromo() {
-    try {
-        await navigator.clipboard.writeText(PROMO_CODE)
-        codeCopied = true
-        setTimeout(() => codeCopied = false, 1500)
-    } catch (e) {
-        console.warn('Clipboard write failed:', e)
-    }
+function runSearch() {
+    const term = searchTerm.trim()
+    if (!term) return
+    console.log('[LOOKUP]', term)   // stub — resolution wired later
 }
 
 let filterCopied = $state(false)
@@ -319,15 +314,19 @@ $effect(() => {
                 </div>
             </section>
 
-            {#if PROMO_CODE}
 <section class="flex flex-col gap-1.5">
-    <span class="lbl">Support the Site</span>
-    <button type="button" class="promo" class:copied={codeCopied} onclick={copyPromo}>
-        <span class="promo-meta">use code</span>
-        <span class="promo-code">{codeCopied ? 'copied' : PROMO_CODE}</span>
-    </button>
+    <span class="lbl">entity lookup</span>
+    <div class="lookup">
+        <input
+            type="text"
+            class="lookup-input"
+            placeholder="EXACT NAME"
+            bind:value={searchTerm}
+            onkeydown={(e) => e.key === 'Enter' && runSearch()}
+        />
+        <button type="button" class="lookup-go" onclick={runSearch} aria-label="Look up entity">&gt;</button>
+    </div>
 </section>
-{/if}
 
 
         </div>
