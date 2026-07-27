@@ -184,9 +184,7 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     color: var(--c);
-    border-bottom: 2px solid var(--c);
     align-self: flex-start;
-    padding-bottom: 1px;
     text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
   }
 
