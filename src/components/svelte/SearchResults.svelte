@@ -32,7 +32,11 @@
   function prevPage() { runSearch($searchFilters, $searchResults.page - 1); }
   function formatTime(iso) { return iso ? new Date(iso).toISOString().slice(11, 19) : ''; }
 
-  const shipName   = (k) => $filterSource.ships?.[k.shipID]?.name     ?? `Ship ${k.shipID}`;
+  const shipName = (k) => {
+    const hit = $filterSource.ships?.[k.shipID]?.name;
+    if (!hit && $filterSource.loaded) console.warn('[SDE MISS] typeID', k.shipID);
+    return hit ?? `Type ${k.shipID}`;
+  };
   const systemName = (k) => $filterSource.systems?.[k.systemID]?.name ?? `Sys ${k.systemID}`;
   const regionName = (k) => $filterSource.regions?.[k.regionID]?.name ?? '';
 
