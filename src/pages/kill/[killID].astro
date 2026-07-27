@@ -326,6 +326,8 @@ const hiddenAttackers = sortedAttackers.slice(5)
     <li class="flex items-center gap-2 text-sm hover:bg-white/[0.03] transition-colors pl-2 pr-1 -mx-1 border-l-2" style={`--accent: ${accent}`} data-row data-dropped={item.dropped > 0 ? '1' : undefined} data-destroyed={item.destroyed > 0 ? '1' : undefined}>
                                                 <img
     src={`https://images.evetech.net/types/${item.typeID}/${item.iconVariation ?? 'icon'}?size=32`}
+    data-bp={`https://images.evetech.net/types/${item.typeID}/bp?size=32`}
+    onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=this.dataset.bp}"
     class="w-6 h-6 flex-shrink-0" alt="" loading="lazy" />
                                                 <div class="ui flex-1 min-w-0 truncate">
                                                     <a href={externalLink('type', item.typeID)} target="_blank" rel="noopener noreferrer" class="text-[var(--color-text-body)] link">{item.name}</a>
