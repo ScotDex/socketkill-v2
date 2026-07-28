@@ -97,19 +97,6 @@ const faqSections = [
                 </div>
             </section>
         ))}
-
-        <section class="py-8">
-            <h2 class="text-[var(--color-neon-green)] text-sm tracking-[0.3em] uppercase mb-2">SUPPORTED BY</h2>
-            <div class="flex flex-col gap-4 pt-4">
-                {partners.map(p => (
-                    <a href={p.href} target="_blank" rel="noopener sponsored"
-                       class="block border border-white/10 bg-black/40 p-4 hover:border-[var(--color-neon-green)] transition">
-                        <img src={p.img} alt={p.alt} loading="lazy"
-                             class="mx-auto max-h-36 w-auto object-contain" />
-                    </a>
-                ))}
-            </div>
-        </section>
     </main>
 
     <footer class="max-w-7xl mx-auto p-4 mt-8 border-t border-white/5 text-center">
