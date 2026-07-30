@@ -1,5 +1,5 @@
-<div class="w-full bg-black border-b border-[var(--color-border-dim)]">
-    <div class="max-w-[1700px] mx-auto px-4 py-1 flex items-center gap-4
+<div class="relative z-50 w-full bg-black border-b border-[var(--color-border-dim)]">
+    <div class="max-w-[1700px] mx-auto px-4 py-1 grid grid-cols-[1fr_auto_1fr] items-center gap-4
                 font-mono text-[0.62rem] uppercase tracking-widest text-white/40">
         <nav class="flex items-center gap-4" aria-label="Site navigation">
             <a href="/about" class="band-link">About</a>
@@ -7,9 +7,22 @@
             <a href="/obs" class="band-link">OBS</a>
             <a href="https://forums.eveonline.com/t/socketkill-com-feature-recap/512213/9"
                target="_blank" rel="noopener noreferrer" class="band-link">Feedback</a>
+        <details class="band-drop">
+                <summary class="band-link">Links</summary>
+                <div class="band-menu">
+                    <a href="https://eveworkbench.com" target="_blank" rel="noopener noreferrer" class="band-menu-link">EVE_WORKBENCH</a>
+                    <a href="https://zkillboard.com/" target="_blank" rel="noopener noreferrer" class="band-menu-link">ZKILLBOARD</a>
+                    <a href="https://everookies.com/" target="_blank" rel="noopener noreferrer" class="band-menu-link">EVE_ROOKIES</a>
+                    <a href="https://wiki.eveuniversity.org/Main_Page" target="_blank" rel="noopener noreferrer" class="band-menu-link">EVE_UNI</a>
+                    <a href="https://eve-kill.com/" target="_blank" rel="noopener noreferrer" class="band-menu-link">EVE_KILL</a>
+                </div>
+            </details>
         </nav>
+        <a href="/about#legal" class="band-link justify-self-center text-white/25">
+            EVE Online &amp; the EVE logo are trademarks of Fenris Creations
+        </a>
 
-        <div class="ml-auto flex items-center gap-3">
+        <div class="justify-self-end flex items-center gap-3">
             <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener noreferrer"
                class="text-white/35 hover:text-[var(--color-neon-green)] transition-colors" aria-label="Join the Discord">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
@@ -41,5 +54,37 @@
     .band-link:hover {
         color: var(--color-neon-green);
         text-shadow: 0 0 5px rgba(63, 185, 80, 0.5);
+    }
+
+    .band-drop {
+        position: relative;
+    }
+    .band-drop summary {
+        list-style: none;
+        cursor: pointer;
+    }
+    .band-drop summary::-webkit-details-marker {
+        display: none;
+    }
+    .band-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        min-width: 160px;
+        padding: 6px 0;
+        background: rgba(10, 12, 16, 0.98);
+        border: 1px solid var(--color-border-mid);
+        z-index: 100;
+    }
+    .band-menu-link {
+        display: block;
+        padding: 4px 12px;
+        font-size: 0.6rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        color: rgba(63, 185, 80, 0.6);
+    }
+    .band-menu-link:hover {
+        color: var(--color-neon-green);
     }
 </style>

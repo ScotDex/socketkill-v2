@@ -166,42 +166,6 @@ body {
 }
 
 
-#network-dropdown {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 15px);
-    transform: translateX(-50%);
-    left: 50%;
-    pointer-events: auto;
-    background: rgba(10, 12, 16, 0.98);
-    border: 1px solid var(--color-border-mid);
-    padding: 6px 0;
-    min-width: 160px;
-    z-index: 99999;
-}
-
-#network-dropdown.active {
-    display: block;
-}
-
-.network-link {
-    display: block;
-    padding: 4px 12px;
-    color: rgba(63, 185, 80, 0.6);
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    text-decoration: none;
-    letter-spacing: 1px;
-}
-
-.network-link:hover {
-    color: var(--color-neon-green);
-    text-shadow: 0 0 5px rgba(63, 185, 80, 0.5);
-}
-
-#network-toggle {
-    cursor: pointer;
-}
 
 
 @media (max-width: 1023px) {
@@ -570,10 +534,12 @@ body.signal-interference {
     border-bottom: 2px solid transparent;
     transition: color 0.15s, border-color 0.15s;
 }
+
 .lookup-input::placeholder {
     color: var(--color-text-faint);
     letter-spacing: 0.14em;
 }
+
 .lookup-input:focus {
     outline: none;
     border-bottom-color: var(--color-neon-green);
@@ -590,11 +556,13 @@ body.signal-interference {
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
+
 .lookup-go:hover {
     color: var(--color-neon-green);
     border-bottom-color: var(--color-neon-green);
     background: #1b212b;
 }
+
 .lookup-go:focus-visible {
     outline: 1px solid var(--color-neon-green);
     outline-offset: 2px;
