@@ -34,8 +34,6 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 
 A public image proxy API is available for EVE Online assets. Free to use for personal and third-party projects. If you integrate this API into your tool or application, a credit link back to [socketkill.com](https://socketkill.com) is appreciated.
 
-Full API documentation: [api.socketkill.com/docs](https://api.socketkill.com/docs/)
-
 ## Legal
 
 EVE Online and the EVE logo are registered trademarks of Fenris Creations. All rights are reserved worldwide.
@@ -51,6 +49,8 @@ FC is in no way responsible for the content on or functioning of this website, n
 Original API provided by: [zKillboard](https://github.com/zKillboard/zKillboard/wiki/API-(R2Z2))
 
 Further API's and SDE used [EVE API Explorer](https://developers.eveonline.com/api-explorer)
+
+Killmail valuations done by [Janice E-351] (https://janice.e-351.com/api/rest/docs/index.html)
 
 Main site background art from [Rixx Javix](https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
 
