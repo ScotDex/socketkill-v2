@@ -1,24 +1,12 @@
----
-const links = [
-    { href: '/about', label: 'About' },
-    { href: '/stats', label: 'Top 10' },
-    { href: '/obs', label: 'OBS' },
-    { href: 'https://forums.eveonline.com/t/socketkill-com-feature-recap/512213/9', label: 'Feedback', external: true }
-]
----
-
 <div class="w-full bg-black border-b border-[var(--color-border-dim)]">
     <div class="max-w-[1700px] mx-auto px-4 py-1 flex items-center gap-4
                 font-mono text-[0.62rem] uppercase tracking-widest text-white/40">
         <nav class="flex items-center gap-4" aria-label="Site navigation">
-            {links.map(link => (
-                
-                    href={link.href}
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noopener noreferrer' : undefined}
-                    class="no-underline text-white/40 transition-colors hover:text-[var(--color-neon-green)] hover:[text-shadow:0_0_5px_rgba(63,185,80,0.5)]"
-                >{link.label}</a>
-            ))}
+            <a href="/about" class="band-link">About</a>
+            <a href="/stats" class="band-link">Top 10</a>
+            <a href="/obs" class="band-link">OBS</a>
+            <a href="https://forums.eveonline.com/t/socketkill-com-feature-recap/512213/9"
+               target="_blank" rel="noopener noreferrer" class="band-link">Feedback</a>
         </nav>
 
         <div class="ml-auto flex items-center gap-3">
