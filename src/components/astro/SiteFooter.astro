@@ -45,23 +45,3 @@
         </details>
     </nav>
 </footer>
-
-<script>
-    async function updateNPCTicker() {
-        const el = document.getElementById('npc-count')
-        if (!el) return
-        try {
-            const res = await fetch('https://ws.socketkill.com/stats/npc-kills')
-            const data = await res.json()
-            if (data?.total) {
-                el.innerText = data.total.toLocaleString()
-                el.style.opacity = '0.5'
-                setTimeout(() => (el.style.opacity = '1'), 200)
-            }
-        } catch {
-            el.innerText = 'OFFLINE'
-        }
-    }
-    updateNPCTicker()
-    setInterval(updateNPCTicker, 300_000)
-</script>
