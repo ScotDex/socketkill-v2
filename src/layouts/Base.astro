@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import UtilityBand from '../components/astro/UtilityBand.astro'
 const {
     title,
     ogTitle = "Socket.Kill",
@@ -60,6 +61,7 @@ const jsonLd = {
         <slot name="head"/>
     </head>
     <body>
+        <UtilityBand />
         <slot />
     </body>
 </html>
