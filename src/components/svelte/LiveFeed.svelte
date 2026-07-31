@@ -10,6 +10,7 @@
     import WeaponKeywordFacet from './WeaponKeywordFacet.svelte'
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import { filtersToParams, paramsToFilters } from '../../lib/filter-url.js'
+    import { internalLink } from '../../lib/entity-links.js'
     import {
         passesFilter,
         getUtcTimestamp,
@@ -42,13 +43,55 @@
     })
 
 let searchTerm = $state('')
+let lookupError = $state('')
+let lookupBusy = $state(false)
 
-function runSearch() {
+// ESI /universe/ids/ is exact-match only — no prefix or fuzzy.
+// It returns typed buckets, so the bucket tells us the route.
+// Priority: character > corp > alliance, since a name can collide
+// across types and pilot lookup is the common case.
+const LOOKUP_ORDER = [
+    ['characters',   'character'],
+    ['corporations', 'corp'],
+    ['alliances',    'alliance'],
+]
+
+async function runSearch() {
     const term = searchTerm.trim()
-    if (!term) return
-    console.log('[LOOKUP]', term)   // stub — resolution wired later
-}
+    if (!term || lookupBusy) return
 
+    lookupBusy = true
+    lookupError = ''
+
+    try {
+        const res = await fetch('https://esi.evetech.net/latest/universe/ids/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify([term]),
+        })
+
+        if (!res.ok) {
+            lookupError = 'LOOKUP UNAVAILABLE'
+            return
+        }
+
+        const data = await res.json()
+
+        for (const [bucket, kind] of LOOKUP_ORDER) {
+            const hit = data[bucket]?.[0]
+            if (hit) {
+                window.location.href = internalLink(kind, hit.id)
+                return
+            }
+        }
+
+        lookupError = 'NO MATCH — EXACT NAME REQUIRED'
+    } catch {
+        lookupError = 'LOOKUP FAILED'
+    } finally {
+        lookupBusy = false
+    }
+}
 let filterCopied = $state(false)
 
 async function copyFilterUrl() {
@@ -298,10 +341,17 @@ $effect(() => {
             class="lookup-input"
             placeholder="EXACT NAME"
             bind:value={searchTerm}
+            oninput={() => lookupError = ''}
             onkeydown={(e) => e.key === 'Enter' && runSearch()}
         />
-        <button type="button" class="lookup-go" onclick={runSearch} aria-label="Look up entity">&gt;</button>
+        <button type="button" class="lookup-go" onclick={runSearch}
+            disabled={lookupBusy} aria-label="Look up entity">
+            {lookupBusy ? '·' : '>'}
+        </button>
     </div>
+    {#if lookupError}
+        <span class="lookup-err" transition:fade={{ duration: 120 }}>{lookupError}</span>
+    {/if}
 </section>
 
 
@@ -352,6 +402,14 @@ $effect(() => {
             inset 0 1px 0 rgba(255, 255, 255, 0.04),          
             inset 0 0 40px rgba(63, 185, 80, 0.02);           
         clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px);
+    }
+
+    .lookup-err {
+        font-family: var(--font-body);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-isk-billion);
     }
 
     .ui, .lbl, .seg, .flush { font-family: var(--font-body); }
