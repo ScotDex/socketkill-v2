@@ -4,28 +4,6 @@ import { externalLink, internalLink } from '../../lib/entity-links.js'
 import { formatIsk } from '../../lib/filter-logic.js'
 import './style.css'
 
-// ── ROUTE: src/pages/[entityType]/[entityID].astro ───────────────────
-// Serves /pilot/{id}, /corp/{id}, /alliance/{id}
-// Static routes (/kill/, /about, /obs) take priority in Astro,
-// so this only catches the three whitelisted types below.
-//
-// DESIGN: mirrors the kill page dossier card vocabulary
-// (.card / .card-h / .cover / .ident / .dossier-rows / .card-f).
-// Two-column shell is the same grid: [360px_1fr] inside max-w-7xl.
-//
-// SCOPE GUARD: location + identity only. No K/D, no efficiency, no
-// ratios — that is ledger territory and stays out by design.
-//
-// DATA CONTRACT — implemented in webServer.js:
-// GET https://ws.socketkill.com/api/entity/{type}/{id}
-// 200: { windowDays, events: [{ killID, isLoss, shipTypeID, shipName,
-//        systemName, regionName, space, totalValue, time, attackerCount }] }
-// Identity is resolved here via public ESI, not by the endpoint.
-//
-// NOTE: shipTypeID is always the DESTROYED hull. On a loss that is the
-// entity's own ship; on a kill it is the target's. Only losses can tell
-// us what this entity flies — hence "MOST LOST", not "most flown".
-// ─────────────────────────────────────────────────────────────────────
 
 const ENTITY = {
     pilot: {
@@ -82,8 +60,6 @@ try {
         warEligible: data.war_eligible ?? null,        // corp only
         ceoID: data.ceo_id ?? null,                    // corp only
         ceoName: null,
-        // NOT carried through: description, url. Player-authored HTML,
-        // unmoderated, sometimes hostile. Deliberate omission.
     }
 
     if (identity.corpID) {
@@ -102,7 +78,6 @@ try {
     return new Response('Entity lookup failed', { status: 502 })
 }
 
-// ── EVENTS (SocketKill D1 endpoint) ──────────────────────────────────
 let events = []
 let windowDays = 30
 let feedOnline = false
@@ -193,8 +168,6 @@ function valueColor(v) {
     if (v >= 1_000_000_000) return 'var(--color-isk-billion)'
     return 'var(--color-neon-green)'
 }
-
-// ── DERIVED ──────────────────────────────────────────────────────────
 const lostHull = mostLost(losses)
 const area = operatingArea(events)
 const killPct = events.length ? (kills.length / events.length * 100) : 0
@@ -223,10 +196,7 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
     </div>
 
     <main class="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-4 p-4 max-w-7xl mx-auto relative z-10">
-
-        <!-- ══ LEFT: DOSSIER STACK ══════════════════════════════════ -->
         <section class="flex flex-col gap-4">
-
             <div class="card" style={`--card-c: ${cardAccent}; --d: 0ms`}>
                 <div class="card-h flex justify-between items-center">
                     <span>{conf.label.toLowerCase()} dossier</span>
@@ -390,15 +360,11 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
                             })}
                         </div>
                     </div>
-
-                    <div class="card-f" style="color:var(--color-text-faint)">
-                        &gt; derived from {area.total} events — not a complete history
-                    </div>
                 </div>
             )}
         </section>
 
-        <!-- ══ RIGHT: ACTIVITY ══════════════════════════════════════ -->
+        
         <section class="card self-start" style="--card-c: var(--color-neon-green); --d: 45ms">
             <div class="card-h flex justify-between items-center">
                 <span>activity</span>
@@ -500,8 +466,6 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
 </Base>
 
 <script>
-    // Feed filter. Same idiom as the kill page loot tabs: toggle
-    // .is-active, flip aria-selected, hide non-matching [data-row].
     const tabs = document.getElementById('feed-tabs')
     const feed = document.getElementById('feed')
 
