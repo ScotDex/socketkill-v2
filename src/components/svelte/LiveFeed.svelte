@@ -46,10 +46,6 @@ let searchTerm = $state('')
 let lookupError = $state('')
 let lookupBusy = $state(false)
 
-// ESI /universe/ids/ is exact-match only — no prefix or fuzzy.
-// It returns typed buckets, so the bucket tells us the route.
-// Priority: character > corp > alliance, since a name can collide
-// across types and pilot lookup is the common case.
 const LOOKUP_ORDER = [
     ['characters',   'character'],
     ['corporations', 'corp'],
@@ -366,6 +362,13 @@ $effect(() => {
     </footer>
 {/if}
 
+<div class="partner">
+            <a href="https://www.eveonline.com/partners" target="_blank" rel="noopener noreferrer">
+                <img src="https://edge.socketkill.com/PartnerBadge2.png"
+                     alt="EVE Online Partner" loading="lazy" />
+            </a>
+        </div>
+
     </aside>
     <div class="lg:flex-1 lg:self-start">
         {#if filteredFeed.length === 0}
@@ -487,6 +490,19 @@ $effect(() => {
     .icon-link:focus-visible {
         outline: 1px solid var(--color-neon-green);
         outline-offset: 2px;
+    }
+
+    .partner {
+        display: flex;
+        justify-content: center;
+        padding: 0.75rem;
+        border-top: 1px solid var(--color-border-dim);
+    }
+
+    .partner img {
+        width: 140px;
+        height: auto;
+        display: block;
     }
 
 </style>
