@@ -167,9 +167,7 @@ const cardAccent = entityType === 'pilot'
     ? secColor(identity.securityStatus)
     : 'var(--color-neon-green)'
 
-const cardAccent = entityType === 'pilot'
-    ? secColor(identity.securityStatus)
-    : 'var(--color-neon-green)'
+
 const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
 const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
 const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1).toLowerCase()} Activity`
