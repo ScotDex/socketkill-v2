@@ -87,6 +87,12 @@
     position: relative;
 }
 
+/* No cover to overlap (entity has no losses in window) —
+   cancel the pull-up or the portrait lands on the header. */
+.ident.no-cover {
+    margin-top: 0.75rem;
+}
+
 .ident .portrait-sm {
     width: 4.5rem;
     height: 4.5rem;

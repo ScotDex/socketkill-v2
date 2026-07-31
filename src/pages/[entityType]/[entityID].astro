@@ -240,7 +240,7 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
                     </figure>
                 )}
 
-                <div class="ident">
+                <div class={lostHull ? 'ident' : 'ident no-cover'}>
                     <img class="portrait-sm" src={conf.image(id)} alt={identity.name} loading="eager" />
                     <div class="who">
                         <div class="nm truncate">{identity.name}</div>
