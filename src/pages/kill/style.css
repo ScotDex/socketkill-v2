@@ -419,16 +419,16 @@ details[open]::details-content {
     }
 }
 
-[data-row] {
+#manifest [data-row] {
     border-color: var(--accent);
     background: color-mix(in srgb, var(--accent) 5%, transparent);
     transition: background 0.15s;
 }
 
-[data-row][data-dropped] {
+#manifest [data-row][data-dropped] {
     background: color-mix(in srgb, var(--accent) 9%, transparent);
 }
 
-[data-row]:hover {
+#manifest [data-row]:hover {
     background: color-mix(in srgb, var(--accent) 16%, transparent);
 }

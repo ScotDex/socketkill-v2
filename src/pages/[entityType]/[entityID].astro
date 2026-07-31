@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import { formatIsk } from '../../lib/filter-logic.js'
+import '../kill/style.css'
 import './style.css'
 
 
@@ -38,8 +39,6 @@ const id = parseInt(entityID)
 if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
     return new Response('Not found', { status: 404 })
 }
-
-// ── IDENTITY (public ESI) ────────────────────────────────────────────
 let identity = null
 try {
     const res = await fetch(conf.esiPath(id))
@@ -98,7 +97,6 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60')
 const kills = events.filter(e => !e.isLoss)
 const losses = events.filter(e => e.isLoss)
 
-// ── HELPERS ──────────────────────────────────────────────────────────
 function relativeTime(iso) {
     const diff = Date.now() - new Date(iso).getTime()
     const m = Math.floor(diff / 60000)
@@ -109,9 +107,6 @@ function relativeTime(iso) {
     return `${Math.floor(h / 24)}D AGO`
 }
 
-// Character sec status runs -10..+5. This is NOT the same scale as
-// classifySecurity() in helpers.js, which takes system security 0.0..1.0.
-// Do not merge the two.
 function secColor(s) {
     if (s == null) return 'var(--color-text-faint)'
     if (s <= -5) return 'var(--color-isk-billion)'
@@ -136,9 +131,6 @@ function mostLost(list) {
     return { typeID, name: d.name, n: d.n }
 }
 
-// Location aggregation only. Present-tense "where are they operating",
-// not "how good are they". Derived from the returned window, and the
-// footer says so rather than claiming full 30-day coverage.
 function operatingArea(list) {
     const sys = {}, sp = {}
     for (const e of list) {
@@ -175,8 +167,16 @@ const cardAccent = entityType === 'pilot'
     ? secColor(identity.securityStatus)
     : 'var(--color-neon-green)'
 
+const cardAccent = entityType === 'pilot'
+    ? secColor(identity.securityStatus)
+    : 'var(--color-neon-green)'
+const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
 const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
 const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1).toLowerCase()} Activity`
+
+const KILLS_BG_COUNT = 24
+const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
+
 ---
 
 <Base title={`${title} | Socketkill.com`} ogTitle={title}
@@ -186,7 +186,7 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-<div class="kill-screen">
+<div class="kill-screen art-bg" style={`--art-bg-url: url(${entityBg})`}>
 
     <!-- PAGE TITLE — <div>, not <header>: the global stylesheet hides
          bare `header` under 1023px, which would blank this on mobile. -->
@@ -308,8 +308,7 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
                 <div class="dossier-actions">
                     <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="act act-primary">ZKILLBOARD</a>
                     <a href={`https://evewho.com/${conf.evewhoPath}/${id}`} target="_blank" rel="noopener noreferrer" class="act">EVEWHO</a>
-                    <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(`https://socketkill.com/${entityType}/${id}`)}`}
-                       target="_blank" rel="noopener noreferrer" class="act">SHARE</a>
+                    <button type="button" id="copy-btn" data-url={canonicalUrl} class="act">COPY LINK</button>
                 </div>
 
                 <div class="card-f" style={`color:${events.length ? 'var(--color-neon-green)' : 'var(--color-text-faint)'}`}>
@@ -466,6 +465,26 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
 </Base>
 
 <script>
+    const copyBtn = document.getElementById('copy-btn')
+    const copyLabel = copyBtn?.textContent
+    let copyTimer
+    copyBtn?.addEventListener('click', async () => {
+        const url = copyBtn.dataset.url || ''
+        try {
+            await navigator.clipboard.writeText(url)
+        } catch {
+            const ta = document.createElement('textarea')
+            ta.value = url
+            document.body.appendChild(ta)
+            ta.select()
+            document.execCommand('copy')
+            ta.remove()
+        }
+        clearTimeout(copyTimer)
+        copyBtn.textContent = 'COPIED ✓'
+        copyTimer = setTimeout(() => { copyBtn.textContent = copyLabel }, 1500)
+    })
+
     const tabs = document.getElementById('feed-tabs')
     const feed = document.getElementById('feed')
 
