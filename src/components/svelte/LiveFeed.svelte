@@ -362,12 +362,7 @@ $effect(() => {
     </footer>
 {/if}
 
-<div class="partner">
-            <a href="https://www.eveonline.com/partners" target="_blank" rel="noopener noreferrer">
-                <img src="https://edge.socketkill.com/PartnerBadge2.png"
-                     alt="EVE Online Partner" loading="lazy" />
-            </a>
-        </div>
+
 
     </aside>
     <div class="lg:flex-1 lg:self-start">
@@ -391,6 +386,12 @@ $effect(() => {
     </div>
 
     <QueryBuilder />
+</div>
+
+<div class="partner-mark" aria-hidden="false">
+    <a href="https://www.eveonline.com/partners" target="_blank" rel="noopener noreferrer">
+        <img src="https://edge.socketkill.com/PartnerBadge2.png" alt="EVE Online Partner" loading="lazy" />
+    </a>
 </div>
 
 <style>
@@ -492,17 +493,25 @@ $effect(() => {
         outline-offset: 2px;
     }
 
-    .partner {
-        display: flex;
-        justify-content: center;
-        padding: 0.75rem;
-        border-top: 1px solid var(--color-border-dim);
+.partner-mark {
+        position: fixed;
+        bottom: 1.25rem;
+        left: 1.25rem;
+        z-index: 3;
+        pointer-events: auto;
+        opacity: 0.4;
+        transition: opacity 0.25s;
     }
 
-    .partner img {
-        width: 140px;
+    .partner-mark:hover { opacity: 0.85; }
+
+    .partner-mark img {
+        width: 150px;
         height: auto;
         display: block;
     }
 
+    @media (max-width: 1023px) {
+        .partner-mark { display: none; }
+    }
 </style>
