@@ -388,11 +388,6 @@ $effect(() => {
     <QueryBuilder />
 </div>
 
-<div class="partner-mark" aria-hidden="false">
-    <a href="https://www.eveonline.com/partners" target="_blank" rel="noopener noreferrer">
-        <img src="https://edge.socketkill.com/PartnerBadge2.png" alt="EVE Online Partner" loading="lazy" />
-    </a>
-</div>
 
 <style>
     .lf {
@@ -493,23 +488,6 @@ $effect(() => {
         outline-offset: 2px;
     }
 
-.partner-mark {
-        position: fixed;
-        bottom: 1.25rem;
-        left: 1.25rem;
-        z-index: 3;
-        pointer-events: auto;
-        opacity: 0.4;
-        transition: opacity 0.25s;
-    }
-
-    .partner-mark:hover { opacity: 0.85; }
-
-    .partner-mark img {
-        width: 150px;
-        height: auto;
-        display: block;
-    }
 
     @media (max-width: 1023px) {
         .partner-mark { display: none; }
