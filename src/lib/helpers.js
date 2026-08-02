@@ -48,3 +48,12 @@ export function buildEft(kill) {
     if (loose.length) out += '\n\n\n' + loose.join('\n')
     return out
 }
+
+export function formatIsk(n) {
+    if (!n || n < 0) return '0'
+    if (n >= 1e12) return (n / 1e12).toFixed(2) + 'T'
+    if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B'
+    if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M'
+    if (n >= 1e3) return (n / 1e3).toFixed(2) + 'K'
+    return Math.round(n).toString()
+}

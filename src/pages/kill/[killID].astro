@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
-import { parseIsk, classifySecurity, buildEft } from '../../lib/helpers.js'
+import { parseIsk, classifySecurity, buildEft, formatIsk } from '../../lib/helpers.js'
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
@@ -140,7 +140,19 @@ const groups = kill.items?.groups || {}
 const knownKeys = GROUP_ORDER.filter(g => groups[g]?.length)
 const unknownKeys = Object.keys(groups).filter(g => groups[g]?.length && !GROUP_ORDER.includes(g))
 const orderedGroups = [...knownKeys.filter(g => g !== 'other'), ...unknownKeys, ...(knownKeys.includes('other') ? ['other'] : [])]
-    .map(g => ({ key: g, label: GROUP_LABELS[g] || g.toUpperCase(), items: groups[g] }))
+    .map(g => {
+        const items = groups[g]
+        const dropped = items.reduce((s, i) => s + (i.value || 0) * (i.dropped || 0), 0)
+        const destroyed = items.reduce((s, i) => s + (i.value || 0) * (i.destroyed || 0), 0)
+        return {
+            key: g,
+            label: GROUP_LABELS[g] || g.toUpperCase(),
+            items,
+            dropped,
+            destroyed,
+            total: dropped + destroyed,
+        }
+    })
 const attackers = kill.attackers || []
 const sortedAttackers = [...attackers].sort((a, b) => {
     if (a.finalBlow === b.finalBlow) return 0
@@ -188,7 +200,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
             <section class="flex flex-col gap-4">
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
                     <header class="card-h flex justify-between items-center">
-                        <span>victim dossier</span>
+                    <span></span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
                     {shipTypeID && (
@@ -307,15 +319,11 @@ const hiddenAttackers = sortedAttackers.slice(5)
                 ) : (
                     <div id="manifest" class="p-4 space-y-5">
                         {orderedGroups.map(group => {
-                            const totalDropped = group.items.reduce((sum, i) => sum + (i.dropped || 0), 0)
-                            const totalDestroyed = group.items.reduce((sum, i) => sum + (i.destroyed || 0), 0)
                             return (
                                 <div class="item-group" data-group>
                                     <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] pb-1 mb-2">
                                         <span class="grp">{group.label}</span>
-                                        <span class="font-mono text-[10px] tabular-nums text-[var(--color-text-faint)]">
-                                            <span style="color: var(--color-neon-green)">{totalDropped}D</span> / <span style="color: var(--color-isk-billion)">{totalDestroyed}X</span>
-                                        </span>
+                                        <span class="font-mono text-[10px] tabular-nums text-[var(--color-text-faint)]">{formatIsk(group.total)}</span>
                                     </div>
                                     <ul class="space-y-1">
                                         {group.items.map(item => {
