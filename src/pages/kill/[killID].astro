@@ -199,7 +199,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
         <main class="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-4 p-4 max-w-7xl mx-auto relative z-10">
             <section class="flex flex-col gap-4">
                 <div class="card" style={`--card-c: ${valueTier}; --d: 0ms`}>
-                    <header class="card-h flex justify-between items-center">
+                    <header class="card-h flex items-center">
                     <span></span>
                         <span class="tag">LOSS RECORDED</span>
                     </header>
@@ -323,7 +323,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                 <div class="item-group" data-group>
                                     <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] pb-1 mb-2">
                                         <span class="grp">{group.label}</span>
-                                        <span class="font-mono text-[10px] tabular-nums text-[var(--color-text-faint)]">{formatIsk(group.total)}</span>
+                                        <span class="font-mono text-xs tabular-nums text-[var(--color-text-body)]">{formatIsk(group.total)}</span>
                                     </div>
                                     <ul class="space-y-1">
                                         {group.items.map(item => {
