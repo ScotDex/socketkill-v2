@@ -1,5 +1,5 @@
 ---
-import { externalLink } from '../../lib/entity-links.js'
+import { externalLink, internalLink } from '../../lib/entity-links.js'
 const { a } = Astro.props
 const isNpc = !a.characterID
 const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
@@ -20,17 +20,19 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
         <div class="ui truncate text-white text-[13px]">
             {isNpc
                 ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
-                : <a href={externalLink('character', a.characterID)} target="_blank" rel="noopener noreferrer" class="link">{a.name}</a>}
+                : <a href={internalLink('character', a.characterID)} class="link">{a.name}</a>}
             {a.finalBlow && <span class="ml-1 fb">FINAL BLOW</span>}
         </div>
         {corpKnown && (
             <div class="ui truncate text-[var(--color-text-faint)] text-xs">
-                <a href={externalLink('corp', a.corporationID)} target="_blank" rel="noopener noreferrer" class="link">{a.corp}</a>
+                {isNpc
+                    ? <span>{a.corp}</span>
+                    : <a href={internalLink('corp', a.corporationID)} class="link">{a.corp}</a>}
             </div>
         )}
         {a.allianceID && a.alliance && (
             <div class="ui truncate text-[var(--color-text-faint)] text-xs">
-                <a href={externalLink('alliance', a.allianceID)} target="_blank" rel="noopener noreferrer" class="link">{a.alliance}</a>
+                <a href={internalLink('alliance', a.allianceID)} class="link">{a.alliance}</a>
             </div>
         )}
     </div>

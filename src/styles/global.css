@@ -78,6 +78,27 @@ body {
     min-height: 100vh;
 }
 
+.partner-mark {
+    position: fixed;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    z-index: 3;
+    opacity: 0.4;
+    transition: opacity 0.25s;
+}
+
+.partner-mark:hover { opacity: 0.85; }
+
+.partner-mark img {
+    width: 200px;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 1023px) {
+    .partner-mark { display: none; }
+}
+
 .kill-screen::before {
     content: "";
     position: fixed;

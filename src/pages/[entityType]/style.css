@@ -1,0 +1,43 @@
+.bar-track {
+    height: 3px;
+    background: color-mix(in srgb, var(--color-text-faint) 20%, transparent);
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--c);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--c) 55%, transparent);
+    animation: grow 0.6s ease-out 0.3s both;
+    transform-origin: left;
+}
+.feed-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    transition: background 0.15s;
+}
+
+.feed-row:hover {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.tab[data-f="losses"].is-active {
+    color: var(--color-isk-billion);
+    border-bottom-color: var(--color-isk-billion);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+}
+
+
+.ident.no-cover {
+    margin-top: 0.75rem;
+}
+
+
+.pulse-dot {
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+}
