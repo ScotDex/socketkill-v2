@@ -12,6 +12,8 @@ const {
     twitterCard="summary"
 } = Astro.props
 
+import { ClientRouter } from 'astro:transitions'
+
 
 const canonicalURL = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', Astro.site)
 const jsonLd = {
@@ -59,6 +61,7 @@ const jsonLd = {
         <meta property="og:image:alt" content="Socket.Kill live kill feed preview" />
         {Astro.url.pathname === '/' && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
         <slot name="head"/>
+        <ClientRouter />
     </head>
     <body>
         <UtilityBand />
