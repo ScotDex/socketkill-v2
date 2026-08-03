@@ -16,6 +16,9 @@ details[open]::details-content {
 .kill-screen,
 .fit-modal {
     --font-body: 'Nunito Sans', sans-serif;
+    --glow: 0 0 8px color-mix(in srgb, currentColor 40%, transparent);
+    --dur: 0.35s;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
     font-family: var(--font-body);
 }
 
@@ -29,7 +32,7 @@ details[open]::details-content {
     box-shadow: var(--shadow-feed);
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
     overflow: hidden;
-    animation: card-rise 0.35s ease-out both;
+    animation: card-rise var(--dur) var(--ease) both;
     animation-delay: var(--d, 0ms);
 }
 
@@ -55,7 +58,7 @@ details[open]::details-content {
     color: var(--card-c);
     padding: 0.55rem 0.75rem;
     border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+    text-shadow: var(--glow); 
 }
 
 .fit-modal {
@@ -131,13 +134,21 @@ details[open]::details-content {
     text-shadow: var(--shadow-phosphor);
 }
 
+.act:focus-visible,
+.tab:focus-visible,
+.more:focus-visible,
+.link:focus-visible {
+    outline: 1px solid var(--color-neon-green);
+    outline-offset: 2px;
+}
+
 .chip {
     font-family: var(--font-body);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
     color: var(--c);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+    text-shadow: var(--glow);
 }
 
 .split-bar {
@@ -179,7 +190,7 @@ details[open]::details-content {
     font-family: var(--font-mono);
     font-size: 10px;
     color: var(--color-isk-billion);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+    text-shadow: var(--glow);
 }
 
 .more {
@@ -210,7 +221,7 @@ details[open]::details-content {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-neon-green);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-neon-green) 35%, transparent);
+    text-shadow: var(--glow);
 }
 
 .pulse-dot {
@@ -298,7 +309,7 @@ details[open]::details-content {
 .tab[data-mode="destroyed"].is-active {
     color: var(--color-isk-billion);
     border-bottom-color: var(--color-isk-billion);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+    text-shadow: var(--glow);
 }
 
 .cover {
