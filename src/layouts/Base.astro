@@ -4,8 +4,9 @@ import UtilityBand from '../components/astro/UtilityBand.astro'
 const {
     title,
     ogTitle = "Socket.Kill",
-    ogDescription = "Live kill stream from EVE Online.",
-    ogImage = "https://ws.socketkill.com/og/page/home?v=4",
+    ogDescription = "Live kill stream for EVE Online.",
+    keywords = "eve online, killboard, eve kills, killmail, new eden, eve online pvp, socketkill, socket, kill, socketkill.com, mmorpg",
+    ogImage = "https://ws.socketkill.com/og/page/home",
     ogImageWidth="1200",
     ogImageHeight="630",
     ogType = "website",
@@ -36,6 +37,7 @@ const jsonLd = {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" />
         <title>{title}</title>
         <meta name="description" content={ogDescription} />
+        <meta name="keywords" content={keywords} />
         <link rel="canonical" href={canonicalURL} />
         <meta name="author" content="Dexomus Viliana" />
         <link rel="icon" type="image/png" href="https://edge.socketkill.com/favicon.png" />
