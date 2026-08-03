@@ -537,7 +537,7 @@ body.signal-interference {
 
 .lookup {
     display: flex;
-    gap: px;
+    gap: 1 px;
     background: var(--color-eve-border);
     padding: 1px;
 }
