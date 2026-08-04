@@ -126,12 +126,16 @@ details[open]::details-content {
 }
 
 .link {
-    transition: color 0.15s, text-shadow 0.15s;
+    text-decoration: underline dotted color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: color 0.15s, text-shadow 0.15s, text-decoration-color 0.15s;
 }
 
 .link:hover {
     color: var(--color-neon-green);
     text-shadow: var(--shadow-phosphor);
+    text-decoration-color: var(--color-neon-green);
 }
 
 .act:focus-visible,
