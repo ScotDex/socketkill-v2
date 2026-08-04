@@ -340,7 +340,7 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                                 <div class="ui flex-1 min-w-0 truncate">
                                                     <a href={externalLink('type', item.typeID)} target="_blank" rel="noopener noreferrer" class="text-[var(--color-text-body)] link">{item.name}</a>
                                                 </div>
-                                                <div class="font-mono text-xs tabular-nums flex-shrink-0">
+                                                <div class="font-mono text-xs tabular-nums flex-shrink-0 w-16 text-right qty">
                                                     {item.dropped > 0 && <span style="color: var(--color-neon-green)">+{item.dropped}</span>}
                                                     {item.dropped > 0 && item.destroyed > 0 && <span class="mx-1 text-white/20">/</span>}
                                                     {item.destroyed > 0 && <span style="color: var(--color-isk-billion)">−{item.destroyed}</span>}

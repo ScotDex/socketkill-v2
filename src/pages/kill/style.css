@@ -58,7 +58,7 @@ details[open]::details-content {
     color: var(--card-c);
     padding: 0.55rem 0.75rem;
     border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
-    text-shadow: var(--glow); 
+    text-shadow: var(--glow);
 }
 
 .fit-modal {
@@ -162,7 +162,7 @@ details[open]::details-content {
     display: block;
     height: 100%;
     background: var(--color-neon-green);
-    animation: grow 0.6s ease-out 0.3s both;
+    animation: grow var(--dur) var(--ease) both;
     transform-origin: left;
 }
 
@@ -176,13 +176,18 @@ details[open]::details-content {
     }
 }
 
+.qty {
+    border-right: 1px solid var(--color-eve-border);
+    padding-right: 0.5rem;
+}
+
 .dmg {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     background: color-mix(in srgb, var(--color-isk-billion) 8%, transparent);
-    animation: grow 0.5s ease-out 0.25s both;
+    animation: grow var(--dur) var(--ease) both;
     transform-origin: left;
 }
 
