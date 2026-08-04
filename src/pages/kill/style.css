@@ -198,6 +198,17 @@ details[open]::details-content {
     text-shadow: var(--glow);
 }
 
+
+.split-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.6rem;
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+}
+
 .more {
     font-family: var(--font-body);
     font-size: 10px;

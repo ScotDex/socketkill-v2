@@ -262,15 +262,21 @@ const hiddenAttackers = sortedAttackers.slice(5)
                                 <span class="v" style="color: var(--color-isk-billion)">{kill.victim.damageTaken.toLocaleString()}</span></div>
                         )}
                         <div class="row"><span class="k">DROPPED</span>
-                            <span class="v" style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'} <span class="sub">{droppedPct}%</span></span></div>
+    <span class="v" style="color: var(--color-neon-green)">{kill.droppedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">DESTROYED</span>
                             <span class="v" style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
                         {splitTotal > 0 && (
-                            <div class="split-bar" title={`${droppedPct}% dropped`}>
-                                <span style={`width:${droppedPct}%`}></span>
-                            </div>
-                        )}
+    <>
+        <div class="split-legend">
+            <span style="color: var(--color-neon-green)">DROPPED {droppedPct}%</span>
+            <span style="color: var(--color-isk-billion)">{(100 - droppedPct).toFixed(1)}% DESTROYED</span>
+        </div>
+        <div class="split-bar" title={`${droppedPct}% dropped`}>
+            <span style={`width:${droppedPct}%`}></span>
+        </div>
+    </>
+)}
                     </div>
                     <div class="dossier-actions">
                         {fitPreviewUrl ? (
