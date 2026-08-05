@@ -45,7 +45,7 @@ function article(shipName) {
 }
 
 function buildTitle(data) {
-    const valueClause = data.totalValue ? ` (${data.totalValue} ISK)` : ''
+    const valueClause = data.totalValue ? ` worth ${data.totalValue} ISK` : ''
     return `${data.victim.name} lost ${article(data.victim.ship)} ${data.victim.ship}${valueClause}`
 }
 
@@ -59,11 +59,11 @@ function buildOgDescription(data) {
         const fbAffiliation = data.finalBlow.corp || data.finalBlow.alliance
         const fbLabel = fbAffiliation ? `${data.finalBlow.name} of ${fbAffiliation}` : data.finalBlow.name
         let fb = `Final blow by ${fbLabel} in ${article(data.finalBlow.ship)} ${data.finalBlow.ship}`
-        if (data.attackerCount > 1) fb += ` — ${data.attackerCount} attackers`
-        else if (data.attackerCount === 1) fb += ` — solo kill`
+        if (data.attackerCount > 1) fb += ` with ${data.attackerCount} attackers`
+        else if (data.attackerCount === 1) fb += ` solo`
         parts.push(fb)
     } else {
-        parts.push(`Destroyed by ${article(data.finalBlow?.ship)} ${data.finalBlow?.ship || 'unknown assailant'}`)
+        parts.push(`Destroyed by ${article(data.finalBlow?.ship)} ${data.finalBlow?.ship || 'Probably NPC'}`)
     }
 
     if (data.droppedValue) parts.push(`${data.droppedValue} ISK dropped`)
