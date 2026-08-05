@@ -32,9 +32,3 @@
     {#each chars as ch}<span class="char-land">{ch}</span>{/each}<span class="text-[var(--color-neon-green)]" class:invisible={!cursorVisible}>_</span>
 </span>
 
-<style>
-    .char-land {
-        display: inline-block;
-        animation: char-land 0.4s ease-out forwards;
-    }
-</style>

@@ -106,14 +106,3 @@
     </div>
 </div>
 
-<style>
-    .facet-lbl {
-        font-family: var(--font-body);
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: var(--color-border-bright);
-        user-select: none;
-    }
-</style>
