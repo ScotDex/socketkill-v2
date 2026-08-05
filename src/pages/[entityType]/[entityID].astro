@@ -9,6 +9,7 @@ import './style.css'
 const ENTITY = {
     pilot: {
         label: 'PILOT',
+        recordWord: 'pilot record',
         esiPath: id => `https://esi.evetech.net/latest/characters/${id}/`,
         image: id => `https://images.evetech.net/characters/${id}/portrait?size=256`,
         zkillType: 'character',
@@ -17,6 +18,7 @@ const ENTITY = {
     },
     corp: {
         label: 'CORPORATION',
+        recordWord: 'corporation record',
         esiPath: id => `https://esi.evetech.net/latest/corporations/${id}/`,
         image: id => `https://images.evetech.net/corporations/${id}/logo?size=256`,
         zkillType: 'corp',
@@ -25,6 +27,7 @@ const ENTITY = {
     },
     alliance: {
         label: 'ALLIANCE',
+        recordWord: 'alliance record',
         esiPath: id => `https://esi.evetech.net/latest/alliances/${id}/`,
         image: id => `https://images.evetech.net/alliances/${id}/logo?size=256`,
         zkillType: 'alliance',
@@ -39,6 +42,7 @@ const id = parseInt(entityID)
 if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
     return new Response('Not found', { status: 404 })
 }
+
 let identity = null
 try {
     const res = await fetch(conf.esiPath(id))
@@ -114,13 +118,9 @@ function secColor(s) {
     return 'var(--color-neon-green)'
 }
 
-function ageOf(iso) {
-    if (!iso) return '—'
-    const y = (Date.now() - new Date(iso).getTime()) / (365.25 * 864e5)
-    return y < 1 ? `${Math.max(1, Math.round(y * 12))} MO` : `${Math.floor(y)} YRS`
-}
-
-function mostLost(list) {
+// Most frequent hull in a list of events. For losses this is what the
+// entity flies and dies in; for kills it is what they most often destroy.
+function topHull(list) {
     if (!list.length) return null
     const counts = {}
     for (const e of list) {
@@ -129,22 +129,6 @@ function mostLost(list) {
     }
     const [typeID, d] = Object.entries(counts).sort((a, b) => b[1].n - a[1].n)[0]
     return { typeID, name: d.name, n: d.n }
-}
-
-function operatingArea(list) {
-    const sys = {}, sp = {}
-    for (const e of list) {
-        sys[e.systemName] ??= { n: 0, region: e.regionName, space: e.space }
-        sys[e.systemName].n++
-        sp[e.space] = (sp[e.space] ?? 0) + 1
-    }
-    return {
-        systems: Object.entries(sys).map(([name, d]) => ({ name, ...d }))
-            .sort((a, b) => b.n - a.n).slice(0, 5),
-        spaces: Object.entries(sp).map(([k, n]) => ({ k, n }))
-            .sort((a, b) => b.n - a.n),
-        total: list.length,
-    }
 }
 
 const SPACE_CHIP = {
@@ -160,13 +144,20 @@ function valueColor(v) {
     if (v >= 1_000_000_000) return 'var(--color-isk-billion)'
     return 'var(--color-neon-green)'
 }
-const lostHull = mostLost(losses)
-const area = operatingArea(events)
-const killPct = events.length ? (kills.length / events.length * 100) : 0
+
+const lostHull = topHull(losses)
+const killedHull = topHull(kills)
+
+const iskDestroyed = kills.reduce((s, e) => s + (e.totalValue || 0), 0)
+const iskLost = losses.reduce((s, e) => s + (e.totalValue || 0), 0)
+const iskTotal = iskDestroyed + iskLost
+const iskEff = iskTotal > 0 ? (iskDestroyed / iskTotal * 100) : 0
+
+const lastEvent = events[0] ?? null
+
 const cardAccent = entityType === 'pilot'
     ? secColor(identity.securityStatus)
     : 'var(--color-neon-green)'
-
 
 const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
 const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
@@ -174,7 +165,6 @@ const title = `${identity.name} — ${conf.label.charAt(0) + conf.label.slice(1)
 
 const KILLS_BG_COUNT = 24
 const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
-
 ---
 
 <Base title={`${title} | Socketkill.com`} ogTitle={title}
@@ -197,7 +187,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
         <section class="flex flex-col gap-4">
             <div class="card" style={`--card-c: ${cardAccent}; --d: 0ms`}>
                 <div class="card-h flex justify-between items-center">
-                    <span>{conf.label.toLowerCase()} dossier</span>
+                    <span>{conf.recordWord}</span>
                     <span class="tag">BETA</span>
                 </div>
 
@@ -233,6 +223,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                     </div>
                 </div>
 
+                <!-- IDENTITY BLOCK — facts from ESI, no activity data -->
                 <div class="dossier-rows">
                     {entityType === 'pilot' && identity.securityStatus != null && (
                         <div class="row">
@@ -270,38 +261,60 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
 
                     <div class="row">
                         <span class="k">{entityType === 'pilot' ? 'CAPSULEER SINCE' : 'FOUNDED'}</span>
-                        <span class="v">
-                            {identity.founded ? new Date(identity.founded).getFullYear() : '—'}
-                            <span class="sub"> · {ageOf(identity.founded)}</span>
-                        </span>
+                        <span class="v">{identity.founded ? new Date(identity.founded).getFullYear() : '—'}</span>
                     </div>
-
-                    {lostHull && (
-                        <div class="row">
-                            <span class="k">MOST LOST</span>
-                            <span class="v truncate">{lostHull.name} <span class="sub">×{lostHull.n}</span></span>
-                        </div>
-                    )}
-
-                    <div class="row" style="margin-top:0.35rem">
-                        <span class="k">ENGAGEMENTS</span>
-                        <span class="v">{events.length}{events.length >= 100 ? '+' : ''}</span>
-                    </div>
-                    <div class="row">
-                        <span class="k">KILLS</span>
-                        <span class="v" style="color:var(--color-neon-green)">{kills.length}</span>
-                    </div>
-                    <div class="row">
-                        <span class="k">LOSSES</span>
-                        <span class="v" style="color:var(--color-isk-billion)">{losses.length}</span>
-                    </div>
-
-                    {events.length > 0 && (
-                        <div class="split-bar" title={`${killPct.toFixed(0)}% kills`}>
-                            <span style={`width:${killPct}%`}></span>
-                        </div>
-                    )}
                 </div>
+
+                <!-- ACTIVITY BLOCK — everything below is windowed, not lifetime -->
+                {events.length > 0 && (
+                    <div class="stat-block">
+                        <div class="stat-head">LAST {windowDays} DAYS</div>
+
+                        <div class="dossier-rows" style="padding:0.75rem">
+                            <div class="row">
+                                <span class="k">FIGHTS</span>
+                                <span class="v">{events.length}{events.length >= 100 ? '+' : ''}</span>
+                            </div>
+                            <div class="row">
+                                <span class="k">KILLS</span>
+                                <span class="v" style="color:var(--color-neon-green)">{kills.length}</span>
+                            </div>
+                            <div class="row">
+                                <span class="k">LOSSES</span>
+                                <span class="v" style="color:var(--color-isk-billion)">{losses.length}</span>
+                            </div>
+
+                            {killedHull && (
+                                <div class="row" style="margin-top:0.35rem">
+                                    <span class="k">MOST KILLED</span>
+                                    <span class="v truncate">{killedHull.name} <span class="sub">×{killedHull.n}</span></span>
+                                </div>
+                            )}
+                            {lostHull && (
+                                <div class="row">
+                                    <span class="k">MOST LOST</span>
+                                    <span class="v truncate">{lostHull.name} <span class="sub">×{lostHull.n}</span></span>
+                                </div>
+                            )}
+
+                            <div class="row" style="margin-top:0.55rem">
+                                <span class="k">ISK EFFICIENCY</span>
+                                <span class="v" style={`color:${iskEff >= 50 ? 'var(--color-neon-green)' : 'var(--color-isk-billion)'}`}>
+                                    {iskEff.toFixed(0)}%
+                                </span>
+                            </div>
+
+                            <div class="split-legend">
+                                <span style="color: var(--color-neon-green)">DESTROYED {formatIsk(iskDestroyed)}</span>
+                                <span style="color: var(--color-isk-billion)">{formatIsk(iskLost)} LOST</span>
+                            </div>
+                            <div class="split-bar" title={`${iskEff.toFixed(1)}% ISK efficiency`}
+                                 style="margin-top:0.35rem">
+                                <span style={`width:${iskEff}%`}></span>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div class="dossier-actions">
                     <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="act act-primary">ZKILLBOARD</a>
@@ -311,57 +324,13 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
 
                 <div class="card-f" style={`color:${events.length ? 'var(--color-neon-green)' : 'var(--color-text-faint)'}`}>
                     <span class="pulse-dot"></span>
-                    status: {events.length ? `last seen ${relativeTime(events[0].time).toLowerCase()}` : 'no contact'}
+                    {lastEvent
+                        ? `status: last seen ${lastEvent.systemName} · ${relativeTime(lastEvent.time).toLowerCase()}`
+                        : 'status: no contact'}
                 </div>
             </div>
-
-            <!-- OPERATING AREA — location only, no performance metrics -->
-            {events.length > 0 && (
-                <div class="card" style="--card-c: var(--color-terminal-blue); --d: 60ms">
-                    <div class="card-h">operating area</div>
-
-                    <div class="dossier-rows">
-                        {area.systems.map(s => {
-                            const c = SPACE_CHIP[s.space]?.color ?? 'var(--color-text-faint)'
-                            const pct = Math.round(s.n / area.total * 100)
-                            return (
-                                <div>
-                                    <div class="row" style="margin-bottom:0.2rem">
-                                        <span class="v truncate" style="text-align:left">
-                                            <a href={externalLink('system', s.name)} target="_blank" rel="noopener noreferrer" class="link">{s.name}</a>
-                                            <span class="sub"> {s.region}</span>
-                                        </span>
-                                        <span class="k">{s.n}</span>
-                                    </div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill" style={`--c:${c}; width:${pct}%`}></div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-
-                        <div class="flex" style="height:6px; margin-top:0.4rem">
-                            {area.spaces.map(s => {
-                                const c = SPACE_CHIP[s.k]?.color ?? 'var(--color-text-faint)'
-                                return <div style={`width:${s.n / area.total * 100}%; background:${c}`}></div>
-                            })}
-                        </div>
-                        <div class="flex flex-wrap gap-x-3 gap-y-1" style="font-size:11px">
-                            {area.spaces.map(s => {
-                                const m = SPACE_CHIP[s.k] ?? { label: '?', color: 'var(--color-text-faint)' }
-                                return (
-                                    <span class="chip" style={`--c:${m.color}`}>
-                                        {m.label} {Math.round(s.n / area.total * 100)}%
-                                    </span>
-                                )
-                            })}
-                        </div>
-                    </div>
-                </div>
-            )}
         </section>
 
-        
         <section class="card self-start" style="--card-c: var(--color-neon-green); --d: 45ms">
             <div class="card-h flex justify-between items-center">
                 <span>activity</span>
@@ -375,22 +344,18 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
             </div>
 
             {!feedOnline ? (
-                <div class="ui" style="padding:3rem 1rem; text-align:center">
-                    <p style="letter-spacing:0.18em; text-transform:uppercase; color:var(--color-terminal-blue)" class="animate-pulse">
+                <div class="ui empty-state">
+                    <p class="grp animate-pulse" style="color:var(--color-terminal-blue)">
                         &gt; ACTIVITY UPLINK OFFLINE
                     </p>
-                    <p style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--color-text-faint); margin-top:0.5rem">
-                        record found — activity feed unavailable, try again shortly
-                    </p>
+                    <p class="empty-sub">record found — activity feed unavailable, try again shortly</p>
                 </div>
             ) : events.length === 0 ? (
-                <div class="ui" style="padding:3rem 1rem; text-align:center">
+                <div class="ui empty-state">
                     <p class="grp" style="color:var(--color-text-faint)">
                         &gt; NO ACTIVITY IN THE LAST {windowDays} DAYS &lt;
                     </p>
-                    <p style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--color-text-faint); opacity:0.6; margin-top:0.5rem">
-                        quiet skies — or flying safe
-                    </p>
+                    <p class="empty-sub">quiet skies — or flying safe</p>
                 </div>
             ) : (
                 <div id="feed">
@@ -404,7 +369,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                                data-kind={e.isLoss ? 'loss' : 'kill'}
                                style={`--accent: ${accent}`}>
                                 <img src={`https://images.evetech.net/types/${e.shipTypeID}/render?size=64`}
-                                     alt="" style="width:2.5rem; height:2.5rem; flex-shrink:0" loading="lazy" />
+                                     alt="" class="feed-thumb" loading="lazy" />
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-baseline gap-2">
                                         <span class="grp flex-shrink-0" style={`color:${accent}`}>
@@ -414,28 +379,28 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                                             {e.shipName}
                                         </span>
                                     </div>
-                                    <div class="af" style="font-size:11px; color:var(--color-text-faint)">
+                                    <div class="af">
                                         <span class="chip" style={`--c:${chip.color}`}>{chip.label}</span>
                                         <span style="margin-left:0.35rem">{e.systemName}</span>
-                                        <span style="color:rgba(255,255,255,0.25); margin:0 0.25rem">·</span>
+                                        <span class="dot-sep">·</span>
                                         <span>{e.regionName}</span>
                                     </div>
                                 </div>
-                                <div style="text-align:right; flex-shrink:0">
-                                    <div style={`font-family:var(--font-mono); font-size:0.875rem; font-weight:700; font-variant-numeric:tabular-nums; color:${valueColor(e.totalValue)}`}>
+                                <div class="feed-right">
+                                    <div class="feed-isk" style={`color:${valueColor(e.totalValue)}`}>
                                         {formatIsk(e.totalValue)}
                                     </div>
                                     <div class="tag tabular-nums">
                                         {e.attackerCount > 1 ? `${e.attackerCount} INV` : 'SOLO'}
-                                        <span style="color:rgba(255,255,255,0.25); margin:0 0.25rem">·</span>
+                                        <span class="dot-sep">·</span>
                                         {relativeTime(e.time)}
                                     </div>
                                 </div>
                             </a>
                         )
                     })}
-                    <div id="feed-empty" class="ui" style="padding:2.5rem 1rem; text-align:center; color:var(--color-text-faint); letter-spacing:0.18em; text-transform:uppercase" hidden>
-                        &gt; NO MATCHING ACTIVITY &lt;
+                    <div id="feed-empty" class="ui empty-state" hidden>
+                        <p class="grp" style="color:var(--color-text-faint)">&gt; NO MATCHING ACTIVITY &lt;</p>
                     </div>
                 </div>
             )}
@@ -448,8 +413,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
     </main>
 
     <footer class="relative z-10 max-w-7xl mx-auto p-4 mt-8 border-t border-[var(--color-eve-border)]">
-        <div class="ui flex flex-col md:flex-row justify-between items-center gap-4"
-             style="font-size:11px; letter-spacing:0.14em; color:var(--color-text-faint)">
+        <div class="ui site-foot flex flex-col md:flex-row justify-between items-center gap-4">
             <div><a href="/" class="link">&lt; BACK TO SOCKETKILL.COM</a></div>
             <div class="space-x-4">
                 <a href="/about" class="link">ABOUT</a>

@@ -1,16 +1,23 @@
-.bar-track {
-    height: 3px;
-    background: color-mix(in srgb, var(--color-text-faint) 20%, transparent);
-    overflow: hidden;
+/* ── ACTIVITY STATS BLOCK ─────────────────────────────────────── */
+/* Visually separates windowed activity data from ESI identity facts. */
+
+.stat-block {
+    border-top: 1px solid color-mix(in srgb, var(--card-c) 20%, transparent);
+    background: rgba(0, 0, 0, 0.18);
 }
 
-.bar-fill {
-    height: 100%;
-    background: var(--c);
-    box-shadow: 0 0 6px color-mix(in srgb, var(--c) 55%, transparent);
-    animation: grow 0.6s ease-out 0.3s both;
-    transform-origin: left;
+.stat-head {
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--color-text-faint);
+    padding: 0.45rem 0.75rem 0;
 }
+
+
+/* ── FEED ROW ─────────────────────────────────────────────────── */
+
 .feed-row {
     display: flex;
     align-items: center;
@@ -25,17 +32,70 @@
     background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
+.feed-thumb {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+}
+
+.feed-right {
+    text-align: right;
+    flex-shrink: 0;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--color-eve-border);
+}
+
+.feed-isk {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.dot-sep {
+    color: rgba(255, 255, 255, 0.25);
+    margin: 0 0.25rem;
+}
+
+
+/* ── EMPTY STATES ─────────────────────────────────────────────── */
+
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.empty-sub {
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-faint);
+    opacity: 0.6;
+    margin-top: 0.5rem;
+}
+
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+
+.site-foot {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--color-text-faint);
+}
+
+
+/* ── OVERRIDES ────────────────────────────────────────────────── */
+
 .tab[data-f="losses"].is-active {
     color: var(--color-isk-billion);
     border-bottom-color: var(--color-isk-billion);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
+    text-shadow: var(--glow);
 }
-
 
 .ident.no-cover {
     margin-top: 0.75rem;
 }
-
 
 .pulse-dot {
     background: currentColor;
