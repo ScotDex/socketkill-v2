@@ -171,9 +171,6 @@
     clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   }
 
-  .ui { font-family: var(--font-body); }
-  .glow { text-shadow: var(--shadow-phosphor); }
-
   .readout {
     font-family: var(--font-mono);
     font-size: 11px;

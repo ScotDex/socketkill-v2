@@ -41,6 +41,9 @@
     font-family: 'Triglavian', var(--font-body);
 }
 
+.ui { font-family: var(--font-body); }
+.glow { text-shadow: var(--shadow-phosphor); }
+
 .art-bg {
     background-image:
         linear-gradient(rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0.95)),
