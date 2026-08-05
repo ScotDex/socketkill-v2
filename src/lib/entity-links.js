@@ -12,10 +12,5 @@ export function externalLink(kind, value) {
 }
 
 export function internalLink(kind, value) {
-    switch (kind) {
-        case 'character': return `/pilot/${value}`
-        case 'corp': return `/corp/${value}`
-        case 'alliance': return `/alliance/${value}`
-        default: return '#'
-    }
+    return externalLink(kind, value)
 }
