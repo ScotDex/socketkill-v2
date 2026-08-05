@@ -385,7 +385,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                 </div>
             ) : events.length === 0 ? (
                 <div class="ui" style="padding:3rem 1rem; text-align:center">
-                    <p style="letter-spacing:0.18em; text-transform:uppercase; color:var(--color-text-faint)">
+                    <p class="grp" style="color:var(--color-text-faint)">
                         &gt; NO ACTIVITY IN THE LAST {windowDays} DAYS &lt;
                     </p>
                     <p style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--color-text-faint); opacity:0.6; margin-top:0.5rem">
@@ -407,14 +407,14 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                                      alt="" style="width:2.5rem; height:2.5rem; flex-shrink:0" loading="lazy" />
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-baseline gap-2">
-                                        <span class="ui" style={`font-size:10px; font-weight:600; letter-spacing:0.16em; flex-shrink:0; color:${accent}`}>
+                                        <span class="grp flex-shrink-0" style={`color:${accent}`}>
                                             {e.isLoss ? conf.lossWord : 'KILL'}
                                         </span>
-                                        <span class="ship-name truncate" style="font-size:0.875rem; font-weight:600; color:var(--color-text-body)">
+                                        <span class="nm truncate" style="font-size:0.875rem">
                                             {e.shipName}
                                         </span>
                                     </div>
-                                    <div class="ui truncate" style="font-size:11px; color:var(--color-text-faint)">
+                                    <div class="af" style="font-size:11px; color:var(--color-text-faint)">
                                         <span class="chip" style={`--c:${chip.color}`}>{chip.label}</span>
                                         <span style="margin-left:0.35rem">{e.systemName}</span>
                                         <span style="color:rgba(255,255,255,0.25); margin:0 0.25rem">·</span>
@@ -425,7 +425,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                                     <div style={`font-family:var(--font-mono); font-size:0.875rem; font-weight:700; font-variant-numeric:tabular-nums; color:${valueColor(e.totalValue)}`}>
                                         {formatIsk(e.totalValue)}
                                     </div>
-                                    <div class="ui" style="font-size:10px; letter-spacing:0.14em; color:var(--color-text-faint); font-variant-numeric:tabular-nums">
+                                    <div class="tag tabular-nums">
                                         {e.attackerCount > 1 ? `${e.attackerCount} INV` : 'SOLO'}
                                         <span style="color:rgba(255,255,255,0.25); margin:0 0.25rem">·</span>
                                         {relativeTime(e.time)}
