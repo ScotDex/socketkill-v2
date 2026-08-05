@@ -149,33 +149,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  .card {
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--card-c) 4%, transparent), transparent 48px),
-      var(--color-glass-bg);
-    border: 1px solid var(--color-border-dim);
-    box-shadow: var(--shadow-feed);
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-  }
-
-  .card-h {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--card-c);
-    padding: 0.55rem 0.75rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
-  }
-
-  .bar {
-    background: color-mix(in srgb, var(--card-c) 7%, transparent);
-  }
-
-  .ui { font-family: var(--font-body); }
-  .glow { text-shadow: var(--shadow-phosphor); }
-</style>

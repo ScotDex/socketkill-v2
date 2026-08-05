@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./panels.css";
 
 @theme {
     --color-neon-green: oklch(0.695 0.24 145.6);

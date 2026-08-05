@@ -1,0 +1,506 @@
+/* ═══════════════════════════════════════════════════════════════
+   PANELS.CSS — consolidated from Svelte component <style> blocks
+   ───────────────────────────────────────────────────────────────
+   Collected, not optimised. Nothing removed.
+
+   Sources:
+     Top10.svelte              .card .card-h .bar .ui .glow
+     SearchResults.svelte      .sr .readout .sec-chip ul.loading .page-btn
+     QueryBuilder.svelte       .qb .lbl .lbl-unit .seg .field .readout
+                               .caret .run .status-dot + blink
+     LiveFilter.svelte         .lf .lookup-err .lbl .seg .flush .share
+                               .icon-link
+     ChipFacet.svelte          .facet-lbl
+     WeaponKeywordFacet.svelte .facet-lbl  (identical dupe)
+     TitleBoot.svelte          .char-land
+     PhosphorCounter.svelte    .phosphor-counter .digit-* + phosphor-tick
+     BootSequence.svelte       .boot-sequence .cursor .dots + blink,
+                               dot-cycle
+     KillRow.svelte            (no style block — uses main.css)
+     StatsHeader.svelte        (no style block)
+
+   ⚠ THREE CONFLICTS PRESERVED — see marked sections:
+       1. @keyframes blink  — 3 different definitions
+       2. .readout          — 2 different definitions
+       3. .glow / .ui       — already live in main.css
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ── PANEL SHELLS ──────────────────────────────────────────────
+   Three near-identical shells. Only the clip-path differs.       */
+
+/* SearchResults.svelte */
+.sr {
+    font-family: var(--font-mono);
+    background:
+        linear-gradient(180deg, rgba(63, 185, 80, 0.04), transparent 56px),
+        var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: var(--shadow-feed);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+
+/* QueryBuilder.svelte — identical to .sr */
+.qb {
+    font-family: var(--font-mono);
+    background:
+        linear-gradient(180deg, rgba(63, 185, 80, 0.04), transparent 56px),
+        var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: var(--shadow-feed);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+
+/* LiveFilter.svelte — mirrored clip-path, extra inset shadows */
+.lf {
+    font-family: var(--font-mono);
+    background:
+        linear-gradient(180deg, rgba(63, 185, 80, 0.04), transparent 56px),
+        var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow:
+        var(--shadow-feed),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        inset 0 0 40px rgba(63, 185, 80, 0.02);
+    clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px);
+}
+
+
+/* ── METRIC CARD (Top10.svelte) ────────────────────────────────
+   NOTE: .card and .card-h also exist in kill/style.css with
+   different values (gradient 5% vs 4%, header 12px vs 10px).     */
+
+.card {
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--card-c) 4%, transparent), transparent 48px),
+        var(--color-glass-bg);
+    border: 1px solid var(--color-border-dim);
+    box-shadow: var(--shadow-feed);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+.card-h {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--card-c);
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
+}
+
+.bar {
+    background: color-mix(in srgb, var(--card-c) 7%, transparent);
+}
+
+
+/* ── LABELS ────────────────────────────────────────────────────
+   .lbl (QueryBuilder + LiveFilter, identical) and .facet-lbl
+   (ChipFacet + WeaponKeywordFacet, identical) are the SAME RULE
+   under two names.                                               */
+
+.lbl,
+.facet-lbl {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-border-bright);
+    user-select: none;
+}
+
+.lbl-unit {
+    color: var(--color-text-faint);
+    letter-spacing: 0.14em;
+    font-weight: 400;
+}
+
+
+/* ── BUTTONS ───────────────────────────────────────────────────
+   Five button classes. .seg/.flush/.page-btn share a pattern:
+   feed-bg, border:0, 2px transparent bottom border, same
+   transition. They differ only in size, tracking and hover hue. */
+
+/* Segmented toggle — QueryBuilder + LiveFilter, identical */
+.seg {
+    font-family: var(--font-body);
+    flex: 1;
+    padding: 0.45rem 0.25rem;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s, text-shadow 0.15s;
+}
+
+.seg:hover {
+    color: var(--color-text-body);
+    background: #1b212b;
+}
+
+.seg.on {
+    --c: var(--seg-c, var(--color-neon-green));
+    color: var(--c);
+    border-bottom-color: var(--c);
+    background: color-mix(in srgb, var(--c) 10%, var(--color-feed-bg));
+    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 55%, transparent);
+}
+
+/* QueryBuilder only */
+.seg.solo {
+    letter-spacing: 0.14em;
+    font-size: 11px;
+    --seg-c: var(--color-neon-green);
+}
+
+/* LiveFilter only */
+.flush {
+    font-family: var(--font-body);
+    width: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.flush:hover {
+    color: var(--color-isk-billion);
+    border-bottom-color: var(--color-isk-billion);
+}
+
+.share:hover {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+}
+
+/* SearchResults only */
+.page-btn {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+    background: #1b212b;
+}
+
+.page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* QueryBuilder only — the one button that doesn't fit the pattern */
+.run {
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-neon-green);
+    background: rgba(63, 185, 80, 0.08);
+    border: 1px solid var(--color-border-mid);
+    padding: 0.6rem;
+    cursor: pointer;
+    text-shadow: var(--shadow-phosphor);
+    box-shadow: 0 0 14px rgba(63, 185, 80, 0.12), inset 0 0 14px rgba(63, 185, 80, 0.05);
+    transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.run:hover {
+    background: rgba(63, 185, 80, 0.16);
+    border-color: var(--color-neon-green);
+    box-shadow: 0 0 22px rgba(63, 185, 80, 0.28), inset 0 0 18px rgba(63, 185, 80, 0.1);
+}
+
+/* LiveFilter — declared but not found in that component's markup */
+.icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-text-faint);
+    background: var(--color-feed-bg);
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.icon-link:hover {
+    color: var(--color-neon-green);
+    border-bottom-color: var(--color-neon-green);
+    background: #1b212b;
+}
+
+
+/* ── INPUTS (QueryBuilder) ─────────────────────────────────────
+   NOTE: ChipFacet and WeaponKeywordFacet style their inputs with
+   Tailwind utilities inline instead of using .field.             */
+
+.field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-border-dim);
+    color: var(--color-neon-green);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    padding: 0.35rem 0.1rem;
+    outline: 0;
+    transition: border-color 0.15s;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.field::-webkit-outer-spin-button,
+.field::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.field:focus {
+    border-bottom-color: var(--color-border-bright);
+}
+
+.field::placeholder {
+    color: var(--color-text-faint);
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+}
+
+
+/* ── CHIPS (SearchResults) ─────────────────────────────────────
+   NOTE: near-identical to .chip in kill/style.css — 10px vs 11px,
+   0.12em vs 0.10em, raw color-mix vs var(--glow).                */
+
+.sec-chip {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--c);
+    align-self: flex-start;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+
+/* ── READOUTS ──────────────────────────────────────────────────
+   ⚠ CONFLICT 1 OF 3
+   .readout is defined twice with different values. Both preserved
+   below under distinct names — call sites must be updated, or one
+   chosen as canonical.                                           */
+
+/* SearchResults.svelte version */
+.readout-filter {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--color-text-faint);
+    word-break: break-word;
+}
+
+/* QueryBuilder.svelte version */
+.readout-query {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--color-text-faint);
+    word-break: break-all;
+    min-height: 2.6em;
+    font-variant-numeric: tabular-nums;
+}
+
+.caret {
+    color: var(--color-neon-green);
+    animation: blink-caret-qb 1.1s steps(2) infinite;
+}
+
+
+/* ── STATUS & FEEDBACK ─────────────────────────────────────────*/
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.status-dot.pulse {
+    animation: blink-caret-qb 1s steps(2) infinite;
+}
+
+.lookup-err {
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-isk-billion);
+}
+
+ul.loading {
+    opacity: 0.45;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+
+/* ── BOOT SEQUENCE ─────────────────────────────────────────────*/
+
+.boot-sequence {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    color: var(--color-neon-green);
+    text-shadow: 0 0 6px var(--color-neon-green);
+    padding: 2rem;
+    text-align: left;
+}
+
+.cursor {
+    animation: blink-cursor-boot 1s steps(2) infinite;
+}
+
+.dots span {
+    opacity: 0;
+    animation: dot-cycle 1.4s infinite;
+}
+
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+
+/* ── TITLE BOOT ────────────────────────────────────────────────
+   @keyframes char-land lives in main.css — not duplicated here.  */
+
+.char-land {
+    display: inline-block;
+    animation: char-land 0.4s ease-out forwards;
+}
+
+
+/* ── PHOSPHOR COUNTER ──────────────────────────────────────────*/
+
+.phosphor-counter {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+}
+
+.digit-stable {
+    display: inline-block;
+}
+
+.digit-changed {
+    display: inline-block;
+    animation: phosphor-tick 250ms linear forwards;
+    animation-delay: var(--stagger, 0ms);
+}
+
+
+/* ── KEYFRAMES ─────────────────────────────────────────────────
+   ⚠ CONFLICT 2 OF 3
+   @keyframes blink was defined THREE times with different opacity
+   floors. Renamed per source so nothing changes behaviour:
+     QueryBuilder  50% opacity 0.15  → blink-caret-qb
+     BootSequence  50% opacity 0     → blink-cursor-boot
+     kill/style.css 50% opacity 0.2  → left in place, untouched   */
+
+@keyframes blink-caret-qb {
+    50% { opacity: 0.15; }
+}
+
+@keyframes blink-cursor-boot {
+    50% { opacity: 0; }
+}
+
+@keyframes dot-cycle {
+    0%, 70%, 100% { opacity: 0; }
+    25%, 50%      { opacity: 1; }
+}
+
+@keyframes phosphor-tick {
+    0% {
+        color: #fff;
+        text-shadow:
+            0 0 6px #fff,
+            0 0 12px var(--color-neon-green);
+        transform: translateY(-0.2em);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        color: inherit;
+        text-shadow: 0 0 4px rgba(63, 185, 80, 0.4);
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+/* ── FOCUS RINGS ───────────────────────────────────────────────
+   Collected from three components, all identical.                */
+
+.seg:focus-visible,
+.flush:focus-visible,
+.run:focus-visible,
+.field:focus-visible,
+.page-btn:focus-visible,
+.icon-link:focus-visible {
+    outline: 1px solid var(--color-neon-green);
+    outline-offset: 2px;
+}
+
+
+/* ── REDUCED MOTION ────────────────────────────────────────────*/
+
+@media (prefers-reduced-motion: reduce) {
+    .caret,
+    .status-dot.pulse,
+    .cursor,
+    .digit-changed {
+        animation: none;
+    }
+
+    .dots span {
+        animation: none;
+        opacity: 1;
+    }
+}
+
+
+/* ── NOT COLLECTED ─────────────────────────────────────────────
+   ⚠ CONFLICT 3 OF 3
+   .ui and .glow appeared in Top10, QueryBuilder and LiveFilter.
+   Both already live in main.css — omitted here to avoid a fourth
+   copy. Delete them from the component blocks and they resolve
+   globally.
+
+   Also omitted: LiveFilter's `@media (max-width:1023px)
+   .partner-mark { display:none }` — main.css already has it.     */
