@@ -163,6 +163,10 @@ import Base from '../layouts/Base.astro'
                         <dt class="font-semibold text-[var(--color-text-body)]">Only a few cards are visible.</dt>
                         <dd class="text-[var(--color-text-faint)] mt-1">Each card is a fixed 116px wide, so the number on screen comes down to the Browser Source width. 800 gives you about six; widen it for more.</dd>
                     </div>
+                    <div>
+                        <dt class="font-semibold text-[var(--color-text-body)]">The background is white when I open the URL in a browser.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">Expected — the overlay has no background of its own, so a browser tab fills the empty space with white. In OBS your stream sits behind it instead, and only the cards show.</dd>
+                    </div>
                 </dl>
             </section>
             <section class="fade-card mb-8 border border-[var(--color-border-dim)] bg-[var(--color-eve-dark)]/40 p-4">
