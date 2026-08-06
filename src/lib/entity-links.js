@@ -11,6 +11,9 @@ export function externalLink(kind, value) {
     }
 }
 
+const INTERNAL_PATH = { character: 'pilot', corp: 'corp', alliance: 'alliance' }
+
 export function internalLink(kind, value) {
-    return externalLink(kind, value)
+    const path = INTERNAL_PATH[kind]
+    return path ? `/${path}/${value}` : externalLink(kind, value)
 }
