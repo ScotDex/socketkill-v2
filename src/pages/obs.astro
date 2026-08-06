@@ -38,7 +38,7 @@ import Base from '../layouts/Base.astro'
 
                     <label class="flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--color-text-faint)] cursor-pointer select-none">
                         <input id="hide-ship" type="checkbox" class="accent-[var(--color-neon-green)]" />
-                        Hide ship names <span class="text-[var(--color-text-faint)]/50">(tighter overlay)</span>
+                        Hide ship names <span class="text-[var(--color-text-faint)]/50">(shorter cards)</span>
                     </label>
 
                     <div>
@@ -48,6 +48,7 @@ import Base from '../layouts/Base.astro'
                             <button id="copy-btn" type="button" class="filter-btn shrink-0 px-4 py-2 font-mono text-xs tracking-[0.14em] uppercase border border-[var(--color-border-mid)] text-[var(--color-text-body)] hover:border-[var(--color-border-bright)] transition-colors">COPY</button>
                         </div>
                         <p id="url-hint" class="mt-1.5 font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)]/60">&gt; enter your character id above</p>
+                        <p id="size-hint" class="mt-1 font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)]/40">&gt; suggested browser source size: 800 × 150</p>
                     </div>
                 </div>
             </section>
@@ -56,24 +57,23 @@ import Base from '../layouts/Base.astro'
                 <ol class="list-decimal pl-5 space-y-2 text-sm leading-relaxed text-[var(--color-text-body)]">
                     <li>Find your character ID (see below).</li>
                     <li>Build your overlay URL:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code></li>
-                    <li>In OBS: Sources → + → Browser, paste the URL, set a width and height.</li>
+                    <li>In OBS: Sources → + → Browser, paste the URL, set the size to 800 × 150.</li>
                     <li>Position it on your scene. Done — kills and losses appear live.</li>
                 </ol>
             </section>
             <section class="fade-card mb-8">
-    <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">how does it look on screen?</h2>
-    <div class="border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/40">
-        <iframe
-            src="https://ws.socketkill.com/ticker.html?demo=1&rate=2200"
-            title="Live demo of the SocketKill OBS ticker"
-            loading="lazy"
-            allowtransparency="true"
-            class="w-full h-[150px] block border-0"
-            style="background: var(--color-eve-dark)"
-        ></iframe>
-    </div>
-    <p class="mt-2 font-mono text-[10px] tracking-[0.14em] uppercase text-[var(--color-text-faint)]/60">&gt; simulated feed — sample data, not live kills</p>
-</section>
+                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">how does it look on screen?</h2>
+                <div class="border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/40">
+                    <iframe
+                        src="https://ws.socketkill.com/ticker.html?demo=1&rate=2200"
+                        title="Live demo of the SocketKill OBS ticker"
+                        loading="lazy"
+                        class="w-full h-[150px] block border-0"
+                        style="background: var(--color-eve-dark)"
+                    ></iframe>
+                </div>
+                <p class="mt-2 font-mono text-[10px] tracking-[0.14em] uppercase text-[var(--color-text-faint)]/60">&gt; simulated feed — sample data, not live kills</p>
+            </section>
             <section class="fade-card mb-8">
                 <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">finding your character id</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
@@ -95,7 +95,7 @@ import Base from '../layouts/Base.astro'
                         <li>In the properties window:
                             <ul class="list-disc pl-5 mt-1 space-y-1">
                                 <li><span class="text-[var(--color-text-faint)]">URL:</span> paste your overlay URL (with your character ID).</li>
-                                <li><span class="text-[var(--color-text-faint)]">Width / Height:</span> start with something like 800 × 120 for a horizontal strip. Adjust to taste.</li>
+                                <li><span class="text-[var(--color-text-faint)]">Width / Height:</span> 800 × 150 for a horizontal strip. Height needs to be at least 150 or the cards will be cut off — width is up to you, more width means more cards on screen.</li>
                                 <li>Leave "Local file" unchecked — this is a hosted URL.</li>
                             </ul>
                         </li>
@@ -108,10 +108,11 @@ import Base from '../layouts/Base.astro'
             <section class="fade-card mb-8">
                 <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)"> what you'll see</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
-                    <p>Each event appears as a card showing the ship and ISK value:</p>
-                    <ul class="pl-1 space-y-2">
-                        <li class="border-l-[3px] border-[#51cf66] pl-3"><span class="text-[var(--color-neon-green)] font-semibold">Green top border</span> — a kill (your character was involved in destroying the ship).</li>
-                        <li class="border-l-[3px] border-[#ff6b6b] pl-3"><span class="text-[var(--color-isk-billion)] font-semibold">Red top border</span> — a loss (your character's ship was destroyed).</li>
+                    <p>Each event appears as a card: the ship render on top, then the ISK value, with the ship name underneath. Cards are a fixed 116px wide, so the layout stays steady no matter how long the ship name is.</p>
+                    <p>A coloured bar across the top of each card tells you which way round it went:</p>
+                    <ul class="pl-1 space-y-3">
+                        <li class="border-t-[3px] border-[#51cf66] pt-2"><span class="text-[var(--color-neon-green)] font-semibold">Green</span> — a kill (your character was involved in destroying the ship).</li>
+                        <li class="border-t-[3px] border-[#ff6b6b] pt-2"><span class="text-[var(--color-isk-billion)] font-semibold">Red</span> — a loss (your character's ship was destroyed).</li>
                     </ul>
                     <p>ISK values are abbreviated for space: <code class="font-mono text-xs text-[var(--color-whale-accent)]">25.0M</code>, <code class="font-mono text-xs text-[var(--color-whale-accent)]">1.33B</code>, and so on.</p>
                     <p>The newest event appears on the left, and older ones scroll off as new kills come in. The overlay holds a limited number of recent events so it stays clean during busy fights.</p>
@@ -130,7 +131,7 @@ import Base from '../layouts/Base.astro'
                         <div class="px-3 py-2 text-[var(--color-text-body)] font-sans text-sm"><span class="text-[var(--color-neon-green)]">Required.</span> The character to track.</div>
                         <div class="px-3 py-2 text-[var(--color-terminal-blue)] border-t border-[var(--color-border-dim)]/50">ship</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50">false</div>
-                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-sans text-sm">Hides the ship name, leaving just the ship render and ISK value. Makes each card shorter.</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-sans text-sm">Hides the ship name, leaving the render and the ISK value. Cards get shorter, so you can drop the Browser Source height to around 130.</div>
                     </div>
                 </div>
                 <div class="mt-4 text-sm text-[var(--color-text-body)] space-y-2">
@@ -155,8 +156,12 @@ import Base from '../layouts/Base.astro'
                         <dd class="text-[var(--color-text-faint)] mt-1">Make sure you're loading it as a URL in OBS, not as a local file, and that the Browser Source isn't sitting on a coloured background in your scene. The overlay itself is transparent.</dd>
                     </div>
                     <div>
-                        <dt class="font-semibold text-[var(--color-text-body)]">It looks cut off or cards run off the edge.</dt>
-                        <dd class="text-[var(--color-text-faint)] mt-1">Increase the Browser Source width — each card is a fixed 116px wide, so more width means more cards visible.</dd>
+                        <dt class="font-semibold text-[var(--color-text-body)]">Cards are cut off along the bottom.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">The Browser Source height is too small. Set it to 150 (or around 130 if you're using <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;ship=false</code>).</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-[var(--color-text-body)]">Only a few cards are visible.</dt>
+                        <dd class="text-[var(--color-text-faint)] mt-1">Each card is a fixed 116px wide, so the number on screen comes down to the Browser Source width. 800 gives you about six; widen it for more.</dd>
                     </div>
                 </dl>
             </section>
@@ -191,6 +196,7 @@ import Base from '../layouts/Base.astro'
     const urlOut = document.getElementById('url-out')
     const copyBtn = document.getElementById('copy-btn')
     const hint = document.getElementById('url-hint')
+    const sizeHint = document.getElementById('size-hint')
     const BASE = 'https://ws.socketkill.com/ticker.html'
     function buildUrl() {
         const id = input.value.trim()
@@ -208,6 +214,9 @@ import Base from '../layouts/Base.astro'
                 ? '> character id must be numbers only'
                 : '> enter your character id above'
         }
+        sizeHint.textContent = hideShip.checked
+            ? '> suggested browser source size: 800 × 130'
+            : '> suggested browser source size: 800 × 150'
         return valid ? url : null
     }
     input.addEventListener('input', buildUrl)
