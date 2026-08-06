@@ -14,6 +14,12 @@
     box-shadow: 0 0 6px var(--dot-c, var(--color-isk-billion));
 }
 
+/* .fr sets display:grid, which outranks the UA [hidden] rule.
+   Without this, row.hidden = true has no effect. */
+.fr[hidden] {
+    display: none;
+}
+
 /* ── 2. status pill (page header) ──────────────────────────────
    Set --s-c inline: neon-green / whale-accent / text-faint. */
 .status {
