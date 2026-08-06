@@ -61,11 +61,18 @@ import Base from '../layouts/Base.astro'
                 </ol>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">how does it look on screen?</h2>
-                <div class="border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/40 min-h-[120px] flex items-center justify-center">
-                    <span class="font-mono text-xs tracking-[0.2em] uppercase text-[var(--color-text-faint)] animate-pulse">&gt; SCREENSHOT PENDING &lt;</span>
-                </div>
-            </section>
+    <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">how does it look on screen?</h2>
+    <div class="border border-dashed border-[var(--color-eve-border)] bg-[var(--color-eve-dark)]/40">
+        <iframe
+            src="https://ws.socketkill.com/ticker.html?demo=1&rate=2200"
+            title="Live demo of the SocketKill OBS ticker"
+            loading="lazy"
+            class="w-full h-[140px] block border-0"
+            style="background: transparent"
+        ></iframe>
+    </div>
+    <p class="mt-2 font-mono text-[10px] tracking-[0.14em] uppercase text-[var(--color-text-faint)]/60">&gt; simulated feed — sample data, not live kills</p>
+</section>
             <section class="fade-card mb-8">
                 <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">finding your character id</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
