@@ -1,103 +1,191 @@
-/* ── ACTIVITY STATS BLOCK ─────────────────────────────────────── */
-/* Visually separates windowed activity data from ESI identity facts. */
+/* Entity page (pilot / corp / alliance).
+   Imported AFTER ../kill/style.css.
+   Contains only what kill/style.css and Tailwind cannot already do.
+   Every selector below is unique — no name collides with kill/style.css. */
 
-.stat-block {
-    border-top: 1px solid color-mix(in srgb, var(--card-c) 20%, transparent);
-    background: rgba(0, 0, 0, 0.18);
+/* ── 1. pulse-dot colour variant ───────────────────────────────
+   kill/style.css hardcodes the dot to --color-isk-billion (correct
+   there: the victim is always dead). Here it encodes live status.
+   Two-class specificity (0,2,0) so it wins regardless of the order
+   Astro emits the two stylesheets — do not rely on import order. */
+.status .pulse-dot,
+.card-f .pulse-dot {
+    background: var(--dot-c, var(--color-isk-billion));
+    box-shadow: 0 0 6px var(--dot-c, var(--color-isk-billion));
 }
 
-.stat-head {
-    font-family: var(--font-body);
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--color-text-faint);
-    padding: 0.45rem 0.75rem 0;
-}
-
-
-/* ── FEED ROW ─────────────────────────────────────────────────── */
-
-.feed-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.55rem 0.75rem;
-    border-left: 3px solid var(--accent);
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-    transition: background 0.15s;
-}
-
-.feed-row:hover {
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
-}
-
-.feed-thumb {
-    width: 2.5rem;
-    height: 2.5rem;
-    flex-shrink: 0;
-}
-
-.feed-right {
-    text-align: right;
-    flex-shrink: 0;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--color-eve-border);
-}
-
-.feed-isk {
+/* ── 2. status pill (page header) ──────────────────────────────
+   Set --s-c inline: neon-green / whale-accent / text-faint. */
+.status {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-.dot-sep {
-    color: rgba(255, 255, 255, 0.25);
-    margin: 0 0.25rem;
-}
-
-
-/* ── EMPTY STATES ─────────────────────────────────────────────── */
-
-.empty-state {
-    padding: 3rem 1rem;
-    text-align: center;
-}
-
-.empty-sub {
-    font-family: var(--font-body);
     font-size: 11px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-text-faint);
-    opacity: 0.6;
-    margin-top: 0.5rem;
+    color: var(--s-c);
+    border: 1px solid color-mix(in srgb, var(--s-c) 35%, transparent);
+    background: color-mix(in srgb, var(--s-c) 8%, transparent);
 }
 
-
-/* ── FOOTER ───────────────────────────────────────────────────── */
-
-.site-foot {
-    font-size: 11px;
-    letter-spacing: 0.14em;
+/* ── 3. assessment readout ─────────────────────────────────────
+   Padding and layout via Tailwind; this is only the terminal voice. */
+.assess p {
+    margin: 0;
     color: var(--color-text-faint);
 }
 
+.assess p::before {
+    content: "> ";
+    color: color-mix(in srgb, var(--color-neon-green) 55%, transparent);
+}
 
-/* ── OVERRIDES ────────────────────────────────────────────────── */
+.assess b {
+    font-weight: 400;
+    color: var(--color-text-body);
+}
 
-.tab[data-f="losses"].is-active {
-    color: var(--color-isk-billion);
-    border-bottom-color: var(--color-isk-billion);
+.assess .hi {
+    color: var(--color-neon-green);
     text-shadow: var(--glow);
 }
 
-.ident.no-cover {
-    margin-top: 0.75rem;
+/* ── 4. activity clock ─────────────────────────────────────────
+   24 columns, kills above the baseline, losses below.
+   Bar heights set inline as a percentage of the busiest hour. */
+.clock-grid {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    gap: 1px;
+    height: 74px;
+    position: relative;
 }
 
-.pulse-dot {
-    background: currentColor;
-    box-shadow: 0 0 6px currentColor;
+.ck {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.ck-up,
+.ck-dn {
+    flex: 1;
+    display: flex;
+}
+
+.ck-up {
+    align-items: flex-end;
+}
+
+.ck-dn {
+    align-items: flex-start;
+}
+
+.ck-up>span,
+.ck-dn>span {
+    display: block;
+    width: 100%;
+}
+
+.ck-up>span {
+    background: var(--color-neon-green);
+    box-shadow: 0 0 5px color-mix(in srgb, var(--color-neon-green) 50%, transparent);
+}
+
+.ck-dn>span {
+    background: var(--color-isk-billion);
+    box-shadow: 0 0 5px color-mix(in srgb, var(--color-isk-billion) 45%, transparent);
+}
+
+.ck::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--color-eve-border);
+}
+
+.ck:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Current EVE hour. Position set inline. */
+.clock-now {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    width: 1px;
+    background: var(--color-terminal-blue);
+    box-shadow: 0 0 8px var(--color-terminal-blue);
+    pointer-events: none;
+}
+
+/* Busiest 3-hour block. Suppressed below 25 killmails — see the
+   component; a "peak" drawn from a handful of events is noise. */
+.peak-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--color-whale-accent) 10%, transparent);
+    border-inline: 1px solid color-mix(in srgb, var(--color-whale-accent) 40%, transparent);
+}
+
+/* ── 5. security band ──────────────────────────────────────────
+   Extends .split-bar from 2 segments to n. Use as
+   class="split-bar mix", segment widths inline. */
+.split-bar.mix {
+    display: flex;
+    margin-top: 0;
+    background: transparent;
+}
+
+.split-bar.mix>span {
+    background: var(--c);
+}
+
+/* ── 6. killmail row ───────────────────────────────────────────
+   Columns: mark | time | hull icon | hull | location | gang | value.
+   Padding, type and colour via Tailwind; --accent set inline per row. */
+.fr {
+    display: grid;
+    grid-template-columns: 12px 46px 26px minmax(64px, 1fr) minmax(90px, 1.4fr) 42px 74px;
+    align-items: center;
+    gap: 0.5rem;
+    border-left: 2px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    transition: background 0.12s, transform 0.12s;
+}
+
+.fr+.fr {
+    border-top: 1px solid rgba(255, 255, 255, 0.035);
+}
+
+.fr:hover {
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+    transform: translateX(2px);
+}
+
+@media (max-width: 640px) {
+    .fr {
+        grid-template-columns: 12px 40px 24px minmax(0, 1fr) 66px;
+        gap: 0.4rem;
+    }
+
+    .fr-hide {
+        display: none;
+    }
+}
+
+/* ── 7. reduced motion ─────────────────────────────────────────
+   kill/style.css already covers .card, .split-bar span, .dmg,
+   .pulse-dot. These are the additions. */
+@media (prefers-reduced-motion: reduce) {
+
+    .status .pulse-dot,
+    .card-f .pulse-dot {
+        animation: none;
+    }
+
+    .fr {
+        transition: none;
+    }
 }
