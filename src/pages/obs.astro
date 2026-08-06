@@ -67,7 +67,8 @@ import Base from '../layouts/Base.astro'
             src="https://ws.socketkill.com/ticker.html?demo=1&rate=2200"
             title="Live demo of the SocketKill OBS ticker"
             loading="lazy"
-            class="w-full h-[140px] block border-0"
+            allowtransparency="true"
+            class="w-full h-[150px] block border-0"
             style="background: transparent"
         ></iframe>
     </div>
@@ -109,10 +110,10 @@ import Base from '../layouts/Base.astro'
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <p>Each event appears as a card showing the ship and ISK value:</p>
                     <ul class="pl-1 space-y-2">
-                        <li class="border-l-[3px] border-[#51cf66] pl-3"><span class="text-[var(--color-neon-green)] font-semibold">Green left border</span> — a kill (your character was involved in destroying the ship).</li>
-                        <li class="border-l-[3px] border-[#ff6b6b] pl-3"><span class="text-[var(--color-isk-billion)] font-semibold">Red left border</span> — a loss (your character's ship was destroyed).</li>
+                        <li class="border-l-[3px] border-[#51cf66] pl-3"><span class="text-[var(--color-neon-green)] font-semibold">Green top border</span> — a kill (your character was involved in destroying the ship).</li>
+                        <li class="border-l-[3px] border-[#ff6b6b] pl-3"><span class="text-[var(--color-isk-billion)] font-semibold">Red top border</span> — a loss (your character's ship was destroyed).</li>
                     </ul>
-                    <p>ISK values are abbreviated for space: <code class="font-mono text-xs text-[var(--color-whale-accent)]">25.02m</code>, <code class="font-mono text-xs text-[var(--color-whale-accent)]">1.33b</code>, and so on.</p>
+                    <p>ISK values are abbreviated for space: <code class="font-mono text-xs text-[var(--color-whale-accent)]">25.0M</code>, <code class="font-mono text-xs text-[var(--color-whale-accent)]">1.33B</code>, and so on.</p>
                     <p>The newest event appears on the left, and older ones scroll off as new kills come in. The overlay holds a limited number of recent events so it stays clean during busy fights.</p>
                 </div>
             </section>
@@ -129,7 +130,7 @@ import Base from '../layouts/Base.astro'
                         <div class="px-3 py-2 text-[var(--color-text-body)] font-sans text-sm"><span class="text-[var(--color-neon-green)]">Required.</span> The character to track.</div>
                         <div class="px-3 py-2 text-[var(--color-terminal-blue)] border-t border-[var(--color-border-dim)]/50">ship</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50">false</div>
-                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-sans text-sm">Hides the ship name, leaving just the icon and ISK value. Useful for a tighter overlay.</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-sans text-sm">Hides the ship name, leaving just the ship render and ISK value. Makes each card shorter.</div>
                     </div>
                 </div>
                 <div class="mt-4 text-sm text-[var(--color-text-body)] space-y-2">
@@ -155,7 +156,7 @@ import Base from '../layouts/Base.astro'
                     </div>
                     <div>
                         <dt class="font-semibold text-[var(--color-text-body)]">It looks cut off or cards run off the edge.</dt>
-                        <dd class="text-[var(--color-text-faint)] mt-1">Increase the Browser Source width, or hide ship names with <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;ship=false</code> to make each card narrower.</dd>
+                        <dd class="text-[var(--color-text-faint)] mt-1">Increase the Browser Source width — each card is a fixed 116px wide, so more width means more cards visible.</dd>
                     </div>
                 </dl>
             </section>
