@@ -1,0 +1,581 @@
+---
+import Base from '../../layouts/Base.astro'
+import { externalLink } from '../../lib/entity-links.js'
+import { formatIsk } from '../../lib/helpers.js'
+import '../kill/style.css'
+import './style.css'
+
+const ENTITY = {
+    pilot: {
+        label: 'PILOT',
+        esiPath: id => `https://esi.evetech.net/latest/characters/${id}/`,
+        image: id => `https://images.evetech.net/characters/${id}/portrait?size=256`,
+        zkillType: 'character',
+        evewhoPath: 'character',
+    },
+    corp: {
+        label: 'CORPORATION',
+        esiPath: id => `https://esi.evetech.net/latest/corporations/${id}/`,
+        image: id => `https://images.evetech.net/corporations/${id}/logo?size=256`,
+        zkillType: 'corp',
+        evewhoPath: 'corporation',
+    },
+    alliance: {
+        label: 'ALLIANCE',
+        esiPath: id => `https://esi.evetech.net/latest/alliances/${id}/`,
+        image: id => `https://images.evetech.net/alliances/${id}/logo?size=256`,
+        zkillType: 'alliance',
+        evewhoPath: 'alliance',
+    },
+}
+
+const { entityType, entityID } = Astro.params
+const conf = ENTITY[entityType]
+const id = parseInt(entityID)
+if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
+    return new Response('Not found', { status: 404 })
+}
+
+const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
+
+// Manual AbortController rather than AbortSignal.timeout() — universally
+// supported, no runtime-compat question on Workers.
+async function fetchJson(url, { ms = 4000, headers } = {}) {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), ms)
+    try {
+        const res = await fetch(url, { signal: ctrl.signal, headers })
+        if (!res.ok) return { ok: false, status: res.status }
+        return { ok: true, data: await res.json() }
+    } catch {
+        return { ok: false, status: 0 }
+    } finally {
+        clearTimeout(timer)
+    }
+}
+
+// ── ROUND TRIP 1 ────────────────────────────────────────────────
+// Identity and activity are independent of each other. Fire together.
+const [identityRes, activityRes] = await Promise.all([
+    fetchJson(conf.esiPath(id)),
+    fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, {
+        ms: 5000,
+        headers: { 'User-Agent': incomingUA },
+    }),
+])
+
+if (!identityRes.ok) {
+    return new Response('Entity not found', {
+        status: identityRes.status === 404 ? 404 : 502,
+    })
+}
+const raw = identityRes.data
+
+// ── ROUND TRIP 2 ────────────────────────────────────────────────
+// Three name lookups, all dependent on round 1, independent of each other.
+const corpID = entityType === 'pilot' ? (raw.corporation_id ?? null) : null
+const allianceID = entityType !== 'alliance' ? (raw.alliance_id ?? null) : null
+const ceoID = entityType === 'corp' ? (raw.ceo_id ?? null) : null
+
+const [corpRes, allianceRes, ceoRes] = await Promise.all([
+    corpID ? fetchJson(`https://esi.evetech.net/latest/corporations/${corpID}/`) : null,
+    allianceID ? fetchJson(`https://esi.evetech.net/latest/alliances/${allianceID}/`) : null,
+    ceoID ? fetchJson(`https://esi.evetech.net/latest/characters/${ceoID}/`) : null,
+])
+
+const identity = {
+    name: raw.name,
+    ticker: raw.ticker ?? null,
+    corpID,
+    allianceID,
+    ceoID,
+    corpName: corpRes?.ok ? corpRes.data.name : null,
+    allianceName: allianceRes?.ok ? allianceRes.data.name : null,
+    ceoName: ceoRes?.ok ? ceoRes.data.name : null,
+    founded: raw.birthday ?? raw.date_founded ?? null,
+    securityStatus: raw.security_status ?? null,
+    memberCount: raw.member_count ?? null,
+    warEligible: raw.war_eligible ?? null,
+}
+
+const feedOnline = activityRes.ok
+const events = feedOnline ? (activityRes.data.events ?? []) : []
+const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=60')
+
+// ── DERIVATION ──────────────────────────────────────────────────
+const kills = events.filter(e => !e.isLoss)
+const losses = events.filter(e => e.isLoss)
+
+const entityHref = (kind, entId) => `/${kind}/${entId}`
+
+const SPACE = {
+    high: { short: 'HS', label: 'highsec', c: 'var(--color-neon-green)' },
+    low: { short: 'LS', label: 'lowsec', c: 'var(--color-whale-accent)' },
+    null: { short: 'NULL', label: 'nullsec', c: 'var(--color-isk-billion)' },
+    wh: { short: 'WH', label: 'wormhole', c: 'var(--color-terminal-blue)' },
+    pochven: { short: 'PCH', label: 'pochven', c: '#b07ce8' },
+}
+const UNKNOWN_SPACE = { short: '?', label: 'unknown', c: 'var(--color-text-faint)' }
+const spaceOf = s => SPACE[s] ?? UNKNOWN_SPACE
+
+function relativeTime(iso) {
+    const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000)
+    if (m < 1) return 'JUST NOW'
+    if (m < 60) return `${m}M AGO`
+    const h = Math.floor(m / 60)
+    return h < 24 ? `${h}H AGO` : `${Math.floor(h / 24)}D AGO`
+}
+
+function secColor(s) {
+    if (s == null) return 'var(--color-text-faint)'
+    if (s <= -5) return 'var(--color-isk-billion)'
+    if (s < 0) return 'var(--color-whale-accent)'
+    return 'var(--color-neon-green)'
+}
+
+function valueColor(v) {
+    if (v >= 10_000_000_000) return 'var(--color-whale-accent)'
+    if (v >= 1_000_000_000) return 'var(--color-isk-billion)'
+    return 'var(--color-neon-green)'
+}
+
+function tally(list, fn) {
+    const m = new Map()
+    for (const e of list) {
+        const k = fn(e)
+        if (k == null) continue
+        m.set(k, (m.get(k) || 0) + 1)
+    }
+    return [...m.entries()].sort((a, b) => b[1] - a[1])
+}
+
+function median(nums) {
+    if (!nums.length) return 0
+    const s = [...nums].sort((a, b) => a - b)
+    return s[Math.floor(s.length / 2)]
+}
+
+// Hour-of-day histogram in EVE time (UTC).
+const hist = { k: Array(24).fill(0), l: Array(24).fill(0) }
+for (const e of events) {
+    const h = new Date(e.time).getUTCHours()
+    if (Number.isNaN(h)) continue
+    ;(e.isLoss ? hist.l : hist.k)[h]++
+}
+const histMax = Math.max(1, ...hist.k, ...hist.l)
+
+// Busiest contiguous 3h block. Below 25 killmails a "peak" is noise,
+// not a pattern — suppress rather than mislead.
+const PEAK_MIN_SAMPLE = 25
+let peak = null
+if (events.length >= PEAK_MIN_SAMPLE) {
+    let best = 0, bestStart = 0
+    for (let i = 0; i < 24; i++) {
+        let s = 0
+        for (let j = 0; j < 3; j++) s += hist.k[(i + j) % 24] + hist.l[(i + j) % 24]
+        if (s > best) { best = s; bestStart = i }
+    }
+    if (best > 0) peak = { start: bestStart, end: (bestStart + 3) % 24 }
+}
+const pad2 = n => String(n).padStart(2, '0')
+const peakLabel = peak ? `${pad2(peak.start)}–${pad2(peak.end)}` : (events.length ? 'SPARSE' : '')
+
+const spaceTally = tally(events, e => e.space)
+const regionTally = tally(events, e => e.regionName)
+const systemTally = tally(events, e => e.systemName)
+const topLostHull = tally(losses, e => e.shipTypeID)[0] ?? null
+
+const iskDestroyed = kills.reduce((s, e) => s + (e.totalValue || 0), 0)
+const iskLost = losses.reduce((s, e) => s + (e.totalValue || 0), 0)
+
+const halfWindow = Date.now() - (windowDays / 2) * 86400000
+const recentCount = events.filter(e => new Date(e.time).getTime() >= halfWindow).length
+const priorCount = events.length - recentCount
+const trend = priorCount === 0
+    ? (recentCount ? 'new contact' : '—')
+    : `${recentCount >= priorCount ? '▲' : '▼'} ${Math.abs(Math.round((recentCount - priorCount) / priorCount * 100))}% vs prior ${Math.round(windowDays / 2)}d`
+
+const medGang = median(kills.map(e => e.attackerCount).filter(Number.isFinite))
+const profile = !kills.length ? 'no offensive activity'
+    : medGang <= 1 ? 'solo'
+    : medGang <= 5 ? `small gang (med ${medGang})`
+    : medGang <= 15 ? `gang (med ${medGang})`
+    : `fleet (med ${medGang})`
+
+const lastEvent = events[0] ?? null
+const minsSince = lastEvent ? (Date.now() - new Date(lastEvent.time).getTime()) / 60000 : Infinity
+const status = !feedOnline ? { text: 'UPLINK OFFLINE', color: 'var(--color-terminal-blue)', live: false }
+    : minsSince < 180 ? { text: 'ACTIVE NOW', color: 'var(--color-neon-green)', live: true }
+    : minsSince < 4320 ? { text: 'ACTIVE', color: 'var(--color-neon-green)', live: false }
+    : minsSince < 20160 ? { text: 'INTERMITTENT', color: 'var(--color-whale-accent)', live: false }
+    : events.length ? { text: 'FADING', color: 'var(--color-whale-accent)', live: false }
+    : { text: 'NO CONTACT', color: 'var(--color-text-faint)', live: false }
+
+// Group killmails by UTC date, newest first. Events arrive pre-sorted.
+const byDay = []
+for (const e of events) {
+    const day = (e.time ?? '').slice(0, 10)
+    let bucket = byDay[byDay.length - 1]
+    if (!bucket || bucket.day !== day) {
+        bucket = { day, rows: [], kills: 0, losses: 0 }
+        byDay.push(bucket)
+    }
+    bucket.rows.push(e)
+    if (e.isLoss) bucket.losses++; else bucket.kills++
+}
+
+const isCorpLike = entityType !== 'pilot'
+const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
+const title = `${identity.name} — ${conf.label.charAt(0)}${conf.label.slice(1).toLowerCase()} Activity`
+const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
+
+const KILLS_BG_COUNT = 24
+const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
+---
+
+<Base
+    title={`${title} | Socketkill.com`}
+    ogTitle={title}
+    ogDescription={`Recent kills and losses for ${identity.name} — last ${windowDays} days, live from SocketKill.`}
+    ogUrl={canonicalUrl}
+>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<div class="kill-screen art-bg" style={`--art-bg-url: url(${entityBg})`}>
+
+    <!-- <div>, not <header>: the global stylesheet hides bare `header`
+         under 1023px, which would blank this on mobile. -->
+    <div class="max-w-[84rem] mx-auto px-4 pt-6 relative z-10">
+        <div class="flex justify-between items-end gap-4 flex-wrap">
+            <div>
+                <h1 class="kill-headline">{displayName}</h1>
+                <p class="kill-sub">{conf.label} &nbsp;|&nbsp; LAST {windowDays} DAYS</p>
+            </div>
+            <div class="status inline-flex items-center gap-2 px-2 py-1 whitespace-nowrap"
+                 style={`--s-c: ${status.color}; --dot-c: ${status.color}`}>
+                {status.live && <span class="pulse-dot"></span>}
+                <span>{lastEvent ? `${status.text} · ${relativeTime(lastEvent.time)}` : status.text}</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-4 p-4 max-w-[84rem] mx-auto relative z-10 items-start">
+
+        <!-- ══ DOSSIER — one card, identity through pattern ══ -->
+        <aside class="lg:sticky lg:top-4">
+            <div class="card" style="--card-c: var(--color-neon-green); --d: 0ms">
+                <div class="card-h flex justify-between items-center">
+                    <span>{conf.label.toLowerCase()}</span>
+                    <span class="tag">{windowDays}-DAY WINDOW</span>
+                </div>
+
+                {topLostHull && (
+                    <figure class="cover" style="margin:0">
+                        <img src={`https://images.evetech.net/types/${topLostHull[0]}/render?size=512`}
+                             alt="" loading="lazy" />
+                    </figure>
+                )}
+
+                <!-- .ident pulls up -2.6rem to overlap the cover render.
+                     With no cover there is nothing to overlap. -->
+                <div class="ident" style={topLostHull ? undefined : 'margin-top:0.75rem'}>
+                    <img class="portrait-sm" src={conf.image(id)} alt={identity.name} loading="eager" />
+                    <div class="who">
+                        <div class="nm truncate">{identity.name}</div>
+                        <div class="af">
+                            {identity.corpID
+                                ? <a href={entityHref('corp', identity.corpID)} class="link">{identity.corpName ?? '—'}</a>
+                                : (identity.ticker ? `[${identity.ticker}]` : '')}
+                        </div>
+                        <div class="af">
+                            {identity.allianceID
+                                ? <a href={entityHref('alliance', identity.allianceID)} class="link">{identity.allianceName ?? '—'}</a>
+                                : 'Non Affiliate'}
+                        </div>
+                    </div>
+                    <div class="dossier-badges">
+                        {identity.corpID && (
+                            <img src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=64`} alt="" loading="lazy" />
+                        )}
+                        {identity.allianceID && (
+                            <img src={`https://images.evetech.net/alliances/${identity.allianceID}/logo?size=64`} alt="" loading="lazy" />
+                        )}
+                    </div>
+                </div>
+
+                <!-- ESI facts. Nothing windowed. -->
+                <div class="dossier-rows">
+                    {entityType === 'pilot' && identity.securityStatus != null && (
+                        <div class="row">
+                            <span class="k">SEC STATUS</span>
+                            <span class="v">
+                                <span class="chip" style={`--c:${secColor(identity.securityStatus)}`}>
+                                    {identity.securityStatus.toFixed(1)}
+                                </span>
+                            </span>
+                        </div>
+                    )}
+                    {entityType === 'corp' && (
+                        <>
+                            <div class="row">
+                                <span class="k">MEMBERS</span>
+                                <span class="v">{identity.memberCount?.toLocaleString() ?? '—'}</span>
+                            </div>
+                            <div class="row">
+                                <span class="k">WAR ELIGIBLE</span>
+                                <span class="v" style={`color:${identity.warEligible ? 'var(--color-whale-accent)' : 'var(--color-text-faint)'}`}>
+                                    {identity.warEligible ? 'YES' : 'NO'}
+                                </span>
+                            </div>
+                            {identity.ceoName && (
+                                <div class="row">
+                                    <span class="k">CEO</span>
+                                    <span class="v truncate">
+                                        <a href={entityHref('pilot', identity.ceoID)} class="link">{identity.ceoName}</a>
+                                    </span>
+                                </div>
+                            )}
+                        </>
+                    )}
+                    <div class="row">
+                        <span class="k">{entityType === 'pilot' ? 'CAPSULEER SINCE' : 'FOUNDED'}</span>
+                        <span class="v">{identity.founded ? new Date(identity.founded).getFullYear() : '—'}</span>
+                    </div>
+                </div>
+
+                <!-- Everything below is windowed. -->
+                <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-1">
+                    <span class="grp">assessment</span>
+                </div>
+                <div class="assess font-mono text-xs leading-relaxed px-3 pb-2">
+                    {events.length > 0 ? (
+                        <>
+                            <p><b>{events.length}</b> killmails · <b>{kills.length}</b> kills / <b>{losses.length}</b> losses</p>
+                            <p><b>{formatIsk(iskDestroyed)}</b> destroyed · <b>{formatIsk(iskLost)}</b> lost</p>
+                            {peak && <p>peak <span class="hi">{pad2(peak.start)}:00–{pad2(peak.end)}:00</span> eve</p>}
+                            {systemTally[0] && <p>home <b>{systemTally[0][0]}</b>, {regionTally[0][0]}</p>}
+                            {spaceTally[0] && (
+                                <p>band <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
+                            )}
+                            <p>flies <b>{profile}</b></p>
+                            <p>trend <b>{trend}</b></p>
+                        </>
+                    ) : (
+                        <>
+                            <p>{feedOnline ? 'no killmails in window' : 'activity uplink unreachable'}</p>
+                            <p>{feedOnline ? 'inactive, docked, or flying safe' : 'retry shortly'}</p>
+                            <p>identity confirmed via esi</p>
+                        </>
+                    )}
+                </div>
+
+                {events.length > 0 && (
+                    <>
+                        <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2">
+                            <span class="grp">when they fly</span>
+                            <span class="tag">{peakLabel}</span>
+                        </div>
+                        <div class="px-3 pb-1 relative">
+                            <div class="clock-grid">
+                                {Array.from({ length: 24 }, (_, h) => (
+                                    <div class="ck" title={`${pad2(h)}:00 — ${hist.k[h]} kills, ${hist.l[h]} losses`}>
+                                        <div class="ck-up"><span style={`height:${hist.k[h] / histMax * 100}%`}></span></div>
+                                        <div class="ck-dn"><span style={`height:${hist.l[h] / histMax * 100}%`}></span></div>
+                                    </div>
+                                ))}
+                                <div class="clock-now" data-clock-now></div>
+                                {peak && <div class="peak-band" style={`left:${peak.start / 24 * 100}%; width:12.5%`}></div>}
+                            </div>
+                            <div class="flex justify-between font-mono text-[9px] tracking-widest text-[var(--color-text-faint)] pt-1">
+                                <span>00</span><span>06</span><span>12</span><span>18</span><span>23 EVE</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-2">
+                            <span class="grp">where they fly</span>
+                            <span class="tag">{systemTally.length} SYSTEMS</span>
+                        </div>
+                        <div class="px-3 pb-2">
+                            <div class="split-bar mix">
+                                {spaceTally.map(([s, n]) => (
+                                    <span style={`--c:${spaceOf(s).c}; width:${n / events.length * 100}%`}></span>
+                                ))}
+                            </div>
+                            <div class="split-legend flex-wrap gap-x-3">
+                                {spaceTally.map(([s, n]) => (
+                                    <span style={`--c:${spaceOf(s).c}; color:${spaceOf(s).c}`}>
+                                        {spaceOf(s).short} {Math.round(n / events.length * 100)}%
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                <div class="dossier-actions">
+                    <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="act act-primary">ZKILLBOARD</a>
+                    <a href={`https://evewho.com/${conf.evewhoPath}/${id}`} target="_blank" rel="noopener noreferrer" class="act">EVEWHO</a>
+                    <button type="button" id="copy-btn" data-url={canonicalUrl} class="act">COPY LINK</button>
+                </div>
+
+                <div class="card-f" style={`color:${status.color}; --dot-c:${status.color}`}>
+                    {status.live && <span class="pulse-dot"></span>}
+                    {lastEvent
+                        ? `last seen ${lastEvent.systemName} · ${relativeTime(lastEvent.time).toLowerCase()}`
+                        : (feedOnline ? 'no contact in window' : 'activity feed unavailable')}
+                </div>
+            </div>
+        </aside>
+
+        <!-- ══ KILLMAILS — the hero ══ -->
+        <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
+            <div class="card-h flex justify-between items-center sticky top-0 z-[4] bg-[var(--color-glass-bg)]">
+                <span>killmails</span>
+                {events.length > 0 && (
+                    <div class="tabs" id="f-tabs" role="tablist">
+                        <button type="button" class="tab is-active" data-f="all" role="tab" aria-selected="true">ALL {events.length}</button>
+                        <button type="button" class="tab" data-f="kill" role="tab" aria-selected="false">KILLS {kills.length}</button>
+                        <button type="button" class="tab" data-f="loss" role="tab" aria-selected="false">LOSSES {losses.length}</button>
+                    </div>
+                )}
+            </div>
+
+            {events.length === 0 ? (
+                <div class="ui p-10 text-center">
+                    <span class="grp block" style="color:var(--color-text-faint)">
+                        &gt; {feedOnline ? `${windowDays}-DAY WINDOW CLEAR` : 'ACTIVITY UPLINK OFFLINE'} &lt;
+                    </span>
+                    <p class="font-mono text-[11px] tracking-wider text-[var(--color-text-faint)] mt-2">
+                        {feedOnline ? 'nothing seen — full history on zkillboard' : 'record found, feed unavailable — retry shortly'}
+                    </p>
+                </div>
+            ) : (
+                <div id="feed">
+                    {byDay.map(bucket => (
+                        <div data-day>
+                            <div class="card-f flex justify-between" style="color:var(--color-text-faint)">
+                                <span>{bucket.day}</span>
+                                <span>{bucket.kills} kills · {bucket.losses} losses</span>
+                            </div>
+                            {bucket.rows.map(e => {
+                                const sp = spaceOf(e.space)
+                                const accent = e.isLoss ? 'var(--color-isk-billion)' : 'var(--color-neon-green)'
+                                return (
+                                    <a href={`/kill/${e.killID}`} class="fr px-3 py-1"
+                                       data-kind={e.isLoss ? 'loss' : 'kill'}
+                                       style={`--accent:${accent}`}>
+                                        <span class="font-mono text-[11px]" style={`color:${accent}`}>{e.isLoss ? '✕' : '✓'}</span>
+                                        <span class="font-mono text-xs tabular-nums text-[var(--color-text-faint)]">{(e.time ?? '').slice(11, 16)}</span>
+                                        <img src={`https://images.evetech.net/types/${e.shipTypeID}/render?size=64`}
+                                             class="w-[26px] h-[26px] object-cover bg-black/50" alt="" loading="lazy" />
+                                        <span class="text-sm text-white truncate">{e.shipName}</span>
+                                        <span class="fr-hide text-xs truncate">
+                                            <span class="chip" style={`--c:${sp.c}`}>{sp.short}</span>
+                                            <span class="ml-1.5">{e.systemName}</span>
+                                            <span class="text-[var(--color-text-faint)] ml-1.5">{e.regionName}</span>
+                                        </span>
+                                        <span class="fr-hide font-mono text-[11px] tabular-nums text-right text-[var(--color-text-faint)]">
+                                            {e.attackerCount > 1 ? e.attackerCount : 'solo'}
+                                        </span>
+                                        <span class="font-mono text-sm tabular-nums text-right"
+                                              style={`color:${valueColor(e.totalValue)}`}>{formatIsk(e.totalValue)}</span>
+                                    </a>
+                                )
+                            })}
+                        </div>
+                    ))}
+                    <div id="feed-empty" class="ui p-10 text-center" hidden>
+                        <span class="grp block" style="color:var(--color-text-faint)">&gt; NO MATCHING KILLMAILS &lt;</span>
+                    </div>
+                </div>
+            )}
+
+            <div class="card-f" style="color:var(--color-text-faint)">
+                &gt; radar, not record — nothing older than {windowDays} days is retained ·
+                <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="link">FULL HISTORY</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="relative z-10 max-w-[84rem] mx-auto p-4 mt-8 border-t border-[var(--color-eve-border)]">
+        <div class="ui flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] tracking-[0.14em] text-[var(--color-text-faint)]">
+            <a href="/" class="link">&lt; BACK TO SOCKETKILL.COM</a>
+            <div class="space-x-4">
+                <a href="/about" class="link">ABOUT</a>
+                <a href="https://github.com/ScotDex/socketkill-v2" target="_blank" rel="noopener" class="link">GITHUB</a>
+                <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="link">DISCORD</a>
+            </div>
+            <span>&copy; SOCKETKILL.COM</span>
+        </div>
+    </footer>
+</div>
+</Base>
+
+<script>
+    // Current EVE hour marker. Client-side so an edge-cached page
+    // never shows a stale "now".
+    const nowEl = document.querySelector('[data-clock-now]')
+    if (nowEl) {
+        const d = new Date()
+        nowEl.style.left = `${(d.getUTCHours() + d.getUTCMinutes() / 60) / 24 * 100}%`
+    }
+
+    const copyBtn = document.getElementById('copy-btn')
+    const copyLabel = copyBtn?.textContent
+    let copyTimer
+    copyBtn?.addEventListener('click', async () => {
+        const url = copyBtn.dataset.url || ''
+        try {
+            await navigator.clipboard.writeText(url)
+        } catch {
+            const ta = document.createElement('textarea')
+            ta.value = url
+            document.body.appendChild(ta)
+            ta.select()
+            document.execCommand('copy')
+            ta.remove()
+        }
+        clearTimeout(copyTimer)
+        copyBtn.textContent = 'COPIED ✓'
+        copyTimer = setTimeout(() => { copyBtn.textContent = copyLabel }, 1500)
+    })
+
+    const tabs = document.getElementById('f-tabs')
+    const feed = document.getElementById('feed')
+
+    if (tabs && feed) {
+        const days = [...feed.querySelectorAll('[data-day]')]
+        const empty = document.getElementById('feed-empty')
+
+        const apply = (mode) => {
+            let anyVisible = false
+            for (const day of days) {
+                let dayVisible = false
+                for (const row of day.querySelectorAll('[data-kind]')) {
+                    const show = mode === 'all' || row.dataset.kind === mode
+                    row.hidden = !show
+                    if (show) dayVisible = true
+                }
+                // Hide the date header too when its rows are all filtered out.
+                day.hidden = !dayVisible
+                if (dayVisible) anyVisible = true
+            }
+            if (empty) empty.hidden = anyVisible
+        }
+
+        tabs.addEventListener('click', (e) => {
+            const active = e.target.closest('.tab')
+            if (!active) return
+            for (const t of tabs.querySelectorAll('.tab')) {
+                t.classList.toggle('is-active', t === active)
+                t.setAttribute('aria-selected', t === active ? 'true' : 'false')
+            }
+            apply(active.dataset.f)
+        })
+    }
+</script>
