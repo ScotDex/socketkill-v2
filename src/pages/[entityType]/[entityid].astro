@@ -36,8 +36,6 @@ if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
     return new Response('Not found', { status: 404 })
 }
 
-const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
-
 // Manual AbortController rather than AbortSignal.timeout() — universally
 // supported, no runtime-compat question on Workers.
 async function fetchJson(url, { ms = 4000, headers } = {}) {
