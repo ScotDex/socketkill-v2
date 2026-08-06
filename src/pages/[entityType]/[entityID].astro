@@ -52,8 +52,7 @@ async function fetchJson(url, { ms = 4000, headers } = {}) {
     }
 }
 
-// ── ROUND TRIP 1 ────────────────────────────────────────────────
-// Identity and activity are independent of each other. Fire together.
+
 const [identityRes, activityRes] = await Promise.all([
     fetchJson(conf.esiPath(id)),
     fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
@@ -66,8 +65,6 @@ if (!identityRes.ok) {
 }
 const raw = identityRes.data
 
-// ── ROUND TRIP 2 ────────────────────────────────────────────────
-// Three name lookups, all dependent on round 1, independent of each other.
 const corpID = entityType === 'pilot' ? (raw.corporation_id ?? null) : null
 const allianceID = entityType !== 'alliance' ? (raw.alliance_id ?? null) : null
 const ceoID = entityType === 'corp' ? (raw.ceo_id ?? null) : null
@@ -99,7 +96,6 @@ const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
 
 Astro.response.headers.set('Cache-Control', 'public, max-age=60')
 
-// ── DERIVATION ──────────────────────────────────────────────────
 const kills = events.filter(e => !e.isLoss)
 const losses = events.filter(e => e.isLoss)
 
@@ -152,7 +148,7 @@ function median(nums) {
     return s[Math.floor(s.length / 2)]
 }
 
-// Hour-of-day histogram in EVE time (UTC).
+
 const hist = { k: Array(24).fill(0), l: Array(24).fill(0) }
 for (const e of events) {
     const h = new Date(e.time).getUTCHours()
@@ -161,8 +157,6 @@ for (const e of events) {
 }
 const histMax = Math.max(1, ...hist.k, ...hist.l)
 
-// Busiest contiguous 3h block. Below 25 killmails a "peak" is noise,
-// not a pattern — suppress rather than mislead.
 const PEAK_MIN_SAMPLE = 25
 let peak = null
 if (events.length >= PEAK_MIN_SAMPLE) {
@@ -177,9 +171,41 @@ if (events.length >= PEAK_MIN_SAMPLE) {
 const pad2 = n => String(n).padStart(2, '0')
 const peakLabel = peak ? `${pad2(peak.start)}–${pad2(peak.end)}` : (events.length ? 'SPARSE' : '')
 
+// EVE time is UTC. Three 8h bands, no gaps or overlaps.
+// These are community convention — tune the boundaries to taste.
+const TZ_BANDS = [
+    { label: 'AUTZ', start: 6,  end: 14 },  // 06:00–13:59
+    { label: 'EUTZ', start: 14, end: 22 },  // 14:00–21:59
+    { label: 'USTZ', start: 22, end: 6  },  // 22:00–05:59, wraps midnight
+]
+const inBand = (h, b) => b.start < b.end
+    ? (h >= b.start && h < b.end)
+    : (h >= b.start || h < b.end)
+
+const tzCounts = TZ_BANDS.map(b => ({
+    label: b.label,
+    n: events.filter(e => {
+        const h = new Date(e.time).getUTCHours()
+        return !Number.isNaN(h) && inBand(h, b)
+    }).length,
+})).sort((a, b) => b.n - a.n)
+
+// Below half, the entity straddles bands — one label would be a false claim.
+const tzLabel = !events.length || !tzCounts[0].n ? null
+    : Math.round(tzCounts[0].n / events.length * 100) >= 50
+        ? `${tzCounts[0].label} (${Math.round(tzCounts[0].n / events.length * 100)}%)`
+        : `mixed — ${tzCounts[0].label}/${tzCounts[1].label}`
+
 const spaceTally = tally(events, e => e.space)
-const regionTally = tally(events, e => e.regionName)
 const systemTally = tally(events, e => e.systemName)
+const topSystem = systemTally[0]
+    ? {
+        name: systemTally[0][0],
+        count: systemTally[0][1],
+        pct: Math.round(systemTally[0][1] / events.length * 100),
+        region: events.find(e => e.systemName === systemTally[0][0])?.regionName ?? null,
+    }
+    : null
 const topLostHull = tally(losses, e => e.shipTypeID)[0] ?? null
 
 const iskDestroyed = kills.reduce((s, e) => s + (e.totalValue || 0), 0)
@@ -303,7 +329,6 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                     </div>
                 </div>
 
-                <!-- ESI facts. Nothing windowed. -->
                 <div class="dossier-rows">
                     {entityType === 'pilot' && identity.securityStatus != null && (
                         <div class="row">
@@ -342,18 +367,18 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                         <span class="v">{identity.founded ? new Date(identity.founded).getFullYear() : '—'}</span>
                     </div>
                 </div>
-
-                <!-- Everything below is windowed. -->
                 <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-1">
                     <span class="grp">assessment</span>
                 </div>
-                <div class="assess font-mono text-xs leading-relaxed px-3 pb-2">
+                <div class="assess font-mono text-[13px] leading-relaxed px-3 pb-2">
                     {events.length > 0 ? (
                         <>
                             <p><b>{events.length}</b> killmails · <b>{kills.length}</b> kills / <b>{losses.length}</b> losses</p>
                             <p><b>{formatIsk(iskDestroyed)}</b> destroyed · <b>{formatIsk(iskLost)}</b> lost</p>
-                            {peak && <p>peak <span class="hi">{pad2(peak.start)}:00–{pad2(peak.end)}:00</span> eve</p>}
-                            {systemTally[0] && <p>home <b>{systemTally[0][0]}</b>, {regionTally[0][0]}</p>}
+                            {tzLabel && <p>timezone <span class="hi">{tzLabel}</span></p>}
+                            {topSystem && (
+                                <p>most seen <b>{topSystem.name}</b> ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</p>
+                            )}
                             {spaceTally[0] && (
                                 <p>band <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
                             )}
@@ -426,11 +451,13 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                 </div>
             </div>
         </aside>
-
-        <!-- ══ KILLMAILS — the hero ══ -->
         <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
             <div class="card-h flex justify-between items-center sticky top-0 z-[4] bg-[var(--color-glass-bg)]">
-                <span>killmails</span>
+                <span class="flex items-center gap-2">
+    killmails
+    <span class="status px-1.5 py-0.5"
+          style="--s-c: var(--color-whale-accent); color: var(--color-whale-accent); font-size: 9px; text-shadow: none">BETA</span>
+</span>
                 {events.length > 0 && (
                     <div class="tabs" id="f-tabs" role="tablist">
                         <button type="button" class="tab is-active" data-f="all" role="tab" aria-selected="true">ALL {events.length}</button>
@@ -512,8 +539,6 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
 </Base>
 
 <script>
-    // Current EVE hour marker. Client-side so an edge-cached page
-    // never shows a stale "now".
     const nowEl = document.querySelector('[data-clock-now]')
     if (nowEl) {
         const d = new Date()
