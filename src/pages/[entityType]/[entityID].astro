@@ -36,8 +36,6 @@ if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
     return new Response('Not found', { status: 404 })
 }
 
-// Manual AbortController rather than AbortSignal.timeout() — universally
-// supported, no runtime-compat question on Workers.
 async function fetchJson(url, { ms = 4000, headers } = {}) {
     const ctrl = new AbortController()
     const timer = setTimeout(() => ctrl.abort(), ms)
@@ -170,13 +168,10 @@ if (events.length >= PEAK_MIN_SAMPLE) {
 }
 const pad2 = n => String(n).padStart(2, '0')
 const peakLabel = peak ? `${pad2(peak.start)}–${pad2(peak.end)}` : (events.length ? 'SPARSE' : '')
-
-// EVE time is UTC. Three 8h bands, no gaps or overlaps.
-// These are community convention — tune the boundaries to taste.
 const TZ_BANDS = [
-    { label: 'AUTZ', start: 6,  end: 14 },  // 06:00–13:59
-    { label: 'EUTZ', start: 14, end: 22 },  // 14:00–21:59
-    { label: 'USTZ', start: 22, end: 6  },  // 22:00–05:59, wraps midnight
+    { label: 'AUTZ', start: 6,  end: 14 },
+    { label: 'EUTZ', start: 14, end: 22 },
+    { label: 'USTZ', start: 22, end: 6  },
 ]
 const inBand = (h, b) => b.start < b.end
     ? (h >= b.start && h < b.end)
@@ -234,7 +229,6 @@ const status = !feedOnline ? { text: 'UPLINK OFFLINE', color: 'var(--color-termi
     : events.length ? { text: 'FADING', color: 'var(--color-whale-accent)', live: false }
     : { text: 'NO CONTACT', color: 'var(--color-text-faint)', live: false }
 
-// Group killmails by UTC date, newest first. Events arrive pre-sorted.
 const byDay = []
 for (const e of events) {
     const day = (e.time ?? '').slice(0, 10)
@@ -269,8 +263,6 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
 
 <div class="kill-screen art-bg" style={`--art-bg-url: url(${entityBg})`}>
 
-    <!-- <div>, not <header>: the global stylesheet hides bare `header`
-         under 1023px, which would blank this on mobile. -->
     <div class="max-w-[84rem] mx-auto px-4 pt-6 relative z-10">
         <div class="flex justify-between items-end gap-4 flex-wrap">
             <div>
@@ -287,7 +279,6 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
 
     <main class="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-4 p-4 max-w-[84rem] mx-auto relative z-10 items-start">
 
-        <!-- ══ DOSSIER — one card, identity through pattern ══ -->
         <aside class="lg:sticky lg:top-4">
             <div class="card" style="--card-c: var(--color-neon-green); --d: 0ms">
                 <div class="card-h flex justify-between items-center">
@@ -302,8 +293,6 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                     </figure>
                 )}
 
-                <!-- .ident pulls up -2.6rem to overlap the cover render.
-                     With no cover there is nothing to overlap. -->
                 <div class="ident" style={topLostHull ? undefined : 'margin-top:0.75rem'}>
                     <img class="portrait-sm" src={conf.image(id)} alt={identity.name} loading="eager" />
                     <div class="who">
@@ -387,7 +376,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                         </>
                     ) : (
                         <>
-                            <p>{feedOnline ? 'no killmails in window' : 'activity uplink unreachable'}</p>
+                            <p>{feedOnline ? 'Nothing to report here for the past 30 days...' : 'activity uplink unreachable'}</p>
                             <p>{feedOnline ? 'inactive, docked, or flying safe' : 'retry shortly'}</p>
                             <p>identity confirmed via esi</p>
                         </>
@@ -417,7 +406,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                         </div>
 
                         <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-2">
-                            <span class="grp">where they fly</span>
+                            <span class="grp">Areas Detected</span>
                             <span class="tag">{systemTally.length} SYSTEMS</span>
                         </div>
                         <div class="px-3 pb-2">
@@ -470,10 +459,10 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
             {events.length === 0 ? (
                 <div class="ui p-10 text-center">
                     <span class="grp block" style="color:var(--color-text-faint)">
-                        &gt; {feedOnline ? `${windowDays}-DAY WINDOW CLEAR` : 'ACTIVITY UPLINK OFFLINE'} &lt;
+                        &gt; {feedOnline ? `${windowDays}-DAY WINDOW CLEAR` : 'ACTIVITY UNREACHABLE'} &lt;
                     </span>
                     <p class="font-mono text-[11px] tracking-wider text-[var(--color-text-faint)] mt-2">
-                        {feedOnline ? 'nothing seen — full history on zkillboard' : 'record found, feed unavailable — retry shortly'}
+                        {feedOnline ? 'nothing seen — full history on zkillboard' : 'identity confirmed, feed unavailable — retry shortly'}
                     </p>
                 </div>
             ) : (
@@ -518,7 +507,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
             )}
 
             <div class="card-f" style="color:var(--color-text-faint)">
-                &gt; radar, not record — nothing older than {windowDays} days is retained ·
+                &gt; killmails older than {windowDays} days are not displayed ·
                 <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="link">FULL HISTORY</a>
             </div>
         </div>
