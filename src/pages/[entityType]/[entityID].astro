@@ -185,7 +185,6 @@ const tzCounts = TZ_BANDS.map(b => ({
     }).length,
 })).sort((a, b) => b.n - a.n)
 
-// Below half, the entity straddles bands — one label would be a false claim.
 const tzLabel = !events.length || !tzCounts[0].n ? null
     : Math.round(tzCounts[0].n / events.length * 100) >= 50
         ? `${tzCounts[0].label} (${Math.round(tzCounts[0].n / events.length * 100)}%)`
@@ -369,9 +368,9 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                                 <p>most seen <b>{topSystem.name}</b> ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</p>
                             )}
                             {spaceTally[0] && (
-                                <p>Most Active: <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
+                                <p>most active <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
                             )}
-                            <p>average fleet size <b>{profile}</b></p>
+                            <p>average size <b>{profile}</b></p>
                             <p>trend <b>{trend}</b></p>
                         </>
                     ) : (
