@@ -357,7 +357,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                     </div>
                 </div>
                 <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-1">
-                    <span class="grp">assessment</span>
+                    <span class="grp">Report Summary</span>
                 </div>
                 <div class="assess font-mono text-[13px] leading-relaxed px-3 pb-2">
                     {events.length > 0 ? (
@@ -369,9 +369,9 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                                 <p>most seen <b>{topSystem.name}</b> ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</p>
                             )}
                             {spaceTally[0] && (
-                                <p>band <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
+                                <p>Most Active: <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
                             )}
-                            <p>flies <b>{profile}</b></p>
+                            <p>average fleet size <b>{profile}</b></p>
                             <p>trend <b>{trend}</b></p>
                         </>
                     ) : (
@@ -386,7 +386,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                 {events.length > 0 && (
                     <>
                         <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2">
-                            <span class="grp">when they fly</span>
+                            <span class="grp">Activity By Timezone</span>
                             <span class="tag">{peakLabel}</span>
                         </div>
                         <div class="px-3 pb-1 relative">
@@ -406,7 +406,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                         </div>
 
                         <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-2">
-                            <span class="grp">Areas Detected</span>
+                            <span class="grp">Most Active Areas</span>
                             <span class="tag">{systemTally.length} SYSTEMS</span>
                         </div>
                         <div class="px-3 pb-2">
