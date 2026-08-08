@@ -271,6 +271,14 @@ details[open] > .grp-atk .grp-caret {
     transform: rotate(90deg);
 }
 
+.grp-logo {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    align-self: center;
+    object-fit: contain;
+}
+
 .grp-n {
     font-family: var(--font-mono);
     letter-spacing: 0;

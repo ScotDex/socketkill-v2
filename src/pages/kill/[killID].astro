@@ -311,6 +311,10 @@ const singleGroup = grouped.length === 1
                             <details open={singleGroup || g.members.length <= 2}>
                                 <summary class="grp-atk">
     <span class="grp-caret">▸</span>
+    <img class="grp-logo"
+         src={`https://images.evetech.net/${g.linkKind === 'alliance' ? 'alliances' : 'corporations'}/${g.linkID}/logo?size=32`}
+         alt="" loading="lazy"
+         onerror="this.style.visibility='hidden'" />
     <span>{g.label}</span>
     <span class="grp-n">{g.members.length}</span>
 </summary>
