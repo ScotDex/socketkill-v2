@@ -240,6 +240,28 @@ details[open]::details-content {
     text-shadow: var(--glow);
 }
 
+.grp-atk {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    cursor: pointer;
+    list-style: none;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-isk-billion) 18%, transparent);
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-isk-billion);
+}
+
+.grp-n {
+    font-family: var(--font-mono);
+    letter-spacing: 0;
+    color: var(--color-text-faint);
+}
+
 .pulse-dot {
     display: inline-block;
     width: 6px;

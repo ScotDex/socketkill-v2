@@ -154,12 +154,21 @@ const orderedGroups = [...knownKeys.filter(g => g !== 'other'), ...unknownKeys, 
         }
     })
 const attackers = kill.attackers || []
-const sortedAttackers = [...attackers].sort((a, b) => {
-    if (a.finalBlow === b.finalBlow) return 0
-    return a.finalBlow ? -1 : 1
-})
-const visibleAttackers = sortedAttackers.slice(0, 5)
-const hiddenAttackers = sortedAttackers.slice(5)
+const grouped = Object.values(
+    attackers.reduce((acc, a) => {
+        const key = a.allianceID ? `a:${a.allianceID}` : `c:${a.corporationID}`
+        if (!acc[key]) acc[key] = {
+            label: a.alliance || a.corp,
+            linkKind: a.allianceID ? 'alliance' : 'corp',
+            linkID: a.allianceID || a.corporationID,
+            members: []
+        }
+        acc[key].members.push(a)
+        return acc
+    }, {})
+).sort((x, y) => y.members.length - x.members.length)
+
+const singleGroup = grouped.length === 1
 ---
 
 <Base
@@ -297,17 +306,19 @@ const hiddenAttackers = sortedAttackers.slice(5)
                         <span>attackers</span>
                         <span class="font-mono text-sm tabular-nums" style="color: var(--color-isk-billion)">{kill.attackerCount}</span>
                     </header>
-                    <ul class="p-3 space-y-2">
-    {visibleAttackers.map(a => <AttackerRow a={a} />)}
-</ul>
-                    {hiddenAttackers.length > 0 && (
-                        <details class="px-3 pb-3">
-                            <summary class="more">SHOW {hiddenAttackers.length} MORE</summary>
-                            <ul class="space-y-2 mt-2">
-    {hiddenAttackers.map(a => <AttackerRow a={a} />)}
-</ul>
-                        </details>
-                    )}
+                    <div class="p-3 space-y-3">
+                        {grouped.map(g => (
+                            <details open={singleGroup || g.members.length <= 2}>
+                                <summary class="grp-atk">
+                                    <a href={internalLink(g.linkKind, g.linkID)} class="link">{g.label}</a>
+                                    <span class="grp-n">{g.members.length}</span>
+                                </summary>
+                                <ul class="space-y-2 mt-2">
+                                    {g.members.map(a => <AttackerRow a={a} />)}
+                                </ul>
+                            </details>
+                        ))}
+                    </div>
                 </div>
             </section>
             <section class="card self-start" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
