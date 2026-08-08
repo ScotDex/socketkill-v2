@@ -310,9 +310,10 @@ const singleGroup = grouped.length === 1
                         {grouped.map(g => (
                             <details open={singleGroup || g.members.length <= 2}>
                                 <summary class="grp-atk">
-                                    <a href={internalLink(g.linkKind, g.linkID)} class="link">{g.label}</a>
-                                    <span class="grp-n">{g.members.length}</span>
-                                </summary>
+    <span class="grp-caret">▸</span>
+    <span>{g.label}</span>
+    <span class="grp-n">{g.members.length}</span>
+</summary>
                                 <ul class="space-y-2 mt-2">
                                     {g.members.map(a => <AttackerRow a={a} />)}
                                 </ul>

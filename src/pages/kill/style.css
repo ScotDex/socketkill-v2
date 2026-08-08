@@ -242,8 +242,8 @@ details[open]::details-content {
 
 .grp-atk {
     display: flex;
-    justify-content: space-between;
     align-items: baseline;
+    gap: 0.5rem;
     cursor: pointer;
     list-style: none;
     padding-bottom: 0.25rem;
@@ -254,6 +254,21 @@ details[open]::details-content {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-isk-billion);
+}
+
+.grp-atk .grp-n {
+    margin-left: auto;
+}
+
+.grp-caret {
+    font-size: 8px;
+    color: var(--color-text-faint);
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+details[open] > .grp-atk .grp-caret {
+    transform: rotate(90deg);
 }
 
 .grp-n {
