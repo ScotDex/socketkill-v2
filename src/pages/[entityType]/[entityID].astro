@@ -29,6 +29,15 @@ const ENTITY = {
     },
 }
 
+const FACTION = {
+    500001: { name: 'Caldari State',       short: 'CALDARI',  c: 'var(--color-terminal-blue)' },
+    500002: { name: 'Minmatar Republic',   short: 'MINMATAR', c: 'var(--color-isk-billion)' },
+    500003: { name: 'Amarr Empire',        short: 'AMARR',    c: 'var(--color-whale-accent)' },
+    500004: { name: 'Gallente Federation', short: 'GALLENTE', c: 'var(--color-neon-green)' },
+    500010: { name: 'Guristas Pirates',    short: 'GURISTAS', c: '#b07ce8' },
+    500011: { name: 'Angel Cartel',        short: 'ANGELS',   c: '#b07ce8' },
+}
+
 const { entityType, entityID } = Astro.params
 const conf = ENTITY[entityType]
 const id = parseInt(entityID)
@@ -78,6 +87,8 @@ const identity = {
     ticker: raw.ticker ?? null,
     corpID,
     allianceID,
+    factionID,
+    faction: factionID ? (FACTION[factionID] ?? null) : null,
     ceoID,
     corpName: corpRes?.ok ? corpRes.data.name : null,
     allianceName: allianceRes?.ok ? allianceRes.data.name : null,
@@ -350,6 +361,16 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                             )}
                         </>
                     )}
+                    {identity.factionID && (
+    <div class="row">
+        <span class="k">MILITIA</span>
+        <span class="v truncate">
+            {identity.faction
+                ? <span class="chip" style={`--c:${identity.faction.c}`}>{identity.faction.short}</span>
+                : <span class="chip" style="--c:var(--color-text-faint)">FACTION {identity.factionID}</span>}
+        </span>
+    </div>
+)}
                     <div class="row">
                         <span class="k">{entityType === 'pilot' ? 'CAPSULEER SINCE' : 'FOUNDED'}</span>
                         <span class="v">{identity.founded ? new Date(identity.founded).getFullYear() : '—'}</span>
