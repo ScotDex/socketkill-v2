@@ -24,13 +24,10 @@ export default defineConfig({
       sitemap:['https://socketkill.com/sitemap-index.xml',
               'https://socketkill.com/sitemaps/kills-index.xml'],
       policy: [
-        {
-          userAgent: '*',
-          allow: '/',
-          disallow: ['/api/']
-        }
-
-      ]
+  { userAgent: 'meta-webindexer', disallow: '/' },
+  { userAgent: 'meta-externalagent', disallow: '/' },
+  { userAgent: '*', allow: '/', disallow: ['/api/'] }
+]
     })
   ], 
   vite: {
