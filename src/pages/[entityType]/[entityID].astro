@@ -78,10 +78,10 @@ const ceoID = entityType === 'corp' ? (raw.ceo_id ?? null) : null
 const executorID = entityType === 'alliance' ? (raw.executor_corporation_id ?? null) : null
 
 const corpTitle = entityType === 'pilot'
-    ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
+    ? ((raw.title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
     : null
 
-const [corpRes, allianceRes, ceoRes] = await Promise.all([
+const [corpRes, allianceRes, ceoRes, executorRes, memberCorpsRes] = await Promise.all([
     corpID ? fetchJson(`https://esi.evetech.net/latest/corporations/${corpID}/`) : null,
     allianceID ? fetchJson(`https://esi.evetech.net/latest/alliances/${allianceID}/`) : null,
     ceoID ? fetchJson(`https://esi.evetech.net/latest/characters/${ceoID}/`) : null,
