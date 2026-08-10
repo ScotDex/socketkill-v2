@@ -8,6 +8,10 @@ import robotsTxt from 'astro-robots-txt';
 export default defineConfig({
   site: 'https://socketkill.com',
   output: 'server',
+  prefetch: {
+    prefetchAll : false,
+    defaultStrategy: 'hover'
+  },
   adapter: cloudflare({
     platformProxy: {
       enabled: false

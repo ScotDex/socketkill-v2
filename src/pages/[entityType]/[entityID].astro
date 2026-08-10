@@ -78,10 +78,6 @@ async function fetchJson(url, { ms = 4000, headers } = {}) {
 const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
-
-/* Wave 1 — everything derivable from the route params alone.
-   The alliance member-corp list only needs `id`, so it belongs here
-   rather than behind the identity response. */
 const [identityRes, activityRes, memberCorpsRes] = await Promise.all([
     fetchJson(conf.esiPath(id)),
     fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
@@ -146,9 +142,6 @@ function bump(map, key) {
     if (key == null) return
     map.set(key, (map.get(key) || 0) + 1)
 }
-
-/* Largest entry without sorting the whole map. Ties keep the first
-   insertion, matching the previous stable-sort behaviour. */
 function topEntry(map) {
     let bestKey = null
     let bestN = 0
@@ -157,11 +150,6 @@ function topEntry(map) {
     }
     return bestKey == null ? null : [bestKey, bestN]
 }
-
-/* ---- Single pass over events -------------------------------------
-   Previously this data was walked ~12 times, re-parsing every
-   timestamp on each pass. One loop, one Date.parse per event. */
-
 const now = Date.now()
 const halfWindowTs = now - (windowDays / 2) * 86400000
 
@@ -223,9 +211,6 @@ for (const e of events) {
 }
 
 const total = events.length
-
-/* ---- Derived stats (all O(24) or O(distinct keys)) ---------------- */
-
 const hourTotals = new Array(24)
 let histMax = 1
 for (let h = 0; h < 24; h++) {
@@ -249,7 +234,6 @@ if (total >= PEAK_MIN_SAMPLE) {
 const pad2 = n => String(n).padStart(2, '0')
 const peakLabel = peak ? `${pad2(peak.start)}–${pad2(peak.end)}` : (total ? 'SPARSE' : '')
 
-/* Timezone bands read off the hour histogram — no second pass. */
 const inBand = (h, b) => b.start < b.end
     ? (h >= b.start && h < b.end)
     : (h >= b.start || h < b.end)
@@ -265,10 +249,7 @@ const tzLabel = !total || !tzCounts[0].n ? null
     : tzTopPct >= 50
         ? `${tzCounts[0].label} (${tzTopPct}%)`
         : `mixed — ${tzCounts[0].label}/${tzCounts[1].label}`
-
-/* Space breakdown is at most 6 keys, so a sort here is free. */
 const spaceTally = [...spaceCount.entries()].sort((a, b) => b[1] - a[1])
-
 const topSystemEntry = topEntry(systemCount)
 const topSystem = topSystemEntry
     ? {
@@ -333,9 +314,6 @@ const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
 
 const KILLS_BG_COUNT = 24
 const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
-
-/* Precomputed per-row view data — keeps the template loop free of
-   function calls and string building. */
 const dayViews = byDay.map(bucket => ({
     day: bucket.day,
     kills: bucket.kills,
@@ -512,8 +490,8 @@ const dayViews = byDay.map(bucket => ({
                 <div class="assess px-3 pb-2">
                     {total > 0 ? (
                         <>
-                            <p><span>killmails</span><b>{total} · {killCount}K / {lossCount}L</b></p>
-                            <p><span>isk</span><b>{formatIsk(iskDestroyed)} / {formatIsk(iskLost)}</b></p>
+                            <p><span>killmails</span><b>{total} — {killCount} kills, {lossCount} losses</b></p>
+                            <p><span>isk</span><b>{formatIsk(iskDestroyed)} killed, {formatIsk(iskLost)} lost</b></p>
                             {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
                             {topSystem && (
                                 <p><span>most seen</span><b>{topSystem.name} ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</b></p>
