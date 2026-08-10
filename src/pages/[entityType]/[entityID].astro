@@ -223,7 +223,7 @@ const topSystem = systemTally[0]
         region: events.find(e => e.systemName === systemTally[0][0])?.regionName ?? null,
     }
     : null
-const topLostHull = tally(losses, e => e.shipTypeID)[0] ?? null
+const topKilledHull = tally(kills, e => e.shipTypeID)[0] ?? null
 
 const iskDestroyed = kills.reduce((s, e) => s + (e.totalValue || 0), 0)
 const iskLost = losses.reduce((s, e) => s + (e.totalValue || 0), 0)
@@ -410,29 +410,29 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                 <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-1">
                     <span class="grp">Report Summary</span>
                 </div>
-                <div class="assess font-mono text-[13px] leading-relaxed px-3 pb-2">
-                    {events.length > 0 ? (
-                        <>
-                            <p><b>{events.length}</b> killmails · <b>{kills.length}</b> kills / <b>{losses.length}</b> losses</p>
-                            <p><b>{formatIsk(iskDestroyed)}</b> destroyed · <b>{formatIsk(iskLost)}</b> lost</p>
-                            {tzLabel && <p>timezone <span class="hi">{tzLabel}</span></p>}
-                            {topSystem && (
-                                <p>most seen <b>{topSystem.name}</b> ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</p>
-                            )}
-                            {spaceTally[0] && (
-                                <p>most active <b>{spaceOf(spaceTally[0][0]).label}</b> {Math.round(spaceTally[0][1] / events.length * 100)}%</p>
-                            )}
-                            <p>average size <b>{profile}</b></p>
-                            <p>trend <b>{trend}</b></p>
-                        </>
-                    ) : (
-                        <>
-                            <p>{feedOnline ? 'Nothing to report here for the past 30 days...' : 'activity uplink unreachable'}</p>
-                            <p>{feedOnline ? 'inactive, docked, or flying safe' : 'retry shortly'}</p>
-                            <p>identity confirmed via esi</p>
-                        </>
-                    )}
-                </div>
+                <div class="assess px-3 pb-2">
+    {events.length > 0 ? (
+        <>
+            <p><span>killmails</span><b>{events.length} · {kills.length}K / {losses.length}L</b></p>
+            <p><span>isk</span><b>{formatIsk(iskDestroyed)} / {formatIsk(iskLost)}</b></p>
+            {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
+            {topSystem && (
+                <p><span>most seen</span><b>{topSystem.name} ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</b></p>
+            )}
+            {spaceTally[0] && (
+                <p><span>most active</span><b>{spaceOf(spaceTally[0][0]).label} {Math.round(spaceTally[0][1] / events.length * 100)}%</b></p>
+            )}
+            <p><span>gang size</span><b>{profile}</b></p>
+            <p><span>trend</span><b>{trend}</b></p>
+        </>
+    ) : (
+        <>
+            <p>{feedOnline ? 'Nothing to report here for the past 30 days...' : 'activity uplink unreachable'}</p>
+            <p>{feedOnline ? 'inactive, docked, or flying safe' : 'retry shortly'}</p>
+            <p>identity confirmed via esi</p>
+        </>
+    )}
+</div>
 
                 {events.length > 0 && (
                     <>
