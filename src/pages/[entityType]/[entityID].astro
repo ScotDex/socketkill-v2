@@ -76,7 +76,7 @@ const corpID = entityType === 'pilot' ? (raw.corporation_id ?? null) : null
 const allianceID = entityType !== 'alliance' ? (raw.alliance_id ?? null) : null
 const ceoID = entityType === 'corp' ? (raw.ceo_id ?? null) : null
 
-const title = entityType === 'pilot'
+const corpTitle = entityType === 'pilot'
     ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
     : null
 
@@ -94,7 +94,7 @@ const identity = {
     factionID,
     faction: factionID ? (FACTION[factionID] ?? null) : null,
     ceoID,
-    title,
+    corpTitle,
     corpName: corpRes?.ok ? corpRes.data.name : null,
     allianceName: allianceRes?.ok ? allianceRes.data.name : null,
     ceoName: ceoRes?.ok ? ceoRes.data.name : null,
@@ -316,9 +316,9 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
     {identity.corpID
         ? <a href={entityHref('corp', identity.corpID)} class="link">{identity.corpName ?? '—'}</a>
         : (identity.ticker ? `[${identity.ticker}]` : '')}
-    {identity.title && (
-        <span style="color:var(--color-text-faint)"> · {identity.title}</span>
-    )}
+    {identity.corpTitle && (
+    <span style="color:var(--color-text-faint)"> · {identity.corpTitle}</span>
+)}
 </div>
                         <div class="af">
                             {identity.allianceID
