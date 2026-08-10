@@ -87,7 +87,7 @@ details[open]::details-content {
 
 .fit-modal::backdrop {
     background: rgba(10, 12, 16, 0.82);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(12px) saturate(120%);
 }
 
 #fit-frame {
