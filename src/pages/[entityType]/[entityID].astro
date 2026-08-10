@@ -75,6 +75,7 @@ const raw = identityRes.data
 const corpID = entityType === 'pilot' ? (raw.corporation_id ?? null) : null
 const allianceID = entityType !== 'alliance' ? (raw.alliance_id ?? null) : null
 const ceoID = entityType === 'corp' ? (raw.ceo_id ?? null) : null
+const executorID = entityType === 'alliance' ? (raw.executor_corporation_id ?? null) : null
 
 const corpTitle = entityType === 'pilot'
     ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
@@ -84,7 +85,10 @@ const [corpRes, allianceRes, ceoRes] = await Promise.all([
     corpID ? fetchJson(`https://esi.evetech.net/latest/corporations/${corpID}/`) : null,
     allianceID ? fetchJson(`https://esi.evetech.net/latest/alliances/${allianceID}/`) : null,
     ceoID ? fetchJson(`https://esi.evetech.net/latest/characters/${ceoID}/`) : null,
+    executorID ? fetchJson(`https://esi.evetech.net/latest/corporations/${executorID}/`) : null,
+    entityType === 'alliance' ? fetchJson(`https://esi.evetech.net/latest/alliances/${id}/corporations/`) : null,
 ])
+
 const factionID = raw.faction_id ?? null
 const identity = {
     name: raw.name,
@@ -102,6 +106,9 @@ const identity = {
     securityStatus: raw.security_status ?? null,
     memberCount: raw.member_count ?? null,
     warEligible: raw.war_eligible ?? null,
+    executorID,
+    executorName: executorRes?.ok ? executorRes.data.name : null,
+    corpCount: memberCorpsRes?.ok ? memberCorpsRes.data.length : null,
 }
 
 const feedOnline = activityRes.ok
@@ -323,8 +330,8 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                         <div class="af">
                             {identity.allianceID
                                 ? <a href={entityHref('alliance', identity.allianceID)} class="link">{identity.allianceName ?? '—'}</a>
-                                : 'Non Affiliate'}
                         </div>
+                            }
                     </div>
                     <div class="dossier-badges">
                         {identity.corpID && (
@@ -347,6 +354,22 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                             </span>
                         </div>
                     )}
+                    {entityType === 'alliance' && (
+    <>
+        <div class="row">
+            <span class="k">CORPORATIONS</span>
+            <span class="v">{identity.corpCount?.toLocaleString() ?? '—'}</span>
+        </div>
+        {identity.executorName && (
+            <div class="row">
+                <span class="k">EXECUTOR</span>
+                <span class="v truncate">
+                    <a href={entityHref('corp', identity.executorID)} class="link">{identity.executorName}</a>
+                </span>
+            </div>
+        )}
+    </>
+)}
                     {entityType === 'corp' && (
                         <>
                             <div class="row">
