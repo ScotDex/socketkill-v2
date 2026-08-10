@@ -315,33 +315,33 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                     </figure>
                 )}
 
-                <div class="ident" style={topLostHull ? undefined : 'margin-top:0.75rem'}>
-                    <img class="portrait-sm" src={conf.image(id)} alt={identity.name} loading="eager" />
-                    <div class="who">
-                        <div class="nm truncate">{identity.name}</div>
-                        <div class="af">
-    {identity.corpID
-        ? <a href={entityHref('corp', identity.corpID)} class="link">{identity.corpName ?? '—'}</a>
-        : (identity.ticker ? `[${identity.ticker}]` : '')}
-    {identity.corpTitle && (
-    <span style="color:var(--color-text-faint)"> · {identity.corpTitle}</span>
-)}
+<div class="ident" style={topLostHull ? undefined : 'margin-top:0.75rem'}>
+    <img class="portrait-sm" src={conf.image(id)} alt={identity.name} loading="eager" />
+    <div class="who">
+        <div class="nm truncate">{identity.name}</div>
+        <div class="af">
+            {identity.corpID
+                ? <a href={entityHref('corp', identity.corpID)} class="link">{identity.corpName ?? '—'}</a>
+                : (identity.ticker ? `[${identity.ticker}]` : '')}
+            {identity.corpTitle && (
+                <span style="color:var(--color-text-faint)"> · {identity.corpTitle}</span>
+            )}
+        </div>
+        {identity.allianceID && (
+            <div class="af">
+                <a href={entityHref('alliance', identity.allianceID)} class="link">{identity.allianceName ?? '—'}</a>
+            </div>
+        )}
+    </div>
+    <div class="dossier-badges">
+        {identity.corpID && (
+            <img src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=64`} alt="" loading="lazy" />
+        )}
+        {identity.allianceID && (
+            <img src={`https://images.evetech.net/alliances/${identity.allianceID}/logo?size=64`} alt="" loading="lazy" />
+        )}
+    </div>
 </div>
-                        <div class="af">
-                            {identity.allianceID
-                                ? <a href={entityHref('alliance', identity.allianceID)} class="link">{identity.allianceName ?? '—'}</a>
-                        </div>
-                            }
-                    </div>
-                    <div class="dossier-badges">
-                        {identity.corpID && (
-                            <img src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=64`} alt="" loading="lazy" />
-                        )}
-                        {identity.allianceID && (
-                            <img src={`https://images.evetech.net/alliances/${identity.allianceID}/logo?size=64`} alt="" loading="lazy" />
-                        )}
-                    </div>
-                </div>
 
                 <div class="dossier-rows">
                     {entityType === 'pilot' && identity.securityStatus != null && (
