@@ -18,24 +18,21 @@
     background: color-mix(in srgb, var(--s-c) 8%, transparent);
 }
 
+.assess {
+    font-size: 13.5px;
+    line-height: 1.75;
+}
+
 .assess p {
     margin: 0;
     color: var(--color-text-faint);
 }
 
-.assess p::before {
-    content: "> ";
-    color: color-mix(in srgb, var(--color-neon-green) 55%, transparent);
-}
-
 .assess b {
+    font-family: var(--font-mono);
     font-weight: 400;
+    font-variant-numeric: tabular-nums;
     color: var(--color-text-body);
-}
-
-.assess .hi {
-    color: var(--color-neon-green);
-    text-shadow: var(--glow);
 }
 
 .clock-grid {
@@ -130,6 +127,26 @@
     border-left: 2px solid var(--accent);
     background: color-mix(in srgb, var(--accent) 4%, transparent);
     transition: background 0.12s, transform 0.12s;
+}
+
+.entity-screen {
+    --dossier-c: #6e7681;
+}
+
+.entity-screen .card {
+    --tint: 3%;
+    --backdrop-dim: 0.6;
+}
+
+.entity-screen .card-h,
+.entity-screen .grp {
+    color: var(--dossier-c);
+    text-shadow: none;
+}
+
+.entity-screen .chip,
+.entity-screen .card-f {
+    text-shadow: none;
 }
 
 .fr+.fr {

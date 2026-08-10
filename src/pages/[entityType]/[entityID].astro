@@ -276,7 +276,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-<div class="kill-screen art-bg" style={`--art-bg-url: url(${entityBg})`}>
+<div class="kill-screen entity-screen art-bg" style={`--art-bg-url: url(${entityBg})`}>
 
     <div class="max-w-[84rem] mx-auto px-4 pt-6 relative z-10">
         <div class="flex justify-between items-end gap-4 flex-wrap">
@@ -295,7 +295,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
     <main class="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-4 p-4 max-w-[84rem] mx-auto relative z-10 items-start">
 
         <aside class="lg:sticky lg:top-4">
-            <div class="card" style="--card-c: var(--color-neon-green); --d: 0ms">
+            <div class="card" style="--card-c: var(--dossier-c); --d: 0ms">
                 <div class="card-h flex justify-between items-center">
                     <span>{conf.label.toLowerCase()}</span>
                     <span class="tag">{windowDays}-DAY WINDOW</span>
@@ -468,7 +468,7 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                 </div>
             </div>
         </aside>
-        <div class="card" style="--card-c: var(--color-neon-green); --d: 60ms">
+        <div class="card" style="--card-c: var(--dossier-c); --d: 60ms">
             <div class="card-h flex justify-between items-center sticky top-0 z-[4] bg-[var(--color-glass-bg)]">
                 <span class="flex items-center gap-2">
     killmails
