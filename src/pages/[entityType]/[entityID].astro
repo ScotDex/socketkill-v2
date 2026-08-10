@@ -81,7 +81,7 @@ const [corpRes, allianceRes, ceoRes] = await Promise.all([
     allianceID ? fetchJson(`https://esi.evetech.net/latest/alliances/${allianceID}/`) : null,
     ceoID ? fetchJson(`https://esi.evetech.net/latest/characters/${ceoID}/`) : null,
 ])
-
+const factionID = raw.faction_id ?? null
 const identity = {
     name: raw.name,
     ticker: raw.ticker ?? null,
