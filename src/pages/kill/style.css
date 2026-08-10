@@ -22,18 +22,27 @@ details[open]::details-content {
     font-family: var(--font-body);
 }
 
-.card {
+.card { 
+    --notch: 10px;
+    --header-bleed: 48px;
+    --tint: 5%;
+
     background:
-        linear-gradient(180deg, color-mix(in srgb, var(--card-c) 5%, transparent), transparent 48px),
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--card-c, transparent) var(--tint), transparent),
+            transparent var(--header-bleed)
+
+        ),
         var(--color-glass-bg);
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid var(--color-border-dim);
-    box-shadow: var(--shadow-feed);
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-    overflow: hidden;
-    animation: card-rise var(--dur) var(--ease) both;
-    animation-delay: var(--d, 0ms);
+
+        clip-path: polygon(
+            0 0,
+            calc(100% - var(--notch)) 0,
+            100% var(--notch),
+            100% 100%,
+            0 100%
+        );
 }
 
 @keyframes card-rise {
