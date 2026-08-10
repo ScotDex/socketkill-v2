@@ -76,6 +76,10 @@ const corpID = entityType === 'pilot' ? (raw.corporation_id ?? null) : null
 const allianceID = entityType !== 'alliance' ? (raw.alliance_id ?? null) : null
 const ceoID = entityType === 'corp' ? (raw.ceo_id ?? null) : null
 
+const title = entityType === 'pilot'
+    ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
+    : null
+
 const [corpRes, allianceRes, ceoRes] = await Promise.all([
     corpID ? fetchJson(`https://esi.evetech.net/latest/corporations/${corpID}/`) : null,
     allianceID ? fetchJson(`https://esi.evetech.net/latest/alliances/${allianceID}/`) : null,
@@ -90,6 +94,7 @@ const identity = {
     factionID,
     faction: factionID ? (FACTION[factionID] ?? null) : null,
     ceoID,
+    title,
     corpName: corpRes?.ok ? corpRes.data.name : null,
     allianceName: allianceRes?.ok ? allianceRes.data.name : null,
     ceoName: ceoRes?.ok ? ceoRes.data.name : null,
@@ -308,10 +313,13 @@ const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_B
                     <div class="who">
                         <div class="nm truncate">{identity.name}</div>
                         <div class="af">
-                            {identity.corpID
-                                ? <a href={entityHref('corp', identity.corpID)} class="link">{identity.corpName ?? '—'}</a>
-                                : (identity.ticker ? `[${identity.ticker}]` : '')}
-                        </div>
+    {identity.corpID
+        ? <a href={entityHref('corp', identity.corpID)} class="link">{identity.corpName ?? '—'}</a>
+        : (identity.ticker ? `[${identity.ticker}]` : '')}
+    {identity.title && (
+        <span style="color:var(--color-text-faint)"> · {identity.title}</span>
+    )}
+</div>
                         <div class="af">
                             {identity.allianceID
                                 ? <a href={entityHref('alliance', identity.allianceID)} class="link">{identity.allianceName ?? '—'}</a>
