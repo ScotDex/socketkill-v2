@@ -16,6 +16,7 @@ details[open]::details-content {
 .kill-screen,
 .fit-modal {
     --font-body: 'Nunito Sans', sans-serif;
+    --font-mono: 'Fragment Mono', monospace;
     --glow: 0 0 8px color-mix(in srgb, currentColor 40%, transparent);
     --dur: 0.35s;
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
