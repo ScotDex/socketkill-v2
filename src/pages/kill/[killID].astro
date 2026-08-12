@@ -101,7 +101,7 @@ const bgStyle = shipTypeID
 const killTime = kill.killmailTime ? new Date(kill.killmailTime).toUTCString() : '—'
 
 const sec = classifySecurity(kill.system)
-const secShort = kill.system?.security != null ? kill.system.security.toFixed(1) : '?'
+const secShort = sec.display ?? '?'
 
 const totalIsk = parseIsk(kill.totalValue)
 const valueTier =

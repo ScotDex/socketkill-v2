@@ -8,14 +8,20 @@ export function parseIsk(v) {
     return n * mult
 }
 
+const SEC_RAMP = [
+    '#F00000', '#D73000', '#F04800', '#F06000', '#D77700',
+    '#EFEF00', '#8FEF2F', '#00F000', '#00EF47', '#48F0C0', '#2FEFEF'
+]
+
 export function classifySecurity(system) {
     if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
     if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
     if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', color: '#b07ce8' }
     const s = system.security
-    if (s >= 0.5) return { label: `HS ${s.toFixed(1)}`, color: 'var(--color-neon-green)' }
-    if (s > 0.0) return { label: `LS ${s.toFixed(1)}`, color: 'var(--color-whale-accent)' }
-    return { label: `NULL ${s.toFixed(1)}`, color: 'var(--color-isk-billion)' }
+    const tier = Math.min(10, Math.max(0, Math.round(s * 10)))
+    const display = (tier / 10).toFixed(1)
+    const band = tier >= 5 ? 'HS' : tier > 0 ? 'LS' : 'NULL'
+    return { label: `${band} ${display}`, color: SEC_RAMP[tier], display }
 }
 
 const EFT_FITTED = ['low', 'mid', 'high', 'rig', 'subsystem', 'service']
