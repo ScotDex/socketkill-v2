@@ -30,7 +30,7 @@ function initCopyButton() {
     })
 }
 
-const PAGE = 50
+const PAGE = 30
 
 function initFeedTabs() {
     const tabs = document.getElementById('f-tabs')

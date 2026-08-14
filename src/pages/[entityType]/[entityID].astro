@@ -173,7 +173,7 @@ const dayViews = byDay.map(bucket => ({
 <Base
     title={`${pageTitle} | Socketkill.com`}
     ogTitle={pageTitle}
-    ogDescription={`Recent kills and losses for ${identity.name} — last ${windowDays} days, live from SocketKill.`}
+    ogDescription={`${identity.name} — ${killCount} kills, ${lossCount} losses, ${formatIsk(iskDestroyed)} destroyed in the last ${windowDays} days.`}
     ogUrl={canonicalUrl}
     ogImage={`https://ws.socketkill.com/og/entity/${entityType}/${id}`}
 >
@@ -360,7 +360,7 @@ const dayViews = byDay.map(bucket => ({
                     ) : (
                         <>
                             <p>{feedOnline ? 'Nothing to report here for the past 30 days...' : 'activity uplink unreachable'}</p>
-                            <p>{feedOnline ? 'inactive, docked, or flying safe' : 'retry shortly'}</p>
+                            <p>{feedOnline ? 'Still to learn how to undock' : 'retry when powerpoint complete'}</p>
                             <p>identity confirmed via esi</p>
                         </>
                     )}
@@ -412,7 +412,7 @@ const dayViews = byDay.map(bucket => ({
                 <div class="dossier-actions">
                     <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="act act-primary">ZKILLBOARD</a>
                     <a href={`https://evewho.com/${conf.evewhoPath}/${id}`} target="_blank" rel="noopener noreferrer" class="act">EVEWHO</a>
-                    <button type="button" id="copy-btn" data-url={canonicalUrl} class="act">COPY LINK</button>
+                    <button type="button" id="copy-btn" data-url={canonicalUrl} class="act">COPY PROFILE</button>
                 </div>
 
                 <div class="card-f" style={`color:${status.color}; --dot-c:${status.color}`}>
@@ -446,7 +446,7 @@ const dayViews = byDay.map(bucket => ({
                         &gt; {feedOnline ? `${windowDays}-DAY WINDOW CLEAR` : 'ACTIVITY UNREACHABLE'} &lt;
                     </span>
                     <p class="font-mono text-[11px] tracking-wider text-[var(--color-text-faint)] mt-2">
-                        {feedOnline ? 'nothing seen — full history on zkillboard' : 'identity confirmed, feed unavailable — retry shortly'}
+                        {feedOnline ? 'nothing seen — full history on eve-kill/zkillboard' : 'identity confirmed, feed unavailable — retry shortly'}
                     </p>
                 </div>
             ) : (
@@ -458,13 +458,13 @@ const dayViews = byDay.map(bucket => ({
                                 <span>{bucket.kills} kills · {bucket.losses} losses</span>
                             </div>
                             {bucket.rows.map(r => (
-                                <a href={`/kill/${r.killID}`} class="fr px-3 py-1.5"
+                                <a href={`/kill/${r.killID}`} class="fr px-3 py-1"
                                    data-kind={r.isLoss ? 'loss' : 'kill'}
                                    style={`--accent:${r.accent}`}>
                                     <span class="font-mono text-[11px]" style={`color:${r.accent}`}>{r.isLoss ? '✕' : '✓'}</span>
                                     <span class="font-mono text-xs tabular-nums text-[var(--color-text-faint)]">{r.hhmm}</span>
                                     <img src={`https://images.evetech.net/types/${r.shipTypeID}/render?size=64`}
-                                         class="w-[64px] h-[64px] object-cover bg-black/50"
+                                         class="w-[26px] h-[26px] object-cover bg-black/50"
                                          width="64" height="64" alt="" loading="lazy" decoding="async" />
                                     <span class="text-sm text-white truncate">{r.shipName}</span>
                                     <span class="fr-hide text-xs truncate">
