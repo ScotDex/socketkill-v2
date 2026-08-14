@@ -30,38 +30,62 @@ function initCopyButton() {
     })
 }
 
+const PAGE = 50
+
 function initFeedTabs() {
     const tabs = document.getElementById('f-tabs')
     const feed = document.getElementById('feed')
-    if (!tabs || !feed) return
-
+    if (!feed) return
     const days = [...feed.querySelectorAll('[data-day]')]
     const empty = document.getElementById('feed-empty')
+    const moreWrap = document.getElementById('feed-more-wrap')
+    const moreBtn = document.getElementById('feed-more')
+    let mode = 'all'
+    let limit = PAGE
+    const apply = () => {
+        let matched = 0     
+        let shown = 0
 
-    const apply = (mode) => {
-        let anyVisible = false
         for (const day of days) {
             let dayVisible = false
             for (const row of day.querySelectorAll('[data-kind]')) {
-                const show = mode === 'all' || row.dataset.kind === mode
+                const matches = mode === 'all' || row.dataset.kind === mode
+                if (matches) matched++
+
+                const show = matches && shown < limit
                 row.hidden = !show
-                if (show) dayVisible = true
+                if (show) { shown++; dayVisible = true }
             }
             day.hidden = !dayVisible
-            if (dayVisible) anyVisible = true
         }
-        if (empty) empty.hidden = anyVisible
+
+        if (empty) empty.hidden = shown > 0
+        if (moreWrap) moreWrap.hidden = matched <= shown
+        if (moreBtn) moreBtn.textContent = `LOAD MORE — ${shown} OF ${matched}`
     }
 
-    tabs.addEventListener('click', (e) => {
-        const active = e.target.closest('.tab')
-        if (!active) return
-        for (const t of tabs.querySelectorAll('.tab')) {
-            t.classList.toggle('is-active', t === active)
-            t.setAttribute('aria-selected', t === active ? 'true' : 'false')
-        }
-        apply(active.dataset.f)
-    })
+    if (tabs) {
+        tabs.addEventListener('click', (e) => {
+            const active = e.target.closest('.tab')
+            if (!active) return
+            for (const t of tabs.querySelectorAll('.tab')) {
+                t.classList.toggle('is-active', t === active)
+                t.setAttribute('aria-selected', t === active ? 'true' : 'false')
+            }
+            mode = active.dataset.f
+            limit = PAGE       
+            apply()
+        })
+    }
+
+    if (moreBtn) {
+        moreBtn.addEventListener('click', () => {
+            limit += PAGE
+            apply()
+        })
+    }
+
+    apply()
 }
 
 function init() {
