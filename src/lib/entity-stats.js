@@ -22,9 +22,6 @@ const inBand = (h, b) => b.start < b.end
     ? (h >= b.start && h < b.end)
     : (h >= b.start || h < b.end)
 
-/* Takes the raw event list from /api/entity and returns every derived
-   statistic the page renders. Pure — no fetching, no Astro, no DOM.
-   `now` is injectable so the output is testable against a fixture. */
 export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) {
     const halfWindowTs = now - (windowDays / 2) * 86400000
 
@@ -57,7 +54,6 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
             bump(killedHulls, e.shipTypeID)
         }
 
-        /* Epoch ms → UTC hour arithmetically; no Date object needed. */
         const t = Date.parse(e.time)
         if (!Number.isNaN(t)) {
             const h = Math.floor(t / 3600000) % 24
@@ -135,9 +131,6 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
 
     const priorCount = total - recentCount
 
-    /* Direction and text are separate so the template can colour the
-       arrow independently. The glyph is presentation, so it lives in
-       the page, not here. */
     const trendDir = priorCount === 0
         ? null
         : (recentCount >= priorCount ? 'up' : 'down')

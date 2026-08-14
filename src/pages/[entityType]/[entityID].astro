@@ -81,6 +81,8 @@ const identity = {
     securityStatus: raw.security_status ?? null,
     memberCount: raw.member_count ?? null,
     warEligible: raw.war_eligible ?? null,
+    taxRate: raw.tax_rates?.isk ?? null,
+    friendlyFire: raw.friendly_fire ?? null,
 }
 
 const feedOnline = activityRes.ok
@@ -189,7 +191,7 @@ const dayViews = byDay.map(bucket => ({
     <main class="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-4 p-4 max-w-[84rem] mx-auto relative z-10 items-start">
 
         <aside class="lg:sticky lg:top-4">
-            <div class="card" style="--card-c: var(--dossier-c); --d: 0ms">
+            <div class="card" style={`--card-c: ${identity.cardTint}; --d: 0ms`}>
                 <div class="card-h flex justify-between items-center">
                     <span>{conf.label.toLowerCase()}</span>
                     <span class="tag">{windowDays}-DAY WINDOW</span>
@@ -269,11 +271,24 @@ const dayViews = byDay.map(bucket => ({
                                 <span class="v">{identity.memberCount?.toLocaleString() ?? '—'}</span>
                             </div>
                             <div class="row">
+                                <span class="k">TAX RATE</SPAN>
+                                <span class="v">{identity.taxRate != null ? `${identity.taxRate}%` : '—'}</span>
+                                </div>
+                            <div class="row">
                                 <span class="k">WAR ELIGIBLE</span>
                                 <span class="v" style={`color:${identity.warEligible ? 'var(--color-whale-accent)' : 'var(--color-text-faint)'}`}>
                                     {identity.warEligible ? 'YES' : 'NO'}
                                 </span>
                             </div>
+                            cardTint: cardTint(raw.palette),
+                            {identity.friendlyFire && (
+                                <div class="row">
+                                    <span class="k">FRIENDLY FIRE</span>
+                                    <span class="v" style={`color:${identity.friendlyFire === 'illegal' ? 'var(--color-text-faint)' : 'var(--color-whale-accent)'}`}>
+                                        {identity.friendlyFire.toUpperCase()}
+                                    </span>
+                                </div>
+                            )}
                             {identity.ceoName && (
                                 <div class="row">
                                     <span class="k">CEO</span>

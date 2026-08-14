@@ -31,9 +31,6 @@ export const FACTION = {
     500011: { name: 'Angel Cartel',        short: 'ANGELS',   c: '#b07ce8' },
 }
 
-/* Keyed by the `space` string the backend emits — not the same thing
-   as helpers.js classifySecurity(), which reads a raw 0.0–1.0 float
-   off a system object. */
 export const SPACE = {
     high:    { short: 'HS',   label: 'highsec',  c: 'var(--color-neon-green)' },
     low:     { short: 'LS',   label: 'lowsec',   c: 'var(--color-whale-accent)' },

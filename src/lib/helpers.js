@@ -24,6 +24,14 @@ export function classifySecurity(system) {
     return { label: `${band} ${display}`, color: SEC_RAMP[tier], display }
 }
 
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
+
+function cardTint(palette) {
+    const c = palette?.main_color
+    if (typeof c !== 'string' || !HEX.test(c)) return 'var(--dossier-c)'
+    return `color-mix(in srgb, var(--dossier-c) 75%, ${c} 25%)`
+}
+
 const EFT_FITTED = ['low', 'mid', 'high', 'rig', 'subsystem', 'service']
 const EFT_LOOSE = ['drone', 'fighter', 'cargo']
 const MAX_SLOTS = 8
