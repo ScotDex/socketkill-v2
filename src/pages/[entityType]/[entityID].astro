@@ -30,8 +30,10 @@ async function fetchJson(url, { ms = 4000, headers } = {}) {
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
 function cardTint(palette) {
-    const c = palette?.main_color
-    if (typeof c !== 'string' || !HEX.test(c)) return 'var(--dossier-c)'
+    if (!palette) return 'var(--dossier-c)'
+    const c = [palette.main_color, palette.secondary_color, palette.tertiary_color]
+        .find(v => typeof v === 'string' && HEX.test(v))
+    if (!c) return 'var(--dossier-c)'
     return `color-mix(in srgb, var(--dossier-c) 75%, ${c} 25%)`
 }
 const isAlliance = entityType === 'alliance'
