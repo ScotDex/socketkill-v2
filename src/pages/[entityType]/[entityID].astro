@@ -83,6 +83,7 @@ const identity = {
     warEligible: raw.war_eligible ?? null,
     taxRate: raw.tax_rates?.isk ?? null,
     friendlyFire: raw.friendly_fire ?? null,
+    cardTint: cardTint(raw.palette),
 }
 
 const feedOnline = activityRes.ok
@@ -90,6 +91,14 @@ const events = feedOnline ? (activityRes.data.events ?? []) : []
 const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
 
 const now = Date.now()
+
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
+
+function cardTint(palette) {
+    const c = palette?.main_color
+    if (typeof c !== 'string' || !HEX.test(c)) return 'var(--dossier-c)'
+    return `color-mix(in srgb, var(--dossier-c) 75%, ${c} 25%)`
+}
 
 const {
     total, killCount, lossCount, iskDestroyed, iskLost,
@@ -131,6 +140,7 @@ function valueColor(v) {
 const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
 const pageTitle = `${identity.name} — ${conf.label.charAt(0)}${conf.label.slice(1).toLowerCase()} Activity`
 const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
+
 
 const KILLS_BG_COUNT = 24
 const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
@@ -271,7 +281,7 @@ const dayViews = byDay.map(bucket => ({
                                 <span class="v">{identity.memberCount?.toLocaleString() ?? '—'}</span>
                             </div>
                             <div class="row">
-                                <span class="k">TAX RATE</SPAN>
+                                <span class="k">TAX RATE</span>
                                 <span class="v">{identity.taxRate != null ? `${identity.taxRate}%` : '—'}</span>
                                 </div>
                             <div class="row">
@@ -280,7 +290,7 @@ const dayViews = byDay.map(bucket => ({
                                     {identity.warEligible ? 'YES' : 'NO'}
                                 </span>
                             </div>
-                            cardTint: cardTint(raw.palette),
+                            
                             {identity.friendlyFire && (
                                 <div class="row">
                                     <span class="k">FRIENDLY FIRE</span>
