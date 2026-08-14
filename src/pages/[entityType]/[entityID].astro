@@ -35,7 +35,7 @@ const [identityRes, activityRes, memberCorpsRes] = await Promise.all([
     fetchJson(conf.esiPath(id), { headers: ESI_HEADERS }),
     fetchJson(conf.esiPath(id)),
     fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
-    isAlliance ? fetchJson(`https://esi.evetech.net/latest/alliances/${id}/corporations/`) : null,
+    isAlliance ? fetchJson(`https://esi.evetech.net/alliances/${id}/corporations/`) : null,
 ])
 
 if (!identityRes.ok) {
@@ -57,10 +57,10 @@ const corpTitle = isPilot
 
 /* Wave 2 — name lookups that genuinely depend on wave 1's IDs. */
 const [corpRes, allianceRes, ceoRes, executorRes] = await Promise.all([
-    corpID ? fetchJson(`https://esi.evetech.net/latest/corporations/${corpID}/`) : null,
-    allianceID ? fetchJson(`https://esi.evetech.net/latest/alliances/${allianceID}/`) : null,
-    ceoID ? fetchJson(`https://esi.evetech.net/latest/characters/${ceoID}/`) : null,
-    executorID ? fetchJson(`https://esi.evetech.net/latest/corporations/${executorID}/`) : null,
+    corpID ? fetchJson(`https://esi.evetech.net/corporations/${corpID}/`) : null,
+    allianceID ? fetchJson(`https://esi.evetech.net/alliances/${allianceID}/`) : null,
+    ceoID ? fetchJson(`https://esi.evetech.net/characters/${ceoID}/`) : null,
+    executorID ? fetchJson(`https://esi.evetech.net/corporations/${executorID}/`) : null,
 ])
 
 const identity = {
