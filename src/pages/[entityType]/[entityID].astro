@@ -34,7 +34,7 @@ function cardTint(palette) {
     const c = [palette.main_color, palette.secondary_color, palette.tertiary_color]
         .find(v => typeof v === 'string' && HEX.test(v))
     if (!c) return 'var(--dossier-c)'
-    return `color-mix(in srgb, var(--dossier-c) 75%, ${c} 25%)`
+    return `color-mix(in srgb, #6e7681 75%, ${c} 25%)`
 }
 const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
@@ -62,7 +62,6 @@ const corpTitle = isPilot
     ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
     : null
 
-/* Wave 2 — name lookups that genuinely depend on wave 1's IDs. */
 const [corpRes, allianceRes, ceoRes, executorRes] = await Promise.all([
     corpID ? fetchJson(`https://esi.evetech.net/corporations/${corpID}/`) : null,
     allianceID ? fetchJson(`https://esi.evetech.net/alliances/${allianceID}/`) : null,
@@ -203,7 +202,7 @@ const dayViews = byDay.map(bucket => ({
     <main class="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-4 p-4 max-w-[84rem] mx-auto relative z-10 items-start">
 
         <aside class="lg:sticky lg:top-4">
-            <div class="card" style={`--card-c: ${identity.cardTint}; --d: 0ms`}>
+           <div class="card" style={`--card-c: ${identity.cardTint}; --dossier-c: ${identity.cardTint}; --d: 0ms`}>
                 <div class="card-h flex justify-between items-center">
                     <span>{conf.label.toLowerCase()}</span>
                     <span class="tag">{windowDays}-DAY WINDOW</span>
@@ -459,13 +458,13 @@ const dayViews = byDay.map(bucket => ({
                                 <span>{bucket.kills} kills · {bucket.losses} losses</span>
                             </div>
                             {bucket.rows.map(r => (
-                                <a href={`/kill/${r.killID}`} class="fr px-3 py-1"
+                                <a href={`/kill/${r.killID}`} class="fr px-3 py-1.5"
                                    data-kind={r.isLoss ? 'loss' : 'kill'}
                                    style={`--accent:${r.accent}`}>
                                     <span class="font-mono text-[11px]" style={`color:${r.accent}`}>{r.isLoss ? '✕' : '✓'}</span>
                                     <span class="font-mono text-xs tabular-nums text-[var(--color-text-faint)]">{r.hhmm}</span>
                                     <img src={`https://images.evetech.net/types/${r.shipTypeID}/render?size=64`}
-                                         class="w-[26px] h-[26px] object-cover bg-black/50"
+                                         class="w-[40px] h-[40px] object-cover bg-black/50"
                                          width="64" height="64" alt="" loading="lazy" decoding="async" />
                                     <span class="text-sm text-white truncate">{r.shipName}</span>
                                     <span class="fr-hide text-xs truncate">
