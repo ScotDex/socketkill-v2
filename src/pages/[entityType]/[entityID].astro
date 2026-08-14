@@ -33,7 +33,6 @@ const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
 const [identityRes, activityRes, memberCorpsRes] = await Promise.all([
     fetchJson(conf.esiPath(id), { headers: ESI_HEADERS }),
-    fetchJson(conf.esiPath(id)),
     fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
     isAlliance ? fetchJson(`https://esi.evetech.net/alliances/${id}/corporations/`) : null,
 ])
