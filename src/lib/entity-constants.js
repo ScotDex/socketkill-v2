@@ -1,21 +1,21 @@
 export const ENTITY = {
     pilot: {
         label: 'PILOT',
-        esiPath: id => `https://esi.evetech.net/latest/characters/${id}/`,
+        esiPath: id => `https://esi.evetech.net/characters/${id}/`,
         image: id => `https://images.evetech.net/characters/${id}/portrait?size=128`,
         zkillType: 'character',
         evewhoPath: 'character',
     },
     corp: {
         label: 'CORPORATION',
-        esiPath: id => `https://esi.evetech.net/latest/corporations/${id}/`,
+        esiPath: id => `https://esi.evetech.net/corporations/${id}/`,
         image: id => `https://images.evetech.net/corporations/${id}/logo?size=128`,
         zkillType: 'corp',
         evewhoPath: 'corporation',
     },
     alliance: {
         label: 'ALLIANCE',
-        esiPath: id => `https://esi.evetech.net/latest/alliances/${id}/`,
+        esiPath: id => `https://esi.evetech.net/alliances/${id}/`,
         image: id => `https://images.evetech.net/alliances/${id}/logo?size=128`,
         zkillType: 'alliance',
         evewhoPath: 'alliance',
