@@ -38,7 +38,7 @@ function initFeedTabs() {
     if (!feed) return
     const days = [...feed.querySelectorAll('[data-day]')]
     const empty = document.getElementById('feed-empty')
-    const moreWrap = document.getElementById('feed-more-wrap')
+    
     const moreBtn = document.getElementById('feed-more')
     let mode = 'all'
     let limit = PAGE
@@ -60,8 +60,10 @@ function initFeedTabs() {
         }
 
         if (empty) empty.hidden = shown > 0
-        if (moreWrap) moreWrap.hidden = matched <= shown
-        if (moreBtn) moreBtn.textContent = `LOAD MORE — ${shown} OF ${matched}`
+        if (moreBtn) {
+            moreBtn.hidden = matched <= shown
+            moreBtn.textContent = `LOAD MORE — ${shown} OF ${matched}`
+        }
     }
 
     if (tabs) {
