@@ -13,7 +13,7 @@ const id = parseInt(entityID)
 if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
     return new Response('Not found', { status: 404 })
 }
-
+const ESI_HEADERS = { 'X-Compatibility-Date': '2026-08-14' }
 async function fetchJson(url, { ms = 4000, headers } = {}) {
     const ctrl = new AbortController()
     const timer = setTimeout(() => ctrl.abort(), ms)
@@ -32,6 +32,7 @@ const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
 const [identityRes, activityRes, memberCorpsRes] = await Promise.all([
+    fetchJson(conf.esiPath(id), { headers: ESI_HEADERS }),
     fetchJson(conf.esiPath(id)),
     fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
     isAlliance ? fetchJson(`https://esi.evetech.net/latest/alliances/${id}/corporations/`) : null,
@@ -51,7 +52,7 @@ const executorID = isAlliance ? (raw.executor_corporation_id ?? null) : null
 const factionID = raw.faction_id ?? null
 
 const corpTitle = isPilot
-    ? ((raw.title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
+    ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
     : null
 
 /* Wave 2 — name lookups that genuinely depend on wave 1's IDs. */
