@@ -27,7 +27,13 @@ async function fetchJson(url, { ms = 4000, headers } = {}) {
         clearTimeout(timer)
     }
 }
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
+function cardTint(palette) {
+    const c = palette?.main_color
+    if (typeof c !== 'string' || !HEX.test(c)) return 'var(--dossier-c)'
+    return `color-mix(in srgb, var(--dossier-c) 75%, ${c} 25%)`
+}
 const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
@@ -92,13 +98,7 @@ const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
 
 const now = Date.now()
 
-const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
-function cardTint(palette) {
-    const c = palette?.main_color
-    if (typeof c !== 'string' || !HEX.test(c)) return 'var(--dossier-c)'
-    return `color-mix(in srgb, var(--dossier-c) 75%, ${c} 25%)`
-}
 
 const {
     total, killCount, lossCount, iskDestroyed, iskLost,
