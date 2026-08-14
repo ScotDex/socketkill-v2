@@ -1,4 +1,4 @@
-import { TZ_BANDS } from './entity-constants.js'
+import { TZ_BANDS, normaliseSpace } from './entity-constants.js'
 
 const PEAK_MIN_SAMPLE = 25
 
@@ -66,7 +66,7 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
             if (t >= halfWindowTs) recentCount++
         }
 
-        bump(spaceCount, e.space)
+        bump(spaceCount, normaliseSpace(e.space))
         if (e.systemName != null) {
             bump(systemCount, e.systemName)
             if (!systemRegion.has(e.systemName)) {
@@ -164,7 +164,7 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
         peak, peakLabel,
         tzLabel, spaceTally, systemCount,
         topSystem, topKilledHull,
-        trend, profile,
+        trend, trendText, profile,
         lastEvent, status,
         byDay,
     }

@@ -4,7 +4,7 @@ import { externalLink } from '../../lib/entity-links.js'
 import { formatIsk } from '../../lib/helpers.js'
 import '../kill/style.css'
 import './style.css'
-import { ENTITY, FACTION, spaceOf } from '../../lib/entity-constants.js'
+import { ENTITY, FACTION, spaceOf, normaliseSpace } from '../../lib/entity-constants.js'
 import { analyseEvents, pad2 } from '../../lib/entity-stats.js'
 
 const { entityType, entityID } = Astro.params
@@ -95,7 +95,7 @@ const {
     peak, peakLabel,
     tzLabel, spaceTally, systemCount,
     topSystem, topKilledHull,
-    trend, profile,
+    trendDir, trendText, profile,
     lastEvent, status,
     byDay,
 } = analyseEvents(events, windowDays, feedOnline, now)
@@ -137,7 +137,7 @@ const dayViews = byDay.map(bucket => ({
     kills: bucket.kills,
     losses: bucket.losses,
     rows: bucket.rows.map(e => {
-        const sp = spaceOf(e.space)
+        const sp = spaceOf(normaliseSpace(e.space))
         return {
             killID: e.killID,
             isLoss: e.isLoss,
@@ -310,7 +310,10 @@ const dayViews = byDay.map(bucket => ({
                     {total > 0 ? (
                         <>
                             <p><span>killmails</span><b>{total} — {killCount} kills, {lossCount} losses</b></p>
-                            <p><span>isk</span><b>{formatIsk(iskDestroyed)} killed, {formatIsk(iskLost)} lost</b></p>
+                            <p><span>isk</span><b>
+                                <span style="color:var(--color-neon-green)">{formatIsk(iskDestroyed)}</span> killed,
+                                <span style="color:var(--color-isk-billion)">{formatIsk(iskLost)}</span> lost
+                            </b></p>
                             {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
                             {topSystem && (
                                 <p><span>most seen</span><b>{topSystem.name} ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</b></p>
@@ -319,7 +322,14 @@ const dayViews = byDay.map(bucket => ({
                                 <p><span>most active</span><b>{spaceOf(spaceTally[0][0]).label} {Math.round(spaceTally[0][1] / total * 100)}%</b></p>
                             )}
                             <p><span>gang size</span><b>{profile}</b></p>
-                            <p><span>trend</span><b>{trend}</b></p>
+                            <p><span>trend</span><b>
+                                {trendDir && (
+                                    <span style={`color:${trendDir === 'up' ? 'var(--color-neon-green)' : 'var(--color-isk-billion)'}`}>
+                                        {trendDir === 'up' ? '▲' : '▼'}
+                                    </span>
+                                )}
+                                {trendDir ? ' ' : ''}{trendText}
+                            </b></p>
                         </>
                     ) : (
                         <>

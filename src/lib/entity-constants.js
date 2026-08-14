@@ -50,3 +50,5 @@ export const TZ_BANDS = [
     { label: 'EUTZ', start: 14, end: 22 },
     { label: 'USTZ', start: 22, end: 6  },
 ]
+
+export const normaliseSpace = s => (s === 'pochven' ? 'null' : s)
