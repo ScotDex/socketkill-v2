@@ -134,9 +134,17 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
     const topKilledHull = topEntry(killedHulls)
 
     const priorCount = total - recentCount
-    const trend = priorCount === 0
+
+    /* Direction and text are separate so the template can colour the
+       arrow independently. The glyph is presentation, so it lives in
+       the page, not here. */
+    const trendDir = priorCount === 0
+        ? null
+        : (recentCount >= priorCount ? 'up' : 'down')
+
+    const trendText = priorCount === 0
         ? (recentCount ? 'new contact' : '—')
-        : `${recentCount >= priorCount ? '▲' : '▼'} ${Math.abs(Math.round((recentCount - priorCount) / priorCount * 100))}% vs prior ${Math.round(windowDays / 2)}d`
+        : `${Math.abs(Math.round((recentCount - priorCount) / priorCount * 100))}% vs prior ${Math.round(windowDays / 2)}d`
 
     let medGang = 0
     if (gangSizes.length) {
@@ -164,7 +172,7 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
         peak, peakLabel,
         tzLabel, spaceTally, systemCount,
         topSystem, topKilledHull,
-        trend, trendText, profile,
+        trendDir, trendText, profile,
         lastEvent, status,
         byDay,
     }
