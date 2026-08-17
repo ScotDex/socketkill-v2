@@ -4,14 +4,11 @@
   import { cubicOut } from 'svelte/easing';
   import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js';
   import { formatIsk } from '../../lib/filter-logic.js';
-
   let data = $state(null);
   let error = $state(null);
   let loading = $state(true);
   let dictionaryLoaded = $state(false);
-
   let initialized = $derived(!!data && $filterSource && dictionaryLoaded);
-
   async function fetchMetrics() {
     try {
       const res = await fetch('https://ws.socketkill.com/api/top10');

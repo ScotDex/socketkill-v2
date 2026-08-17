@@ -1,14 +1,10 @@
 <script>
     import { formatIsk } from '../../lib/filter-logic.js'
-
     let { kill } = $props()
-
     const WHALE_THRESHOLD = 10_000_000_000
     const BILLION_THRESHOLD = 1_000_000_000
-
     const isWhale = $derived(kill.val >= WHALE_THRESHOLD)
     const isBillion = $derived(kill.val >= BILLION_THRESHOLD)
-
     function getVictimDisplay(k) {
         return k.victimName === k.corpName ? k.victimName : `${k.victimName} of ${k.corpName}`
     }
@@ -37,11 +33,9 @@
             </div>
         </a>
     </div>
-
     <div class="text-white/25 font-mono text-[10px] tracking-wider mr-3">
         {kill.attackerCount} attackers
     </div>
-
     <div class="flex items-center">
         <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
             <img src={kill.corpImageUrl} alt="Corp" class="w-[60px] h-[60px]" loading="lazy" />

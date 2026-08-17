@@ -7,7 +7,6 @@
         maxItems = Infinity,
         allowFreeText = false
     } = $props()
-
     let input = $state('')
     let selectedIndex = $state(-1)
 
@@ -19,7 +18,6 @@
                 .sort()
                 .slice(0, 6)
     )
-
     const showSuggestions = $derived(filtered.length > 0)
     const atMax = $derived(items.length >= maxItems)
 
@@ -29,11 +27,9 @@
         input = ''
         selectedIndex = -1
     }
-
     function remove(value) {
         items = items.filter(i => i !== value)
     }
-
     function handleKeydown(e) {
         if (e.key === 'Enter') {
             e.preventDefault()
@@ -63,7 +59,6 @@
     <label class="facet-lbl">
         {label}
     </label>
-
     {#if items.length > 0}
         <div class="flex flex-wrap gap-1">
             {#each items as item (item)}
@@ -78,7 +73,6 @@
             {/each}
         </div>
     {/if}
-
     <div class="relative">
         <input
             type="text"
@@ -88,7 +82,6 @@
             onkeydown={handleKeydown}
             disabled={atMax}
         />
-
         {#if showSuggestions}
             <div class="absolute top-full left-0 right-0 bg-black/95 border border-[var(--color-border-mid)] border-t-0 max-h-60 overflow-y-auto z-50 shadow-lg">
                 {#each filtered as suggestion, i}

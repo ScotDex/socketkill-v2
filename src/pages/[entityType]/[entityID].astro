@@ -92,15 +92,10 @@ const identity = {
     friendlyFire: raw.friendly_fire ?? null,
     cardTint: cardTint(raw.palette),
 }
-
 const feedOnline = activityRes.ok
 const events = feedOnline ? (activityRes.data.events ?? []) : []
 const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
-
 const now = Date.now()
-
-
-
 const {
     total, killCount, lossCount, iskDestroyed, iskLost,
     histK, histL, histMax, hourTotals,
@@ -111,12 +106,8 @@ const {
     lastEvent, status,
     byDay,
 } = analyseEvents(events, windowDays, feedOnline, now)
-
-
 Astro.response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
-
 const entityHref = (kind, entId) => `/${kind}/${entId}`
-
 function relativeTime(iso) {
     const m = Math.floor((now - Date.parse(iso)) / 60000)
     if (m < 1) return 'JUST NOW'

@@ -1,14 +1,10 @@
 import { TZ_BANDS, normaliseSpace } from './entity-constants.js'
-
 const PEAK_MIN_SAMPLE = 25
-
 export const pad2 = n => String(n).padStart(2, '0')
-
 function bump(map, key) {
     if (key == null) return
     map.set(key, (map.get(key) || 0) + 1)
 }
-
 function topEntry(map) {
     let bestKey = null
     let bestN = 0
@@ -17,20 +13,16 @@ function topEntry(map) {
     }
     return bestKey == null ? null : [bestKey, bestN]
 }
-
 const inBand = (h, b) => b.start < b.end
     ? (h >= b.start && h < b.end)
     : (h >= b.start || h < b.end)
-
 export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) {
     const halfWindowTs = now - (windowDays / 2) * 86400000
-
     let killCount = 0
     let lossCount = 0
     let iskDestroyed = 0
     let iskLost = 0
     let recentCount = 0
-
     const histK = new Array(24).fill(0)
     const histL = new Array(24).fill(0)
     const spaceCount = new Map()
@@ -114,9 +106,7 @@ const tzLabel = !total || !tzCounts[0].n ? null
     : tzCounts[0].n >= tzCounts[1].n * 1.5
         ? `${tzCounts[0].label} (${tzTopPct}%)`
         : `mixed — ${tzCounts[0].label}/${tzCounts[1].label}`
-
     const spaceTally = [...spaceCount.entries()].sort((a, b) => b[1] - a[1])
-
     const topSystemEntry = topEntry(systemCount)
     const topSystem = topSystemEntry
         ? {
@@ -126,19 +116,14 @@ const tzLabel = !total || !tzCounts[0].n ? null
             region: systemRegion.get(topSystemEntry[0]) ?? null,
         }
         : null
-
     const topKilledHull = topEntry(killedHulls)
-
     const priorCount = total - recentCount
-
     const trendDir = priorCount === 0
         ? null
         : (recentCount >= priorCount ? 'up' : 'down')
-
     const trendText = priorCount === 0
         ? (recentCount ? 'new contact' : '—')
         : `${Math.abs(Math.round((recentCount - priorCount) / priorCount * 100))}% vs prior ${Math.round(windowDays / 2)}d`
-
     let medGang = 0
     if (gangSizes.length) {
         gangSizes.sort((a, b) => a - b)
@@ -149,7 +134,6 @@ const tzLabel = !total || !tzCounts[0].n ? null
         : medGang <= 10 ? `small gang (${medGang})`
         : medGang <= 50 ? `small fleet (${medGang})`
         : `large fleet (${medGang})`
-
     const lastEvent = events[0] ?? null
     const minsSince = lastEvent ? (now - Date.parse(lastEvent.time)) / 60000 : Infinity
     const status = !feedOnline ? { text: 'CONNECTION OFFLINE', color: 'var(--color-terminal-blue)', live: false }

@@ -7,18 +7,15 @@
     const tokens = $derived.by(() => {
         const current = displayString
         const prev = previousString
-
         const result = []
         const currentLen = current.length
         const prevLen = prev.length
-
         for (let i = 0; i < currentLen; i++) {
             const char = current[i]
             const isDigit = /\d/.test(char)
             const posFromRight = currentLen - 1 - i
             const prevChar = posFromRight < prevLen ? prev[prevLen - 1 - posFromRight] : null
             const changed = char !== prevChar
-
             result.push({
                 char,
                 isDigit,
@@ -35,7 +32,6 @@
     setTimeout(() => { previousString = settled }, 300)
 })
 </script>
-
 <span class="phosphor-counter">
     {#each tokens as token (token.key)}
         {#if token.changed}

@@ -19,7 +19,7 @@
     { label: 'LS',   value: 'low',     color: 'var(--color-whale-accent)' },
     { label: 'NULL', value: 'null',    color: 'var(--color-isk-billion)' },
     { label: 'WH',   value: 'wh',      color: 'var(--color-terminal-blue)' },
-    { label: 'POCH', value: 'pochven', color: '#b07ce8' }
+    { label: 'POCH', value: 'pochven', color: 'var(--color-isk-billion)' }
   ]
 
   const VALUE_PRESETS = [

@@ -1,6 +1,5 @@
 <script>
     import { Tween } from 'svelte/motion'
-
     const bootLines = [
         '> INITIALIZING GRID MONITOR...',
         '> CONNECTING TO DATASTREAM...',
@@ -9,16 +8,12 @@
         '> AWAITING DATA STREAM'
     ]
     const fullText = bootLines.join('\n')
-
     const chars = new Tween(0, { duration: fullText.length * 40 })
     chars.set(fullText.length)
-
     const shown = $derived(fullText.slice(0, Math.floor(chars.current)))
     const done = $derived(chars.current >= fullText.length)
-
     const skip = () => chars.set(fullText.length, { duration: 0 })
 </script>
-
 <svelte:window onkeydown={skip} />
 
 <div class="boot-sequence" onclick={skip}>

@@ -4,9 +4,7 @@
     import { onMount } from 'svelte'
     import { killCount, serverStatus, iskDestroyed, npcKills } from '../../lib/stats-store.js'
     import { formatIsk } from '../../lib/filter-logic.js'
-
     const numberFormatter = (n) => n.toLocaleString()
-
     const tqFormatter = (status) => {
         if (status.active === false) return 'OFFLINE'
         if (status.active === true) return status.count.toLocaleString()
@@ -58,7 +56,7 @@
             <PhosphorCounter value={$iskDestroyed} formatter={formatIsk} />
         </span>
         <span>|</span>
-        <span>NPC_KILLS/HR</span>
+        <span>NPC_KILLS PER HR</span>
         <span class="text-[#ffc107] font-bold text-sm [text-shadow:0_0_5px_rgba(255,193,7,0.3)]">
             <PhosphorCounter value={$npcKills} formatter={npcFormatter} />
         </span>
