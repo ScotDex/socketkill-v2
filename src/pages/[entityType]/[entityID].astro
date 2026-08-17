@@ -335,11 +335,10 @@ const dayViews = byDay.map(bucket => ({
                 <div class="assess px-3 pb-2">
                     {total > 0 ? (
                         <>
-                            <p><span>kills</span><b>
-    {killCount} <span style="color:var(--color-neon-green)">{formatIsk(iskDestroyed)}</span>
-</b></p>
-<p><span>losses</span><b>
-    {lossCount} <span style="color:var(--color-isk-billion)">{formatIsk(iskLost)}</span>
+                            <p><span></span><b>
+    <span style="color:var(--color-neon-green)">{killCount} · {formatIsk(iskDestroyed)}</span>
+    <span style="color:var(--color-text-faint)"> / </span>
+    <span style="color:var(--color-isk-billion)">{lossCount} · {formatIsk(iskLost)}</span>
 </b></p>
                             {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
                             {topSystem && (
@@ -483,7 +482,7 @@ const dayViews = byDay.map(bucket => ({
                         </div>
                     ))}
                     <div id="feed-empty" class="ui p-10 text-center" hidden>
-                        <span class="grp block" style="color:var(--color-text-faint)">&gt; NO MATCHING KILLMAILS &lt;</span>
+                        <span class="grp block" style="color:var(--color-text-faint)">&gt; NO KILLMAILS &lt;</span>
                     </div>
                     <button type="button" id="feed-more" class="more" style="width:100%" hidden>LOAD MORE</button>
                 </div>
