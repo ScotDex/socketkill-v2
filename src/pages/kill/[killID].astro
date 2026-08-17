@@ -235,7 +235,7 @@ const singleGroup = grouped.length === 1
                             <div class="af">
                                 {kill.victim.allianceID
                                     ? <a href={internalLink('alliance', kill.victim.allianceID)} class="link">{kill.victim.alliance}</a>
-                                    : (kill.victim.alliance || 'Non Affiliate')}
+                                    : (kill.victim.alliance || '-')}
                             </div>
                         </div>
                         <div class="dossier-badges">

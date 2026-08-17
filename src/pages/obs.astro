@@ -1,17 +1,17 @@
 ---
 import Base from '../layouts/Base.astro'
+const KILLS_BG_COUNT = 24;
+const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.random() * KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`;
 ---
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <Base
     title="Live Kill Overlay for OBS | Socketkill.com"
     ogTitle="SocketKill Ticker for OBS"
     ogDescription="A OBS overlay add on showing eve losses and kills, low latency performance based."
+    
 >
-    <div class="kill-screen">
+<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" />
+        <div class="kill-screen art-bg" style={`--art-bg-url: url(${artBg})`}>
         <main class="relative z-10 max-w-3xl mx-auto px-4 py-10">
             <header class="fade-card border-b border-[var(--color-border-dim)] pb-4 mb-8">
                 <h1 class="kill-headline">&gt; SocketKill | <span class="text-[var(--color-neon-green)]/40">LIVE KILL OVERLAY FOR OBS</span></h1>

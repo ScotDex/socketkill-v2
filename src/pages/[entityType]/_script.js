@@ -96,4 +96,4 @@ function init() {
     initFeedTabs()
 }
 
-init()
+document.addEventListener('astro:page-load', init)

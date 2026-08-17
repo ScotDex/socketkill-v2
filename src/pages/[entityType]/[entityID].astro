@@ -123,6 +123,8 @@ function secColor(s) {
     return 'var(--color-neon-green)'
 }
 
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`
+
 function valueColor(v) {
     if (v >= 10_000_000_000) return 'var(--color-whale-accent)'
     if (v >= 1_000_000_000) return 'var(--color-isk-billion)'
@@ -326,10 +328,10 @@ const dayViews = byDay.map(bucket => ({
                 <div class="assess px-3 pb-2">
                     {total > 0 ? (
                         <>
-                            <p><span>killmails</span><b>
-    <span style="color:var(--color-neon-green)">{killCount} · {formatIsk(iskDestroyed)}</span>
+                                                        <p><span>killmails</span><b>
+    <span style="color:var(--color-neon-green)">{plural(killCount, 'kill')} · {formatIsk(iskDestroyed)}</span>
     <span style="color:var(--color-text-faint)"> / </span>
-    <span style="color:var(--color-isk-billion)">{lossCount} · {formatIsk(iskLost)}</span>
+    <span style="color:var(--color-isk-billion)">{plural(lossCount, 'loss')}{lossCount > 0 ? ` · ${formatIsk(iskLost)}` : ''}</span>
 </b></p>
                             {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
                             {topSystem && (
