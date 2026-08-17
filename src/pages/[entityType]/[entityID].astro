@@ -123,7 +123,7 @@ function secColor(s) {
     return 'var(--color-neon-green)'
 }
 
-const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`
+const plural = (n, word) => `${n} ${n === 1 ? word : word + (word.endsWith('s') ? 'es' : 's')}`
 
 function valueColor(v) {
     if (v >= 10_000_000_000) return 'var(--color-whale-accent)'
@@ -328,10 +328,9 @@ const dayViews = byDay.map(bucket => ({
                 <div class="assess px-3 pb-2">
                     {total > 0 ? (
                         <>
-                                                        <p><span>killmails</span><b>
+                                                                                    <p><span>killmails</span><b class="stack">
     <span style="color:var(--color-neon-green)">{plural(killCount, 'kill')} · {formatIsk(iskDestroyed)}</span>
-    <span style="color:var(--color-text-faint)"> / </span>
-    <span style="color:var(--color-isk-billion)">{plural(lossCount, 'loss')}{lossCount > 0 ? ` · ${formatIsk(iskLost)}` : ''}</span>
+    <span style="color:var(--color-isk-billion)">{plural(lossCount, 'loss')} · {formatIsk(iskLost)}</span>
 </b></p>
                             {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
                             {topSystem && (
@@ -451,13 +450,13 @@ const dayViews = byDay.map(bucket => ({
                                 <span>{bucket.kills} kills · {bucket.losses} losses</span>
                             </div>
                             {bucket.rows.map(r => (
-                                <a href={`/kill/${r.killID}`} class="fr px-3 py-1"
+                                <a href={`/kill/${r.killID}`} class="fr px-3 py-2"
                                    data-kind={r.isLoss ? 'loss' : 'kill'}
                                    style={`--accent:${r.accent}`}>
                                     <span class="font-mono text-[11px]" style={`color:${r.accent}`}>{r.isLoss ? '✕' : '✓'}</span>
                                     <span class="font-mono text-xs tabular-nums text-[var(--color-text-faint)]">{r.hhmm}</span>
                                     <img src={`https://images.evetech.net/types/${r.shipTypeID}/render?size=64`}
-                                         class="w-[26px] h-[26px] object-cover bg-black/50"
+                                                                                  class="w-9 h-9 object-cover bg-black/50 border border-[var(--color-eve-border)]"
                                          width="64" height="64" alt="" loading="lazy" decoding="async" />
                                     <span class="text-sm text-white truncate">{r.shipName}</span>
                                     <span class="fr-hide text-xs truncate">

@@ -41,6 +41,11 @@
     font-variant-numeric: tabular-nums;
 }
 
+.assess b.stack {
+    display: flex;
+    flex-direction: column;
+}
+
 .clock-grid {
     display: grid;
     grid-template-columns: repeat(24, 1fr);
@@ -127,7 +132,8 @@
 
 .fr {
     display: grid;
-    grid-template-columns: 12px 46px 26px minmax(64px, 1fr) minmax(90px, 1.4fr) 42px 74px;
+    grid-template-columns: 12px 46px 36px minmax(64px, 1fr) minmax(90px, 1.4fr) 42px 74px;
+    grid-template-columns: 12px 40px 24px minmax(0, 1fr) 66px;
     align-items: center;
     gap: 0.5rem;
     border-left: 2px solid var(--accent);
