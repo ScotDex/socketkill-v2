@@ -335,11 +335,12 @@ const dayViews = byDay.map(bucket => ({
                 <div class="assess px-3 pb-2">
                     {total > 0 ? (
                         <>
-                            <p><span>killmails</span><b>{total} — {killCount} kills, {lossCount} losses</b></p>
-                            <p><span>isk</span><b>
-                                <span style="color:var(--color-neon-green)">{formatIsk(iskDestroyed)}</span> killed,
-                                <span style="color:var(--color-isk-billion)">{formatIsk(iskLost)}</span> lost
-                            </b></p>
+                            <p><span>kills</span><b>
+    {killCount} <span style="color:var(--color-neon-green)">{formatIsk(iskDestroyed)}</span>
+</b></p>
+<p><span>losses</span><b>
+    {lossCount} <span style="color:var(--color-isk-billion)">{formatIsk(iskLost)}</span>
+</b></p>
                             {tzLabel && <p><span>timezone</span><b class="hi">{tzLabel}</b></p>}
                             {topSystem && (
                                 <p><span>most seen</span><b>{topSystem.name} ({topSystem.pct}%){topSystem.region ? `, ${topSystem.region}` : ''}</b></p>

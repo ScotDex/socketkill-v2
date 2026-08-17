@@ -27,25 +27,27 @@ export const FACTION = {
     500002: { name: 'Minmatar Republic',   short: 'MINMATAR', c: 'var(--color-isk-billion)' },
     500003: { name: 'Amarr Empire',        short: 'AMARR',    c: 'var(--color-whale-accent)' },
     500004: { name: 'Gallente Federation', short: 'GALLENTE', c: 'var(--color-neon-green)' },
-    500010: { name: 'Guristas Pirates',    short: 'GURISTAS', c: '#b07ce8' },
-    500011: { name: 'Angel Cartel',        short: 'ANGELS',   c: '#b07ce8' },
+    500010: { name: 'Guristas Pirates',    short: 'GURISTAS', c: '#e8a77c' },
+    500011: { name: 'Angel Cartel',        short: 'ANGELS',   c: '#0db6e9' },
 }
 
 export const SPACE = {
     high:    { short: 'HS',   label: 'highsec',  c: 'var(--color-neon-green)' },
     low:     { short: 'LS',   label: 'lowsec',   c: 'var(--color-whale-accent)' },
-    null:    { short: 'NULL', label: 'nullsec',  c: 'var(--color-isk-billion)' },
+    null:    { short: 'NULL', label: 'null',  c: 'var(--color-isk-billion)' },
     wh:      { short: 'WH',   label: 'wormhole', c: 'var(--color-terminal-blue)' },
-    pochven: { short: 'PCH',  label: 'pochven',  c: '#b07ce8' },
+    pochven: { short: 'PCH',  label: 'pochven',  c: 'var(--color-isk-billion)' },
 }
 
 export const UNKNOWN_SPACE = { short: '?', label: 'unknown', c: 'var(--color-text-faint)' }
 export const spaceOf = s => SPACE[s] ?? UNKNOWN_SPACE
 
 export const TZ_BANDS = [
-    { label: 'AUTZ', start: 6,  end: 14 },
-    { label: 'EUTZ', start: 14, end: 22 },
-    { label: 'USTZ', start: 22, end: 6  },
+    { label: 'AUTZ',  start: 6,  end: 11 },
+    { label: 'CNTZ',  start: 11, end: 16 },
+    { label: 'EUTZ',  start: 16, end: 21 },
+    { label: 'USETZ', start: 21, end: 1  },
+    { label: 'USWTZ', start: 1,  end: 6  },
 ]
 
 export const normaliseSpace = s => (s === 'pochven' ? 'null' : s)

@@ -109,11 +109,11 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
         return { label: b.label, n }
     }).sort((a, b) => b.n - a.n)
 
-    const tzTopPct = total ? Math.round(tzCounts[0].n / total * 100) : 0
-    const tzLabel = !total || !tzCounts[0].n ? null
-        : tzTopPct >= 50
-            ? `${tzCounts[0].label} (${tzTopPct}%)`
-            : `mixed — ${tzCounts[0].label}/${tzCounts[1].label}`
+const tzTopPct = total ? Math.round(tzCounts[0].n / total * 100) : 0
+const tzLabel = !total || !tzCounts[0].n ? null
+    : tzCounts[0].n >= tzCounts[1].n * 1.5
+        ? `${tzCounts[0].label} (${tzTopPct}%)`
+        : `mixed — ${tzCounts[0].label}/${tzCounts[1].label}`
 
     const spaceTally = [...spaceCount.entries()].sort((a, b) => b[1] - a[1])
 
@@ -144,20 +144,20 @@ export function analyseEvents(events, windowDays, feedOnline, now = Date.now()) 
         gangSizes.sort((a, b) => a - b)
         medGang = gangSizes[Math.floor(gangSizes.length / 2)]
     }
-    const profile = !killCount ? 'no offensive activity'
+    const profile = !killCount ? 'no activity'
         : medGang <= 1 ? 'solo'
-        : medGang <= 5 ? `small gang (med ${medGang})`
-        : medGang <= 15 ? `gang (med ${medGang})`
-        : `fleet (med ${medGang})`
+        : medGang <= 10 ? `small gang (${medGang})`
+        : medGang <= 50 ? `small fleet (${medGang})`
+        : `large fleet (${medGang})`
 
     const lastEvent = events[0] ?? null
     const minsSince = lastEvent ? (now - Date.parse(lastEvent.time)) / 60000 : Infinity
-    const status = !feedOnline ? { text: 'UPLINK OFFLINE', color: 'var(--color-terminal-blue)', live: false }
-        : minsSince < 180 ? { text: 'ACTIVE NOW', color: 'var(--color-neon-green)', live: true }
+    const status = !feedOnline ? { text: 'CONNECTION OFFLINE', color: 'var(--color-terminal-blue)', live: false }
+        : minsSince < 180 ? { text: 'ACTIVE RECENTLY', color: 'var(--color-neon-green)', live: true }
         : minsSince < 4320 ? { text: 'ACTIVE', color: 'var(--color-neon-green)', live: false }
-        : minsSince < 20160 ? { text: 'INTERMITTENT', color: 'var(--color-whale-accent)', live: false }
-        : total ? { text: 'FADING', color: 'var(--color-whale-accent)', live: false }
-        : { text: 'NO CONTACT', color: 'var(--color-text-faint)', live: false }
+        : minsSince < 20160 ? { text: 'FREQUENT', color: 'var(--color-whale-accent)', live: false }
+        : total ? { text: 'LESS FREQUENT', color: 'var(--color-whale-accent)', live: false }
+        : { text: 'NOT ACTIVE', color: 'var(--color-text-faint)', live: false }
 
     return {
         total, killCount, lossCount, iskDestroyed, iskLost,
