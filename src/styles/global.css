@@ -313,7 +313,7 @@ body::after {
 }
 
 
-signal-interference {
+.signal-interference {
     animation: screen-corruption 0.4s steps(8);
 }
 
