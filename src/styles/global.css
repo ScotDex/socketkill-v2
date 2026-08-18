@@ -313,8 +313,14 @@ body::after {
 }
 
 
-body.signal-interference {
+signal-interference {
     animation: screen-corruption 0.4s steps(8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signal-interference {
+        animation: none;
+    }
 }
 
 

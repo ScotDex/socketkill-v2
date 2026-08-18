@@ -46,6 +46,10 @@ let searchTerm = $state('')
 let lookupError = $state('')
 let lookupBusy = $state(false)
 
+const WHALE_THRESHOLD = 0
+let glitching = $state(false)
+let glitchTimer = null
+
 const LOOKUP_ORDER = [
     ['characters',   'character'],
     ['corporations', 'corp'],
@@ -207,6 +211,10 @@ $effect(() => {
             if (pendingKills.length === 0) return
             const batch = pendingKills
             pendingKills = []
+            if (!glitching && batch.some(k => k.val >= WHALE_THRESHOLD)) {
+    glitching = true
+    glitchTimer = setTimeout(() => { glitching = false }, 400)
+}
 
             for (const kill of batch) {
                 if (kill.corpName) corpCache.add(kill.corpName)
@@ -247,13 +255,14 @@ $effect(() => {
         })
 
         return () => {
-            clearInterval(flushInterval)
-            socket.disconnect()
-        }
+    clearInterval(flushInterval)
+    clearTimeout(glitchTimer)
+    socket.disconnect()
+}
     })
 </script>
 
-<div class="flex flex-col lg:flex-row gap-4">
+<div class="flex flex-col lg:flex-row gap-4" class:signal-interference={glitching}>
     <aside class="lf lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
         <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
