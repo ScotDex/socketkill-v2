@@ -11,6 +11,7 @@
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import { filtersToParams, paramsToFilters } from '../../lib/filter-url.js'
     import { internalLink } from '../../lib/entity-links.js'
+    import Fuse from 'fuse.js'
     import {
         passesFilter,
         getUtcTimestamp,
@@ -44,9 +45,10 @@
 
 let searchTerm = $state('')
 let lookupError = $state('')
+let lookupSuggestion = $state('')
 let lookupBusy = $state(false)
 
-const WHALE_THRESHOLD = 0
+const WHALE_THRESHOLD = 10_000_000_000
 let glitching = $state(false)
 let glitchTimer = null
 
@@ -61,7 +63,8 @@ async function runSearch() {
     if (!term || lookupBusy) return
 
     lookupBusy = true
-    lookupError = ''
+lookupError = ''
+lookupSuggestion = ''
 
     try {
         const res = await fetch('https://esi.evetech.net/latest/universe/ids/', {
@@ -85,7 +88,13 @@ async function runSearch() {
             }
         }
 
-        lookupError = 'NO MATCH — EXACT NAME REQUIRED'
+    const guess = lookupFuse.search(term)[0]?.item
+if (guess && guess.toLowerCase() !== term.toLowerCase()) {
+    lookupSuggestion = guess
+    lookupError = 'NO MATCH'
+} else {
+    lookupError = 'NO MATCH — EXACT NAME REQUIRED'
+}
     } catch {
         lookupError = 'LOOKUP FAILED'
     } finally {
@@ -125,6 +134,12 @@ $effect(() => {
     const allianceSuggestions = $derived(Array.from(allianceCache))
     const corpSuggestions = $derived(Array.from(corpCache))
     const weaponMatchedIDs = $derived(resolveWeaponKeyword(filters.weaponKeyword, $itemsFuse))
+    const lookupFuse = $derived(
+    new Fuse([...corpCache, ...allianceCache], {
+        threshold: 0.3,
+        ignoreLocation: true
+    })
+)
 
     const filteredFeed = $derived(
         killBuffer
@@ -346,7 +361,7 @@ $effect(() => {
             class="lookup-input"
             placeholder="EXACT NAME"
             bind:value={searchTerm}
-            oninput={() => lookupError = ''}
+            oninput={() => { lookupError = ''; lookupSuggestion = '' }}
             onkeydown={(e) => e.key === 'Enter' && runSearch()}
         />
         <button type="button" class="lookup-go" onclick={runSearch}
@@ -354,9 +369,16 @@ $effect(() => {
             {lookupBusy ? '·' : '>'}
         </button>
     </div>
-    {#if lookupError}
-        <span class="lookup-err" transition:fade={{ duration: 120 }}>{lookupError}</span>
-    {/if}
+{#if lookupError}
+    <span class="lookup-err" transition:fade={{ duration: 120 }}>{lookupError}</span>
+{/if}
+{#if lookupSuggestion}
+    <button type="button" class="flush"
+        transition:fade={{ duration: 120 }}
+        onclick={() => { searchTerm = lookupSuggestion; runSearch() }}>
+        DID YOU MEAN {lookupSuggestion}?
+    </button>
+{/if}
 </section>
 
 
