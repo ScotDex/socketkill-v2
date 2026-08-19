@@ -11,13 +11,17 @@ if (!Number.isFinite(id) || id <= 0) {
 }
 
 const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
+const clientIP = Astro.request.headers.get('cf-connecting-ip') || ''
 
 let kill = null
 
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
-        headers: { 'User-Agent': incomingUA }
-    })
+    headers: {
+        'User-Agent': incomingUA,
+        ...(clientIP && { 'X-SK-Client-IP': clientIP })
+    }
+})
     if (!res.ok) {
         if (res.status === 503) {
             return new Response('Killmail warming up, retry shortly', {
