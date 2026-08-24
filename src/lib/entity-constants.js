@@ -23,10 +23,10 @@ export const ENTITY = {
 }
 
 export const FACTION = {
-    500001: { name: 'Caldari State',       short: 'CALDARI',  c: 'var(--color-terminal-blue)' },
-    500002: { name: 'Minmatar Republic',   short: 'MINMATAR', c: 'var(--color-isk-billion)' },
-    500003: { name: 'Amarr Empire',        short: 'AMARR',    c: 'var(--color-whale-accent)' },
-    500004: { name: 'Gallente Federation', short: 'GALLENTE', c: 'var(--color-neon-green)' },
+    500001: { name: 'Caldari State',       short: 'CALDARI',  c: '#6a9cb7' },
+    500002: { name: 'Minmatar Republic',   short: 'MINMATAR', c: '#e07972' },
+    500003: { name: 'Amarr Empire',        short: 'AMARR',    c: '#ad926d' },
+    500004: { name: 'Gallente Federation', short: 'GALLENTE', c: '#56a3a3' },
     500010: { name: 'Guristas Pirates',    short: 'GURISTAS', c: '#e8a77c' },
     500011: { name: 'Angel Cartel',        short: 'ANGELS',   c: '#0db6e9' },
 }
