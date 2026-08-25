@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
 import { parseIsk, classifySecurity, buildEft, formatIsk } from '../../lib/helpers.js'
+import { env } from 'cloudflare:workers'
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
@@ -59,7 +60,7 @@ function buildTitle(data) {
 const eftText = buildEft(kill)
 let fitStats = null
 try {
-    const key = Astro.locals.runtime?.env?.EWB_API_KEY
+    const key = env.EWB_API_KEY
     if (key && eftText) {
         const sRes = await fetch('https://api.eveworkbench.com/v1/fits/eft/stats', {
             method: 'POST',
@@ -192,7 +193,6 @@ const grouped = Object.values(
 ).sort((x, y) => y.members.length - x.members.length)
 
 const singleGroup = grouped.length === 1
-const dbg = `rt:${!!Astro?.locals?.runtime} env:${!!Astro?.locals?.runtime?.env} key:${!!Astro?.locals?.runtime?.env?.EWB_API_KEY} eft:${eftText?.length ?? 0}`
 ---
 
 <Base
