@@ -57,7 +57,6 @@ function buildTitle(data) {
 }
 
 const eftText = buildEft(kill)
-console.log('[EWB] runtime:', !!Astro.locals.runtime, 'key:', !!Astro.locals.runtime?.env?.EWB_API_KEY)
 let fitStats = null
 try {
     const key = Astro.locals.runtime?.env?.EWB_API_KEY
@@ -317,6 +316,7 @@ const singleGroup = grouped.length === 1
     </>
 )}
                     </div>
+                    <pre style="color:#0f0;font-size:10px">EWB: {fitStats ? 'OK' : 'NULL'}</pre>
                     <div class="dossier-actions">
                         {fitPreviewUrl ? (
                             <button type="button" id="fit-btn"
