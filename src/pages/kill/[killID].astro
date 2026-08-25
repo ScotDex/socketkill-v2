@@ -192,6 +192,7 @@ const grouped = Object.values(
 ).sort((x, y) => y.members.length - x.members.length)
 
 const singleGroup = grouped.length === 1
+const dbg = `rt:${!!Astro?.locals?.runtime} env:${!!Astro?.locals?.runtime?.env} key:${!!Astro?.locals?.runtime?.env?.EWB_API_KEY} eft:${eftText?.length ?? 0}`
 ---
 
 <Base
