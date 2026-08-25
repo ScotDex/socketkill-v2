@@ -57,7 +57,7 @@ function buildTitle(data) {
 }
 
 const eftText = buildEft(kill)
-
+console.log('[EWB] runtime:', !!Astro.locals.runtime, 'key:', !!Astro.locals.runtime?.env?.EWB_API_KEY)
 let fitStats = null
 try {
     const key = Astro.locals.runtime?.env?.EWB_API_KEY
