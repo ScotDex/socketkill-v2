@@ -4,7 +4,6 @@ import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
 import { parseIsk, classifySecurity, buildEft, formatIsk } from '../../lib/helpers.js'
 import { env } from 'cloudflare:workers'
-console.log('[EWB] env keys:', Object.keys(env).join(','))
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
