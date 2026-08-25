@@ -3,7 +3,6 @@ import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
 import { parseIsk, classifySecurity, buildEft, formatIsk } from '../../lib/helpers.js'
-import { env } from 'cloudflare:workers'
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
@@ -60,21 +59,25 @@ function buildTitle(data) {
 const eftText = buildEft(kill)
 let fitStats = null
 try {
-    const key = env.EWB_API_KEY
-    if (key && eftText) {
-        const sRes = await fetch('https://api.eveworkbench.com/v1/fits/eft/stats', {
+    if (eftText) {
+        const sRes = await fetch(`https://ws.socketkill.com/api/fit-stats/${id}`, {
             method: 'POST',
-            headers: { 'X-API-KEY': key, 'Content-Type': 'text/plain' },
+            headers: {
+                'Content-Type': 'text/plain',
+                'User-Agent': incomingUA,
+                ...(clientIP && { 'X-SK-Client-IP': clientIP })
+            },
             body: eftText
         })
-        const data = await sRes.json()
-        if (data?.stats?.miscellaneous?.ship?.id) fitStats = data.stats
-        console.log('[EWB]', id, fitStats ? 'ok' : 'no-parse')
+        if (sRes.ok) {
+            const data = await sRes.json()
+            if (data?.miscellaneous?.ship?.id) fitStats = data
+        }
+        console.log('[EWB]', id, sRes.status, fitStats ? 'ok' : 'no-stats')
     }
 } catch (err) {
     console.log('[EWB] failed', err.message)
 }
-
 
 function buildOgDescription(data) {
     const parts = []
