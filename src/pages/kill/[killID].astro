@@ -58,6 +58,23 @@ function buildTitle(data) {
 
 const eftText = buildEft(kill)
 
+let fitStats = null
+try {
+    const key = Astro.locals.runtime?.env?.EWB_API_KEY
+    if (key && eftText) {
+        const sRes = await fetch('https://api.eveworkbench.com/v1/fits/eft/stats', {
+            method: 'POST',
+            headers: { 'X-API-KEY': key, 'Content-Type': 'text/plain' },
+            body: eftText
+        })
+        const data = await sRes.json()
+        if (data?.stats?.miscellaneous?.ship?.id) fitStats = data.stats
+        console.log('[EWB]', id, fitStats ? 'ok' : 'no-parse')
+    }
+} catch (err) {
+    console.log('[EWB] failed', err.message)
+}
+
 
 function buildOgDescription(data) {
     const parts = []
