@@ -71,7 +71,7 @@ try {
         })
         if (sRes.ok) {
             const data = await sRes.json()
-            if (data?.miscellaneous?.ship?.id) fitStats = data
+                        if (data?.Miscellaneous?.Ship?.Id) fitStats = data
         }
         console.log('[EWB]', id, sRes.status, fitStats ? 'ok' : 'no-stats')
     }
@@ -287,7 +287,7 @@ const singleGroup = grouped.length === 1
                         {fitStats && (
     <div class="row">
         <span class="k">EHP</span>
-        <span class="v">{Math.round(fitStats.defense.ehp.totalRaw).toLocaleString()}</span>
+                <span class="v">{Math.round(fitStats.Defense.Ehp.TotalRaw).toLocaleString()}</span>
     </div>
 )}
                         <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
