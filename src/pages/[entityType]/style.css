@@ -31,6 +31,10 @@
     color: var(--color-text-body);
 }
 
+.assess p:not(:has(span)) {
+    display: block;
+}
+
 .assess p > span {
     color: var(--color-text-faint);
 }

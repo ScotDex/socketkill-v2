@@ -420,8 +420,6 @@ const dayViews = byDay.map(bucket => ({
             <div class="card-h flex justify-between items-center sticky top-0 z-[4] bg-[var(--color-glass-bg)]">
                 <span class="flex items-center gap-2">
                     killmails
-                    <span class="status px-1.5 py-0.5"
-                          style="--s-c: var(--color-whale-accent); color: var(--color-whale-accent); font-size: 9px; text-shadow: none">BETA</span>
                 </span>
                 {total > 0 && (
                     <div class="tabs" id="f-tabs" role="tablist">
@@ -438,7 +436,7 @@ const dayViews = byDay.map(bucket => ({
                         &gt; {feedOnline ? `${windowDays}-DAY WINDOW CLEAR` : 'ACTIVITY UNREACHABLE'} &lt;
                     </span>
                     <p class="font-mono text-[11px] tracking-wider text-[var(--color-text-faint)] mt-2">
-                        {feedOnline ? 'nothing seen — full history on eve-kill/zkillboard' : 'identity confirmed, feed unavailable — retry shortly'}
+                        {feedOnline ? 'nothing seen — full history on killboards' : 'identity confirmed, feed unavailable — retry shortly'}
                     </p>
                 </div>
             ) : (
