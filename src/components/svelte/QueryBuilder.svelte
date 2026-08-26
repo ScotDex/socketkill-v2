@@ -152,7 +152,7 @@
   </div>
 
   <footer class="flex flex-col gap-2.5 p-3 pt-2.5 border-t border-[var(--color-border-dim)]">
-    <div class="readout" aria-live="polite">
+    <div class="readout-query" aria-live="polite">
       <span class="text-[var(--color-neon-green)]">&gt;</span> {typed}<span class="caret">█</span>
     </div>
     <button type="button" class="run" onclick={runQuery}>View results ↗</button>

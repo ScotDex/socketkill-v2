@@ -118,18 +118,6 @@ body {
     opacity: 0.6;
 }
 
-/* Legacy scanline layer — retained pending verification of #crt-screen usage */
-#crt-screen::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-        repeating-linear-gradient(90deg, rgb(255 0 0 / 0.03) 0px, rgb(255 0 0 / 0.03) 1px, transparent 1px, transparent 3px),
-        repeating-linear-gradient(0deg, rgb(0 0 0 / 0.1) 0px, rgb(0 0 0 / 0.1) 1px, transparent 1px, transparent 2px);
-    pointer-events: none;
-    z-index: -1;
-    opacity: 0.6;
-}
 
 /* Vignette */
 .fog-overlay {
@@ -359,19 +347,6 @@ body::after {
     100% { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes phosphor-strike {
-    0%  { opacity: 0; filter: brightness(0) blur(2px); }
-    15% { opacity: 1; filter: brightness(3) blur(0) saturate(0); color: var(--color-neon-green); }
-    40% { filter: brightness(1.5) saturate(0.5); }
-    100% { opacity: 1; filter: brightness(1) blur(0) saturate(1); }
-}
-
-@keyframes phosphor-decay {
-    0%   { opacity: 1; filter: brightness(1) blur(0); }
-    50%  { opacity: 0.6; filter: brightness(2) blur(1px) saturate(0); color: var(--color-neon-green); }
-    100% { opacity: 0; filter: brightness(0) blur(3px); }
-}
-
 @keyframes char-land {
     0% {
         color: #fff;
@@ -390,39 +365,6 @@ body::after {
     }
 }
 
-@keyframes counter-surge {
-    0% {
-        transform: scale(1);
-        text-shadow: 0 0 8px rgb(var(--phosphor-rgb) / 0.6);
-    }
-    40% {
-        transform: scale(1.5);
-        text-shadow:
-            0 0 5px #fff,
-            0 0 10px var(--color-phosphor),
-            0 0 20px var(--color-phosphor),
-            0 0 40px var(--color-phosphor);
-    }
-    100% {
-        transform: scale(1);
-        text-shadow: 0 0 8px rgb(var(--phosphor-rgb) / 0.6);
-    }
-}
-
-@keyframes dot-pulse {
-    0%, 100% { text-shadow: 0 0 4px rgb(var(--phosphor-rgb) / 0.4); }
-    50%      { text-shadow: 0 0 8px rgb(var(--phosphor-rgb) / 0.9), 0 0 16px rgb(var(--phosphor-rgb) / 0.4); }
-}
-
-@keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50%      { border-color: var(--color-neon-green); }
-}
-
-@keyframes cursor-blink {
-    from, to { opacity: 1; }
-    50%      { opacity: 0; }
-}
 
 /* ══ MEDIA QUERIES ══════════════════════════════════════════════
    Kept last so source order never fights the base rules.
