@@ -193,7 +193,25 @@ body::after {
 
 .kill-row {
     transform: translateZ(0);
+    position: relative;
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.1s ease;
+}
+
+.kill-row::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--phosphor-rgb) / 0.85);
+    mix-blend-mode: screen;
+    pointer-events: none;
+    opacity: 0;
+    animation: strike-burn 700ms ease-out forwards;
+}
+
+@keyframes strike-burn {
+    0%   { opacity: 1; }
+    10%  { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 .kill-row:hover {
