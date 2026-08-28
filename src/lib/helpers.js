@@ -16,7 +16,7 @@ const SEC_RAMP = [
 export function classifySecurity(system) {
     if (!system || system.security == null) return { label: 'UNKNOWN', color: 'var(--color-text-faint)' }
     if (system.id >= 31000000 && system.id < 32000000) return { label: 'WORMHOLE', color: 'var(--color-terminal-blue)' }
-    if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', color: '#b07ce8' }
+    if (system.regionID === 10000070 || system.region === 'Pochven') return { label: 'POCHVEN', color: '#f70e06' }
     const s = system.security
     const tier = Math.min(10, Math.max(0, Math.round(s * 10)))
     const display = (tier / 10).toFixed(1)

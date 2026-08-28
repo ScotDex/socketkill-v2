@@ -25,7 +25,7 @@
             type="text"
             bind:value={keyword}
             placeholder="smartbomb, neut, ECM…"
-            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-xs px-2 py-1.5 outline-none italic placeholder:text-[var(--color-neon-green)]/40 placeholder:italic focus:border-[var(--color-neon-green)]/70"
+            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-xs px-2 py-1.5 outline-none placeholder:text-[var(--color-neon-green)]/40 focus:border-[var(--color-neon-green)]/70"
             autocomplete="off"
             spellcheck="false"
         />

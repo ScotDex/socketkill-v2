@@ -36,7 +36,7 @@ export const SPACE = {
     low:     { short: 'LS',   label: 'lowsec',   c: 'var(--color-whale-accent)' },
     null:    { short: 'NULL', label: 'null',  c: 'var(--color-isk-billion)' },
     wh:      { short: 'WH',   label: 'wormhole', c: 'var(--color-terminal-blue)' },
-    pochven: { short: 'PCH',  label: 'pochven',  c: 'var(--color-isk-billion)' },
+    pochven: { short: 'POCH',  label: 'pochven',  c: 'var(--color-isk-billion)' },
 }
 
 export const UNKNOWN_SPACE = { short: '?', label: 'unknown', c: 'var(--color-text-faint)' }

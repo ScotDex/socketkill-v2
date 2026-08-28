@@ -1,5 +1,5 @@
 ---
-import { externalLink, internalLink } from '../../lib/entity-links.js'
+import { internalLink } from '../../lib/entity-links.js'
 const { a } = Astro.props
 const isNpc = !a.characterID
 const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'

@@ -1,8 +1,6 @@
 <script>
-    import { formatIsk } from '../../lib/filter-logic.js'
+    import { formatIsk, WHALE_THRESHOLD, BILLION_THRESHOLD } from '../../lib/filter-logic.js'
     let { kill } = $props()
-    const WHALE_THRESHOLD = 10_000_000_000
-    const BILLION_THRESHOLD = 1_000_000_000
     const isWhale = $derived(kill.val >= WHALE_THRESHOLD)
     const isBillion = $derived(kill.val >= BILLION_THRESHOLD)
     function getVictimDisplay(k) {
