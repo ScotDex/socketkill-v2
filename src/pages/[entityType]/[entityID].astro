@@ -33,17 +33,6 @@ async function fetchJson(url, { ms = 4000, headers, method, body } = {}) {
     }
 }
 
-const allianceHistories = isPilot
-    ? await Promise.all(uniqueCorpIDs.map(cid =>
-        fetchJson(`https://esi.evetech.net/corporations/${cid}/alliancehistory/`)))
-    : []
-
-const allianceByCorp = new Map()
-uniqueCorpIDs.forEach((cid, i) => {
-    const res = allianceHistories[i]
-    const recs = res?.ok ? res.data : []
-    allianceByCorp.set(cid, [...recs].sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date)))
-})
 
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
@@ -121,6 +110,19 @@ const history = [...historyRaw]
         end: i === 0 ? null : arr[i - 1].start_date,
     }))
 const uniqueCorpIDs = [...new Set(history.map(h => h.corpID))]
+
+const allianceHistories = isPilot
+    ? await Promise.all(uniqueCorpIDs.map(cid =>
+        fetchJson(`https://esi.evetech.net/corporations/${cid}/alliancehistory/`)))
+    : []
+
+const allianceByCorp = new Map()
+uniqueCorpIDs.forEach((cid, i) => {
+    const res = allianceHistories[i]
+    const recs = res?.ok ? res.data : []
+    allianceByCorp.set(cid, [...recs].sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date)))
+})
+
 
 function allianceAt(corpID, iso) {
     const recs = allianceByCorp.get(corpID) ?? []
