@@ -510,7 +510,9 @@ const dayViews = byDay.map(bucket => ({
 
                 <div class="dossier-actions">
                     <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="act act-primary">ZKILLBOARD</a>
-                    <a href={`https://evewho.com/${conf.evewhoPath}/${id}`} target="_blank" rel="noopener noreferrer" class="act">EVEWHO</a>
+                    {!isPilot && (
+    <a href={`https://evewho.com/${conf.evewhoPath}/${id}`} target="_blank" rel="noopener noreferrer" class="act">EVEWHO</a>
+)}
                     <button type="button" id="copy-btn" data-url={canonicalUrl} class="act">COPY PROFILE</button>
                 </div>
 
