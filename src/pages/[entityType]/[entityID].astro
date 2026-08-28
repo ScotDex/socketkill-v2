@@ -14,11 +14,16 @@ if (!conf || !/^\d+$/.test(entityID ?? '') || !Number.isFinite(id) || id <= 0) {
     return new Response('Not found', { status: 404 })
 }
 const ESI_HEADERS = { 'X-Compatibility-Date': '2026-08-14' }
-async function fetchJson(url, { ms = 4000, headers } = {}) {
+async function fetchJson(url, { ms = 4000, headers, method, body } = {}) {
     const ctrl = new AbortController()
     const timer = setTimeout(() => ctrl.abort(), ms)
     try {
-        const res = await fetch(url, { signal: ctrl.signal, headers })
+        const res = await fetch(url, {
+            signal: ctrl.signal,
+            headers: body ? { 'Content-Type': 'application/json', ...headers } : headers,
+            method,
+            body: body ? JSON.stringify(body) : undefined,
+        })
         if (!res.ok) return { ok: false, status: res.status }
         return { ok: true, data: await res.json() }
     } catch {
@@ -27,6 +32,19 @@ async function fetchJson(url, { ms = 4000, headers } = {}) {
         clearTimeout(timer)
     }
 }
+
+const allianceHistories = isPilot
+    ? await Promise.all(uniqueCorpIDs.map(cid =>
+        fetchJson(`https://esi.evetech.net/corporations/${cid}/alliancehistory/`)))
+    : []
+
+const allianceByCorp = new Map()
+uniqueCorpIDs.forEach((cid, i) => {
+    const res = allianceHistories[i]
+    const recs = res?.ok ? res.data : []
+    allianceByCorp.set(cid, [...recs].sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date)))
+})
+
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
 
 function cardTint(palette) {
@@ -93,6 +111,41 @@ const identity = {
     friendlyFire: raw.friendly_fire ?? null,
     cardTint: cardTint(raw.palette),
 }
+
+const historyRaw = corpHistoryRes?.ok ? corpHistoryRes.data : []
+const history = [...historyRaw]
+    .sort((a, b) => Date.parse(b.start_date) - Date.parse(a.start_date))
+    .map((rec, i, arr) => ({
+        corpID: rec.corporation_id,
+        start: rec.start_date,
+        end: i === 0 ? null : arr[i - 1].start_date,
+    }))
+const uniqueCorpIDs = [...new Set(history.map(h => h.corpID))]
+
+function allianceAt(corpID, iso) {
+    const recs = allianceByCorp.get(corpID) ?? []
+    const t = Date.parse(iso)
+    let current = null
+    for (const r of recs) {
+        if (Date.parse(r.start_date) > t) break
+        current = r.alliance_id ?? null
+    }
+    return current
+}
+
+const historyJoined = history.map(h => ({
+    ...h,
+    allianceID: allianceAt(h.corpID, h.start),
+}))
+
+const uniqueAllianceIDs = [...new Set(historyJoined.map(h => h.allianceID).filter(Boolean))]
+
+const nameIDs = [...uniqueCorpIDs, ...uniqueAllianceIDs]
+const namesRes = nameIDs.length
+    ? await fetchJson('https://esi.evetech.net/universe/names/', { method: 'POST', body: nameIDs })
+    : null
+const nameByID = new Map((namesRes?.ok ? namesRes.data : []).map(n => [n.id, n.name]))
+
 const feedOnline = activityRes.ok
 const events = feedOnline ? (activityRes.data.events ?? []) : []
 const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
@@ -183,7 +236,7 @@ const dayViews = byDay.map(bucket => ({
         <div class="flex justify-between items-end gap-4 flex-wrap">
             <div>
                 <h1 class="kill-headline">{displayName}</h1>
-                <p class="kill-sub">{conf.label} &nbsp;|&nbsp; LAST {windowDays} DAYS &nbsp;|&nbsp; HIST {corpHistoryRes?.data?.length ?? 'none'}</p>
+                <p class="kill-sub">{conf.label} &nbsp;|&nbsp; LAST {windowDays} DAYS</p>
             </div>
             <div class="status inline-flex items-center gap-2 px-2 py-1 whitespace-nowrap"
                  style={`--s-c: ${status.color}; --dot-c: ${status.color}`}>
