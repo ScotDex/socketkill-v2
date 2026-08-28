@@ -46,8 +46,6 @@ const [identityRes, activityRes, memberCorpsRes, corpHistoryRes] = await Promise
     isPilot ? fetchJson(`https://esi.evetech.net/characters/${id}/corporationhistory/`) : null,
 ])
 
-console.log('CORP HISTORY:', JSON.stringify(corpHistoryRes?.data))
-
 if (!identityRes.ok) {
     return new Response('Entity not found', {
         status: identityRes.status === 404 ? 404 : 502,
@@ -185,7 +183,7 @@ const dayViews = byDay.map(bucket => ({
         <div class="flex justify-between items-end gap-4 flex-wrap">
             <div>
                 <h1 class="kill-headline">{displayName}</h1>
-                <p class="kill-sub">{conf.label} &nbsp;|&nbsp; LAST {windowDays} DAYS</p>
+                <p class="kill-sub">{conf.label} &nbsp;|&nbsp; LAST {windowDays} DAYS &nbsp;|&nbsp; HIST {corpHistoryRes?.data?.length ?? 'none'}</p>
             </div>
             <div class="status inline-flex items-center gap-2 px-2 py-1 whitespace-nowrap"
                  style={`--s-c: ${status.color}; --dot-c: ${status.color}`}>
