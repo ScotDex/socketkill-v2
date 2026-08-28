@@ -39,11 +39,14 @@ function cardTint(palette) {
 const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
-const [identityRes, activityRes, memberCorpsRes] = await Promise.all([
+const [identityRes, activityRes, memberCorpsRes, corpHistoryRes] = await Promise.all([
     fetchJson(conf.esiPath(id), { headers: ESI_HEADERS }),
     fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
     isAlliance ? fetchJson(`https://esi.evetech.net/alliances/${id}/corporations/`) : null,
+    isPilot ? fetchJson(`https://esi.evetech.net/characters/${id}/corporationhistory/`) : null,
 ])
+
+console.log('CORP HISTORY:', JSON.stringify(corpHistoryRes?.data))
 
 if (!identityRes.ok) {
     return new Response('Entity not found', {
