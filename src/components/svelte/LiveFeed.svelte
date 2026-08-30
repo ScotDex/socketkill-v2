@@ -16,6 +16,7 @@
         passesFilter,
         getUtcTimestamp,
         MAX_FEED_SIZE,
+        passesRadius,
         KILL_BUFFER_SIZE,
         MAX_CORPS,
         MAX_ALLIANCES,
@@ -40,7 +41,9 @@
         alliances: [],
         systems: [],
         bands: [],
-        weaponKeyword: ''
+        weaponKeyword: '',
+        radius: 0,
+        origin: ''
     })
 
 let searchTerm = $state('')
@@ -134,6 +137,16 @@ $effect(() => {
     const allianceSuggestions = $derived(Array.from(allianceCache))
     const corpSuggestions = $derived(Array.from(corpCache))
     const weaponMatchedIDs = $derived(resolveWeaponKeyword(filters.weaponKeyword, $itemsFuse))
+        const radiusOrigin = $derived.by(() => {
+        if (!filters.radius || !filters.origin || !$filterSource.loaded) return null
+        const target = filters.origin.toLowerCase()
+        for (const [id, sys] of Object.entries($filterSource.systems)) {
+            if (sys.name?.toLowerCase() === target && typeof sys.x === 'number') {
+                return { x: sys.x, y: sys.y, z: sys.z, systems: $filterSource.systems }
+            }
+        }
+        return null
+    })
     const lookupFuse = $derived(
     new Fuse([...corpCache, ...allianceCache], {
         threshold: 0.3,
@@ -144,6 +157,7 @@ $effect(() => {
     const filteredFeed = $derived(
         killBuffer
             .filter(k => passesFilter(k, filters, { weaponTypeIDs: weaponMatchedIDs }))
+            .filter(k => passesRadius(k, filters.radius, radiusOrigin))
             .slice(0, MAX_FEED_SIZE)
     )
 
@@ -154,7 +168,8 @@ $effect(() => {
         filters.alliances.length > 0 ||
         filters.systems.length > 0 ||
         filters.bands.length > 0 ||
-        weaponMatchedIDs.size > 0
+        weaponMatchedIDs.size > 0 ||
+        (filters.radius > 0 && filters.origin !== '')
     )
 
     function clearFilters() {
@@ -165,6 +180,8 @@ $effect(() => {
         filters.systems = []
         filters.bands = []
         filters.weaponKeyword = ''
+        filters.radius = 0
+        filters.origin = ''
     }
 
     const valuePresets = [
@@ -173,6 +190,14 @@ $effect(() => {
         { label: '1B', value: 1_000_000_000 },
         { label: '10B', value: 10_000_000_000 }
     ]
+
+    const radiusPresets = [
+    { label: 'OFF',    value: 0 },
+    { label: '3.5 LY', value: 3.5 },
+    { label: '5 LY',   value: 5 },
+    { label: '7 LY',   value: 7 },
+    { label: '10 LY',  value: 10 }
+]
 
     const secBands = [
         { label: 'HS',   value: 'high',    color: 'var(--color-neon-green)' },

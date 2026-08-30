@@ -46,6 +46,16 @@ export function passesWeaponKeyword(kill, matchedTypeIDs) {
     if (!Array.isArray(ids) || ids.length === 0) return false
     return ids.some((id) => matchedTypeIDs.has(id))
 }
+export function passesRadius(kill, radius, origin) {
+    if (!radius || !origin) return true          // filter inactive
+    if (typeof kill.systemId !== 'number') return false
+    const sys = origin.systems?.[kill.systemId]
+    if (!sys || typeof sys.x !== 'number') return false
+    const dx = sys.x - origin.x
+    const dy = sys.y - origin.y
+    const dz = sys.z - origin.z
+    return (dx * dx + dy * dy + dz * dz) <= radius * radius
+}
 
 export function formatIsk(value) {
     const num = Number(value) || 0
