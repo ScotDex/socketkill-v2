@@ -43,7 +43,7 @@
         bands: [],
         weaponKeyword: '',
         radius: 0,
-        origin: ''
+        origin: []
     })
 
 let searchTerm = $state('')
@@ -137,9 +137,9 @@ $effect(() => {
     const allianceSuggestions = $derived(Array.from(allianceCache))
     const corpSuggestions = $derived(Array.from(corpCache))
     const weaponMatchedIDs = $derived(resolveWeaponKeyword(filters.weaponKeyword, $itemsFuse))
-        const radiusOrigin = $derived.by(() => {
-        if (!filters.radius || !filters.origin || !$filterSource.loaded) return null
-        const target = filters.origin.toLowerCase()
+    const radiusOrigin = $derived.by(() => {
+        if (!filters.radius || !filters.origin.length || !$filterSource.loaded) return null
+        const target = filters.origin[0].toLowerCase()
         for (const [id, sys] of Object.entries($filterSource.systems)) {
             if (sys.name?.toLowerCase() === target && typeof sys.x === 'number') {
                 return { x: sys.x, y: sys.y, z: sys.z, systems: $filterSource.systems }
@@ -169,7 +169,7 @@ $effect(() => {
         filters.systems.length > 0 ||
         filters.bands.length > 0 ||
         weaponMatchedIDs.size > 0 ||
-        (filters.radius > 0 && filters.origin !== '')
+        (filters.radius > 0 && filters.origin.length > 0)
     )
 
     function clearFilters() {
@@ -181,7 +181,7 @@ $effect(() => {
         filters.bands = []
         filters.weaponKeyword = ''
         filters.radius = 0
-        filters.origin = ''
+        filters.origin = []
     }
 
     const valuePresets = [
