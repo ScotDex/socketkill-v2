@@ -405,7 +405,7 @@ $effect(() => {
             <div class="kill-feed-panel">
                 {#each filteredFeed as kill (kill.zkillUrl)}
                     <div
-                        in:fly={{ x: -20, duration: 200, delay: Math.min(i * 20, 300) }}
+                        in:fly={{ x: -20, duration: 200 }}
                         out:fade={{ duration: 80 }}
                         animate:flip={{ duration: 150 }}
                     >
