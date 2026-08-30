@@ -364,6 +364,26 @@ $effect(() => {
                 maxItems={MAX_ALLIANCES}
                 allowFreeText={true}
             />
+                        <section class="flex flex-col gap-1.5">
+                <span class="lbl">proximity <span class="lbl-unit">ly</span></span>
+                <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
+                    {#each radiusPresets as preset}
+                        <button type="button" class="seg" class:on={filters.radius === preset.value}
+                            style="--seg-c:var(--color-terminal-blue)"
+                            onclick={() => filters.radius = preset.value}>
+                            {preset.label}
+                        </button>
+                    {/each}
+                </div>
+            </section>
+
+            <ChipFacet
+                label="ORIGIN SYSTEM"
+                bind:items={filters.origin}
+                suggestions={sdeSystemNames}
+                placeholder="SET LOCATION"
+                maxItems={1}
+            />
 
             <WeaponKeywordFacet bind:keyword={filters.weaponKeyword} />
 

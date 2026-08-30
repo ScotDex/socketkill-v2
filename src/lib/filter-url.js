@@ -1,4 +1,4 @@
-const DEFAULTS = { minValue: 0, regions: [], corps: [], alliances: [], systems: [], bands: [], weaponKeyword: '' }
+const DEFAULTS = { minValue: 0, regions: [], corps: [], alliances: [], systems: [], bands: [], weaponKeyword: '', radius: 0, origin: [] }
 
 export function filtersToParams(filters) {
     const p = new URLSearchParams()
@@ -9,6 +9,8 @@ export function filtersToParams(filters) {
     for (const s of filters.systems)   p.append('system', s)
     for (const b of filters.bands)     p.append('band', b)
     if (filters.weaponKeyword) p.set('weapon', filters.weaponKeyword)
+    if (filters.radius > 0) p.set('radius', String(filters.radius))
+    for (const o of filters.origin) p.append('origin', o)
     return p
 }
 
@@ -21,6 +23,8 @@ export function paramsToFilters(search) {
         alliances: p.getAll('alliance').slice(0, 5),
         systems: p.getAll('system').slice(0, 5),
         bands: p.getAll('band'),
-        weaponKeyword: p.get('weapon') || ''
+        weaponKeyword: p.get('weapon') || '',
+        radius: Number(p.get('radius')) || 0,
+        origin: p.getAll('origin').slice(0, 1)
     }
 }
