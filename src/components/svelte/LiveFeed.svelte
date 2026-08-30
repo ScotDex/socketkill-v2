@@ -194,17 +194,6 @@ $effect(() => {
         filters = paramsToFilters(window.location.search)
         }
         urlSyncReady = true
-        try {
-            const res = await fetch('https://ws.socketkill.com/api/stats')
-            if (res.ok) {
-                const stats = await res.json()
-                if (stats.totalScanned != null) killCount.set(stats.totalScanned)
-                if (stats.totalIsk != null) iskDestroyed.set(stats.totalIsk)
-            }
-        } catch (e) {
-            console.warn('Stats hydration failed:', e)
-        }
-
         const socket = io('https://ws.socketkill.com')
 
         socket.on('connect', () => {
