@@ -31,7 +31,14 @@ export async function GET({ params, locals }) {
         // Hit: serve from our own bucket, upstream never sees it.
         const hit = await bucket.get(key)
         if (hit) {
-            return new Response(hit.body, { headers: CORS })
+            return new Response(hit.body, {
+                headers: {
+                    ...CORS,
+                    // Stored on write below; falls back for objects cached
+                    // before this was added.
+                    'Content-Type': hit.httpMetadata?.contentType || 'application/octet-stream'
+                }
+            })
         }
 
         // Miss: one fetch upstream, then keep it forever.
