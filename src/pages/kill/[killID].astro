@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro'
 import { externalLink, internalLink } from '../../lib/entity-links.js'
 import AttackerRow from '../../components/astro/AttackerRow.astro'
 import { parseIsk, classifySecurity, buildEft, formatIsk } from '../../lib/helpers.js'
+import ShipViewer from '../../components/svelte/ShipViewer.svelte'
 import './style.css'
 const { killID } = Astro.params
 const id = parseInt(killID)
@@ -371,7 +372,7 @@ const singleGroup = grouped.length === 1
                             <span class="tag">{kill.victim.ship}</span>
                         </header>
                         <div class="viewport">
-                            <img src={shipRenderUrl} alt={kill.victim.ship} width="512" height="512" />
+                            <ShipViewer client:visible shipTypeID={shipTypeID} />
                         </div>
                         <footer class="card-f" style="color: var(--color-text-faint)">
                             &gt; static render
