@@ -52,7 +52,8 @@
 
                 scene: 'res:/dx9/scene/preview/generic.red',
                 device: { effectProfile: 'effect.dx11' },
-                paths: PATHS
+                paths: PATHS,
+                resMan: { maxConcurrentLoads: 24 }
             })
 
             const ship = await tny.FetchShip(shipTypeID)
