@@ -362,7 +362,23 @@ const singleGroup = grouped.length === 1
                     </div>
                 </div>
             </section>
-            <section class="card self-start" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
+            <section class="flex flex-col gap-4 self-start">
+
+                            {shipTypeID && (
+                    <div class="card" style={`--card-c: ${valueTier}; --d: 30ms`}>
+                        <header class="card-h flex justify-between items-center">
+                            <span>hull</span>
+                            <span class="tag">{kill.victim.ship}</span>
+                        </header>
+                        <div class="viewport">
+                            <img src={shipRenderUrl} alt={kill.victim.ship} width="512" height="512" />
+                        </div>
+                        <footer class="card-f" style="color: var(--color-text-faint)">
+                            &gt; static render
+                        </footer>
+                    </div>
+                )}
+            <div class="card" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
                 <header class="card-h flex justify-between items-center">
                     <span>details</span>
                     <div class="tabs" id="loot-tabs" role="tablist">
@@ -418,8 +434,9 @@ const singleGroup = grouped.length === 1
                     &gt; cross-ref:
                     <a href={`https://zkillboard.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="link">ZKILLBOARD</a>
                     ·
-                    <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="link">EVE-KILL</a>
+                                        <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="link">EVE-KILL</a>
                 </footer>
+            </div>
             </section>
         </main>
 
