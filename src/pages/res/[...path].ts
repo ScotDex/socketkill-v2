@@ -44,10 +44,10 @@ export async function GET({ params, locals }) {
         // without buffering the whole asset in memory - some are several MB.
         const [ toStore, toSend ] = upstream.body.tee()
 
-        // ctx isn't guaranteed on every adapter version. waitUntil lets the
-        // write finish after the response is sent; without it we just wait.
+                // Astro v6: cfContext replaced runtime.ctx. waitUntil lets the R2
+        // write finish after the response is sent.
         const write = bucket.put(key, toStore)
-        if (locals.runtime?.ctx?.waitUntil) locals.runtime.ctx.waitUntil(write)
+        if (locals.cfContext?.waitUntil) locals.cfContext.waitUntil(write)
         else await write
 
         return new Response(toSend, { headers: CORS })
