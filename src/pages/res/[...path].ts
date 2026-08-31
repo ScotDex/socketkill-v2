@@ -53,11 +53,17 @@ export async function GET({ params, locals }) {
 
                 // Astro v6: cfContext replaced runtime.ctx. waitUntil lets the R2
         // write finish after the response is sent.
-        const write = bucket.put(key, toStore)
+        const write = bucket.put(key, toStore, {
+            httpMetadata: { contentType: upstream.headers.get('content-type') || 'application/octet-stream' }
+        })
         if (locals.cfContext?.waitUntil) locals.cfContext.waitUntil(write)
         else await write
 
-        return new Response(toSend, { headers: CORS })
+        const contentType = upstream.headers.get('content-type') || 'application/octet-stream'
+
+        return new Response(toSend, {
+            headers: { ...CORS, 'Content-Type': contentType }
+        })
 
     } catch (err) {
         // Readable in the browser, rather than a bare 500 with no cause.
