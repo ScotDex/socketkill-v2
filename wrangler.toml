@@ -1,7 +1,10 @@
 name = "socketkill-v2"
-compatibility_date = "2025-05-21"
+compatibility_date = "2026-08-31"
 compatibility_flags = ["nodejs_compat"]
 main = "@astrojs/cloudflare/entrypoints/server"
+
+[cache]
+enabled = true
 
 [assets]
 directory = "./dist"
