@@ -1,4 +1,5 @@
 export const prerender = false
+import { env } from 'cloudflare:workers'
 
 // Pinned. An exact build is immutable, so a cached object never goes stale.
 // Bump after each EVE patch:
@@ -20,7 +21,7 @@ export async function GET({ params, locals }) {
             return new Response('Bad path', { status: 400 })
         }
 
-        const bucket = locals.runtime?.env?.RES
+        const bucket = env.RES
         if (!bucket) {
             return new Response('res error: RES binding missing', { status: 500 })
         }
