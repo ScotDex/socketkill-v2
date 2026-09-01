@@ -38,9 +38,9 @@
             tny = mod.tny
             const tw2 = mod.tw2
 
-            // CSS sizes the element; these attributes size the drawing buffer
-            // WebGL actually renders into. Without them it stays at the 300x150
-            // default and gets stretched across the box.
+            const sof = new mod.EveSOFDataHandler()
+            tw2.Register({ dnaHandler: sof.handler })
+            
             const rect = canvas.getBoundingClientRect()
             canvas.width = rect.width
             canvas.height = rect.height

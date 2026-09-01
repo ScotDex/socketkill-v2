@@ -216,6 +216,12 @@ const singleGroup = grouped.length === 1
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@500;600&family=Fragment+Mono&display=swap" rel="stylesheet">
+    {shipTypeID && (
+        <>
+            <link rel="preconnect" href="https://caldariprimeponyclub.com" crossorigin />
+            <link rel="preload" href="/ccpwgl2_int.js" as="script" fetchpriority="low" />
+        </>
+    )}
     <script type="application/ld+json" set:html={JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Article",
