@@ -108,15 +108,15 @@
 
 <style>
     .stage {
-        position: relative;
-        aspect-ratio: 21 / 9;
-        overflow: hidden;
-        transition: aspect-ratio 0.4s ease;
-    }
+    position: relative;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s ease;
+}
 
-    .stage.expanded {
-        aspect-ratio: 16 / 9;
-    }
+.stage.expanded {
+    height: 400px;
+}
 
     canvas {
         width: 100%;
