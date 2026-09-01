@@ -2,6 +2,8 @@
     import { onMount, onDestroy } from 'svelte'
 
     export let shipTypeID
+    export let shipName = ''
+    export let staticRenderUrl = ''
 
     const MARGIN = 1.4
 
@@ -12,8 +14,8 @@
     }
 
     let canvas
-    let status = 'loading'
     let tny = null
+    let status = 'idle'
 
     function loadLibrary() {
         if (window.__ccpwgl2Promise) return window.__ccpwgl2Promise
@@ -32,15 +34,20 @@
         return window.__ccpwgl2Promise
     }
 
-    onMount(async () => {
+    async function render() {
+        if (status !== 'idle') return
+        status = 'loading'
+
         try {
             const mod = await loadLibrary()
             tny = mod.tny
             const tw2 = mod.tw2
 
+        
             const sof = new mod.EveSOFDataHandler()
             tw2.Register({ dnaHandler: sof.handler })
-            
+
+            await new Promise(r => requestAnimationFrame(r))
             const rect = canvas.getBoundingClientRect()
             canvas.width = rect.width
             canvas.height = rect.height
@@ -48,6 +55,9 @@
             await tny.Initialize({
                 canvas,
 
+                // TnyCameraTest mirrors values onto a `wrapped` camera that
+                // only exists once AttachCanvas has run. Without a canvas
+                // here, FitToScreen computes a distance that never applies.
                 camera: { canvas },
 
                 scene: 'res:/dx9/scene/preview/generic.red',
@@ -56,8 +66,11 @@
                 resMan: { maxConcurrentLoads: 24 }
             })
 
+            canvas.addEventListener('wheel', e => e.preventDefault(), { passive: false })
+
             const ship = await tny.FetchShip(shipTypeID)
             const camera = tny.GetCamera()
+
             for (let i = 0; i < 40; i++) {
                 if (camera.FitToScreen(ship, { margin: MARGIN })) break
                 await new Promise(r => setTimeout(r, 100))
@@ -69,27 +82,54 @@
             console.error('[ShipViewer]', err)
             status = 'failed'
         }
-    })
+    }
 
     onDestroy(() => {
-    
         try { tny?.GetScene?.()?.ClearObjects?.() } catch {}
     })
 </script>
 
-<canvas bind:this={canvas} class:hidden={status !== 'ready'}></canvas>
+<div class="stage" class:expanded={status !== 'idle'}>
+    {#if status === 'idle'}
+        <img src={staticRenderUrl} alt={shipName} loading="lazy" />
+    {:else}
+        <canvas bind:this={canvas} class:hidden={status !== 'ready'}></canvas>
+        {#if status === 'loading'}
+            <span class="msg">&gt; GENERATING</span>
+        {:else if status === 'failed'}
+            <span class="msg">&gt; RENDER UNAVAILABLE</span>
+        {/if}
+    {/if}
+</div>
 
-{#if status === 'loading'}
-    <span class="msg">&gt; LOADING HULL</span>
-{:else if status === 'failed'}
-    <span class="msg">&gt; RENDER UNAVAILABLE</span>
+{#if status === 'idle'}
+    <button type="button" class="render-btn" on:click={render}>&gt; RENDER IN 3D</button>
 {/if}
 
 <style>
+    .stage {
+        position: relative;
+        aspect-ratio: 21 / 9;
+        overflow: hidden;
+        transition: aspect-ratio 0.4s ease;
+    }
+
+    .stage.expanded {
+        aspect-ratio: 16 / 9;
+    }
+
     canvas {
         width: 100%;
         height: 100%;
         display: block;
+    }
+
+    img {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        max-width: 100%;
+        max-height: 88%;
     }
 
     .hidden {
@@ -106,5 +146,24 @@
         letter-spacing: 0.22em;
         color: rgb(var(--phosphor-rgb) / 0.35);
         pointer-events: none;
+    }
+
+    .render-btn {
+        width: 100%;
+        padding: 0.5rem;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        color: var(--color-text-faint);
+        background: transparent;
+        border: 0;
+        border-top: 1px solid var(--color-border-dim);
+        cursor: pointer;
+        transition: color 0.15s, background 0.15s;
+    }
+
+    .render-btn:hover {
+        color: var(--color-neon-green);
+        background: rgb(var(--phosphor-rgb) / 0.05);
     }
 </style>
