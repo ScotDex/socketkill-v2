@@ -378,7 +378,7 @@ const singleGroup = grouped.length === 1
                             <span class="tag">{kill.victim.ship}</span>
                         </header>
                         <div class="viewport">
-                            <ShipViewer client:visible shipTypeID={shipTypeID} />
+                            <ShipViewer client:load shipTypeID={shipTypeID} />
                         </div>
                         <footer class="card-f" style="color: var(--color-text-faint)">
                             &gt; static render
