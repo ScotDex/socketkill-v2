@@ -21,7 +21,7 @@
         window.__ccpwgl2Promise = new Promise((resolve, reject) => {
             if (window.CCPWGL2) return resolve(window.CCPWGL2)
             const el = document.createElement('script')
-            el.src = '/ccpwgl2_int.js'
+            el.src = '/ccpwgl2_int.min.js'
             el.onload = () => window.CCPWGL2
                 ? resolve(window.CCPWGL2)
                 : reject(new Error('bundle loaded but CCPWGL2 global is missing'))
