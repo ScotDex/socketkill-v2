@@ -14,9 +14,9 @@
     let canvas
     let tny = null
 
-    // 'idle' is just the button - no stage, no canvas, no bundle. A hull is
-    // ~58MB of geometry and textures, which is not a cost to put on someone
-    // who came to read the manifest.
+    // 'idle' is the button alone - the stage sits at zero height and the
+    // bundle isn't requested. A hull is ~58MB, which is not a cost to put on
+    // someone who came to read the manifest.
     let status = 'idle'
 
     function loadLibrary() {
@@ -39,8 +39,7 @@
     async function render() {
         if (status !== 'idle') return
 
-        // Swaps the button for the stage. The canvas doesn't exist until
-        // Svelte has flushed this, hence the frame wait below.
+        // Opens the accordion and creates the canvas.
         status = 'loading'
 
         try {
@@ -49,14 +48,21 @@
             const tw2 = mod.tw2
 
             // Without this, Initialize fetches the whole data.black SOF
-            // catalog - every hull in the game. The handler boots from
-            // generic.black and pulls only what this DNA needs.
+            // catalog - every hull in the game, ~183MB. The handler boots
+            // from generic.black and pulls only what this DNA needs.
             const sof = new mod.EveSOFDataHandler()
             tw2.Register({ dnaHandler: sof.handler })
 
-            // Wait for the stage to be in the DOM and laid out before reading
-            // its size - the canvas is created by the status change above.
-            await new Promise(r => requestAnimationFrame(r))
+            // The stage is mid-transition at this point, so its height is
+            // still climbing. Wait for the accordion to settle before reading
+            // it, or the drawing buffer is sized against a partial height.
+            await new Promise(resolve => {
+                const done = () => resolve()
+                canvas.parentElement.addEventListener('transitionend', done, { once: true })
+                // Fallback: if the transition never fires (reduced motion,
+                // interrupted), don't hang here.
+                setTimeout(done, 700)
+            })
 
             // CSS sizes the element; these attributes size the drawing buffer
             // WebGL renders into. Without them it stays at 300x150.
@@ -109,27 +115,39 @@
 
 {#if status === 'idle'}
     <button type="button" class="render-btn" on:click={render}>&gt; RENDER IN 3D</button>
-{:else}
-    <div class="stage">
+{/if}
+
+<div class="stage" class:open={status !== 'idle'}>
+    {#if status !== 'idle'}
         <canvas bind:this={canvas} class:hidden={status !== 'ready'}></canvas>
+
         {#if status === 'loading'}
-            <span class="msg">&gt; GENERATING</span>
+            <span class="msg">
+                &gt; GENERATING<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+            </span>
         {:else if status === 'failed'}
             <span class="msg">&gt; RENDER UNAVAILABLE</span>
         {/if}
-    </div>
-{/if}
+    {/if}
+</div>
 
 <style>
+    /* Accordion. Zero height when idle, so the card is just its header and
+       the button until the reader asks for a hull. */
     .stage {
         position: relative;
-        aspect-ratio: 16 / 9;
+        height: 0;
         overflow: hidden;
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         background:
             radial-gradient(ellipse at center,
                 rgb(var(--phosphor-rgb) / 0.05) 0%,
                 transparent 70%),
             #05070a;
+    }
+
+    .stage.open {
+        height: 400px;
     }
 
     canvas {
@@ -154,6 +172,21 @@
         pointer-events: none;
     }
 
+    /* Same cadence as the boot sequence dots, so the wait reads as part of
+       the same interface rather than a new idiom. */
+    .dots span {
+        opacity: 0;
+        animation: viewer-dot-cycle 1.4s infinite;
+    }
+
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes viewer-dot-cycle {
+        0%, 70%, 100% { opacity: 0; }
+        25%, 50%      { opacity: 1; }
+    }
+
     .render-btn {
         width: 100%;
         padding: 0.6rem;
@@ -170,5 +203,10 @@
     .render-btn:hover {
         color: var(--color-neon-green);
         background: rgb(var(--phosphor-rgb) / 0.05);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stage { transition: none; }
+        .dots span { animation: none; opacity: 1; }
     }
 </style>
