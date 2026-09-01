@@ -393,32 +393,6 @@ details[open] > .grp-atk .grp-caret {
     text-shadow: var(--glow);
 }
 
-.viewport {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background:
-        radial-gradient(ellipse at center,
-            rgb(var(--phosphor-rgb) / 0.05) 0%,
-            transparent 70%),
-        #05070a;
-}
-
-
-.viewport canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.viewport img {
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    max-width: 100%;
-    max-height: 88%;
-}
-
 .cover {
     position: relative;
     aspect-ratio: 16 / 7;

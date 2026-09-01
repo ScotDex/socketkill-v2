@@ -377,9 +377,7 @@ const singleGroup = grouped.length === 1
                             <span>hull</span>
                             <span class="tag">{kill.victim.ship}</span>
                         </header>
-                        <div class="viewport">
-                            <ShipViewer client:load shipTypeID={shipTypeID} />
-                        </div>
+                        <ShipViewer client:visible shipTypeID={shipTypeID} />
                     </div>
                 )}
             <div class="card" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
