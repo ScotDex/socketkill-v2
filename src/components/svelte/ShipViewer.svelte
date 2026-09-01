@@ -1,9 +1,7 @@
 <script>
-    import { onMount, onDestroy } from 'svelte'
+    import { onDestroy } from 'svelte'
 
     export let shipTypeID
-    export let shipName = ''
-    export let staticRenderUrl = ''
 
     const MARGIN = 1.4
 
@@ -15,6 +13,10 @@
 
     let canvas
     let tny = null
+
+    // 'idle' is just the button - no stage, no canvas, no bundle. A hull is
+    // ~58MB of geometry and textures, which is not a cost to put on someone
+    // who came to read the manifest.
     let status = 'idle'
 
     function loadLibrary() {
@@ -36,6 +38,9 @@
 
     async function render() {
         if (status !== 'idle') return
+
+        // Swaps the button for the stage. The canvas doesn't exist until
+        // Svelte has flushed this, hence the frame wait below.
         status = 'loading'
 
         try {
@@ -43,11 +48,18 @@
             tny = mod.tny
             const tw2 = mod.tw2
 
-        
+            // Without this, Initialize fetches the whole data.black SOF
+            // catalog - every hull in the game. The handler boots from
+            // generic.black and pulls only what this DNA needs.
             const sof = new mod.EveSOFDataHandler()
             tw2.Register({ dnaHandler: sof.handler })
 
+            // Wait for the stage to be in the DOM and laid out before reading
+            // its size - the canvas is created by the status change above.
             await new Promise(r => requestAnimationFrame(r))
+
+            // CSS sizes the element; these attributes size the drawing buffer
+            // WebGL renders into. Without them it stays at 300x150.
             const rect = canvas.getBoundingClientRect()
             canvas.width = rect.width
             canvas.height = rect.height
@@ -66,11 +78,17 @@
                 resMan: { maxConcurrentLoads: 24 }
             })
 
+            // The canvas sits in a scrolling column, so wheel events over it
+            // would scroll the page while the reader is trying to zoom.
+            // passive:false is required for preventDefault to apply.
             canvas.addEventListener('wheel', e => e.preventDefault(), { passive: false })
 
             const ship = await tny.FetchShip(shipTypeID)
             const camera = tny.GetCamera()
 
+            // FetchShip resolves when the object is built, but geometry keeps
+            // preparing afterwards and GetBoundingSphere has no radius until
+            // it lands. FitToScreen returns null rather than guessing.
             for (let i = 0; i < 40; i++) {
                 if (camera.FitToScreen(ship, { margin: MARGIN })) break
                 await new Promise(r => setTimeout(r, 100))
@@ -89,47 +107,35 @@
     })
 </script>
 
-<div class="stage" class:expanded={status !== 'idle'}>
-    {#if status === 'idle'}
-        <img src={staticRenderUrl} alt={shipName} loading="lazy" />
-    {:else}
+{#if status === 'idle'}
+    <button type="button" class="render-btn" on:click={render}>&gt; RENDER IN 3D</button>
+{:else}
+    <div class="stage">
         <canvas bind:this={canvas} class:hidden={status !== 'ready'}></canvas>
         {#if status === 'loading'}
             <span class="msg">&gt; GENERATING</span>
         {:else if status === 'failed'}
             <span class="msg">&gt; RENDER UNAVAILABLE</span>
         {/if}
-    {/if}
-</div>
-
-{#if status === 'idle'}
-    <button type="button" class="render-btn" on:click={render}>&gt; RENDER IN 3D</button>
+    </div>
 {/if}
 
 <style>
     .stage {
-    position: relative;
-    height: 0;
-    overflow: hidden;
-    transition: height 0.4s ease;
-}
-
-.stage.expanded {
-    height: 400px;
-}
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        background:
+            radial-gradient(ellipse at center,
+                rgb(var(--phosphor-rgb) / 0.05) 0%,
+                transparent 70%),
+            #05070a;
+    }
 
     canvas {
         width: 100%;
         height: 100%;
         display: block;
-    }
-
-    img {
-        position: absolute;
-        inset: 0;
-        margin: auto;
-        max-width: 100%;
-        max-height: 88%;
     }
 
     .hidden {
@@ -150,14 +156,13 @@
 
     .render-btn {
         width: 100%;
-        padding: 0.5rem;
+        padding: 0.6rem;
         font-family: var(--font-mono);
         font-size: 10px;
         letter-spacing: 0.22em;
         color: var(--color-text-faint);
         background: transparent;
         border: 0;
-        border-top: 1px solid var(--color-border-dim);
         cursor: pointer;
         transition: color 0.15s, background 0.15s;
     }
