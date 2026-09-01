@@ -15,9 +15,10 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 - **Per-kill social previews.** OG tags rendered server-side via Cloudflare Pages Functions, so Discord, Twitter, and Bluesky cards reflect actual kill data.
 - **Edge-cached image proxy.** Ship renders, corp logos, alliance logos served via Cloudflare's edge. Performance improvement from the CCP image server.
 - **Multi-channel Discord integration.** [Whale alerts, AT/officer/Rorqual sightings, Multiple Value Thresholds](https://discord.gg/UnFN8UY6Dz)
-- **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems and region to configure your own view.
+- **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems, region and light year range to configure your own view.
 - **Atmospheric interface.** Terminal-aesthetic design from the alien franchise 
 - **Query Builder.** Configure your own question using the query builder module, resulting on the days killmails.
+- **Rendering Option ** Option to generate a 3d render of the ship that was just lost.
 
 
 ## Tech stack
@@ -55,5 +56,7 @@ Killmail valuations done by [Janice E-351] (https://janice.e-351.com/api/rest/do
 Main site background art from [Rixx Javix](https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
 
 Background art for the killmails and stats page from the magnificent work from [El Geo](https://www.lloydgeorge.art/)
+
+Model rendering tooling by [Tamber] (https://x.com/pauloosterman)
 
 Ship fit preview by https://eveship.fit/
