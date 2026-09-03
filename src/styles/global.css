@@ -156,6 +156,15 @@ body::after {
 .glow,
 .ship-name { text-shadow: var(--shadow-phosphor); }
 
+.kill-row .kill-loc,
+.kill-row .kill-isk {
+    animation: phosphor-burn var(--burn-dur) cubic-bezier(0.1, 0.9, 0.2, 1);
+    animation-delay: var(--burn-stagger, 0ms);
+}
+
+.kill-row .kill-loc { --burn-stagger: 60ms; }
+.kill-row .kill-isk { --burn-stagger: 120ms; }
+
 .ship-name { mix-blend-mode: screen; }
 
 .eve-accent-glow {
