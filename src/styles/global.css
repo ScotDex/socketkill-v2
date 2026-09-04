@@ -2,6 +2,9 @@
 @import "./panels.css";
 
 :root {
+
+    color-scheme: dark;
+
     --phosphor-rgb: 63 185 80;
     --scan-cyan-rgb: 0 212 255;
     --whale-rgb: 242 204 96;
@@ -86,6 +89,11 @@ body {
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background: rgb(var(--phosphor-rgb) / 0.3);
+    color: #fff;
 }
 
 .art-bg {
