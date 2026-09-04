@@ -182,6 +182,15 @@ const orderedGroups = [...knownKeys.filter(g => g !== 'other'), ...unknownKeys, 
         }
     })
 const attackers = kill.attackers || []
+
+const PORTRAIT_OVERRIDES = {
+    909008587: '/Harold.webp'
+}
+
+const victimPortrait = kill.victim.characterID
+    ? (PORTRAIT_OVERRIDES[kill.victim.characterID] ?? `https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=128`)
+    : null
+
 const grouped = Object.values(
     attackers.reduce((acc, a) => {
         const key = a.allianceID ? `a:${a.allianceID}` : `c:${a.corporationID}`
@@ -254,7 +263,8 @@ const singleGroup = grouped.length === 1
                     )}
                     <div class="ident">
                         {kill.victim.characterID && (
-                            <img class="portrait-sm" src={`https://images.evetech.net/characters/${kill.victim.characterID}/portrait?size=128`} alt={kill.victim.name} loading="lazy" />
+                            <img class="portrait-sm" src={victimPortrait} alt={kill.victim.name} loading="lazy" />
+                            
                         )}
                         <div class="who">
                             <div class="nm">
