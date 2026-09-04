@@ -3,7 +3,6 @@
 
 :root {
 
-    color-scheme: dark;
 
     --phosphor-rgb: 63 185 80;
     --scan-cyan-rgb: 0 212 255;
@@ -91,10 +90,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-::selection {
-    background: rgb(var(--phosphor-rgb) / 0.3);
-    color: #fff;
-}
+
 
 .art-bg {
     background-image:
