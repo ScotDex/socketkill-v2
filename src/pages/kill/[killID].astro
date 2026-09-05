@@ -423,7 +423,8 @@ const singleGroup = grouped.length === 1
     data-bp={`https://images.evetech.net/types/${item.typeID}/bp?size=32`}
     onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=this.dataset.bp}"
     class="w-6 h-6 flex-shrink-0" alt="" loading="lazy" />
-                                                <div class="ui flex-1 min-w-0 truncate">
+                                                                                                <div class="ui flex-1 min-w-0 truncate">
+                                                    {item._nested && <span class="text-[var(--color-text-faint)] mr-1">—</span>}
                                                     <a href={externalLink('type', item.typeID)} target="_blank" rel="noopener noreferrer" class="text-[var(--color-text-body)] link">{item.name}</a>
                                                 </div>
                                                 <div class="font-mono text-xs tabular-nums flex-shrink-0 w-24 text-right qty">
