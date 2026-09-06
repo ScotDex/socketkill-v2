@@ -329,9 +329,6 @@ const singleGroup = grouped.length === 1
             <span style="color: var(--color-neon-green)">DROPPED {droppedPct}%</span>
             <span style="color: var(--color-isk-billion)">{(100 - droppedPct).toFixed(1)}% DESTROYED</span>
         </div>
-        <div class="split-bar" title={`${droppedPct}% dropped`}>
-            <span style={`width:${droppedPct}%`}></span>
-        </div>
     </>
 )}
                     </div>
@@ -396,6 +393,11 @@ const singleGroup = grouped.length === 1
                         <button type="button" class="tab" data-mode="destroyed" role="tab" aria-selected="false">DESTROYED</button>
                     </div>
                 </header>
+                                {splitTotal > 0 && (
+                    <div class="split-bar mx-4 mt-3" title={`${droppedPct}% dropped`}>
+                        <span style={`width:${droppedPct}%`}></span>
+                    </div>
+                )}
 
                 {orderedGroups.length === 0 ? (
                     <div class="ui p-4 text-sm text-[var(--color-text-faint)] italic">&gt; NO ITEMS</div>
