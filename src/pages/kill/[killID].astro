@@ -294,20 +294,12 @@ const singleGroup = grouped.length === 1
                     </div>
                     <div class="dossier-rows">
                         <div class="row"><span class="k">SHIP</span><span class="v">{kill.victim.ship}</span></div>
-                        <div class="row"><span class="k">SYSTEM</span>
+                                                <div class="row"><span class="k">LOCATION</span>
     <span class="v truncate">
         <span class="chip" style={`--c:${sec.color}`} title={sec.label}>{secShort}</span>
         <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="link">{kill.system.name}</a>
+        <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="link ml-2" style="color: var(--color-text-faint)">{kill.system.region}</a>
     </span></div>
-                        <div class="row"><span class="k">REGION</span>
-                            <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="v link truncate">{kill.system.region}</a></div>
-                        <div class="row"><span class="k">TIME</span><span class="v text-xs">{killTime}</span></div>
-                        {fitStats && (
-    <div class="row">
-        <span class="k">EHP</span>
-                <span class="v">{Math.round(fitStats.Defense.Ehp.TotalRaw).toLocaleString()}</span>
-    </div>
-)}
                         <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
                             <span class="k">SYSTEM ACTIVITY</span>
                             <span class="v" data-count></span></div>
@@ -317,6 +309,12 @@ const singleGroup = grouped.length === 1
 
                         <div class="row mt-2"><span class="k">TOTAL VALUE</span>
                             <span class="v" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
+                                                    {fitStats && (
+    <div class="row">
+        <span class="k">EHP</span>
+                <span class="v">{Math.round(fitStats.Defense.Ehp.TotalRaw).toLocaleString()}</span>
+    </div>
+)}
                             {kill.victim.damageTaken != null && (
                             <div class="row"><span class="k">DAMAGE TAKEN</span>
                                 <span class="v" style="color: var(--color-isk-billion)">{kill.victim.damageTaken.toLocaleString()}</span></div>
