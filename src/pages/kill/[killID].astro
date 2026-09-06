@@ -321,16 +321,16 @@ const singleGroup = grouped.length === 1
                         <div class="row"><span class="k">DESTROYED</span>
                             <span class="v" style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
-                        <div class="row mt-2"><span class="k">TOTAL VALUE</span>
+                        <div class="row"><span class="k">TOTAL VALUE</span>
                             <span class="v" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
-                        {splitTotal > 0 && (
-    <>
-        <div class="split-legend">
-            <span style="color: var(--color-neon-green)">DROPPED {droppedPct}%</span>
-            <span style="color: var(--color-isk-billion)">{(100 - droppedPct).toFixed(1)}% DESTROYED</span>
-        </div>
-    </>
-)}
+                                        {splitTotal > 0 && (
+                    <div class="mx-4 mt-3">
+                        <div class="split-legend">
+                            <span style="color: var(--color-neon-green)">DROPPED {droppedPct}%</span>
+                            <span style="color: var(--color-isk-billion)">{(100 - droppedPct).toFixed(1)}% DESTROYED</span>
+                        </div>
+                    </div>
+                )}
                     </div>
                     <div class="dossier-actions">
                         {fitPreviewUrl ? (
