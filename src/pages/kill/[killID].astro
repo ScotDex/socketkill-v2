@@ -296,8 +296,8 @@ const singleGroup = grouped.length === 1
                         <div class="row"><span class="k">SHIP</span><span class="v">{kill.victim.ship}</span></div>
                                                 <div class="row"><span class="k">LOCATION</span>
     <span class="v truncate">
-        <span class="chip" style={`--c:${sec.color}`} title={sec.label}>{secShort}</span>
         <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="link">{kill.system.name}</a>
+        <span class="chip" style={`--c:${sec.color}`} title={sec.label}>{secShort}</span>
         <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="link ml-1">{kill.system.region}</a>
     </span></div>
                         <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
