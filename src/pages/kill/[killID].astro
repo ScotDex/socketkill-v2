@@ -298,7 +298,7 @@ const singleGroup = grouped.length === 1
     <span class="v truncate">
         <span class="chip" style={`--c:${sec.color}`} title={sec.label}>{secShort}</span>
         <a href={externalLink('system', kill.system.name)} target="_blank" rel="noopener noreferrer" class="link">{kill.system.name}</a>
-        <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="link ml-2" style="color: var(--color-text-faint)">{kill.system.region}</a>
+        <a href={externalLink('region', kill.system.region)} target="_blank" rel="noopener noreferrer" class="link ml-1">{kill.system.region}</a>
     </span></div>
                         <div class="row" id="sys-activity" data-id={kill.system?.id ?? ''} hidden>
                             <span class="k">SYSTEM ACTIVITY</span>
@@ -306,9 +306,6 @@ const singleGroup = grouped.length === 1
                         <div class="row" id="reg-activity" data-id={kill.system?.regionID ?? ''} hidden>
                             <span class="k">REGION ACTIVITY</span>
                             <span class="v" data-count></span></div>
-
-                        <div class="row mt-2"><span class="k">TOTAL VALUE</span>
-                            <span class="v" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                                                     {fitStats && (
     <div class="row">
         <span class="k">EHP</span>
@@ -324,6 +321,8 @@ const singleGroup = grouped.length === 1
                         <div class="row"><span class="k">DESTROYED</span>
                             <span class="v" style="color: var(--color-isk-billion)">{kill.destroyedValue ?? '—'}</span></div>
                         <div class="row"><span class="k">FITTING</span><span class="v">{kill.fittedValue ?? '—'}</span></div>
+                        <div class="row mt-2"><span class="k">TOTAL VALUE</span>
+                            <span class="v" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                         {splitTotal > 0 && (
     <>
         <div class="split-legend">
