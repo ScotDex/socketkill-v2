@@ -46,10 +46,7 @@ function cardTint(palette) {
 const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
-const [activityRes, corpHistoryRes] = await Promise.all([
-    fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 }),
-    isPilot ? fetchJson(`https://esi.evetech.net/characters/${id}/corporationhistory/`) : null,
-])
+const activityRes = await fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 })
 
 if (!activityRes.ok || !activityRes.data?.identity) {
     return new Response('Entity not found', {
@@ -92,62 +89,6 @@ const identity = {
     friendlyFire: raw.friendly_fire ?? null,
     cardTint: cardTint(raw.palette),
 }
-
-const historyRaw = corpHistoryRes?.ok ? corpHistoryRes.data : []
-const history = [...historyRaw]
-    .sort((a, b) => Date.parse(b.start_date) - Date.parse(a.start_date))
-    .map((rec, i, arr) => ({
-        corpID: rec.corporation_id,
-        start: rec.start_date,
-        end: i === 0 ? null : arr[i - 1].start_date,
-    }))
-const uniqueCorpIDs = [...new Set(history.map(h => h.corpID))]
-
-const allianceHistories = isPilot
-    ? await Promise.all(uniqueCorpIDs.map(cid =>
-        fetchJson(`https://esi.evetech.net/corporations/${cid}/alliancehistory/`)))
-    : []
-
-const allianceByCorp = new Map()
-uniqueCorpIDs.forEach((cid, i) => {
-    const res = allianceHistories[i]
-    const recs = res?.ok ? res.data : []
-    allianceByCorp.set(cid, [...recs].sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date)))
-})
-
-
-function allianceAt(corpID, iso) {
-    const recs = allianceByCorp.get(corpID) ?? []
-    const t = Date.parse(iso)
-    let current = null
-    for (const r of recs) {
-        if (Date.parse(r.start_date) > t) break
-        current = r.alliance_id ?? null
-    }
-    return current
-}
-
-const historyJoined = history.map(h => ({
-    ...h,
-    allianceID: allianceAt(h.corpID, h.start),
-}))
-
-const uniqueAllianceIDs = [...new Set(historyJoined.map(h => h.allianceID).filter(Boolean))]
-
-const nameIDs = [...uniqueCorpIDs, ...uniqueAllianceIDs]
-const namesRes = nameIDs.length
-    ? await fetchJson('https://esi.evetech.net/universe/names/', { method: 'POST', body: nameIDs })
-    : null
-const nameByID = new Map((namesRes?.ok ? namesRes.data : []).map(n => [n.id, n.name]))
-
-const employment = historyJoined.map(h => ({
-    corpID: h.corpID,
-    corpName: nameByID.get(h.corpID) ?? `Corporation ${h.corpID}`,
-    allianceID: h.allianceID,
-    allianceName: h.allianceID ? (nameByID.get(h.allianceID) ?? `Alliance ${h.allianceID}`) : null,
-    start: h.start.slice(0, 10),
-    end: h.end ? h.end.slice(0, 10) : null,
-}))
 
 const feedOnline = activityRes.ok
 const events = feedOnline ? (activityRes.data.events ?? []) : []
@@ -378,45 +319,24 @@ const dayViews = byDay.map(bucket => ({
                     </div>
                 </div>
 
-                {isPilot && employment.length > 0 && (
+                {isPilot && identity.corpID && (
     <>
         <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-1">
             <span class="grp">Employment History</span>
-            <span class="tag">{employment.length} RECORDS</span>
+                        <span class="tag" data-emp-count>—</span>
         </div>
         <div class="px-3 pb-2">
-            <details open={employment.length <= 3}>
+                <details data-emp={String(id)}>
                 <summary class="grp-atk">
                     <span class="grp-caret">▸</span>
                     <img class="grp-logo"
-                         src={`https://images.evetech.net/corporations/${employment[0].corpID}/logo?size=32`}
+                         src={`https://images.evetech.net/corporations/${identity.corpID}/logo?size=32`}
                          alt="" loading="lazy"
                          onerror="this.style.visibility='hidden'" />
-                    <span>{employment[0].corpName}</span>
-                    <span class="grp-n">{employment.length}</span>
+                                        <span>{identity.corpName}</span>
                 </summary>
-                <ul class="space-y-2 mt-2">
-                    {employment.map(e => (
-                        <li class="flex items-center gap-2 text-xs">
-                            <img src={`https://images.evetech.net/corporations/${e.corpID}/logo?size=32`}
-                                 class="w-6 h-6 shrink-0" width="32" height="32" alt=""
-                                 loading="lazy" onerror="this.style.visibility='hidden'" />
-                            <span class="min-w-0 flex-1">
-                                <a href={entityHref('corp', e.corpID)} class="link block truncate">{e.corpName}</a>
-                                {e.allianceID && (
-                                    <a href={entityHref('alliance', e.allianceID)}
-                                       class="link block truncate" style="color:var(--color-text-faint)">{e.allianceName}</a>
-                                )}
-                            </span>
-                            <span class="font-mono text-[10px] tabular-nums text-right shrink-0"
-                                  style="color:var(--color-text-faint)">
-                                {e.start}<br />{e.end ?? 'present'}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
                 <ul class="space-y-2 mt-2" data-emp-list style="border-top:1px solid var(--color-eve-border); padding-top:0.5rem">
-                    <li class="text-xs" style="color:var(--color-text-faint)">client fetch pending…</li>
+                    <li class="text-xs" style="color:var(--color-text-faint)">fetching corp history</li>
                 </ul>
             </details>
         </div>
