@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EVE Frigate Damage Guide — Offline SDE</title>
+<link rel="stylesheet" href="/guide/css/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div>
+      <h1>EVE FRIGATE DAMAGE GUIDE</h1>
+      <div class="sub">Offline CCP SDE database · resistance &amp; ammunition calculator</div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input id="search" placeholder="Search frigates…" autocomplete="off">
+    <select id="faction"><option value="all">All Factions</option></select>
+    <select id="class"><option value="all">All Classes</option></select>
+    <div id="count" class="sub countcell"></div>
+  </div>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="sidebox">
+        <div id="sideAll" class="sideall"><b>ALL SHIPS</b><span id="sideTotal">—</span></div>
+        <h4>CLASSES</h4>
+        <div id="classList"></div>
+      </div>
+      <div class="sidebox">
+        <h4>FACTIONS</h4>
+        <div id="factionList"></div>
+      </div>
+      <div class="sidebox data-source">
+        <h4>DATA SOURCE</h4>
+        CCP Static Data (SDE)<br>Build 3487903
+      </div>
+    </aside>
+
+    <div id="grid" class="grid"></div>
+
+    <aside id="detail" class="detail" aria-live="polite">
+      <div class="section">
+        <h2>Select a frigate</h2>
+        <p class="sub">Ship data is served from a local file. No ESI request is made.</p>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<script type="module" src="/guide/js/main.js"></script>
+</body>
+</html>
