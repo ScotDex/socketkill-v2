@@ -88,6 +88,7 @@
             canvas.addEventListener('wheel', e => e.preventDefault(), { passive: false })
 
             const ship = await tny.FetchShip(shipTypeID)
+            ship.SetRotationFromEulerDegreeValues(90, 0, 0).UpdateValues()
             const camera = tny.GetCamera()
 
             // FetchShip resolves when the object is built, but geometry keeps
