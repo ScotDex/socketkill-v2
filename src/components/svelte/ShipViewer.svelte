@@ -6,7 +6,6 @@
 
     const MARGIN = 1.4
     const DWELL_MS = 8000
-const DRIFT_PER_MS = 360 / 60000
 
     const PATHS = {
         api: 'https://caldariprimeponyclub.com/eve/latest/',
@@ -18,7 +17,6 @@ const DRIFT_PER_MS = 360 / 60000
     let stage
     let tny = null
     let timer = null
-        let raf = null
 
     // The static render holds the frame until ccpwgl2 has a hull to show. A
     // hull is ~58MB, so nothing is fetched until the reader has actually sat
@@ -95,22 +93,7 @@ const DRIFT_PER_MS = 360 / 60000
                 await new Promise(r => setTimeout(r, 100))
             }
 
-                        status = 'ready'
-
-            let last = performance.now()
-            const drift = now => {
-                camera.rotationY += (now - last) * DRIFT_PER_MS
-                last = now
-                raf = requestAnimationFrame(drift)
-            }
-            raf = requestAnimationFrame(drift)
-
-            // Rotating under someone who is dragging to look at something is
-            // worse than no drift at all, so it stops for good on first touch.
-            canvas.addEventListener('pointerdown', () => {
-                cancelAnimationFrame(raf)
-                raf = null
-            }, { once: true })
+            status = 'ready'
 
         } catch (err) {
             console.error('[ShipViewer]', err)
@@ -140,7 +123,6 @@ const DRIFT_PER_MS = 360 / 60000
     })
 
     onDestroy(() => {
-        cancelAnimationFrame(raf)
         try { tny?.GetScene?.()?.ClearObjects?.() } catch {}
     })
 </script>
