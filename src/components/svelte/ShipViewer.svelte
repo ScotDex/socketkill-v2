@@ -17,6 +17,11 @@
     let stage
     let tny = null
     let timer = null
+    let drift = null
+    let paused = false
+
+    // Full rotation roughly every 60s. Ambient rather than distracting.
+    const DRIFT_PER_MS = 360 / 60000
 
     // The static render holds the frame until ccpwgl2 has a hull to show. A
     // hull is ~58MB, so nothing is fetched until the reader has actually sat
@@ -95,6 +100,20 @@
 
             status = 'ready'
 
+            // Slow yaw so the hull reads as a live object rather than a
+            // screenshot, without needing anyone to touch it.
+            let last = performance.now()
+            const tick = now => {
+                if (!paused) camera.rotationY += (now - last) * DRIFT_PER_MS
+                last = now
+                drift = requestAnimationFrame(tick)
+            }
+            drift = requestAnimationFrame(tick)
+
+            // Hand control over the moment the reader takes it. Resuming
+            // under someone's cursor is worse than stopping for good.
+            canvas.addEventListener('pointerdown', () => { paused = true }, { once: true })
+
         } catch (err) {
             console.error('[ShipViewer]', err)
             status = 'failed'
@@ -122,7 +141,8 @@
         }
     })
 
-    onDestroy(() => {
+        onDestroy(() => {
+        if (drift) cancelAnimationFrame(drift)
         try { tny?.GetScene?.()?.ClearObjects?.() } catch {}
     })
 </script>
