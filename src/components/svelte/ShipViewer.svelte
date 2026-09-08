@@ -1,9 +1,11 @@
 <script>
-    import { onDestroy } from 'svelte'
+    import { onMount, onDestroy } from 'svelte'
 
     export let shipTypeID
+    export let posterUrl = null
 
     const MARGIN = 1.4
+    const DWELL_MS = 8000
 
     const PATHS = {
         api: 'https://caldariprimeponyclub.com/eve/latest/',
@@ -12,11 +14,13 @@
     }
 
     let canvas
+    let stage
     let tny = null
+    let timer = null
 
-    // 'idle' is the button alone - the stage sits at zero height and the
-    // bundle isn't requested. A hull is ~58MB, which is not a cost to put on
-    // someone who came to read the manifest.
+    // The static render holds the frame until ccpwgl2 has a hull to show. A
+    // hull is ~58MB, so nothing is fetched until the reader has actually sat
+    // with this card - see the observer below.
     let status = 'idle'
 
     function loadLibrary() {
@@ -39,7 +43,6 @@
     async function render() {
         if (status !== 'idle') return
 
-        // Opens the accordion and creates the canvas.
         status = 'loading'
 
         try {
@@ -53,19 +56,9 @@
             const sof = new mod.EveSOFDataHandler()
             tw2.Register({ dnaHandler: sof.handler })
 
-            // The stage is mid-transition at this point, so its height is
-            // still climbing. Wait for the accordion to settle before reading
-            // it, or the drawing buffer is sized against a partial height.
-            await new Promise(resolve => {
-                const done = () => resolve()
-                canvas.parentElement.addEventListener('transitionend', done, { once: true })
-                // Fallback: if the transition never fires (reduced motion,
-                // interrupted), don't hang here.
-                setTimeout(done, 700)
-            })
-
             // CSS sizes the element; these attributes size the drawing buffer
-            // WebGL renders into. Without them it stays at 300x150.
+            // WebGL renders into. Without them it stays at 300x150. The stage
+            // is already at its final size here - no accordion to wait on.
             const rect = canvas.getBoundingClientRect()
             canvas.width = rect.width
             canvas.height = rect.height
@@ -108,61 +101,88 @@
         }
     }
 
+    // Dwell alone would charge someone 58MB for reading the manifest without
+    // ever looking up here, so the clock only runs while the card is on
+    // screen and resets if they scroll past.
+    onMount(() => {
+        const io = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting && status === 'idle') {
+                timer = setTimeout(render, DWELL_MS)
+            } else {
+                clearTimeout(timer)
+                timer = null
+            }
+        }, { threshold: 0.5 })
+
+        io.observe(stage)
+
+        return () => {
+            io.disconnect()
+            clearTimeout(timer)
+        }
+    })
+
     onDestroy(() => {
         try { tny?.GetScene?.()?.ClearObjects?.() } catch {}
     })
 </script>
 
-{#if status === 'idle'}
-    <button type="button" class="render-btn" on:click={render}>&gt; RENDER IN 3D</button>
-{/if}
+<div class="stage" bind:this={stage}>
+    {#if posterUrl}
+        <img class="poster" class:gone={status === 'ready'} src={posterUrl} alt="" />
+    {/if}
 
-<div class="stage" class:open={status !== 'idle'}>
-    {#if status !== 'idle'}
-        <canvas bind:this={canvas} class:hidden={status !== 'ready'}></canvas>
+    <canvas bind:this={canvas} class:visible={status === 'ready'}></canvas>
 
-        {#if status === 'loading'}
-            <span class="msg">
-                &gt; GENERATING<span class="dots"><span>.</span><span>.</span><span>.</span></span>
-            </span>
-        {:else if status === 'failed'}
-            <span class="msg">&gt; RENDER UNAVAILABLE</span>
-        {/if}
+    {#if status === 'failed'}
+        <span class="msg">&gt; RENDER UNAVAILABLE</span>
     {/if}
 </div>
 
 <style>
-    /* Accordion. Zero height when idle, so the card is just its header and
-       the button until the reader asks for a hull. */
     .stage {
         position: relative;
-        height: 0;
-        overflow: hidden;
-        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        background:
-            radial-gradient(ellipse at center,
-                rgb(var(--phosphor-rgb) / 0.05) 0%,
-                transparent 70%),
-            #05070a;
+        width: 100%;
+        height: 100%;
+        background: #05070a;
     }
 
-    .stage.open {
-        height: 400px;
-    }
-
-    canvas {
+    .poster, canvas {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         display: block;
     }
 
-    .hidden {
-        visibility: hidden;
+    /* Carries what .cover img used to do, so nothing shifts visually until
+       the hull lands. */
+    .poster {
+        object-fit: cover;
+        object-position: center 30%;
+        z-index: 1;
+        opacity: 1;
+        transition: opacity 0.8s ease-out;
+    }
+
+    .poster.gone {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    canvas {
+        opacity: 0;
+        transition: opacity 0.8s ease-out;
+    }
+
+    canvas.visible {
+        opacity: 1;
     }
 
     .msg {
         position: absolute;
         inset: 0;
+        z-index: 2;
         display: grid;
         place-items: center;
         font-family: var(--font-mono);
@@ -172,41 +192,7 @@
         pointer-events: none;
     }
 
-    /* Same cadence as the boot sequence dots, so the wait reads as part of
-       the same interface rather than a new idiom. */
-    .dots span {
-        opacity: 0;
-        animation: viewer-dot-cycle 1.4s infinite;
-    }
-
-    .dots span:nth-child(2) { animation-delay: 0.2s; }
-    .dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes viewer-dot-cycle {
-        0%, 70%, 100% { opacity: 0; }
-        25%, 50%      { opacity: 1; }
-    }
-
-    .render-btn {
-        width: 100%;
-        padding: 0.6rem;
-        font-family: var(--font-mono);
-        font-size: 10px;
-        letter-spacing: 0.22em;
-        color: var(--color-text-faint);
-        background: transparent;
-        border: 0;
-        cursor: pointer;
-        transition: color 0.15s, background 0.15s;
-    }
-
-    .render-btn:hover {
-        color: var(--color-neon-green);
-        background: rgb(var(--phosphor-rgb) / 0.05);
-    }
-
     @media (prefers-reduced-motion: reduce) {
-        .stage { transition: none; }
-        .dots span { animation: none; opacity: 1; }
+        .poster, canvas { transition: none; }
     }
 </style>
