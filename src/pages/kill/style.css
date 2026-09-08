@@ -399,16 +399,6 @@ details[open] > .grp-atk .grp-caret {
     overflow: hidden;
 }
 
-.cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 30%;
-    display: block;
-    mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
-    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
-}
-
 .ident {
     display: flex;
     align-items: flex-end;
