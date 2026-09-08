@@ -18,6 +18,7 @@ const DRIFT_PER_MS = 360 / 60000
     let stage
     let tny = null
     let timer = null
+        let raf = null
 
     // The static render holds the frame until ccpwgl2 has a hull to show. A
     // hull is ~58MB, so nothing is fetched until the reader has actually sat
