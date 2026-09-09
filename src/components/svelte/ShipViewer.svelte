@@ -4,7 +4,7 @@
     export let shipTypeID
     export let posterUrl = null
 
-    const MARGIN = 1.4
+    const MARGIN = 1.05
     const DWELL_MS = 8000
 
     const PATHS = {
@@ -94,8 +94,10 @@
             // FetchShip resolves when the object is built, but geometry keeps
             // preparing afterwards and GetBoundingSphere has no radius until
             // it lands. FitToScreen returns null rather than guessing.
+            const aspect = canvas.width / canvas.height
+
             for (let i = 0; i < 40; i++) {
-                if (camera.FitToScreen(ship, { margin: MARGIN })) break
+                if (camera.FitToScreen(ship, { margin: MARGIN, aspect })) break
                 await new Promise(r => setTimeout(r, 100))
             }
 
