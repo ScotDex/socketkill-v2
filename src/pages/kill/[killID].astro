@@ -58,29 +58,6 @@ function buildTitle(data) {
     return `${data.victim.name} lost ${article(data.victim.ship)} ${data.victim.ship}${valueClause}`
 }
 
-const eftText = buildEft(kill)
-let fitStats = null
-try {
-    if (eftText) {
-        const sRes = await fetch(`https://ws.socketkill.com/api/fit-stats/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-                'User-Agent': incomingUA,
-                ...(clientIP && { 'X-SK-Client-IP': clientIP })
-            },
-            body: eftText
-        })
-        if (sRes.ok) {
-            const data = await sRes.json()
-                        if (data?.Miscellaneous?.Ship?.Id) fitStats = data
-        }
-        console.log('[EWB]', id, sRes.status, fitStats ? 'ok' : 'no-stats')
-    }
-} catch (err) {
-    console.log('[EWB] failed', err.message)
-}
-
 function buildOgDescription(data) {
     const parts = []
 
@@ -229,7 +206,7 @@ const singleGroup = grouped.length === 1
     {shipTypeID && (
         <>
             <link rel="preconnect" href="https://caldariprimeponyclub.com" crossorigin />
-            <link rel="preload" href="/ccpwgl2_int.js" as="script" fetchpriority="low" />
+            <link rel="preload" href="/ccpwgl2_int.min.js" as="script" fetchpriority="low" />
         </>
     )}
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -307,12 +284,6 @@ const singleGroup = grouped.length === 1
                         <div class="row" id="reg-activity" data-id={kill.system?.regionID ?? ''} hidden>
                             <span class="k">REGION ACTIVITY</span>
                             <span class="v" data-count></span></div>
-                                                    {fitStats && (
-    <div class="row">
-        <span class="k">EHP</span>
-                <span class="v">{Math.round(fitStats.Defense.Ehp.TotalRaw).toLocaleString()}</span>
-    </div>
-)}
                             {kill.victim.damageTaken != null && (
                             <div class="row"><span class="k">DAMAGE TAKEN</span>
                                 <span class="v" style="color: var(--color-isk-billion)">{kill.victim.damageTaken.toLocaleString()}</span></div>
@@ -326,7 +297,6 @@ const singleGroup = grouped.length === 1
                             <span class="v" style={`color:${valueTier}; text-shadow: 0 0 8px color-mix(in srgb, ${valueTier} 40%, transparent)`}>{kill.totalValue ?? '—'}</span></div>
                     </div>
                     <div class="dossier-actions">
-                        <button type="button" id="eft-btn" data-eft={eftText} class="act">EFT EXPORT</button>
                         <a href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(canonicalUrl)}`} target="_blank" rel="noopener noreferrer" class="act" aria-label="Share on X"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
 </a>
                         <a href={`https://www.reddit.com/submit?url=${encodeURIComponent(canonicalUrl)}&title=${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer" class="act" aria-label="Share on Reddit"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.167 8a.83.83 0 0 0-.83.83c0 .459.372.84.83.831a.831.831 0 0 0 0-1.661m1.843 3.647c.315 0 1.403-.038 1.976-.611a.23.23 0 0 0 0-.306.213.213 0 0 0-.306 0c-.353.363-1.126.487-1.67.487-.545 0-1.308-.124-1.671-.487a.213.213 0 0 0-.306 0 .213.213 0 0 0 0 .306c.564.563 1.652.61 1.977.61zm.992-2.807c0 .458.373.83.831.83s.83-.381.83-.83a.831.831 0 0 0-1.66 0z"/><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.828-1.165c-.315 0-.602.124-.812.325-.801-.573-1.9-.945-3.121-.993l.534-2.501 1.738.372a.83.83 0 1 0 .83-.869.83.83 0 0 0-.744.468l-1.938-.41a.2.2 0 0 0-.153.028.2.2 0 0 0-.086.134l-.592 2.788c-1.24.038-2.358.41-3.17.992-.21-.2-.496-.324-.81-.324a1.163 1.163 0 0 0-.478 2.224q-.03.17-.029.353c0 1.795 2.091 3.256 4.669 3.256s4.668-1.451 4.668-3.256c0-.114"/></svg></a>
@@ -359,13 +329,10 @@ const singleGroup = grouped.length === 1
                 </div>
             </section>
             <section class="flex flex-col gap-4 self-start">
-                        <section class="flex flex-col gap-4 self-start">
-
                 {shipTypeID && kill.killmailHash && (
                     <FitCard killID={id} killmailHash={kill.killmailHash} shipName={kill.victim.ship} />
                 )}
 
-            <div class="card" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
             <div class="card" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
                 <header class="card-h flex justify-between items-center">
                     <span>details</span>
@@ -436,7 +403,7 @@ const singleGroup = grouped.length === 1
                     ·
                     <a href={`https://eve-kill.com/kill/${id}/`} target="_blank" rel="noopener noreferrer" class="link">EVE-KILL</a>
                     ·
-                     <a href={`https://tilt.fyi/dqyzaocOG0`} target="_blank" rel="noopener noreferrer" class="link">FUCK CANCER - DONATE</a>
+                     <a href={`https://tilt.fyi/dqyzaocOG0`} target="_blank" rel="noopener noreferrer" class="link">FUCK CANCER</a>
                 </footer>
             </div>
             </section>

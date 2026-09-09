@@ -76,6 +76,10 @@
     min-height: 300px;
 }
 
+.fit-wheel-wrap img {
+    max-width: none;
+}
+
 /* ══ BASE ═══════════════════════════════════════════════════════ */
 
 html,
