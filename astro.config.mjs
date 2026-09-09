@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
 
+import react from '@astrojs/react';
+
 export default defineConfig({
   site: 'https://socketkill.com',
   output: 'server',
@@ -17,19 +19,15 @@ export default defineConfig({
       enabled: false
     }
   }),
-  integrations: [
-    svelte(), 
-    sitemap(),
-    robotsTxt({
-      sitemap:['https://socketkill.com/sitemap-index.xml',
-              'https://socketkill.com/sitemaps/kills-index.xml'],
-      policy: [
-  { userAgent: 'meta-webindexer', disallow: '/' },
-  { userAgent: 'meta-externalagent', disallow: '/' },
-  { userAgent: '*', allow: '/', disallow: ['/api/'] }
+  integrations: [svelte(), sitemap(), robotsTxt({
+    sitemap:['https://socketkill.com/sitemap-index.xml',
+            'https://socketkill.com/sitemaps/kills-index.xml'],
+    policy: [
+{ userAgent: 'meta-webindexer', disallow: '/' },
+{ userAgent: 'meta-externalagent', disallow: '/' },
+{ userAgent: '*', allow: '/', disallow: ['/api/'] }
 ]
-    })
-  ], 
+  }), react()], 
   vite: {
     plugins: [tailwindcss()]
   }
