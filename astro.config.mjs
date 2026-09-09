@@ -31,6 +31,6 @@ export default defineConfig({
 ]
   }), react()], 
   vite: {
-    plugins: [tailwindcss(), wasm(), topLevelAwait()]
+    plugins: [tailwindcss(), wasm()]
   }
 })
