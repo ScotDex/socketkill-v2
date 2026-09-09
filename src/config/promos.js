@@ -7,17 +7,17 @@ export const promos = [
     sponsored: false,
   },
   {
-    image: 'https://edge.socketkill.com/Screenshot_2560x1440.jpg',
-    href: 'REPLACE_WITH_YOUR_EVE_RECRUITMENT_LINK',
+    image: 'https://edge.socketkill.com/thumbnail_recruite-a-friend-referral-link_1800x700px.webp',
+    href: 'https://www.eveonline.com/signup?invc=e32ca441-aa95-4eb7-ad06-d2c6334a5872',
     alt: 'Play EVE Online — 1 Million SP',
     expires: null,
     sponsored: true,
   },
-  {
-    image: 'https://edge.socketkill.com/preview-on-site-bg.png',
-    href: 'REPLACE_WITH_YOUR_DO_REFERRAL_LINK',
-    alt: 'DigitalOcean',
-    expires: null,
-    sponsored: true,
-  },
+{
+  image: 'https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%203.svg',
+  href: 'https://www.digitalocean.com/?refcode=1808909b79cf&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge',
+  alt: 'DigitalOcean Referral Badge',
+  expires: null,
+  sponsored: true,
+}
 ]
