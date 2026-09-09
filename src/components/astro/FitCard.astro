@@ -8,7 +8,7 @@ import ShipFitWheel from '../react/ShipFitWheel.jsx'
     <span class="tag">{shipName}</span>
   </header>
   <div class="fit-wheel-wrap">
-    <ShipFitWheel client:visible killID={killID} killmailHash={killmailHash} />
+    <ShipFitWheel client:load killID={killID} killmailHash={killmailHash} />
   </div>
   <footer class="card-f" style="color: var(--color-terminal-blue)">
     &gt; simulated via eveship.fit — all skills v
