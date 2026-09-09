@@ -89,7 +89,7 @@
             canvas.addEventListener('wheel', e => e.preventDefault(), { passive: false })
 
             const ship = await tny.FetchShip(shipTypeID)
-            ship.SetRotationFromEulerDegreeValues(90, 0, 0).UpdateValues()
+            ship.SetRotationFromEulerDegreeValues(0, 90, 0).UpdateValues()
             const camera = tny.GetCamera()
 
             // FetchShip resolves when the object is built, but geometry keeps
@@ -101,7 +101,7 @@
                 if (camera.FitToScreen(ship, { margin: MARGIN, aspect })) break
                 await new Promise(r => setTimeout(r, 100))
             }
-            camera.wrapped.rotationX = -1.3
+            camera.wrapped.rotationX = PITCH
             status = 'ready'
 
             // Slow yaw so the hull reads as a live object rather than a
