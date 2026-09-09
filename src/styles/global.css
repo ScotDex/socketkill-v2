@@ -71,9 +71,11 @@
 
 .fit-wheel-wrap {
     position: relative;
+    max-width: 520px;
     width: 100%;
     aspect-ratio: 1;
     min-height: 300px;
+    margin: 0 auto;
 }
 
 .fit-wheel-wrap img {
