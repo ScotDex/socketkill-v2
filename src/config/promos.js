@@ -7,9 +7,9 @@ export const promos = [
     sponsored: false,
   },
   {
-    image: 'https://edge.socketkill.com/promo/eve-invite.png',
+    image: 'https://edge.socketkill.com/Screenshot_2560x1440.jpg',
     href: 'REPLACE_WITH_YOUR_EVE_RECRUITMENT_LINK',
-    alt: 'Play EVE Online — free to start',
+    alt: 'Play EVE Online — 1 Million SP',
     expires: null,
     sponsored: true,
   },
