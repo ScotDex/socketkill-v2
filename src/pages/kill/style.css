@@ -452,7 +452,7 @@ details[open] > .grp-atk .grp-caret {
     display: grid;
     grid-template-columns: auto auto;
     gap: 2px;
-    padding: 0.5rem 0.75rem 0.75rem;
+    padding: 0.5rem 0.45rem 0.45rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
