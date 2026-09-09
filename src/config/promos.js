@@ -7,7 +7,7 @@ export const promos = [
     sponsored: false,
   },
   {
-    image: 'https://edge.socketkill.com/thumbnail_recruite-a-friend-referral-link_1800x700px.webp',
+    image: 'https://edge.socketkill.com/friend.jpg',
     href: 'https://www.eveonline.com/signup?invc=e32ca441-aa95-4eb7-ad06-d2c6334a5872',
     alt: 'Play EVE Online — 1 Million SP',
     expires: null,

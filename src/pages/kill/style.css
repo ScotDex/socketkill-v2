@@ -455,6 +455,10 @@ details[open] > .grp-atk .grp-caret {
     padding: 0.5rem 0.45rem 0.45rem;
 }
 
+.dossier-actions .act {
+    justify-self: start;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     details::details-content {
