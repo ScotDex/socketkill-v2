@@ -449,10 +449,9 @@ details[open] > .grp-atk .grp-caret {
 }
 
 .dossier-actions {
-    display: grid;
-    grid-template-columns: auto auto;
+    display: flex;
     gap: 2px;
-    padding: 0.5rem 0.45rem 0.45rem;
+    padding: 0.5rem 0.75rem 0.75rem;
 }
 
 .dossier-actions .act {
