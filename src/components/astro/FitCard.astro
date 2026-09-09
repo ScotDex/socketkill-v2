@@ -1,0 +1,16 @@
+---
+const { killID, killmailHash, shipName } = Astro.props
+import ShipFitWheel from '../react/ShipFitWheel.jsx'
+---
+<div class="card" style="--card-c: var(--color-terminal-blue); --d: 60ms">
+  <header class="card-h flex justify-between items-center">
+    <span>fit</span>
+    <span class="tag">{shipName}</span>
+  </header>
+  <div class="fit-wheel-wrap">
+    <ShipFitWheel client:visible killID={killID} killmailHash={killmailHash} />
+  </div>
+  <footer class="card-f" style="color: var(--color-terminal-blue)">
+    &gt; simulated via eveship.fit — all skills v
+  </footer>
+</div>

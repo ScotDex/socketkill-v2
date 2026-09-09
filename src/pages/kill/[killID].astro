@@ -5,6 +5,7 @@ import AttackerRow from '../../components/astro/AttackerRow.astro'
 import { parseIsk, classifySecurity, buildEft, formatIsk } from '../../lib/helpers.js'
 import ShipViewer from '../../components/svelte/ShipViewer.svelte'
 import './style.css'
+import FitCard from '../../components/astro/FitCard.astro'
 const { killID } = Astro.params
 const id = parseInt(killID)
 if (!Number.isFinite(id) || id <= 0) {
@@ -366,6 +367,13 @@ const singleGroup = grouped.length === 1
                 </div>
             </section>
             <section class="flex flex-col gap-4 self-start">
+                        <section class="flex flex-col gap-4 self-start">
+
+                {shipTypeID && kill.killmailHash && (
+                    <FitCard killID={id} killmailHash={kill.killmailHash} shipName={kill.victim.ship} />
+                )}
+
+            <div class="card" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
             <div class="card" transition:animate="slide" style="--card-c: var(--color-neon-green); --d: 45ms">
                 <header class="card-h flex justify-between items-center">
                     <span>details</span>
