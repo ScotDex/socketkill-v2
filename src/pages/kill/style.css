@@ -13,8 +13,7 @@ details[open]::details-content {
     block-size: auto;
 }
 
-.kill-screen,
-.fit-modal {
+.kill-screen {
     --font-body: 'Nunito Sans', sans-serif;
     --font-mono: 'Fragment Mono', monospace;
     --glow: 0 0 8px color-mix(in srgb, currentColor 40%, transparent);
@@ -79,33 +78,6 @@ details[open]::details-content {
     padding: 0.55rem 0.75rem;
     border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
     text-shadow: var(--glow);
-}
-
-.fit-modal {
-    width: min(94vw, 1220px);
-    height: min(92vh, 860px);
-    padding: 0;
-    background: var(--color-glass-bg);
-    border: 1px solid var(--color-border-dim);
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-    display: flex;
-    flex-direction: column;
-}
-
-.fit-modal:not([open]) {
-    display: none;
-}
-
-.fit-modal::backdrop {
-    background: rgba(10, 12, 16, 0.82);
-    backdrop-filter: blur(12px) saturate(120%);
-}
-
-#fit-frame {
-    flex: 1;
-    width: 100%;
-    border: 0;
-    background: #000;
 }
 
 .card-f {
@@ -478,7 +450,7 @@ details[open] > .grp-atk .grp-caret {
 
 .dossier-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr auto auto;
+    grid-template-columns: 1fr auto auto;
     gap: 2px;
     padding: 0.5rem 0.75rem 0.75rem;
 }
