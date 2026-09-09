@@ -1,0 +1,42 @@
+---
+import { promos } from '../../config/promos.js'
+
+const now = new Date()
+const active = promos.filter(p => !p.expires || new Date(p.expires) > now)
+---
+{active.length > 0 && (
+  <div class="promo-slot" data-promo-slot>
+    {active.map((p, i) => (
+      
+        href={p.href}
+        target="_blank"
+        rel={p.sponsored ? 'noopener noreferrer sponsored' : 'noopener noreferrer'}
+        class="promo-item"
+        data-active={i === 0 ? 'true' : 'false'}
+      >
+        <img src={p.image} alt={p.alt} loading="lazy" />
+      </a>
+    ))}
+  </div>
+)}
+
+<script>
+  function startRotation() {
+    const slot = document.querySelector('[data-promo-slot]')
+    if (!slot || slot.dataset.rotating === 'true') return
+
+    const items = [...slot.querySelectorAll('.promo-item')]
+    if (items.length < 2) return
+
+    slot.dataset.rotating = 'true'
+
+    let i = 0
+    setInterval(() => {
+      items[i].dataset.active = 'false'
+      i = (i + 1) % items.length
+      items[i].dataset.active = 'true'
+    }, 15000)
+  }
+
+  document.addEventListener('astro:page-load', startRotation)
+</script>

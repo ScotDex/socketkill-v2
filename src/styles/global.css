@@ -321,21 +321,35 @@ body::after {
     outline-offset: 2px;
 }
 
-/* ══ PARTNER MARK ═══════════════════════════════════════════════ */
+/* ══ PROMO SLOT ═════════════════════════════════════════════════ */
 
-.partner-mark {
+.promo-slot {
     position: fixed;
     bottom: 1.25rem;
     left: 1.25rem;
     z-index: 3;
+    display: grid;
+    width: 200px;
     opacity: 0.4;
     transition: opacity 0.25s;
 }
 
-.partner-mark:hover { opacity: 0.85; }
+.promo-slot:hover { opacity: 0.85; }
 
-.partner-mark img {
-    width: 200px;
+.promo-item {
+    grid-area: 1 / 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease-in-out;
+}
+
+.promo-item[data-active="true"] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.promo-item img {
+    width: 100%;
     height: auto;
     display: block;
 }
@@ -419,6 +433,7 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
     .signal-interference { animation: none; }
+    .promo-item { transition: none; }
 }
 
 @media (max-width: 1023px) {
