@@ -4,6 +4,8 @@ import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
+import wasm from 'vite-plugin-wasm';
+import topLevelAwait from 'vite-plugin-top-level-await';
 
 import react from '@astrojs/react';
 
@@ -29,6 +31,6 @@ export default defineConfig({
 ]
   }), react()], 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss(), wasm(), topLevelAwait()]
   }
 })
