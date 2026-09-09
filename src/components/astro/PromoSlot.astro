@@ -8,7 +8,7 @@ const active = promos.filter(p => !p.expires || new Date(p.expires) > now)
   <div class="promo-slot" data-promo-slot>
     {active.map((p, i) => (
       
-        href={p.href}
+        <a href={p.href}
         target="_blank"
         rel={p.sponsored ? 'noopener noreferrer sponsored' : 'noopener noreferrer'}
         class="promo-item"
