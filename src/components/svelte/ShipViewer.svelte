@@ -6,6 +6,7 @@
 
     const MARGIN = 1.05
     const DWELL_MS = 8000
+    const PITCH = -1.3
 
     const PATHS = {
         api: 'https://caldariprimeponyclub.com/eve/latest/',
@@ -100,14 +101,14 @@
                 if (camera.FitToScreen(ship, { margin: MARGIN, aspect })) break
                 await new Promise(r => setTimeout(r, 100))
             }
-
+            camera.wrapped.rotationX = -1.3
             status = 'ready'
 
             // Slow yaw so the hull reads as a live object rather than a
             // screenshot, without needing anyone to touch it.
             let last = performance.now()
             const tick = now => {
-                if (!paused) camera.rotationY += (now - last) * DRIFT_PER_MS
+                if (!paused) camera.wrapped.rotationY += (now - last) * DRIFT_PER_MS
                 last = now
                 drift = requestAnimationFrame(tick)
             }
