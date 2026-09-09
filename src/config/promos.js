@@ -14,7 +14,7 @@ export const promos = [
     sponsored: true,
   },
   {
-    image: 'https://edge.socketkill.com/promo/digitalocean.png',
+    image: 'https://edge.socketkill.com/preview-on-site-bg.png',
     href: 'REPLACE_WITH_YOUR_DO_REFERRAL_LINK',
     alt: 'DigitalOcean',
     expires: null,
