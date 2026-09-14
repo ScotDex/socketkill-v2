@@ -53,6 +53,8 @@ Further API's and SDE used [EVE API Explorer](https://developers.eveonline.com/a
 
 Killmail valuations done by [Janice E-351] (https://janice.e-351.com/api/rest/docs/index.html)
 
+Abysal module valuations done by (https://mutamarket.com/documentation/api-overview)
+
 Main site background art from [Rixx Javix](https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
 
 Background art for the killmails and stats page from the magnificent work from [El Geo](https://www.lloydgeorge.art/)
