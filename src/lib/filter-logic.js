@@ -41,13 +41,13 @@ export function passesFilter(kill, filters, resolvedSets = {}) {
 }
 
 export function passesWeaponKeyword(kill, matchedTypeIDs) {
-    if (!matchedTypeIDs || matchedTypeIDs.size === 0) return true  // filter inactive
+    if (!matchedTypeIDs || matchedTypeIDs.size === 0) return true  
     const ids = kill.weaponTypeIDs
     if (!Array.isArray(ids) || ids.length === 0) return false
     return ids.some((id) => matchedTypeIDs.has(id))
 }
 export function passesRadius(kill, radius, origin) {
-    if (!radius || !origin) return true          // filter inactive
+    if (!radius || !origin) return true         
     if (typeof kill.systemId !== 'number') return false
     const sys = origin.systems?.[kill.systemId]
     if (!sys || typeof sys.x !== 'number') return false
