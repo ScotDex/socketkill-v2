@@ -9,6 +9,8 @@ import {
   ShipFit,
   useCurrentFit,
   useImportEveShipFit,
+  useExportEft,
+  ShipStatistics,
 } from '@eveshipfit/react'
 
 const DATA_URL = 'https://edge.socketkill.com/eft/'
@@ -30,6 +32,31 @@ function FitLoader({ killID, killmailHash }) {
   return null
 }
 
+function EftExportButton() {
+  const exportEft = useExportEft()
+  const [copied, setCopied] = React.useState(false)
+  const timerRef = React.useRef(null)
+
+  React.useEffect(() => () => clearTimeout(timerRef.current), [])
+
+  const handleClick = React.useCallback(() => {
+    const eft = exportEft()
+    if (eft === null) return
+
+    navigator.clipboard.writeText(eft).then(() => {
+      clearTimeout(timerRef.current)
+      setCopied(true)
+      timerRef.current = setTimeout(() => setCopied(false), 2000)
+    }).catch(() => {})
+  }, [exportEft])
+
+  return (
+    <button type="button" className="act" onClick={handleClick}>
+      {copied ? 'COPIED' : 'EFT EXPORT'}
+    </button>
+  )
+}
+
 export default function ShipFitWheel({ killID, killmailHash }) {
   return (
     <EveDataProvider dataUrl={DATA_URL}>
@@ -40,6 +67,8 @@ export default function ShipFitWheel({ killID, killmailHash }) {
               <StatisticsProvider>
                 <FitLoader killID={killID} killmailHash={killmailHash} />
                 <ShipFit readOnly />
+                <ShipStatistics />
+                <EftExportButton />
               </StatisticsProvider>
             </CurrentFitProvider>
           </DogmaEngineProvider>
