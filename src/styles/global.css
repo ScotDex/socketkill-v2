@@ -71,6 +71,11 @@
 
 .fit-wheel-wrap {
     position: relative;
+    width: 100%;
+}
+
+.fit-wheel-ring {
+    position: relative;
     max-width: 520px;
     width: 100%;
     aspect-ratio: 1;

@@ -66,7 +66,9 @@ export default function ShipFitWheel({ killID, killmailHash }) {
             <CurrentFitProvider>
               <StatisticsProvider>
                 <FitLoader killID={killID} killmailHash={killmailHash} />
-                <ShipFit readOnly />
+                <div className="fit-wheel-ring">
+  <ShipFit readOnly />
+</div>
                 <ShipStatistics />
                 <EftExportButton />
               </StatisticsProvider>
