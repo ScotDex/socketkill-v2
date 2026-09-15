@@ -87,6 +87,18 @@
     max-width: none;
 }
 
+.fit-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.fit-col {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
 /* ══ BASE ═══════════════════════════════════════════════════════ */
 
 html,
