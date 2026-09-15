@@ -108,6 +108,12 @@ body {
     min-height: 100vh;
 }
 
+.fit-actions {
+    display: flex;
+    gap: 2px;
+    padding: 0.5rem 0.75rem 0.75rem;
+}
+
 body {
     background-color: var(--color-dark-bg);
     background-size: cover;

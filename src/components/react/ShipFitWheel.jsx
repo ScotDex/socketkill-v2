@@ -65,17 +65,19 @@ export default function ShipFitWheel({ killID, killmailHash }) {
           <DogmaEngineProvider>
             <CurrentFitProvider>
               <StatisticsProvider>
-                <FitLoader killID={killID} killmailHash={killmailHash} />
-                <div className="fit-layout">
-                  <div className="fit-col">
-                    <div className="fit-wheel-ring">
-                      <ShipFit readOnly />
-                    </div>
-                    <EftExportButton />
-                  </div>
-                  <ShipStatistics />
-                </div>
-              </StatisticsProvider>
+  <FitLoader killID={killID} killmailHash={killmailHash} />
+  <div className="fit-layout">
+    <div className="fit-col">
+      <div className="fit-wheel-ring">
+        <ShipFit readOnly />
+      </div>
+    </div>
+    <ShipStatistics />
+  </div>
+  <div className="fit-actions">
+    <EftExportButton />
+  </div>
+</StatisticsProvider>
             </CurrentFitProvider>
           </DogmaEngineProvider>
         </CurrentCharacterProvider>
