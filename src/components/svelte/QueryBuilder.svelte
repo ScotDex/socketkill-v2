@@ -131,9 +131,9 @@
       </div>
     </section>
 
-    <ChipFacet label="HULL"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="HULL CLASS" maxItems={5} />
-    <ChipFacet label="SOLAR SYSTEM" bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM" maxItems={5} />
-    <ChipFacet label="REGION"       bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION" maxItems={3} />
+    <ChipFacet label="HULLS (MAX 5)"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="HULL CLASS" maxItems={5} />
+    <ChipFacet label="SOLAR SYSTEMS (MAX 5)" bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM" maxItems={5} />
+    <ChipFacet label="REGION (MAX 3)"       bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION" maxItems={3} />
 
     <section class="flex flex-col gap-1.5">
       <span class="lbl">attackers</span>
@@ -152,8 +152,8 @@
   </div>
 
   <footer class="flex flex-col gap-2.5 p-3 pt-2.5 border-t border-[var(--color-border-dim)]">
-    <div class="readout-query" aria-live="polite">
-      <span class="text-[var(--color-neon-green)]">&gt;</span> {typed}<span class="caret">█</span>
+    <div class="readout-query">
+      <span class="text-[var(--color-neon-green)]">&gt;</span> {typed}<span class="caret" aria-hidden="true">█</span>
     </div>
     <button type="button" class="run" onclick={runQuery}>View results ↗</button>
   </footer>

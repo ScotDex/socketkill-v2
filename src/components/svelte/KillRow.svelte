@@ -16,9 +16,9 @@
     }}
 >
     <div class="flex items-center flex-1">
-        <a href={kill.zkillUrl} target="_blank" rel="noopener" class="flex items-center">
+        <a href={kill.zkillUrl} target="_blank" rel="noopener noreferrer" class="flex items-center">
             <div class="w-16 h-16 bg-black border border-[var(--color-border-dim)] rounded-sm overflow-hidden mr-4">
-                <img src={kill.shipImageUrl} alt="Ship" class="w-full h-full object-cover" loading="lazy" />
+                <img src={kill.shipImageUrl} alt="" class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="ml-2">
                 <strong class="ship-name text-white text-base font-semibold block">
@@ -36,10 +36,10 @@
     </div>
     <div class="flex items-center">
         <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
-            <img src={kill.corpImageUrl} alt="Corp" class="w-[60px] h-[60px]" loading="lazy" />
+            <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[60px] h-[60px]" loading="lazy" />
         </div>
         <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
-            <img src={kill.allianceImageUrl} alt="Alliance" class="w-[60px] h-[60px]" loading="lazy" />
+            <img src={kill.allianceImageUrl} alt="" class="w-[60px] h-[60px]" loading="lazy" />
         </div>
         <div class="w-[120px] text-center">
             <div class="font-bold font-mono {isBillion ? 'text-[var(--color-isk-billion)] text-xl' : 'text-[var(--color-neon-green)] text-lg'}">

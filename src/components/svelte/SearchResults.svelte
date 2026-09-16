@@ -5,7 +5,7 @@
   import { cubicOut } from 'svelte/easing';
   import { searchFilters, searchResults, runSearch } from '../../lib/search-store.js';
   import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js';
-  import { formatIsk } from '../../lib/filter-logic.js';
+  import { formatIsk, WHALE_THRESHOLD, BILLION_THRESHOLD } from '../../lib/filter-logic.js';
 
   onMount(() => {
     loadFilterSource();
@@ -61,9 +61,9 @@
     pochven: 'var(--color-isk-billion)'
   };
   const SEC_LABEL = { high:'HS', low:'LS', null:'NULL', wh:'WH', pochven:'POCH' };
-  const valueColor = (v) =>
-    v >= 10_000_000_000 ? 'var(--color-whale-accent)'
-    : v >= 1_000_000_000 ? 'var(--color-isk-billion)'
+    const valueColor = (v) =>
+    v >= WHALE_THRESHOLD ? 'var(--color-whale-accent)'
+    : v >= BILLION_THRESHOLD ? 'var(--color-isk-billion)'
     : 'var(--color-eve-accent)';
   const totalTween = new Tween(0, { duration: 600, easing: cubicOut });
   $effect(() => { totalTween.set($searchResults?.total ?? 0); });
@@ -92,7 +92,7 @@
   </div>
   <ul class="flex flex-col" class:loading={$searchResults?.loading}>
     {#each $searchResults?.kills ?? [] as k, i (k.killID)}
-      {@const whale = k.totalValue >= 10_000_000_000}
+      {@const whale = k.totalValue >= WHALE_THRESHOLD}
       <li in:fly={{ y: 6, duration: 150, delay: Math.min(i * 20, 300) }}
         class="border-b border-[var(--color-eve-border)]"
         style={whale ? 'box-shadow: inset 3px 0 0 var(--color-whale-accent); background: var(--color-whale);' : ''}>

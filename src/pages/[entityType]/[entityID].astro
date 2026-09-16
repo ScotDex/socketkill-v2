@@ -32,10 +32,7 @@ async function fetchJson(url, { ms = 4000, headers, method, body } = {}) {
         clearTimeout(timer)
     }
 }
-
-
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i
-
 function cardTint(palette) {
     if (!palette) return 'var(--dossier-c)'
     const c = [palette.main_color, palette.secondary_color, palette.tertiary_color]
@@ -47,7 +44,6 @@ const isAlliance = entityType === 'alliance'
 const isPilot = entityType === 'pilot'
 const isCorp = entityType === 'corp'
 const activityRes = await fetchJson(`https://ws.socketkill.com/api/entity/${entityType}/${id}`, { ms: 5000 })
-
 if (!activityRes.ok || !activityRes.data?.identity) {
     return new Response('Entity not found', {
         status: activityRes.data?.identityStatus === 404 ? 404 : 502,
@@ -55,17 +51,14 @@ if (!activityRes.ok || !activityRes.data?.identity) {
 }
 const raw = activityRes.data.identity.raw
 const names = activityRes.data.identity.names
-
 const corpID = isPilot ? (raw.corporation_id ?? null) : null
 const allianceID = !isAlliance ? (raw.alliance_id ?? null) : null
 const ceoID = isCorp ? (raw.ceo_id ?? null) : null
 const executorID = isAlliance ? (raw.executor_corporation_id ?? null) : null
 const factionID = raw.faction_id ?? null
-
 const corpTitle = isPilot
     ? ((raw.corporation_title ?? '').replace(/<[^>]*>/g, '').trim().slice(0, 40) || null)
     : null
-
 const identity = {
     name: raw.name,
     ticker: raw.ticker ?? null,
@@ -89,7 +82,6 @@ const identity = {
     friendlyFire: raw.friendly_fire ?? null,
     cardTint: cardTint(raw.palette),
 }
-
 const feedOnline = activityRes.ok
 const events = feedOnline ? (activityRes.data.events ?? []) : []
 const windowDays = feedOnline ? (activityRes.data.windowDays ?? 30) : 30
@@ -113,27 +105,21 @@ function relativeTime(iso) {
     const h = Math.floor(m / 60)
     return h < 24 ? `${h}H AGO` : `${Math.floor(h / 24)}D AGO`
 }
-
 function secColor(s) {
     if (s == null) return 'var(--color-text-faint)'
     if (s <= -5) return 'var(--color-isk-billion)'
     if (s < 0) return 'var(--color-whale-accent)'
     return 'var(--color-neon-green)'
 }
-
 const plural = (n, word) => `${n} ${n === 1 ? word : word + (word.endsWith('s') ? 'es' : 's')}`
-
 function valueColor(v) {
     if (v >= 10_000_000_000) return 'var(--color-whale-accent)'
     if (v >= 1_000_000_000) return 'var(--color-isk-billion)'
     return 'var(--color-neon-green)'
 }
-
 const displayName = identity.ticker ? `${identity.name} [${identity.ticker}]` : identity.name
 const pageTitle = `${identity.name} — ${conf.label.charAt(0)}${conf.label.slice(1).toLowerCase()} Activity`
 const canonicalUrl = `https://socketkill.com/${entityType}/${id}`
-
-
 const KILLS_BG_COUNT = 24
 const entityBg = `https://edge.socketkill.com/kills/kills-${String((id % KILLS_BG_COUNT) + 1).padStart(3, '0')}.webp`
 const dayViews = byDay.map(bucket => ({
@@ -160,22 +146,18 @@ const dayViews = byDay.map(bucket => ({
     }),
 }))
 ---
-
 <Base
     title={`${pageTitle} | Socketkill.com`}
     ogTitle={pageTitle}
-    ogDescription={`${identity.name} — ${killCount} kills, ${lossCount} losses, ${formatIsk(iskDestroyed)} destroyed in the last ${windowDays} days.`}
+    ogDescription={`${identity.name} — ${plural(killCount, 'kill')}, ${plural(lossCount, 'loss')}, ${formatIsk(iskDestroyed)} destroyed in the last ${windowDays} days.`}
     ogUrl={canonicalUrl}
     ogImage={`https://ws.socketkill.com/og/entity/${entityType}/${id}`}
 >
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.evetech.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
 <div class="kill-screen entity-screen art-bg" style={`--art-bg-url: url(${entityBg})`}>
-
     <div class="max-w-[84rem] mx-auto px-4 pt-6 relative z-10">
         <div class="flex justify-between items-end gap-4 flex-wrap">
             <div>
@@ -189,23 +171,19 @@ const dayViews = byDay.map(bucket => ({
             </div>
         </div>
     </div>
-
     <main class="grid grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)] gap-4 p-4 max-w-[84rem] mx-auto relative z-10 items-start">
-
         <aside class="lg:sticky lg:top-4">
            <div class="card" style={`--card-c: ${identity.cardTint}; --dossier-c: ${identity.cardTint}; --d: 0ms`}>
                 <div class="card-h flex justify-between items-center">
                     <span>{conf.label.toLowerCase()}</span>
                     <span class="tag">{windowDays}-DAY WINDOW</span>
                 </div>
-
                 {topKilledHull && (
                     <figure class="cover" style="margin:0">
                         <img src={`https://images.evetech.net/types/${topKilledHull[0]}/render?size=512`}
                              width="512" height="512" alt="" loading="lazy" decoding="async" />
                     </figure>
                 )}
-
                 <div class="ident" style={topKilledHull ? undefined : 'margin-top:0.75rem'}>
                     <img class="portrait-sm" src={conf.image(id)} width="128" height="128"
                          alt={identity.name} loading="eager" decoding="async" />
@@ -236,7 +214,6 @@ const dayViews = byDay.map(bucket => ({
                         )}
                     </div>
                 </div>
-
                 <div class="dossier-rows">
                     {isPilot && identity.securityStatus != null && (
                         <div class="row">
@@ -248,7 +225,6 @@ const dayViews = byDay.map(bucket => ({
                             </span>
                         </div>
                     )}
-
                     {isAlliance && (
                         <>
                             <div class="row">
@@ -265,7 +241,6 @@ const dayViews = byDay.map(bucket => ({
                             )}
                         </>
                     )}
-
                     {isCorp && (
                         <>
                             <div class="row">
@@ -281,8 +256,7 @@ const dayViews = byDay.map(bucket => ({
                                 <span class="v" style={`color:${identity.warEligible ? 'var(--color-whale-accent)' : 'var(--color-text-faint)'}`}>
                                     {identity.warEligible ? 'YES' : 'NO'}
                                 </span>
-                            </div>
-                            
+                            </div>      
                             {identity.friendlyFire && (
                                 <div class="row">
                                     <span class="k">FRIENDLY FIRE</span>
@@ -301,7 +275,6 @@ const dayViews = byDay.map(bucket => ({
                             )}
                         </>
                     )}
-
                     {identity.factionID && (
                         <div class="row">
                             <span class="k">MILITIA</span>
@@ -312,7 +285,6 @@ const dayViews = byDay.map(bucket => ({
                             </span>
                         </div>
                     )}
-
                     <div class="row">
                         <span class="k">{isPilot ? 'CAPSULEER SINCE' : 'FOUNDED'}</span>
                         <span class="v">{identity.founded ? identity.founded.slice(0, 4) : '—'}</span>
@@ -342,7 +314,6 @@ const dayViews = byDay.map(bucket => ({
         </div>
     </>
 )}
-
                 <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2 mt-1">
                     <span class="grp">Report Summary</span>
                 </div>
@@ -379,7 +350,6 @@ const dayViews = byDay.map(bucket => ({
                         </>
                     )}
                 </div>
-
                 {total > 0 && (
                     <>
                         <div class="flex justify-between items-baseline border-b border-[color-mix(in_srgb,var(--color-neon-green)_18%,transparent)] mx-3 pb-1 mb-2">
@@ -422,7 +392,6 @@ const dayViews = byDay.map(bucket => ({
                         </div>
                     </>
                 )}
-
                 <div class="dossier-actions">
                     <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="act act-primary">ZKILLBOARD</a>
                     {!isPilot && (
@@ -430,7 +399,6 @@ const dayViews = byDay.map(bucket => ({
 )}
                     <button type="button" id="copy-btn" data-url={canonicalUrl} class="act">COPY PROFILE</button>
                 </div>
-
                 <div class="card-f" style={`color:${status.color}; --dot-c:${status.color}`}>
                     {status.live && <span class="pulse-dot"></span>}
                     {lastEvent
@@ -439,7 +407,6 @@ const dayViews = byDay.map(bucket => ({
                 </div>
             </div>
         </aside>
-
         <div class="card" style="--card-c: var(--dossier-c); --d: 60ms">
             <div class="card-h flex justify-between items-center sticky top-0 z-[4] bg-[var(--color-glass-bg)]">
                 <span class="flex items-center gap-2">
@@ -453,7 +420,6 @@ const dayViews = byDay.map(bucket => ({
                     </div>
                 )}
             </div>
-
             {total === 0 ? (
                 <div class="ui p-10 text-center">
                     <span class="grp block" style="color:var(--color-text-faint)">
@@ -469,7 +435,7 @@ const dayViews = byDay.map(bucket => ({
                         <div data-day>
                             <div class="card-f flex justify-between" style="color:var(--color-text-faint)">
                                 <span>{bucket.day}</span>
-                                <span>{bucket.kills} kills · {bucket.losses} losses</span>
+                                <span>{plural(bucket.kills, 'kill')} · {plural(bucket.losses, 'loss')}</span>
                             </div>
                             {bucket.rows.map(r => (
                                 <a href={`/kill/${r.killID}`} class="fr px-3 py-2"
@@ -501,26 +467,23 @@ const dayViews = byDay.map(bucket => ({
                     <button type="button" id="feed-more" class="more" style="width:100%" hidden>LOAD MORE</button>
                 </div>
             )}
-
             <div class="card-f" style="color:var(--color-text-faint)">
                 &gt; killmails older than {windowDays} days are not displayed ·
                 <a href={externalLink(conf.zkillType, id)} target="_blank" rel="noopener noreferrer" class="link">FULL HISTORY</a>
             </div>
         </div>
     </main>
-
     <footer class="relative z-10 max-w-[84rem] mx-auto p-4 mt-8 border-t border-[var(--color-eve-border)]">
         <div class="ui flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] tracking-[0.14em] text-[var(--color-text-faint)]">
             <a href="/" class="link">&lt; BACK TO SOCKETKILL.COM</a>
             <div class="space-x-4">
                 <a href="/about" class="link">ABOUT</a>
                 <a href="https://github.com/ScotDex/socketkill-v2" target="_blank" rel="noopener" class="link">GITHUB</a>
-                <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="link">DISCORD</a>
+                <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener noreferrer" class="link">DISCORD</a>
             </div>
             <span>&copy; SOCKETKILL.COM</span>
         </div>
     </footer>
 </div>
 </Base>
-
 <script src="./_script.js"></script>

@@ -19,7 +19,7 @@
 <div class="boot-sequence" onclick={skip}>
     {#each shown.split('\n') as line, i}
         <div>
-            {line}{#if !done && i === shown.split('\n').length - 1}<span class="cursor">█</span>{/if}{#if done && i === bootLines.length - 1}<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>{/if}
+            {line}{#if !done && i === shown.split('\n').length - 1}<span class="cursor" aria-hidden="true">█</span>{/if}{#if done && i === bootLines.length - 1}<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>{/if}
         </div>
     {/each}
 </div>

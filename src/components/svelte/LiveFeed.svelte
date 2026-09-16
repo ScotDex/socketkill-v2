@@ -20,7 +20,8 @@
         KILL_BUFFER_SIZE,
         MAX_CORPS,
         MAX_ALLIANCES,
-        MAX_SYSTEMS
+        MAX_SYSTEMS,
+        WHALE_THRESHOLD
     } from '../../lib/filter-logic.js'
     import {
         filterSource,
@@ -50,8 +51,6 @@ let searchTerm = $state('')
 let lookupError = $state('')
 let lookupSuggestion = $state('')
 let lookupBusy = $state(false)
-
-const WHALE_THRESHOLD = 10_000_000_000
 let glitching = $state(false)
 let glitchTimer = null
 
@@ -342,7 +341,7 @@ $effect(() => {
                 label="CORPORATIONS (MAX 5)"
                 bind:items={filters.corps}
                 suggestions={corpSuggestions}
-                placeholder="ADD CORPORATIONS"
+                placeholder="ADD CORPORATION"
                 maxItems={MAX_CORPS}
                 allowFreeText={true}
             />
