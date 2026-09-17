@@ -1,3 +1,5 @@
+
+<svelte:options css="injected" />
 <script>
   import { onMount } from 'svelte'
 
