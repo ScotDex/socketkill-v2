@@ -1,26 +1,28 @@
 ---
-// ReferralSlot.astro — one fixed-size slot that rotates through images.
-// To add an advert: add an object to `slides`. Nothing else changes.
-// Slot spec: 300 × 250 (the standard "medium rectangle" ad size).
-
 interface Slide {
-    img: string   // image URL (300×250 recommended)
-    href: string  // destination link
-    alt: string   // describes the image for screen readers
-    kind: 'referral' | 'sponsor'  // referral = yours, sponsor = paid ISK slot
+    img: string   
+    href: string  
+    alt: string   
+    kind: 'referral' | 'sponsor'  
 }
 
 const slides: Slide[] = [
     {
-        img: 'https://edge.socketkill.com/promo/PLACEHOLDER-eve.webp',
+        img: 'https://edge.socketkill.com/friendimage.jpeg',
         href: 'https://www.eveonline.com/signup?invc=e32ca441-aa95-4eb7-ad06-d2c6334a5872',
-        alt: 'Start playing EVE Online with bonus skill points',
+        alt: 'Start playing EVE Online with a bonus 1 million skill points',
         kind: 'referral',
     },
     {
-        img: 'https://edge.socketkill.com/promo/PLACEHOLDER-2.webp',
-        href: 'https://PLACEHOLDER',
-        alt: 'PLACEHOLDER alt text',
+        img: 'https://edge.socketkill.com/PartnerBadge2.png',
+        href: 'https://www.eveonline.com/partners',
+        alt: 'Socket.Kill is an Eve Partner Site',
+        kind: 'referral',
+    },
+    {
+        img: 'https://edge.socketkill.com/NoD_Stacked_White.png',
+        href: 'https://www.eveonline.com/partners',
+        alt: 'Nerd or Die Advertising',
         kind: 'referral',
     },
 ]
@@ -30,7 +32,7 @@ const { interval = 8000 } = Astro.props
 
 <aside class="ref-slot" aria-label="Referrals and sponsors" data-rotator data-interval={interval}>
     <div class="ref-head">
-        <span>Signal // Partner</span>
+        <span></span>
         <span class="ref-kind" data-kind-label>{slides[0].kind}</span>
     </div>
 
@@ -139,7 +141,6 @@ const { interval = 8000 } = Astro.props
 
     .ref-kind { color: var(--color-neon-green); }
 
-    /* All slides share one grid cell, so they stack; the slot never resizes. */
     .ref-stage {
         display: grid;
         aspect-ratio: 300 / 250;
