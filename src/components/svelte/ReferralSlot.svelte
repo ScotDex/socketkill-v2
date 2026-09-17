@@ -2,9 +2,6 @@
 <svelte:options css="injected" />
 <script>
   import { onMount } from 'svelte'
-
-  // Partner slides. Image spec: 600 × 300 (2:1).
-  // kind: 'referral' (yours) | 'sponsor' (rented for ISK)
   const slides = [
     {
       img: 'https://edge.socketkill.com/friendimage.jpeg',
@@ -26,18 +23,10 @@
     },
   ]
 
-  // framed: true on /about (standalone box), false inside the home rail
   let { interval = 8000, framed = false } = $props()
-
   let current = $state(0)
   let paused  = $state(false)
-
-  // Random start so every rented slot gets a fair share of first impressions.
   onMount(() => { current = Math.floor(Math.random() * slides.length) })
-
-  // Re-runs whenever `paused` or `interval` changes. The returned function is
-  // the cleanup: Svelte calls it before re-running and when the component is
-  // destroyed, so the timer can never leak across page navigations.
   $effect(() => {
     if (paused || slides.length < 2) return
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -101,8 +90,6 @@
     border: 1px solid var(--color-border-dim);
     background: rgb(13 15 19 / 0.85);
   }
-
-  /* Label sits on top of the image instead of taking its own row. */
   .kind {
     position: absolute;
     top: 4px;
