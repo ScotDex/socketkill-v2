@@ -5,6 +5,7 @@
   import { searchFilters } from '../../lib/search-store.js'
   import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js'
   import ChipFacet from './ChipFacet.svelte'
+  import ReferralSlot from './ReferralSlot.svelte'
 
   onMount(() => { if (!$filterSource.loaded) loadFilterSource() })
 
@@ -157,6 +158,7 @@
     </div>
     <button type="button" class="run" onclick={runQuery}>View results ↗</button>
   </footer>
+  <ReferralSlot />
 
 </aside>
 
