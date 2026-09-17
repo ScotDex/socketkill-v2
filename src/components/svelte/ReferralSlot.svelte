@@ -17,8 +17,14 @@
     },
     {
       img: 'https://edge.socketkill.com/NoD_Stacked_White.png',
-      href: 'https://www.eveonline.com/partners',
+      href: 'https://nerdordie.com/shop/ref/kps2mr/',
       alt: 'Nerd or Die Advertising',
+      kind: 'referral',
+    },
+    {
+      img: 'https://edge.socketkill.com/preview-on-site-bg.png',
+      href: 'https://m.do.co/c/1808909b79cf',
+      alt: 'Powered by Digital Ocean',
       kind: 'referral',
     },
   ]
@@ -103,8 +109,6 @@
     text-transform: uppercase;
     color: var(--color-neon-green);
   }
-
-  /* Every slide shares one grid cell, so the box never changes size. */
   .stage {
     display: grid;
     position: relative;
