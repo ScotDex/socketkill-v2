@@ -1,9 +1,7 @@
-
-<svelte:options css="injected" />
 <script>
   import { onMount } from 'svelte'
 
-  // Partner slides. Image spec: 300 × 250.
+  // Partner slides. Image spec: 600 × 300 (2:1).
   // kind: 'referral' (yours) | 'sponsor' (rented for ISK)
   const slides = [
     {
@@ -56,12 +54,8 @@
     onfocusin={() => (paused = true)}
     onfocusout={() => (paused = false)}
   >
-    <div class="ref-head">
-      <span></span>
-      <span class="kind">{slides[current].kind}</span>
-    </div>
-
     <div class="stage">
+      <span class="kind">{slides[current].kind}</span>
       {#each slides as s, i}
         <a
           href={s.href}
@@ -72,22 +66,23 @@
           aria-hidden={i !== current}
           tabindex={i === current ? 0 : -1}
         >
-          <img src={s.img} alt={s.alt} width="300" height="250"
+          <img src={s.img} alt={s.alt} width="600" height="300"
             loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
         </a>
       {/each}
     </div>
 
-    {#if slides.length > 1}
-      <div class="dots" role="group" aria-label="Choose slide">
-        {#each slides as _, i}
-          <button type="button" aria-label={`Show slide ${i + 1}`}
-            aria-current={i === current} onclick={() => (current = i)}></button>
-        {/each}
-      </div>
-    {/if}
-
-    <p class="foot"><a href="/about#advertise">Rent this slot for ISK</a></p>
+    <div class="meta">
+      {#if slides.length > 1}
+        <div class="dots" role="group" aria-label="Choose slide">
+          {#each slides as _, i}
+            <button type="button" aria-label={`Show slide ${i + 1}`}
+              aria-current={i === current} onclick={() => (current = i)}></button>
+          {/each}
+        </div>
+      {/if}
+      <a class="foot" href="/about#advertise">Rent this slot for ISK</a>
+    </div>
   </section>
 {/if}
 
@@ -105,15 +100,16 @@
     background: rgb(13 15 19 / 0.85);
   }
 
-  .ref-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-
+  /* Label sits on top of the image instead of taking its own row. */
   .kind {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 1;
+    padding: 1px 5px;
+    background: rgb(10 11 14 / 0.8);
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-neon-green);
@@ -122,7 +118,8 @@
   /* Every slide shares one grid cell, so the box never changes size. */
   .stage {
     display: grid;
-    aspect-ratio: 300 / 250;
+    position: relative;
+    aspect-ratio: 2 / 1;
     background: var(--color-dark-bg);
     border: 1px solid var(--color-eve-border);
   }
@@ -145,7 +142,14 @@
     object-fit: contain;
   }
 
-  .dots { display: flex; justify-content: center; gap: 6px; }
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .dots { display: flex; gap: 6px; }
 
   .dots button {
     width: 18px;
@@ -159,14 +163,11 @@
   .dots button[aria-current='true'] { background: var(--color-neon-green); }
 
   .foot {
-    margin: 0;
     font-family: var(--font-mono);
     font-size: 10px;
-    line-height: 1.5;
-    color: var(--color-text-faint);
+    color: var(--color-neon-green);
+    white-space: nowrap;
   }
-
-  .foot a { color: var(--color-neon-green); }
 
   @media (prefers-reduced-motion: reduce) {
     .item { transition: none; }
