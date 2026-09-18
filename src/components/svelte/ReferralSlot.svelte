@@ -4,25 +4,25 @@
   import { onMount } from 'svelte'
   const slides = [
     {
-      img: 'https://edge.socketkill.com/friendimage.jpeg',
+      img: 'https://edge.socketkill.com/friendimage.webp',
       href: 'https://www.eveonline.com/signup?invc=e32ca441-aa95-4eb7-ad06-d2c6334a5872',
       alt: 'Start playing EVE Online with a bonus 1 million skill points',
       kind: 'referral',
     },
     {
-      img: 'https://edge.socketkill.com/PartnerBadge2.png',
+      img: 'https://edge.socketkill.com/PartnerBadge2.webp',
       href: 'https://www.eveonline.com/partners',
       alt: 'Socket.Kill is an Eve Partner Site',
       kind: 'referral',
     },
     {
-      img: 'https://edge.socketkill.com/NoD_Stacked_White.png',
+      img: 'https://edge.socketkill.com/NoD_Stacked_White.webp',
       href: 'https://nerdordie.com/shop/ref/kps2mr/',
       alt: 'Nerd or Die Advertising',
       kind: 'referral',
     },
     {
-      img: 'https://edge.socketkill.com/preview-on-site-bg.png',
+      img: 'https://edge.socketkill.com/preview-on-site-bg.webp',
       href: 'https://m.do.co/c/1808909b79cf',
       alt: 'Powered by Digital Ocean',
       kind: 'referral',
