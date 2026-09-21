@@ -82,6 +82,9 @@
             camera.wrapped.rotationX = PITCH
             status = 'ready'
 
+            tny.GetScene().FetchNebula('res:/dx9/scene/universe/a01_cube.black')
+                .catch(err => console.warn('[ShipViewer] nebula', err))
+
 
             let last = performance.now()
             const tick = now => {
