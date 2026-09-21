@@ -6,7 +6,7 @@
 
     const MARGIN = 1.05
     const DWELL_MS = 8000
-    const PITCH = -1.3
+    const PITCH = 0.35
 
     const PATHS = {
         api: 'https://caldariprimeponyclub.com/eve/latest/',
