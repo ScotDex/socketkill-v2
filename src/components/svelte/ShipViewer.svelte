@@ -21,7 +21,7 @@
     let drift = null
     let paused = false
 
-    const DRIFT_PER_MS = 360 / 60000
+    const DRIFT_PER_MS = (2 * Math.PI) / 60000
 
     let status = 'idle'
 
@@ -79,7 +79,7 @@
                 if (camera.FitToScreen(ship, { margin: MARGIN, aspect })) break
                 await new Promise(r => setTimeout(r, 100))
             }
-            camera.wrapped.rotationX = PITCH
+            camera.wrapped.rotationY = PITCH
             status = 'ready'
 
             tny.GetScene().FetchNebula('res:/dx9/scene/universe/a01_cube.black')
