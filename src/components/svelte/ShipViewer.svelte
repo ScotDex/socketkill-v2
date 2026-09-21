@@ -19,7 +19,6 @@
     let tny = null
     let timer = null
     let drift = null
-    let paused = false
 
     const DRIFT_PER_MS = (2 * Math.PI) / 60000
 
@@ -88,14 +87,11 @@
 
             let last = performance.now()
             const tick = now => {
-                if (!paused) camera.wrapped.rotationY += (now - last) * DRIFT_PER_MS
+                camera.wrapped.rotationX += Math.min(now - last, 50) * DRIFT_PER_MS
                 last = now
                 drift = requestAnimationFrame(tick)
             }
             drift = requestAnimationFrame(tick)
-
-
-            canvas.addEventListener('pointerdown', () => { paused = true }, { once: true })
 
         } catch (err) {
             console.error('[ShipViewer]', err)
