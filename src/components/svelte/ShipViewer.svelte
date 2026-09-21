@@ -4,7 +4,7 @@
     export let shipTypeID
     export let posterUrl = null
 
-    const MARGIN = 1.05
+    const MARGIN = 0.85
     const DWELL_MS = 8000
     const PITCH = 0.35
 
