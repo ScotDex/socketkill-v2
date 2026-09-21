@@ -21,12 +21,8 @@
     let drift = null
     let paused = false
 
-    // Full rotation roughly every 60s. Ambient rather than distracting.
     const DRIFT_PER_MS = 360 / 60000
 
-    // The static render holds the frame until ccpwgl2 has a hull to show. A
-    // hull is ~58MB, so nothing is fetched until the reader has actually sat
-    // with this card - see the observer below.
     let status = 'idle'
 
     function loadLibrary() {
@@ -55,26 +51,14 @@
             const mod = await loadLibrary()
             tny = mod.tny
             const tw2 = mod.tw2
-
-            // Without this, Initialize fetches the whole data.black SOF
-            // catalog - every hull in the game, ~183MB. The handler boots
-            // from generic.black and pulls only what this DNA needs.
             const sof = new mod.EveSOFDataHandler()
             tw2.Register({ dnaHandler: sof.handler })
-
-            // CSS sizes the element; these attributes size the drawing buffer
-            // WebGL renders into. Without them it stays at 300x150. The stage
-            // is already at its final size here - no accordion to wait on.
             const rect = canvas.getBoundingClientRect()
             canvas.width = rect.width
             canvas.height = rect.height
 
             await tny.Initialize({
                 canvas,
-
-                // TnyCameraTest mirrors values onto a `wrapped` camera that
-                // only exists once AttachCanvas has run. Without a canvas
-                // here, FitToScreen computes a distance that never applies.
                 camera: { canvas },
 
                 scene: 'res:/dx9/scene/preview/generic.red',
@@ -83,18 +67,12 @@
                 resMan: { maxConcurrentLoads: 24 }
             })
 
-            // The canvas sits in a scrolling column, so wheel events over it
-            // would scroll the page while the reader is trying to zoom.
-            // passive:false is required for preventDefault to apply.
             canvas.addEventListener('wheel', e => e.preventDefault(), { passive: false })
 
             const ship = await tny.FetchShip(shipTypeID)
             ship.SetRotationFromEulerDegreeValues(0, 90, 0).UpdateValues()
             const camera = tny.GetCamera()
 
-            // FetchShip resolves when the object is built, but geometry keeps
-            // preparing afterwards and GetBoundingSphere has no radius until
-            // it lands. FitToScreen returns null rather than guessing.
             const aspect = canvas.width / canvas.height
 
             for (let i = 0; i < 40; i++) {
@@ -104,8 +82,7 @@
             camera.wrapped.rotationX = PITCH
             status = 'ready'
 
-            // Slow yaw so the hull reads as a live object rather than a
-            // screenshot, without needing anyone to touch it.
+
             let last = performance.now()
             const tick = now => {
                 if (!paused) camera.wrapped.rotationY += (now - last) * DRIFT_PER_MS
@@ -114,8 +91,7 @@
             }
             drift = requestAnimationFrame(tick)
 
-            // Hand control over the moment the reader takes it. Resuming
-            // under someone's cursor is worse than stopping for good.
+
             canvas.addEventListener('pointerdown', () => { paused = true }, { once: true })
 
         } catch (err) {
@@ -124,9 +100,7 @@
         }
     }
 
-    // Dwell alone would charge someone 58MB for reading the manifest without
-    // ever looking up here, so the clock only runs while the card is on
-    // screen and resets if they scroll past.
+
     onMount(() => {
         const io = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting && status === 'idle') {
@@ -166,6 +140,7 @@
 <style>
     .stage {
         position: relative;
+        isolation: isolate;
         width: 100%;
         height: 100%;
         background: #05070a;
