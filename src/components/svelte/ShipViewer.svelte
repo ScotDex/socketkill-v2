@@ -69,7 +69,7 @@
 
             canvas.addEventListener('wheel', e => e.preventDefault(), { passive: false })
 
-            const ship = await tny.FetchShip(shipTypeID)
+            const ship = await tny.GetScene().Fetch(shipTypeID)
             ship.SetRotationFromEulerDegreeValues(0, 90, 0).UpdateValues()
             const camera = tny.GetCamera()
 
