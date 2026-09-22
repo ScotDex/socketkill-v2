@@ -16,7 +16,7 @@
       kind: 'referral',
     },
     {
-      img: 'https://edge.socketkill.com/support_me_on_kofi_badge_red.png',
+      img: 'https://edge.socketkill.com/support_me_on_kofi_badge_red.webp',
       href: 'https://ko-fi.com/socketkill',
       alt: 'Kofi referral',
       kind: 'referral',
