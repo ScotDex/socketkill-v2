@@ -5,7 +5,7 @@ const ogBust = Math.random().toString(36).slice(2, 8)
 const {
     title,
     ogTitle = "Socket.Kill",
-    ogDescription = "Live kill stream for EVE Online.",
+    ogDescription = "The live EVE Online killboard. Watch killmails from across New Eden as they happen — real-time kills, losses and whale notifications, not a history archive.",
     keywords = "eve online, killboard, eve kills, killmail, new eden, eve online pvp, socketkill, socket, kill, socketkill.com, mmorpg",
     ogImage = `https://ws.socketkill.com/og/page/home?v=${ogBust}`,
     ogImageWidth="1200",
@@ -25,6 +25,12 @@ const jsonLd = {
     url: "https://socketkill.com",
     description: ogDescription,
     applicationCategory: "GameApplication",
+    operatingSystem: "Web",
+    offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+    },
 }
 ---
 <!DOCTYPE html>
