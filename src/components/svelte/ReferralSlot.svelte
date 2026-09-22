@@ -16,9 +16,9 @@
       kind: 'referral',
     },
     {
-      img: 'https://edge.socketkill.com/NoD_Stacked_White.webp',
-      href: 'https://nerdordie.com/shop/ref/kps2mr/',
-      alt: 'Nerd or Die Advertising',
+      img: 'https://edge.socketkill.com/support_me_on_kofi_badge_red.png',
+      href: 'https://ko-fi.com/socketkill',
+      alt: 'Kofi referral',
       kind: 'referral',
     },
     {

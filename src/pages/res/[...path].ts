@@ -1,9 +1,6 @@
 export const prerender = false
 import { env } from 'cloudflare:workers'
 
-// Pinned. An exact build is immutable, so a cached object never goes stale.
-// Bump after each EVE patch:
-//   curl https://caldariprimeponyclub.com/eve/latest/build
 const BUILD = '3484357'
 const UPSTREAM = 'https://caldariprimeponyclub.com'
 
@@ -27,32 +24,22 @@ export async function GET({ params, locals }) {
         }
 
         const key = `assets/eve/${BUILD}/${path}`
-
-        // Hit: serve from our own bucket, upstream never sees it.
         const hit = await bucket.get(key)
         if (hit) {
             return new Response(hit.body, {
                 headers: {
                     ...CORS,
-                    // Stored on write below; falls back for objects cached
-                    // before this was added.
                     'Content-Type': hit.httpMetadata?.contentType || 'application/octet-stream'
                 }
             })
         }
 
-        // Miss: one fetch upstream, then keep it forever.
         const upstream = await fetch(`${UPSTREAM}/eve/${BUILD}/resources/${path}`)
         if (!upstream.ok || !upstream.body) {
             return new Response('Not found', { status: upstream.status || 502 })
         }
 
-        // tee() splits the stream so the same bytes go to R2 and to the browser
-        // without buffering the whole asset in memory - some are several MB.
         const [ toStore, toSend ] = upstream.body.tee()
-
-                // Astro v6: cfContext replaced runtime.ctx. waitUntil lets the R2
-        // write finish after the response is sent.
         const write = bucket.put(key, toStore, {
             httpMetadata: { contentType: upstream.headers.get('content-type') || 'application/octet-stream' }
         })
