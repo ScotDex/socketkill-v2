@@ -48,4 +48,4 @@
     })
 </script>
 
-<div bind:this={container} class="w-full h-[80vh]"></div>
+<div bind:this={container} class="w-full h-[calc(100dvh-24px)]"></div>
