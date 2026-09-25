@@ -212,7 +212,7 @@ $effect(() => {
             : [...filters.bands, value]
     }
 
-    onMount(async () => {
+    onMount(() => {
         loadFilterSource()
         if (window.location.search) {
         filters = paramsToFilters(window.location.search)

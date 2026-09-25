@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro'
+import GalaxyMap from '../components/svelte/GalaxyMap.svelte'
+---
+<Base
+    title="Live Map | Socketkill.com"
+    ogTitle="Socket.Kill Live Map"
+    ogDescription="Live EVE Online kills on a 3D map of New Eden."
+>
+    <main class="max-w-7xl mx-auto p-4">
+        <GalaxyMap client:only="svelte" />
+    </main>
+</Base>
