@@ -55,11 +55,4 @@
     })
 </script>
 
-<div class="relative w-full h-[calc(100dvh-24px)]">
-    <div bind:this={container} class="absolute inset-0"></div>
-    {#if !loaded}
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <BootSequence />
-        </div>
-    {/if}
-</div>
+<div bind:this={container} class="w-full h-[calc(100dvh-24px)]"></div>
