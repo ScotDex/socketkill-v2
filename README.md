@@ -1,3 +1,7 @@
+[![SocketKill Status](https://badge.uptimerobot.com/psp/0a819a464bbfad8fef578c7c8d24b8df.svg?style=logo&theme=light)](https://stats.uptimerobot.com/1qn5EGcEZn?utm_source=status_badge&utm_medium=referral)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5K727GI1T)
+
+
 # Socket.Kill
 
 The inspiration came from a development project where I was discarding some killmail data, and I decided to do something with that. Subsequently I decided fusing together kill mails with a level of atmosphere and depth that the community didn't ask for.
@@ -31,7 +35,7 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 - **Image delivery:** Cloudflare edge
 - **EVE data:** ESI (EVE Swagger Interface) for character, corporation, and universe data
 
-[![SocketKill Status](https://badge.uptimerobot.com/psp/0a819a464bbfad8fef578c7c8d24b8df.svg?style=logo&theme=light)](https://stats.uptimerobot.com/1qn5EGcEZn?utm_source=status_badge&utm_medium=referral)
+
 
 ## API
 
