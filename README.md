@@ -1,29 +1,31 @@
+# Socket.Kill
+
 [![SocketKill Status](https://badge.uptimerobot.com/psp/0a819a464bbfad8fef578c7c8d24b8df.svg?style=logo&theme=light)](https://stats.uptimerobot.com/1qn5EGcEZn?utm_source=status_badge&utm_medium=referral)
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5K727GI1T)
 
-
-# Socket.Kill
-
-The inspiration came from a development project where I was discarding some killmail data, and I decided to do something with that. Subsequently I decided fusing together kill mails with a level of atmosphere and depth that the community didn't ask for.
-
-The scope is very simple, stream kills as fast as technically possible utilizing the latest tech and ideas.
-
-Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/news/view/eve-fanfest-wrapped).
-
 **Live at [socketkill.com](https://socketkill.com) · [Discord](https://discord.gg/UnFN8UY6Dz)**
 
+🏆 Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/news/view/eve-fanfest-wrapped)
+
+## About
+
+Socket.Kill started with a side project where I was throwing away killmail data. I decided to do something with it instead: fuse killmails with a level of atmosphere and depth the community never asked for.
+
+The scope is simple: stream kills as fast as technically possible, using the latest tech and ideas.
 
 ## Features
 
 - **Real-time WebSocket feed.** Dual Caching layer provides optimized rendering speed
-- **Per-kill social previews.** OG tags rendered server-side via Cloudflare Pages Functions, so Discord, Twitter, and Bluesky cards reflect actual kill data.
+- **Per-kill social previews.** OG tags rendered server-side via Cloudflare Pages Functions, so Discord, Twitter, Mastadon and Bluesky cards reflect actual kill data.
 - **Edge-cached image proxy.** Ship renders, corp logos, alliance logos served via Cloudflare's edge. Performance improvement from the CCP image server.
 - **Multi-channel Discord integration.** [Whale alerts, AT/officer/Rorqual sightings, Multiple Value Thresholds](https://discord.gg/UnFN8UY6Dz)
 - **Multi-mode filtering** on the live feed, you can filter corporations, alliances, systems, region and light year range to configure your own view.
 - **Atmospheric interface.** Terminal-aesthetic design from the alien franchise 
 - **Query Builder.** Configure your own question using the query builder module, resulting on the days killmails.
-- **Rendering Option ** Option to generate a 3d render of the ship that was just lost.
-
+- **3D Render** Cover image swaps from static to 3D render of lost ship
+- **Demo** Feature illustration here [Video](https://youtu.be/zbiEjZFed30?si=5q55ew3FAVLH6_N-)
+- **Damage Guide** [Average Damage Guide](https://socketkill.com/guide/)
+- **Map of New Eden** [Cinematic Map](https://socketkill.com/map)
 
 ## Tech stack
 
@@ -35,11 +37,6 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 - **Image delivery:** Cloudflare edge
 - **EVE data:** ESI (EVE Swagger Interface) for character, corporation, and universe data
 
-
-
-## API
-
-A public image proxy API is available for EVE Online assets. Free to use for personal and third-party projects. If you integrate this API into your tool or application, a credit link back to [socketkill.com](https://socketkill.com) is appreciated.
 
 ## Legal
 
@@ -53,18 +50,16 @@ FC is in no way responsible for the content on or functioning of this website, n
 
 ## Credits
 
-Original API provided by: [zKillboard](https://github.com/zKillboard/zKillboard/wiki/API-(R2Z2))
+### Data & APIs
+- **Killmail feed:** [zKillboard](https://github.com/zKillboard/zKillboard/wiki/API-(R2Z2))
+- **ESI & SDE:** [EVE API Explorer](https://developers.eveonline.com/api-explorer)
+- **Killmail valuations:** [Janice (E-351)](https://janice.e-351.com/api/rest/docs/index.html)
+- **Abyssal module valuations:** [Mutamarket](https://mutamarket.com/documentation/api-overview)
 
-Further API's and SDE used [EVE API Explorer](https://developers.eveonline.com/api-explorer)
+### Art
+- **Main site background:** [Rixx Javix](https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
+- **Killmail & stats backgrounds:** [El Geo](https://www.lloydgeorge.art/)
 
-Killmail valuations done by [Janice E-351] (https://janice.e-351.com/api/rest/docs/index.html)
-
-Abysal module valuations done by (https://mutamarket.com/documentation/api-overview)
-
-Main site background art from [Rixx Javix](https://www.flickr.com/photos/rixxjavix/albums/72157651335101023)
-
-Background art for the killmails and stats page from the magnificent work from [El Geo](https://www.lloydgeorge.art/)
-
-Model rendering tooling by [Tamber] (https://x.com/pauloosterman)
-
-Ship fit preview by https://eveship.fit/
+### Tooling
+- **Model rendering:** [Tamber](https://x.com/pauloosterman)
+- **Ship fit preview:** [EVE Ship Fit](https://eveship.fit/)
