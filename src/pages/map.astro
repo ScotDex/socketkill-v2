@@ -7,7 +7,12 @@ import GalaxyMap from '../components/svelte/GalaxyMap.svelte'
     ogTitle="Socket.Kill Live Map"
     ogDescription="Live EVE Online kills on a 3D map of New Eden."
 >
-       <main>
+    <Fragment slot="head">
+        <link rel="preconnect" href="https://eo-map.com" crossorigin />
+        <link rel="preconnect" href="https://snapshots.eo-map.com" crossorigin />
+        <link rel="modulepreload" href="https://eo-map.com/embed/v1.js" />
+    </Fragment>
+    <main>
         <GalaxyMap client:only="svelte" />
     </main>
 </Base>

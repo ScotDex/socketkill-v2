@@ -2,9 +2,11 @@
     import { onMount } from 'svelte'
     import { io } from 'socket.io-client'
     import { WHALE_THRESHOLD } from '../../lib/filter-logic.js'
+    import BootSequence from './BootSequence.svelte'
 
     const MAX_FLASHES_PER_TICK = 5
     let container
+    let loaded = $state(false)
 
         onMount(() => {
         let map = null
@@ -15,8 +17,13 @@
         import(/* @vite-ignore */ 'https://eo-map.com/embed/v1.js')
             .then(({ EOMap }) => {
                 if (destroyed) return
-                map = EOMap.mount(container, {})
-                map.on('eo-ready', () => { ready = true })
+                map = EOMap.mount(container, {
+    orbit: true,
+    color: 'green',
+    labelMode: 'off',
+    performance: false
+})
+map.on('eo-ready', () => { ready = true; loaded = true })
             })
             .catch(err => console.warn('[EO-MAP] load failed', err))
 
@@ -48,4 +55,11 @@
     })
 </script>
 
-<div bind:this={container} class="w-full h-[calc(100dvh-24px)]"></div>
+<div class="relative w-full h-[calc(100dvh-24px)]">
+    <div bind:this={container} class="absolute inset-0"></div>
+    {#if !loaded}
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <BootSequence />
+        </div>
+    {/if}
+</div>
