@@ -31,6 +31,8 @@ Winner of [FC Fanfest 2026 New Developer of the Year](https://www.eveonline.com/
 - **Image delivery:** Cloudflare edge
 - **EVE data:** ESI (EVE Swagger Interface) for character, corporation, and universe data
 
+[![SocketKill Status](https://badge.uptimerobot.com/psp/0a819a464bbfad8fef578c7c8d24b8df.svg?style=logo&theme=light)](https://stats.uptimerobot.com/1qn5EGcEZn?utm_source=status_badge&utm_medium=referral)
+
 ## API
 
 A public image proxy API is available for EVE Online assets. Free to use for personal and third-party projects. If you integrate this API into your tool or application, a credit link back to [socketkill.com](https://socketkill.com) is appreciated.
