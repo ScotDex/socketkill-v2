@@ -18,7 +18,8 @@
             .then(({ EOMap }) => {
                 if (destroyed) return
                 map = EOMap.mount(container, {
-                    labelMode: 'hover'
+                    labelMode: 'hover',
+                    orbit: true
                 })
    map.on('eo-ready', () => { ready = true })
             })
