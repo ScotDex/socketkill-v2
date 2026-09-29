@@ -18,11 +18,8 @@
             .then(({ EOMap }) => {
                 if (destroyed) return
                 map = EOMap.mount(container, {
-    orbit: true,
-    color: 'green',
-    labelMode: 'off',
-    
-})
+                    labelMode: 'hover'
+                })
    map.on('eo-ready', () => { ready = true })
             })
             .catch(err => console.warn('[EO-MAP] load failed', err))
