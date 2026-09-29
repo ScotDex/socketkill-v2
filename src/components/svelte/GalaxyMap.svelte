@@ -2,11 +2,11 @@
     import { onMount } from 'svelte'
     import { io } from 'socket.io-client'
     import { WHALE_THRESHOLD } from '../../lib/filter-logic.js'
-    import BootSequence from './BootSequence.svelte'
+    
 
     const MAX_FLASHES_PER_TICK = 5
     let container
-    let loaded = $state(false)
+    
 
         onMount(() => {
         let map = null
@@ -21,9 +21,9 @@
     orbit: true,
     color: 'green',
     labelMode: 'off',
-    performance: false
+    
 })
-map.on('eo-ready', () => { ready = true; loaded = true })
+   map.on('eo-ready', () => { ready = true })
             })
             .catch(err => console.warn('[EO-MAP] load failed', err))
 
