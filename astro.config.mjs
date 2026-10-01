@@ -27,6 +27,10 @@ export default defineConfig({
     policy: [
 { userAgent: 'meta-webindexer', disallow: '/' },
 { userAgent: 'meta-externalagent', disallow: '/' },
+{ userAgent: 'meta-webindexer', disallow: '/' },
+{ userAgent: 'meta-externalagent', disallow: '/' },
+{ userAgent: 'Google-Extended', disallow: '/' },
+{ userAgent: 'Applebot-Extended', disallow: '/' },
 { userAgent: '*', allow: '/', disallow: ['/api/'] }
 ]
   }), react()], 
