@@ -16,6 +16,7 @@ details[open]::details-content {
 .kill-screen {
     --font-body: 'Nunito Sans', sans-serif;
     --font-mono: 'Fragment Mono', monospace;
+    --font-display: 'Michroma', var(--font-body);
     --glow: 0 0 8px color-mix(in srgb, currentColor 40%, transparent);
     --dur: 0.35s;
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -69,10 +70,10 @@ details[open]::details-content {
 
 
 .card-h {
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
+    font-weight: 400;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--card-c);
     padding: 0.55rem 0.75rem;
