@@ -218,8 +218,8 @@ body::after {
 
 .kill-headline {
   font-family: 'Michroma', sans-serif;
-  letter-spacing: 0.4em;
-  word-spacing: 0.35em;
+  letter-spacing: 0.25em;
+  word-spacing: 0.2em;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.8;
