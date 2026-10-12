@@ -1,14 +1,36 @@
 export const prerender = false
 import { env } from 'cloudflare:workers'
 
-const BUILD = '3607705'
+// Dynamic build retrieval replacement
 const UPSTREAM = 'https://caldariprimeponyclub.com'
+const BUILD_URL = `${UPSTREAM}/eve/latest/`
+const BUILD_TTL_MS = 60 * 60 * 1000   
+const RETRY_MS = 60 * 1000            
 
 const CORS = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
     'Access-Control-Allow-Headers': 'Accept, Content-Type, Range',
     'Cache-Control': 'public, max-age=31536000, immutable'
+}
+
+
+let cached: { build: string | null, at: number } = { build: null, at: 0 }
+
+async function getBuild(): Promise<string | null> {
+    const ttl = cached.build ? BUILD_TTL_MS : RETRY_MS
+    if (Date.now() - cached.at < ttl) return cached.build
+
+    cached.at = Date.now() 
+    try {
+        const res = await fetch(BUILD_URL, { signal: AbortSignal.timeout(3000) })
+        if (res.ok) {
+            const data = await res.json()
+            const build = String(data?.builds?.resources ?? data?.build ?? '')
+            if (/^\d+$/.test(build)) cached.build = build
+        }
+    } catch {}
+    return cached.build
 }
 
 export async function GET({ params, locals }) {
@@ -21,6 +43,11 @@ export async function GET({ params, locals }) {
         const bucket = env.RES
         if (!bucket) {
             return new Response('res error: RES binding missing', { status: 500 })
+        }
+
+        const BUILD = await getBuild()
+        if (!BUILD) {
+            return new Response('res error: build unknown', { status: 503 })
         }
 
         const key = `assets/eve/${BUILD}/${path}`
