@@ -1,7 +1,7 @@
 export const prerender = false
 import { env } from 'cloudflare:workers'
 
-const BUILD = '3484357'
+const BUILD = '3607705'
 const UPSTREAM = 'https://caldariprimeponyclub.com'
 
 const CORS = {
