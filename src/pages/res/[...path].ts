@@ -1,7 +1,6 @@
 export const prerender = false
 import { env } from 'cloudflare:workers'
 
-// Dynamic build retrieval replacement
 const UPSTREAM = 'https://caldariprimeponyclub.com'
 const BUILD_URL = `${UPSTREAM}/eve/latest/`
 const BUILD_TTL_MS = 60 * 60 * 1000   
@@ -80,7 +79,6 @@ export async function GET({ params, locals }) {
         })
 
     } catch (err) {
-        // Readable in the browser, rather than a bare 500 with no cause.
         return new Response(`res error: ${err.message}`, { status: 500 })
     }
 }
