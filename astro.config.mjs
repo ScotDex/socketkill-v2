@@ -21,12 +21,12 @@ export default defineConfig({
       enabled: false
     }
   }),
-  integrations: [svelte(), sitemap(), robotsTxt({
+  integrations: [svelte(), sitemap({
+    customPages: ['https://socketkill.com/guide/'],
+  }), robotsTxt({
     sitemap:['https://socketkill.com/sitemap-index.xml',
             'https://socketkill.com/sitemaps/kills-index.xml'],
     policy: [
-{ userAgent: 'meta-webindexer', disallow: '/' },
-{ userAgent: 'meta-externalagent', disallow: '/' },
 { userAgent: 'meta-webindexer', disallow: '/' },
 { userAgent: 'meta-externalagent', disallow: '/' },
 { userAgent: 'Google-Extended', disallow: '/' },
