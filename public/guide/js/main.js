@@ -1,6 +1,3 @@
-// Entry point. Holds the application state and connects data → calc → ui.
-// This is the only module that knows about all three.
-
 import { loadDatabase } from "./data.js";
 import { filterShips } from "./calc.js";
 import * as ui from "./ui.js";
@@ -40,7 +37,7 @@ async function start() {
     db = await loadDatabase();
   } catch (error) {
     console.error(error);
-    ui.renderError("Ship database failed to load. Check that data/frigates.json is being served.");
+    ui.renderError("Ship database failed to load. The SocketKill API may be unavailable — try again shortly.");
     return;
   }
 

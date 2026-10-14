@@ -4,6 +4,7 @@
 import { WEAPON_FAMILIES, averageResistances, weakestIndex, rankAmmo, countBy } from "./calc.js";
 
 const el = {
+  sdeBuild: document.getElementById("sdeBuild"),
   grid: document.getElementById("grid"),
   detail: document.getElementById("detail"),
   count: document.getElementById("count"),
@@ -86,6 +87,10 @@ export function syncControls(state) {
 
 export function renderCount(shown, total) {
   el.count.textContent = `${shown} / ${total} ships`;
+}
+
+export function renderSource(db) {
+  el.sdeBuild.textContent = db.sdeBuild;
 }
 
 export function renderGrid(ships, selectedId, onSelect) {
@@ -184,7 +189,7 @@ export function renderDetail(ship, db) {
     </div>
     <div class="section">
       <h3>Best ammunition by frigate weapon type</h3>
-      <p class="note">Ranked from the embedded CCP SDE ammunition damage values against this ship's average resistance. This is a damage-only ranking; range, tracking, explosion radius/velocity, skills and target fit are not included.</p>
+      <p class="note">Ranked from the live CCP SDE ammunition damage values against this ship's average resistance. This is a damage-only ranking; range, tracking, explosion radius/velocity, skills and target fit are not included.</p>
       <div class="ammo">${ammoCards}</div>
     </div>
     <div class="section"><div class="note">Data source: CCP Static Data Export build ${esc(db.sdeBuild)}. Resistance values use CCP Dogma resonance attributes (1.0 = 0% resistance).</div></div>`;

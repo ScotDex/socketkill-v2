@@ -1,6 +1,6 @@
 :root{--bg:#050a10;--panel:#0c141d;--card:#101923;--border:#263747;--text:#edf3f8;--muted:#8fa0b1;--accent:#42aaff;--gold:#efc65b}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 18% 0,#172738 0,#070c12 42%,#04080d 100%);color:var(--text);font:14px/1.45 Arial,Helvetica,sans-serif}
+body{margin:0;background:radial-gradient(circle at 18% 0,#172738 0,#070c12 42%,#04080d 100%);color:var(--text);font:14px/1.45 'Exo 2',Arial,sans-serif}
 .app{max-width:1600px;margin:auto;padding:16px 14px 24px}
 header{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:12px}
 h1{font-size:25px;margin:0;letter-spacing:.04em}h2{margin:0;font-size:25px}h3{margin:0 0 10px}.sub,.note,.meta{color:var(--muted)}
