@@ -66,7 +66,8 @@ export function filterShips(ships, filters) {
   return ships.filter(s =>
     (!q || s.name.toLowerCase().includes(q)) &&
     (filters.faction === "all" || s.faction === filters.faction) &&
-    (filters.class === "all" || s.class === filters.class)
+    (filters.class === "all" || s.class === filters.class) &&
+    (filters.group === "all" || s.group === filters.group)
   );
 }
 

@@ -6,6 +6,7 @@ const state = {
   query: "",
   faction: "all",
   class: "all",
+  group: "all",
   selectedId: null
 };
 

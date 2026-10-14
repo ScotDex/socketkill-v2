@@ -25,7 +25,6 @@ function esc(value) {
   );
 }
 
-// Replaces the old inline onerror="" attributes — markup stays free of behaviour.
 function wireImageFallbacks(root) {
   root.querySelectorAll("img[data-fallback]").forEach(img => {
     img.addEventListener("error", () => {
@@ -55,19 +54,19 @@ export function buildSidebar(ships, onChange) {
     `<div class="sideitem" data-kind="${kind}" data-value="${esc(name)}">` +
     `<span>${esc(name)}</span><span class="sidecount">${n}</span></div>`;
 
-  el.classList.innerHTML = countBy(ships, "group").map(item("class")).join("");
+  el.classList.innerHTML = countBy(ships, "group").map(item("group")).join("");
   el.factionList.innerHTML = countBy(ships, "faction").map(item("faction")).join("");
 
   el.sideAll.addEventListener("click", () =>
-    onChange({ query: "", faction: "all", class: "all" })
+    onChange({ query: "", faction: "all", class: "all", group: "all" })
   );
 
   document.querySelectorAll(".sideitem").forEach(node => {
     node.addEventListener("click", () => {
       const { kind, value } = node.dataset;
-      onChange(kind === "class"
-        ? { class: value, faction: "all" }
-        : { faction: value, class: "all" });
+      onChange(kind === "group"
+        ? { group: value, faction: "all", class: "all" }
+        : { faction: value, class: "all", group: "all" });
     });
   });
 }
@@ -125,13 +124,13 @@ export function markSidebarActive(state) {
   document.querySelectorAll(".sideitem").forEach(node => {
     const { kind, value } = node.dataset;
     const active =
-      (kind === "class" && state.class === value) ||
+      (kind === "group" && state.class === value) ||
       (kind === "faction" && state.faction === value);
     node.classList.toggle("active", active);
   });
   el.sideAll.classList.toggle(
     "active",
-    state.faction === "all" && state.class === "all" && !state.query
+    state.faction === "all" && state.class === "all" && state.group === "all" && !state.query
   );
 }
 
