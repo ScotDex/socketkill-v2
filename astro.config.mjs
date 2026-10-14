@@ -31,7 +31,8 @@ export default defineConfig({
 { userAgent: 'meta-externalagent', disallow: '/' },
 { userAgent: 'Google-Extended', disallow: '/' },
 { userAgent: 'Applebot-Extended', disallow: '/' },
-{ userAgent: '*', allow: '/', disallow: ['/api/'] }
+{ userAgent: '*', allow: '/', disallow: ['/api/'] },
+{ userAgent: 'ClaudeBot', disallow: '/' },
 ]
   }), react()], 
   vite: {
