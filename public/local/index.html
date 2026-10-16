@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EVE Local — Twitch Chat Overlay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/local/overlay.css">
+</head>
+<body>
+<div id="setup"><div class="box">
+  <h1>&#9673; Local Channel</h1><p>Twitch chat overlay</p>
+  <div class="error" id="setupError"></div>
+  <input id="channelInput" type="text" placeholder="twitch channel name" autocomplete="off" spellcheck="false">
+  <button id="connectBtn">Warp In</button>
+  <div class="hint">Add <code>?channel=yourname</code> to the URL to auto-connect in OBS.</div>
+</div></div>
+
+<div id="stage"><div id="window">
+  <div id="tabbar">
+    <div id="tabs"><span class="dot" id="statusDot"></span><span class="tab active">Local [<span id="tabCount">0</span>]</span><span class="tab" id="channelLabel"></span></div>
+    <div id="winctl"><span>+</span><span>&#8942;</span><span>&#8722;</span></div>
+  </div>
+  <div id="body">
+    <div id="chatCol"><ul id="list"></ul><div class="track"></div></div>
+    <div id="rosterCol">
+      <div id="rosterHead"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg><span id="rosterCount">0</span></div>
+      <ul id="rosterList"></ul><div class="track"></div>
+    </div>
+  </div>
+</div></div>
+
+<script src="/local/overlay.js"></script>
+</body>
+</html>
