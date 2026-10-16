@@ -18,7 +18,7 @@
     {
       img: 'https://edge.socketkill.com/support_me_on_kofi_badge_red.webp',
       href: 'https://ko-fi.com/socketkill',
-      alt: 'Kofi referral',
+      alt: 'Support Socketkill',
       kind: 'referral',
     },
     {
@@ -52,7 +52,6 @@
     onfocusout={() => (paused = false)}
   >
     <div class="stage">
-      <span class="kind">{slides[current].kind}</span>
       {#each slides as s, i}
         <a
           href={s.href}
@@ -78,7 +77,6 @@
           {/each}
         </div>
       {/if}
-      <a class="foot" href="/about#advertise">Rent this slot for ISK</a>
     </div>
   </section>
 {/if}
@@ -95,19 +93,6 @@
   .ref.framed {
     border: 1px solid var(--color-border-dim);
     background: rgb(13 15 19 / 0.85);
-  }
-  .kind {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    z-index: 1;
-    padding: 1px 5px;
-    background: rgb(10 11 14 / 0.8);
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-neon-green);
   }
   .stage {
     display: grid;
@@ -154,13 +139,6 @@
   }
 
   .dots button[aria-current='true'] { background: var(--color-neon-green); }
-
-  .foot {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--color-neon-green);
-    white-space: nowrap;
-  }
 
   @media (prefers-reduced-motion: reduce) {
     .item { transition: none; }
