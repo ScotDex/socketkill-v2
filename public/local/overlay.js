@@ -19,7 +19,6 @@ const statusCache=new Map(),queue=[];let qBusy=false,channel='',viewers=null;
 function parseRoles(b){const l=(b||'').split(',').map(x=>x.split('/')[0]);return{mod:l.includes('moderator')||l.includes('broadcaster'),vip:l.includes('vip'),sub:l.includes('subscriber')||l.includes('founder')}}
 function statusColor(d){const s=statusCache.get(d.login)||{};return d.mod?C.mod:d.vip?C.vip:(d.sub||s.sub)?C.sub:s.following?C.fol:C.none}
 function queueStatus(l){if(!channel||statusCache.has(l))return;statusCache.set(l,{});queue.push(l);runQueue()}
-const TOKEN=P.get('token'),CID=P.get('clientid'),HX=TOKEN&&CID?{Authorization:'Bearer '+TOKEN,'Client-Id':CID}:null;let bId=null;
 async function hx(path){const r=await fetch('https://api.twitch.tv/helix/'+path,{headers:HX});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
 async function helixFollow(l){
   if(!bId)bId=(await hx('users?login='+encodeURIComponent(channel))).data[0].id;
@@ -31,7 +30,6 @@ async function runQueue(){
   while(queue.length){const l=queue.shift();let st={};
     try{const r=await fetch('https://api.ivr.fi/v2/twitch/subage/'+encodeURIComponent(l)+'/'+encodeURIComponent(channel));
       if(r.ok){const j=await r.json();st={following:!!j.followedAt,sub:j.subscribed===true||!!(j.meta&&j.meta.type)}}}catch(e){}
-    if(HX){try{const f=await helixFollow(l);if(f!==null)st.following=f}catch(e){console.warn('Follow lookup failed:',e.message)}}
     statusCache.set(l,st);const d=present.get(l);if(d&&d.el)updateRow(d);
     await new Promise(r=>setTimeout(r,350));}
   qBusy=false;
@@ -54,8 +52,6 @@ function emotes(text,tag){
   r.forEach(x=>{if(x.s>cur)out+=esc(text.slice(cur,x.s));out+=`<img class="emote" src="https://static-cdn.jtvnw.net/emoticons/v2/${x.id}/default/dark/2.0" alt="">`;cur=x.e+1});
   return out+esc(text.slice(cur));
 }
-
-// ----- avatars (unofficial IVR API, no auth) -----
 async function fetchAvatar(l){try{const r=await fetch('https://api.ivr.fi/v2/twitch/user?login='+encodeURIComponent(l));if(!r.ok)return null;const d=await r.json();return d&&d[0]&&d[0].logo||null}catch(e){return null}}
 function setImg(el,url){const i=new Image();i.onload=()=>{el.textContent='';el.appendChild(i)};i.src=url;i.alt=''}
 function applyAvatar(el,l){
@@ -64,7 +60,6 @@ function applyAvatar(el,l){
   fetchAvatar(l).then(u=>{avatarCache.set(l,u);pending.delete(l);if(u)document.querySelectorAll('.portrait[data-login="'+l+'"]').forEach(p=>setImg(p,u))});
 }
 
-// ----- roster -----
 function updateCounts(){tabCount.textContent=viewers!=null?viewers:(rosterEnabled?present.size:seen.size);rosterCount.textContent=present.size}
 function updateRow(d){
   d.el.classList.toggle('spoken',d.spoken);

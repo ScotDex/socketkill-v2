@@ -1,5 +1,5 @@
 :root{
-  --eve-bg:rgba(6,11,15,.5); --eve-border:rgba(140,215,235,.28); --line:rgba(255,255,255,.12);
+  --eve-bg:rgba(18,20,23,.88); --eve-border:rgba(255,255,255,.14); --line:rgba(255,255,255,.12);
   --cyan:#6fd7ff; --text:#d2d9dc; --dim:#8f9a9f; --green:#59c97a; --red:#d9534f;
   --panel-w:440px; --roster-w:210px; --panel-max-h:min(480px,calc(100vh - 48px)); --font-size:16px;
 }
@@ -53,7 +53,7 @@ body.preview-bg{background:radial-gradient(circle at 30% 20%,#17323d 0%,#05090c 
 .portrait{flex:none;width:48px;height:48px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;filter:grayscale(.8) brightness(.8);opacity:.6;transition:filter .3s,opacity .3s}
 .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .roster-row.spoken .portrait{filter:none;opacity:1}
-.roster-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim)}
+.roster-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(#c9cfd2)}
 .roster-row.spoken .roster-name{color:#e9eef0}
 .standing{position:absolute;right:-12px;bottom:3px;width:14px;height:14px;border-radius:2px;
   background:linear-gradient(#eef3f4,#eef3f4) 3px 4px/8px 2px no-repeat,linear-gradient(#eef3f4,#eef3f4) 3px 8px/8px 2px no-repeat,var(--standing,#4a5358)}
