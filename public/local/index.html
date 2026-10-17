@@ -1,35 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>EVE Local — Twitch Chat Overlay</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/local/overlay.css">
+    <!-- Test URL: http://127.0.0.1:5500/index.html?channel=fenriscreations&bg=1 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eve Local Chat Overlay</title>
+    <meta name="description" content="EVE Online Local-style chat overlay for Twitch streamers. Paste one URL into OBS.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div id="setup"><div class="box">
-  <h1>&#9673; Local Channel</h1><p>Twitch chat overlay</p>
-  <div class="error" id="setupError"></div>
-  <input id="channelInput" type="text" placeholder="twitch channel name" autocomplete="off" spellcheck="false">
-  <button id="connectBtn">Warp In</button>
-  <div class="hint">Add <code>?channel=yourname</code> to the URL to auto-connect in OBS.</div>
-</div></div>
+    <div id="setup">
+        <header>
+            <h1>&#9673; Local Channel <span class="badge">Alpha</span></h1>
+            <p>EVE Online-style Local chat for your Twitch stream.</p>
+        </header>
 
-<div id="stage"><div id="window">
-  <div id="tabbar">
-    <div id="tabs"><span class="dot" id="statusDot"></span><span class="tab active">Local [<span id="tabCount">0</span>]</span><span class="tab" id="channelLabel"></span></div>
-    <div id="winctl"><span>+</span><span>&#8942;</span><span>&#8722;</span></div>
-  </div>
-  <div id="body">
-    <div id="chatCol"><ul id="list"></ul><div class="track"></div></div>
-    <div id="rosterCol">
-      <div id="rosterHead"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg><span id="rosterCount">0</span></div>
-      <ul id="rosterList"></ul><div class="track"></div>
+        <main>
+            <section>
+                <h2>What it is</h2>
+                <p>A free OBS overlay that shows your Twitch chat and viewers like EVE's Local window. No login, no install, no account.</p>
+            </section>
+
+            <section>
+                <h2>Get your URL</h2>
+
+                <label for="channelInput">Twitch channel name</label>
+                <input id="channelInput" type="text" placeholder="e.g. fenriscreations" autocomplete="off" spellcheck="false">
+                <div class="error" id="setupError" role="alert"></div>
+
+                <label for="urlOutput">Your OBS Browser Source URL</label>
+                <div class="url-row">
+                    <input id="urlOutput" type="text" readonly placeholder="Enter a channel above">
+                    <button id="copyBtn" type="button">Copy</button>
+                </div>
+
+                <button id="connectBtn" type="button">Preview</button>
+            </section>
+
+            <section>
+    <h2>Customise</h2>
+    <form id="options">
+
+        <fieldset>
+            <legend>Text size</legend>
+            <label><input type="radio" name="size" value="14"> Small</label>
+            <label><input type="radio" name="size" value="16" checked> Medium</label>
+            <label><input type="radio" name="size" value="18"> Large</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Viewer list</legend>
+            <label><input type="checkbox" name="roster" checked> Show viewer list</label>
+            <label>Portrait size
+                <select name="portrait">
+                    <option value="32">Compact</option>
+                    <option value="40">Medium</option>
+                    <option value="48" selected>Large</option>
+                </select>
+            </label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Panel</legend>
+            <label>Opacity
+                <input type="range" name="opacity" min="0.4" max="1" step="0.05" value="0.88">
+            </label>
+            <label>Theme
+                <select name="theme">
+                    <option value="" selected>Neutral</option>
+                    <option value="amarr">Amarr</option>
+                    <option value="caldari">Caldari</option>
+                    <option value="gallente">Gallente</option>
+                    <option value="minmatar">Minmatar</option>
+                </select>
+            </label>
+        </fieldset>
+
+    </form>
+    <p class="hint">OBS Browser Source size: <b id="obsSize">700 × 530</b></p>
+</section>
+
+            <section>
+                <h2>Add it to OBS</h2>
+                <ol>
+                    <li>In OBS: <b>Sources → + → Browser</b></li>
+                    <li>Paste your URL into the <b>URL</b> field</li>
+                    <li>Set width <b>700</b> and height <b>530</b></li>
+                </ol>
+            </section>
+        </main>
+
+        <footer>
+    <p>Built on the original overlay by <a href="https://www.twitch.tv/schadsquatch">Schadsquatch</a>, whose idea and design this is. Rewritten and hosted by <a href="https://socketkill.com">SocketKill</a>.</p>
+</footer>
     </div>
-  </div>
-</div></div>
 
-<script src="/local/overlay.js"></script>
+    <div id="stage"><div id="window">
+      <div id="tabbar">
+        <div id="tabs"><span class="dot" id="statusDot"></span><span class="tab active">Local [<span id="tabCount">0</span>]</span><span class="tab" id="channelLabel"></span></div>
+        <div id="winctl"><span>+</span><span>&#8942;</span><span>&#8722;</span></div>
+      </div>
+      <div id="body">
+        <div id="chatCol"><ul id="list"></ul><div class="track"></div></div>
+        <div id="rosterCol">
+          <div id="rosterHead"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg><span id="rosterCount">0</span></div>
+          <ul id="rosterList"></ul><div class="track"></div>
+        </div>
+      </div>
+    </div></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
