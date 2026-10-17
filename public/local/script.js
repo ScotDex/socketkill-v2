@@ -68,6 +68,21 @@ async function pollViewers() {
   } catch {}
 }
 
+const URL_PATTERN = /\b(?:https?:\/\/|www\.)\S*[^\s.,!?)\]]/gi;
+
+function appendText(frag, str) {
+  let last = 0;
+  for (const match of str.matchAll(URL_PATTERN)) {
+    if (match.index > last) frag.append(str.slice(last, match.index));
+    const span = document.createElement('span');
+    span.className = 'link';
+    span.textContent = match[0];
+    frag.append(span);
+    last = match.index + match[0].length;
+  }
+  if (last < str.length) frag.append(str.slice(last));
+}
+
 
 function buildText(text, emoteTag) {
   const frag = document.createDocumentFragment();

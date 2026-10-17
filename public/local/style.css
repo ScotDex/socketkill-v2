@@ -360,6 +360,8 @@ body.preview-bg {
 
 .roster-row.spoken .roster-name { color: #e9eef0; }
 
+.text .link { color: #fffb00; }
+
 /* Standing square: colour set by JS via --standing */
 .standing {
   position: absolute;
