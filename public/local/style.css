@@ -132,7 +132,7 @@ body.preview-bg {
   display: none;                        /* JS adds .active to show it */
   flex-direction: column;
   width: calc(var(--panel-w) + var(--roster-w));
-  max-height: var(--panel-max-h);
+  height: var(--panel-max-h);
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0) 45%),
