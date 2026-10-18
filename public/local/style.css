@@ -1,7 +1,7 @@
-/* ===== Design tokens: tune these first ===== */
+
 :root {
   --eve-rgb: 18, 20, 23;
-  --panel-opacity: .9;                                        /* set by ?opacity= */
+  --panel-opacity: .9;                                       
   --eve-bg: rgba(var(--eve-rgb), var(--panel-opacity));
   --eve-border: rgba(255, 255, 255, .14);
   --line: rgba(255, 255, 255, .12);
@@ -11,14 +11,14 @@
   --green: #59c97a;
   --red: #d9534f;
 
-  --portrait: 48px;                                           /* set by ?portrait= */
-  --panel-w: 440px;                                           /* set by ?width= */
-  --roster-w: 210px;                                          /* set by ?rosterwidth= */
-  --panel-max-h: min(480px, calc(100vh - 48px));              /* set by ?maxheight= */
-  --font-size: 16px;                                          /* set by ?size= */
+  --portrait: 48px;                                         
+  --panel-w: 440px;                                          
+  --roster-w: 210px;                                        
+  --panel-max-h: min(480px, calc(100vh - 48px));              
+  --font-size: 16px;                                          
 }
 
-/* Faction themes: tint the panel border (set by ?theme=) */
+
 [data-theme="amarr"]    { --eve-border: rgba(201, 161, 74, .55); }
 [data-theme="caldari"]  { --eve-border: rgba(79, 143, 191, .55); }
 [data-theme="gallente"] { --eve-border: rgba(79, 174, 138, .55); }
@@ -27,7 +27,7 @@
 * { box-sizing: border-box; }
 
 
-/* ===== Fonts ===== */
+
 @font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-regular-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
 @font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-italic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-display:swap; }
 @font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-bold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
@@ -44,7 +44,6 @@
 @font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-expandedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:expanded; font-display:swap; }
 
 
-/* ===== Base ===== */
 html, body {
   margin: 0;
   height: 100%;
@@ -59,7 +58,7 @@ body.preview-bg {
 }
 
 
-/* ===== Setup page ===== */
+
 #setup {
   position: fixed;
   inset: 0;
@@ -169,7 +168,7 @@ body.preview-bg {
 }
 
 
-/* ===== Customise form ===== */
+
 #options { display: grid; gap: 14px; }
 
 #options fieldset {
@@ -197,7 +196,6 @@ body.preview-bg {
   margin: 0;
 }
 
-/* Text size: segmented buttons instead of radio dots */
 #options fieldset:has(input[type=radio]) { grid-template-columns: repeat(3, 1fr); gap: 0; }
 #options label:has(> input[type=radio]) {
   position: relative;
@@ -216,11 +214,11 @@ body.preview-bg {
 }
 #options input[type=radio] { position: absolute; opacity: 0; pointer-events: none; }
 
-/* Checkbox inline with its label */
+
 #options label:has(> input[type=checkbox]) { flex-direction: row; align-items: center; gap: 8px; cursor: pointer; }
 #options input[type=checkbox] { width: auto; margin: 0; accent-color: #4fc3e8; }
 
-/* Dropdowns match the text inputs */
+
 #options select {
   appearance: none;
   width: 100%;
@@ -231,7 +229,6 @@ body.preview-bg {
   border: 1px solid rgba(255, 255, 255, .12);
 }
 
-/* Slider: full width, no text-box styling */
 #options label:has(> input[type=range]) { grid-column: 1 / -1; }
 #options input[type=range] { width: 100%; padding: 0; border: 0; background: none; accent-color: #4fc3e8; }
 
@@ -242,7 +239,6 @@ body.preview-bg {
 }
 
 
-/* ===== Overlay panel ===== */
 #stage {
   position: fixed;
   left: 24px;
@@ -250,7 +246,7 @@ body.preview-bg {
 }
 
 #window {
-  display: none;                        /* JS adds .active to show it */
+  display: none;                       
   flex-direction: column;
   width: calc(var(--panel-w) + var(--roster-w));
   height: var(--panel-max-h);
@@ -270,7 +266,7 @@ body.preview-bg {
 #window.no-roster { width: var(--panel-w); }
 
 
-/* ===== Tab bar ===== */
+
 #tabbar {
   flex: none;
   height: 44px;
@@ -318,7 +314,7 @@ body.preview-bg {
 }
 
 
-/* ===== Columns ===== */
+
 #body {
   display: flex;
   flex: 1;
@@ -336,7 +332,7 @@ body.preview-bg {
 #chatCol   { flex: 1; min-width: 0; }
 #rosterCol { flex: none; width: var(--roster-w); }
 
-/* Decorative scrollbar tracks */
+
 .track {
   position: absolute;
   right: 8px;
@@ -359,7 +355,6 @@ body.preview-bg {
 #rosterCol .track::after { top: 0; height: 60%; }
 
 
-/* ===== Chat ===== */
 #list {
   list-style: none;
   margin: 0;
@@ -404,7 +399,6 @@ body.preview-bg {
 }
 
 
-/* ===== Roster ===== */
 #rosterHead {
   flex: none;
   height: 40px;
@@ -485,7 +479,7 @@ body.preview-bg {
 
 .roster-row.spoken .roster-name { color: #e9eef0; }
 
-/* Standing square: colour set by JS via --standing */
+
 .standing {
   position: absolute;
   right: -12px;
@@ -499,7 +493,7 @@ body.preview-bg {
     var(--standing, #4a5358);
 }
 
-/* ===== Live preview (scaled-down 700 x 530 OBS box) ===== */
+
 #previewBox {
   position: relative;
   width: 100%;
@@ -519,7 +513,6 @@ body.preview-bg {
   pointer-events: none;
 }
 
-/* ===== Two-column setup layout (wide screens) ===== */
 #setup header,
 #setup main,
 #setup footer { max-width: 1180px; }
@@ -538,9 +531,6 @@ body.preview-bg {
   }
 }
 
-/* =========================================================
-   Setup page re-theme: neutral EVE-style UI, one accent
-   ========================================================= */
 #setup {
   --ui-bg:      #0b0c0d;
   --ui-panel:   #121416;
@@ -568,7 +558,6 @@ body.preview-bg {
   color: var(--ui-muted);
 }
 
-/* Panels: flat, hairline borders */
 #setup section {
   background: var(--ui-panel);
   border: 1px solid var(--ui-line);
@@ -578,7 +567,7 @@ body.preview-bg {
 #options label   { color: var(--ui-text); }
 .hint, #setup footer { color: var(--ui-muted); }
 
-/* Fields */
+
 #setup input,
 #options select {
   background-color: var(--ui-field);
@@ -589,11 +578,11 @@ body.preview-bg {
 #setup input:focus,
 #options select:focus { border-color: var(--ui-accent); outline: none; }
 
-/* Fieldsets */
+
 #options fieldset { background: none; border-color: var(--ui-line); }
 #options legend   { color: var(--ui-muted); }
 
-/* Segmented text size */
+
 #options label:has(> input[type=radio]) { border-color: var(--ui-line-hi); color: var(--ui-muted); }
 #options label:has(> input[type=radio]:checked) {
   border-color: var(--ui-accent);
@@ -604,7 +593,7 @@ body.preview-bg {
 #options input[type=checkbox],
 #options input[type=range] { accent-color: var(--ui-accent); }
 
-/* Buttons: Copy is the main action and gets the accent; Preview is secondary */
+
 #setup button {
   background: transparent;
   border: 1px solid var(--ui-line-hi);
@@ -619,9 +608,9 @@ body.preview-bg {
 }
 #copyBtn:hover { background: #a3cadb; border-color: #a3cadb; }
 
-/* Preview frame */
+
 #previewBox { border-color: var(--ui-line); background: #070808; }
 
-/* Links */
+
 #setup a { color: var(--ui-text); text-decoration-color: var(--ui-line-hi); text-underline-offset: 3px; }
 #setup a:hover { color: var(--ui-accent); }

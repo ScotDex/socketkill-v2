@@ -1,7 +1,3 @@
-// ============================================================
-// 1. SETTINGS FROM THE URL
-// ============================================================
-
 const params = new URLSearchParams(location.search);
 const maxMessages = Number(params.get('max')) || 30;
 const channel = (params.get('channel') || '')
@@ -13,10 +9,6 @@ const rosterEnabled = params.get('roster') !== '0';
 const maxRoster = Number(params.get('rostermax')) || 80;
 
 
-// ============================================================
-// 2. PAGE ELEMENTS
-// ============================================================
-
 const setupEl       = document.getElementById('setup');
 const windowEl      = document.getElementById('window');
 const listEl        = document.getElementById('list');
@@ -27,10 +19,6 @@ const rosterColEl   = document.getElementById('rosterCol');
 const rosterListEl  = document.getElementById('rosterList');
 const rosterCountEl = document.getElementById('rosterCount');
 
-
-// ============================================================
-// 3. APPLY SETTINGS TO THE LOOK
-// ============================================================
 
 if (params.get('bg') === '1') document.body.classList.add('preview-bg');
 
@@ -45,7 +33,7 @@ setPx('size', '--font-size');
 setPx('rosterwidth', '--roster-w');
 setPx('portrait', '--portrait');
 
-// Width and height are capped so the panel never overflows the OBS box
+
 const panelW = parseInt(params.get('width'), 10);
 if (panelW > 0) rootStyle.setProperty('--panel-w', `min(${panelW}px, calc(100vw - 48px))`);
 
@@ -69,11 +57,6 @@ function showOverlay() {
   windowEl.classList.add('active');
 }
 
-
-// ============================================================
-// 4. VIEWER COUNT
-// ============================================================
-
 const chatters = new Set();
 let viewers = null;
 
@@ -92,11 +75,6 @@ async function pollViewers() {
     updateTabCount();
   } catch {}
 }
-
-
-// ============================================================
-// 5. CHAT MESSAGES
-// ============================================================
 
 function buildText(text, emoteTag) {
   const frag = document.createDocumentFragment();
@@ -161,11 +139,6 @@ function addMessage(msg) {
     listEl.classList.add('overflowing');
   }
 }
-
-
-// ============================================================
-// 6. VIEWER LIST (ROSTER)
-// ============================================================
 
 const STANDING = {
   mod: '#59c97a',
@@ -343,11 +316,6 @@ async function runLookups() {
   lookupBusy = false;
 }
 
-
-// ============================================================
-// 7. TWITCH CONNECTION
-// ============================================================
-
 function parseLine(line) {
   const msg = { tags: {}, prefix: '', command: '', params: [], text: '' };
   let rest = line;
@@ -449,11 +417,6 @@ function connect(ch) {
   };
 }
 
-
-// ============================================================
-// 8. SETUP PAGE (link builder) - only runs with no ?channel=
-// ============================================================
-
 const channelInput = document.getElementById('channelInput');
 const urlOutput    = document.getElementById('urlOutput');
 const setupError   = document.getElementById('setupError');
@@ -476,7 +439,6 @@ function buildUrl() {
   return urlOutput.value;
 }
 
-// Only settings changed from their default go into the link
 function optionParams() {
   const out = new URLSearchParams();
   for (const el of optionsForm.elements) {
@@ -494,11 +456,6 @@ function optionParams() {
   }
   return out;
 }
-
-
-// ============================================================
-// 9. LIVE PREVIEW (setup page) - loads the overlay in demo mode
-// ============================================================
 
 const previewBox   = document.getElementById('previewBox');
 const previewFrame = document.getElementById('previewFrame');
@@ -518,14 +475,8 @@ function updatePreview() {
   }, 400);
 }
 
-
-// ============================================================
-// 10. START
-// ============================================================
-
 if (params.get('demo') === '1') {
   showOverlay();
-  // Demo code lives in demo.js and is only downloaded in demo mode
   import('./demo.js').then(({ runDemo }) => runDemo({
     addMessage, rosterAdd, rosterSpoke, renderRoster, roster, labelEl, dotEl,
     setViewers: n => { viewers = n; updateTabCount(); }

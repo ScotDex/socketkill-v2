@@ -1,12 +1,7 @@
-// ============================================================
-// DEMO MODE - fake chat so streamers can see the look.
-// Loaded by script.js only when the URL has ?demo=1.
-// ============================================================
-
 const USERS = [
-  { name: 'Kador_Pilot',      color: '#e8c165', badges: 'broadcaster/1' },
-  { name: 'WormholeWanderer', color: '#6fd7ff', badges: 'moderator/1' },
-  { name: 'JitaTrader',       color: '#59c97a', badges: 'vip/1' },
+  { name: 'schadsquatch',      color: '#e8c165', badges: 'broadcaster/1' },
+  { name: 'lynnerankin', color: '#6fd7ff', badges: 'moderator/1' },
+  { name: 'vinnegar_dooshay',       color: '#59c97a', badges: 'vip/1' },
   { name: 'RustyMinmatar',    color: '#ff7f50', badges: 'subscriber/12' },
   { name: 'NullsecNomad',     color: '#a970ff', badges: 'subscriber/3' },
   { name: 'HighsecHauler',    color: '#9ad0ec', badges: '' },
