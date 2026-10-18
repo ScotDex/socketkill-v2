@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eve Local Chat Overlay</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="EVE Online Local-style chat overlay for Twitch streamers. Paste one URL into OBS.">
+    <link rel="preload" href="fonts/evesansneue-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -41,47 +40,60 @@
             </section>
 
             <section>
-    <h2>Customise</h2>
-    <form id="options">
+                <h2>Preview</h2>
+                <div id="previewBox"><iframe id="previewFrame" title="Overlay preview" tabindex="-1"></iframe></div>
+                <p class="hint">Sample chat. Updates as you change the settings below.</p>
+            </section>
 
-        <fieldset>
-            <legend>Text size</legend>
-            <label><input type="radio" name="size" value="14"> Small</label>
-            <label><input type="radio" name="size" value="16" checked> Medium</label>
-            <label><input type="radio" name="size" value="18"> Large</label>
-        </fieldset>
+            <section>
+                <h2>Customise</h2>
+                <form id="options">
 
-        <fieldset>
-            <legend>Viewer list</legend>
-            <label><input type="checkbox" name="roster" checked> Show viewer list</label>
-            <label>Portrait size
-                <select name="portrait">
-                    <option value="32">Compact</option>
-                    <option value="40">Medium</option>
-                    <option value="48" selected>Large</option>
-                </select>
-            </label>
-        </fieldset>
+                    <fieldset>
+                        <legend>Text size</legend>
+                        <label><input type="radio" name="size" value="14"> Small</label>
+                        <label><input type="radio" name="size" value="16" checked> Medium</label>
+                        <label><input type="radio" name="size" value="18"> Large</label>
+                    </fieldset>
 
-        <fieldset>
-            <legend>Panel</legend>
-            <label>Opacity
-                <input type="range" name="opacity" min="0.4" max="1" step="0.05" value="0.88">
-            </label>
-            <label>Theme
-                <select name="theme">
-                    <option value="" selected>Neutral</option>
-                    <option value="amarr">Amarr</option>
-                    <option value="caldari">Caldari</option>
-                    <option value="gallente">Gallente</option>
-                    <option value="minmatar">Minmatar</option>
-                </select>
-            </label>
-        </fieldset>
+                    <fieldset>
+                        <legend>Window size</legend>
+                        <label>Panel width (px) <input type="number" name="width" min="200" placeholder="auto"></label>
+                        <label>Max height (px) <input type="number" name="maxheight" min="150" placeholder="auto"></label>
+                        <label>Messages kept <input type="number" name="max" min="5" max="200" placeholder="30"></label>
+                    </fieldset>
 
-    </form>
-    <p class="hint">OBS Browser Source size: <b id="obsSize">700 × 530</b></p>
-</section>
+                    <fieldset>
+                        <legend>Viewer list</legend>
+                        <label><input type="checkbox" name="roster" checked> Show viewer list</label>
+                        <label>Portrait size
+                            <select name="portrait">
+                                <option value="32">Compact</option>
+                                <option value="40">Medium</option>
+                                <option value="48" selected>Large</option>
+                            </select>
+                        </label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Panel</legend>
+                        <label>Opacity
+                            <input type="range" name="opacity" min="0.4" max="1" step="0.05" value="0.9">
+                        </label>
+                        <label>Theme
+                            <select name="theme">
+                                <option value="" selected>Neutral</option>
+                                <option value="amarr">Amarr</option>
+                                <option value="caldari">Caldari</option>
+                                <option value="gallente">Gallente</option>
+                                <option value="minmatar">Minmatar</option>
+                            </select>
+                        </label>
+                    </fieldset>
+
+                </form>
+                <p class="hint">OBS Browser Source size: <b id="obsSize">700 × 530</b></p>
+            </section>
 
             <section>
                 <h2>Add it to OBS</h2>
@@ -94,8 +106,8 @@
         </main>
 
         <footer>
-    <p>Built on the original overlay by <a href="https://www.twitch.tv/schadsquatch">Schadsquatch</a>, whose idea and design this is. Rewritten and hosted by <a href="https://socketkill.com">SocketKill</a>.</p>
-</footer>
+            <p>Built on the original overlay by <a href="https://www.twitch.tv/schadsquatch">Schadsquatch</a>, whose idea and design this is. Rewritten and hosted by <a href="https://socketkill.com">SocketKill</a>.</p>
+        </footer>
     </div>
 
     <div id="stage"><div id="window">

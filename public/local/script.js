@@ -1,3 +1,6 @@
+// ============================================================
+// 1. SETTINGS FROM THE URL
+// ============================================================
 
 const params = new URLSearchParams(location.search);
 const maxMessages = Number(params.get('max')) || 30;
@@ -10,6 +13,10 @@ const rosterEnabled = params.get('roster') !== '0';
 const maxRoster = Number(params.get('rostermax')) || 80;
 
 
+// ============================================================
+// 2. PAGE ELEMENTS
+// ============================================================
+
 const setupEl       = document.getElementById('setup');
 const windowEl      = document.getElementById('window');
 const listEl        = document.getElementById('list');
@@ -21,6 +28,10 @@ const rosterListEl  = document.getElementById('rosterList');
 const rosterCountEl = document.getElementById('rosterCount');
 
 
+// ============================================================
+// 3. APPLY SETTINGS TO THE LOOK
+// ============================================================
+
 if (params.get('bg') === '1') document.body.classList.add('preview-bg');
 
 const rootStyle = document.documentElement.style;
@@ -31,11 +42,21 @@ function setPx(param, cssVar) {
 }
 
 setPx('size', '--font-size');
-setPx('width', '--panel-w');
 setPx('rosterwidth', '--roster-w');
+setPx('portrait', '--portrait');
+
+// Width and height are capped so the panel never overflows the OBS box
+const panelW = parseInt(params.get('width'), 10);
+if (panelW > 0) rootStyle.setProperty('--panel-w', `min(${panelW}px, calc(100vw - 48px))`);
 
 const maxH = parseInt(params.get('maxheight'), 10);
 if (maxH > 0) rootStyle.setProperty('--panel-max-h', `min(${maxH}px, calc(100vh - 48px))`);
+
+const opacity = parseFloat(params.get('opacity'));
+if (opacity >= 0 && opacity <= 1) rootStyle.setProperty('--panel-opacity', opacity);
+
+const theme = params.get('theme');
+if (/^(amarr|caldari|gallente|minmatar)$/.test(theme)) document.documentElement.dataset.theme = theme;
 
 if (!rosterEnabled) {
   rosterColEl.style.display = 'none';
@@ -48,6 +69,10 @@ function showOverlay() {
   windowEl.classList.add('active');
 }
 
+
+// ============================================================
+// 4. VIEWER COUNT
+// ============================================================
 
 const chatters = new Set();
 let viewers = null;
@@ -68,21 +93,10 @@ async function pollViewers() {
   } catch {}
 }
 
-const URL_PATTERN = /\b(?:https?:\/\/|www\.)\S*[^\s.,!?)\]]/gi;
 
-function appendText(frag, str) {
-  let last = 0;
-  for (const match of str.matchAll(URL_PATTERN)) {
-    if (match.index > last) frag.append(str.slice(last, match.index));
-    const span = document.createElement('span');
-    span.className = 'link';
-    span.textContent = match[0];
-    frag.append(span);
-    last = match.index + match[0].length;
-  }
-  if (last < str.length) frag.append(str.slice(last));
-}
-
+// ============================================================
+// 5. CHAT MESSAGES
+// ============================================================
 
 function buildText(text, emoteTag) {
   const frag = document.createDocumentFragment();
@@ -148,6 +162,10 @@ function addMessage(msg) {
   }
 }
 
+
+// ============================================================
+// 6. VIEWER LIST (ROSTER)
+// ============================================================
 
 const STANDING = {
   mod: '#59c97a',
@@ -326,6 +344,10 @@ async function runLookups() {
 }
 
 
+// ============================================================
+// 7. TWITCH CONNECTION
+// ============================================================
+
 function parseLine(line) {
   const msg = { tags: {}, prefix: '', command: '', params: [], text: '' };
   let rest = line;
@@ -428,9 +450,108 @@ function connect(ch) {
 }
 
 
-if (channel) {
+// ============================================================
+// 8. SETUP PAGE (link builder) - only runs with no ?channel=
+// ============================================================
+
+const channelInput = document.getElementById('channelInput');
+const urlOutput    = document.getElementById('urlOutput');
+const setupError   = document.getElementById('setupError');
+const optionsForm  = document.getElementById('options');
+
+function buildUrl() {
+  const ch = channelInput.value.trim().toLowerCase().replace(/^#/, '');
+  if (!/^[a-z0-9_]{3,25}$/.test(ch)) {
+    setupError.textContent = ch ? 'Not a valid Twitch channel name' : '';
+    urlOutput.value = '';
+    return null;
+  }
+  setupError.textContent = '';
+
+  const out = optionParams();
+  out.set('channel', ch);
+  out.sort();
+
+  urlOutput.value = location.origin + location.pathname + '?' + out;
+  return urlOutput.value;
+}
+
+// Only settings changed from their default go into the link
+function optionParams() {
+  const out = new URLSearchParams();
+  for (const el of optionsForm.elements) {
+    if (!el.name) continue;
+    if (el.type === 'checkbox') {
+      if (!el.checked) out.set(el.name, '0');
+    } else if (el.type === 'radio') {
+      if (el.checked && !el.defaultChecked) out.set(el.name, el.value);
+    } else if (el.tagName === 'SELECT') {
+      const def = [...el.options].find(o => o.defaultSelected)?.value ?? '';
+      if (el.value !== def) out.set(el.name, el.value);
+    } else if (el.value.trim() && el.value !== el.defaultValue) {
+      out.set(el.name, el.value.trim());
+    }
+  }
+  return out;
+}
+
+
+// ============================================================
+// 9. LIVE PREVIEW (setup page) - loads the overlay in demo mode
+// ============================================================
+
+const previewBox   = document.getElementById('previewBox');
+const previewFrame = document.getElementById('previewFrame');
+let previewTimer;
+
+function fitPreview() {
+  previewFrame.style.transform = `scale(${previewBox.clientWidth / 700})`;
+}
+
+function updatePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(() => {
+    const p = optionParams();
+    p.set('demo', '1');
+    p.set('bg', '1');
+    previewFrame.src = location.pathname + '?' + p;
+  }, 400);
+}
+
+
+// ============================================================
+// 10. START
+// ============================================================
+
+if (params.get('demo') === '1') {
+  showOverlay();
+  // Demo code lives in demo.js and is only downloaded in demo mode
+  import('./demo.js').then(({ runDemo }) => runDemo({
+    addMessage, rosterAdd, rosterSpoke, renderRoster, roster, labelEl, dotEl,
+    setViewers: n => { viewers = n; updateTabCount(); }
+  }));
+} else if (channel) {
   showOverlay();
   connect(channel);
   pollViewers();
   setInterval(pollViewers, 30000);
+} else {
+  channelInput.addEventListener('input', buildUrl);
+  optionsForm.addEventListener('input', () => { buildUrl(); if (previewFrame) updatePreview(); });
+
+  if (previewFrame) {
+    fitPreview();
+    window.addEventListener('resize', fitPreview);
+    updatePreview();
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const url = buildUrl();
+    if (url) navigator.clipboard.writeText(url);
+  });
+
+  document.getElementById('connectBtn').addEventListener('click', () => {
+    const url = buildUrl();
+    if (url) location.href = url + '&bg=1';
+  });
 }
