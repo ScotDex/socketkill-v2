@@ -537,3 +537,91 @@ body.preview-bg {
     top: 0;
   }
 }
+
+/* =========================================================
+   Setup page re-theme: neutral EVE-style UI, one accent
+   ========================================================= */
+#setup {
+  --ui-bg:      #0b0c0d;
+  --ui-panel:   #121416;
+  --ui-field:   #181b1d;
+  --ui-line:    #23272a;
+  --ui-line-hi: #353b3f;
+  --ui-text:    #d9dcde;
+  --ui-muted:   #7d8589;
+  --ui-accent:  #8ab8cc;
+  --ui-accent-dim: rgba(138, 184, 204, .12);
+
+  background: var(--ui-bg);
+  color: var(--ui-text);
+}
+
+/* Headings: off-white and muted, not cyan */
+#setup h1        { color: var(--ui-text); letter-spacing: 3px; }
+#setup h1::first-letter { color: var(--ui-accent); }   /* only the status dot is accented */
+#setup header p  { color: var(--ui-muted); }
+#setup h2        { color: var(--ui-muted); letter-spacing: 2.5px; font-size: 12px; }
+
+.badge {
+  border-color: var(--ui-line-hi);
+  background: none;
+  color: var(--ui-muted);
+}
+
+/* Panels: flat, hairline borders */
+#setup section {
+  background: var(--ui-panel);
+  border: 1px solid var(--ui-line);
+}
+
+#setup label,
+#options label   { color: var(--ui-text); }
+.hint, #setup footer { color: var(--ui-muted); }
+
+/* Fields */
+#setup input,
+#options select {
+  background-color: var(--ui-field);
+  border: 1px solid var(--ui-line-hi);
+  color: var(--ui-text);
+}
+#setup input::placeholder { color: #5b6266; }
+#setup input:focus,
+#options select:focus { border-color: var(--ui-accent); outline: none; }
+
+/* Fieldsets */
+#options fieldset { background: none; border-color: var(--ui-line); }
+#options legend   { color: var(--ui-muted); }
+
+/* Segmented text size */
+#options label:has(> input[type=radio]) { border-color: var(--ui-line-hi); color: var(--ui-muted); }
+#options label:has(> input[type=radio]:checked) {
+  border-color: var(--ui-accent);
+  background: var(--ui-accent-dim);
+  color: var(--ui-text);
+}
+
+#options input[type=checkbox],
+#options input[type=range] { accent-color: var(--ui-accent); }
+
+/* Buttons: Copy is the main action and gets the accent; Preview is secondary */
+#setup button {
+  background: transparent;
+  border: 1px solid var(--ui-line-hi);
+  color: var(--ui-text);
+}
+#setup button:hover { border-color: var(--ui-muted); background: rgba(255, 255, 255, .03); }
+
+#copyBtn {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: #0b0c0d;
+}
+#copyBtn:hover { background: #a3cadb; border-color: #a3cadb; }
+
+/* Preview frame */
+#previewBox { border-color: var(--ui-line); background: #070808; }
+
+/* Links */
+#setup a { color: var(--ui-text); text-decoration-color: var(--ui-line-hi); text-underline-offset: 3px; }
+#setup a:hover { color: var(--ui-accent); }
