@@ -18,6 +18,7 @@
         </header>
 
         <main>
+          <div class="col-controls">
             <section>
                 <h2>What it is</h2>
                 <p>A free OBS overlay that shows your Twitch chat and viewers like EVE's Local window. No login, no install, no account.</p>
@@ -39,11 +40,6 @@
                 <button id="connectBtn" type="button">Preview</button>
             </section>
 
-            <section>
-                <h2>Preview</h2>
-                <div id="previewBox"><iframe id="previewFrame" title="Overlay preview" tabindex="-1"></iframe></div>
-                <p class="hint">Sample chat. Updates as you change the settings below.</p>
-            </section>
 
             <section>
                 <h2>Customise</h2>
@@ -95,6 +91,15 @@
                 <p class="hint">OBS Browser Source size: <b id="obsSize">700 × 530</b></p>
             </section>
 
+          </div>
+
+          <aside class="col-preview">
+            <section>
+                <h2>Preview</h2>
+                <div id="previewBox"><iframe id="previewFrame" title="Overlay preview" tabindex="-1"></iframe></div>
+                <p class="hint">Sample chat. Updates as you change the settings.</p>
+            </section>
+
             <section>
                 <h2>Add it to OBS</h2>
                 <ol>
@@ -103,6 +108,7 @@
                     <li>Set width <b>700</b> and height <b>530</b></li>
                 </ol>
             </section>
+          </aside>
         </main>
 
         <footer>

@@ -518,3 +518,22 @@ body.preview-bg {
   transform-origin: 0 0;
   pointer-events: none;
 }
+
+/* ===== Two-column setup layout (wide screens) ===== */
+#setup header,
+#setup main,
+#setup footer { max-width: 1180px; }
+
+@media (min-width: 1000px) {
+  #setup main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .col-preview {
+    position: sticky;
+    top: 0;
+  }
+}
