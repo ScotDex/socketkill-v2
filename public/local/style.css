@@ -646,4 +646,7 @@ body.preview-bg {
 @keyframes copy-shake {
   25% { transform: translateX(-3px); }
   75% { transform: translateX(3px); }
+
 }
+
+.legal { font-size: 10px; line-height: 1.5; color: #4f565a; margin-top: 12px; }
