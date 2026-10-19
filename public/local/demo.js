@@ -2,19 +2,19 @@ const USERS = [
   { name: 'schadsquatch',      color: '#e8c165', badges: 'broadcaster/1' },
   { name: 'lynnerankin', color: '#6fd7ff', badges: 'moderator/1' },
   { name: 'vinnegar_dooshay',       color: '#59c97a', badges: 'vip/1' },
-  { name: 'RustyMinmatar',    color: '#ff7f50', badges: 'subscriber/12' },
-  { name: 'NullsecNomad',     color: '#a970ff', badges: 'subscriber/3' },
-  { name: 'HighsecHauler',    color: '#9ad0ec', badges: '' },
-  { name: 'CapsuleerCait',    color: '#ff6fae', badges: '' }
+  { name: 'Erst',    color: '#ff7f50', badges: 'subscriber/12' },
+  { name: 'BombeldoTheWizard',     color: '#a970ff', badges: 'subscriber/3' },
+  { name: 'MagicalGeek',    color: '#9ad0ec', badges: '' },
+  { name: 'TheMadRambo',    color: '#ff6fae', badges: '' }
 ];
 
 const SILENT = ['AFKcloaky', 'LocalLurker', 'ProbeScanner', 'GateCamper', 'MiningMarv', 'Undock_Andy'];
 
 const LINES = [
-  'o7', 'gf', 'local spike, dock up', 'anyone selling PLEX?', 'nice fit',
-  'is that a Rifter?', 'fly safe', 'rip ship', 'check your overview',
-  'jita prices are wild today', 'warping to you now', 'gate is camped',
-  'what implants are you running?', 'that was a clean kill', 'welcome to New Eden'
+  'o7', 'gf', 'local spike, dock up', 'I can double your ISK?', 'trash fit',
+  'is that a Lancer?', 'fly safe', 'die quietly', 'check your overview',
+  'Use code wizard', 'warping to you now', 'tama is camped AGAIN',
+  'Would you like to hold my moustache?', 'that was a clean kill', 'welcome to New Eden'
 ];
 
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
