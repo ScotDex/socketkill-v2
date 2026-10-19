@@ -495,14 +495,35 @@ if (params.get('demo') === '1') {
     window.addEventListener('resize', fitPreview);
     updatePreview();
   }
+  const copyBtn = document.getElementById('copyBtn');
+  let copyTimer;
 
-  document.getElementById('copyBtn').addEventListener('click', () => {
+  copyBtn.addEventListener('click', async () => {
     const url = buildUrl();
-    if (url) navigator.clipboard.writeText(url);
-  });
+    clearTimeout(copyTimer);
+    copyBtn.classList.remove('copied', 'failed');
+    void copyBtn.offsetWidth;   
 
-  document.getElementById('connectBtn').addEventListener('click', () => {
-    const url = buildUrl();
-    if (url) location.href = url + '&bg=1';
+    if (!url) {
+      copyBtn.classList.add('failed');
+      copyBtn.textContent = 'Enter channel';
+      channelInput.focus();
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        urlOutput.select();     
+        document.execCommand('copy');
+      }
+      copyBtn.classList.add('copied');
+      copyBtn.textContent = 'Copied ✓';
+      urlOutput.classList.add('flash');
+      setTimeout(() => urlOutput.classList.remove('flash'), 600);
+    }
+
+    copyTimer = setTimeout(() => {
+      copyBtn.classList.remove('copied', 'failed');
+      copyBtn.textContent = 'Copy';
+    }, 1600);
   });
 }

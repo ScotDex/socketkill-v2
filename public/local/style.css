@@ -602,8 +602,8 @@ body.preview-bg {
 #setup button:hover { border-color: var(--ui-muted); background: rgba(255, 255, 255, .03); }
 
 #copyBtn {
-  background: var(--ui-accent);
-  border-color: var(--ui-accent);
+  background: #e8b923;
+  border-color: #e8b923;
   color: #0b0c0d;
 }
 #copyBtn:hover { background: #a3cadb; border-color: #a3cadb; }
@@ -614,3 +614,36 @@ body.preview-bg {
 
 #setup a { color: var(--ui-text); text-decoration-color: var(--ui-line-hi); text-underline-offset: 3px; }
 #setup a:hover { color: var(--ui-accent); }
+
+/* ===== Copy feedback ===== */
+#setup #copyBtn { min-width: 110px; transition: background .2s, border-color .2s; }
+
+#setup #copyBtn.copied {
+  background: #59c97a;
+  border-color: #59c97a;
+  animation: copy-blink .45s ease-out;
+}
+
+#setup #copyBtn.failed {
+  background: transparent;
+  border-color: #d9534f;
+  color: #d9534f;
+  animation: copy-shake .3s;
+}
+
+#urlOutput.flash { animation: url-flash .6s ease-out; }
+
+@keyframes copy-blink {
+  0%   { filter: brightness(1.8); transform: scale(.96); }
+  100% { filter: none;            transform: none; }
+}
+
+@keyframes url-flash {
+  0%   { border-color: #e8b923; box-shadow: 0 0 0 3px rgba(232, 185, 35, .25); }
+  100% { border-color: var(--ui-line-hi); box-shadow: none; }
+}
+
+@keyframes copy-shake {
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}

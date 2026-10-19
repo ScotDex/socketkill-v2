@@ -11,10 +11,10 @@ const USERS = [
 const SILENT = ['AFKcloaky', 'LocalLurker', 'ProbeScanner', 'GateCamper', 'MiningMarv', 'Undock_Andy'];
 
 const LINES = [
-  'o7', 'gf', 'local spike, dock up', 'I can double your ISK?', 'trash fit',
+  'o7', 'gf', 'uWu Daddy', 'I can double your ISK?', 'trash fit',
   'is that a Lancer?', 'fly safe', 'die quietly', 'check your overview',
-  'Use code wizard', 'warping to you now', 'tama is camped AGAIN',
-  'Would you like to hold my moustache?', 'that was a clean kill', 'welcome to New Eden'
+  'Use code wizard', 'Dont talk in local', 'tama is camped AGAIN',
+  'Would you like to hold my moustache?', 'Check zkill', 'welcome to New Eden'
 ];
 
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
