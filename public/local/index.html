@@ -4,17 +4,41 @@
     <!-- Test URL: http://127.0.0.1:5500/index.html?channel=fenriscreations&bg=1 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS EvE Twitch Chat</title>
-    <meta name="description" content="EVE Online Local-style chat overlay for Twitch streamers. Paste one URL into OBS.">
+
+    <title>EVE Online Local Chat Overlay for Twitch </title>
+    <meta name="description" content="Free OBS overlay that makes your Twitch chat look like EVE Online's Local channel. No login or install. Paste one URL into OBS.">
+    <link rel="canonical" href="https://socketkill.com/local/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="EVE Online Local Chat Overlay for Twitch">
+    <meta property="og:description" content="Make your Twitch chat look like EVE's Local channel. Free, no login. Paste one URL into OBS.">
+    <meta property="og:url" content="https://socketkill.com/local/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#0b0c0d">
+
     <link rel="preload" href="fonts/evesansneue-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../local/style.css">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0c0d'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23e8b923' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='4.5' fill='%23e8b923'/%3E%3C/svg%3E">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "EVE Local Chat Overlay",
+      "description": "Free OBS browser source that styles Twitch chat like EVE Online's Local channel.",
+      "url": "https://socketkill.com/local/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any (OBS Studio browser source)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+      "creator": { "@type": "Organization", "name": "Static Orbit", "url": "https://static-orbit.co.uk/" }
+    }
+    </script>
 </head>
 
 <body>
     <div id="setup">
         <header>
-            <h1>&#9673; EvE Twitch Chat </h1>
+            <h1>&#9673; EVE Twitch Chat</h1>
             <p>EVE Online Local chat for your Twitch stream.</p>
         </header>
 
@@ -22,7 +46,8 @@
           <div class="col-controls">
             <section>
                 <h2>What it is</h2>
-                <p>A free OBS browser source which transforms your screen chat to imitate eve online, no accounts, registration or login required.</p>
+                <p>A free OBS browser source that makes your Twitch chat look like EVE Online's Local chat. No accounts, registration or login required.</p>
+                <p class="hint">Avatars and viewer counts are fetched from IVR (api.ivr.fi). Nothing is stored.</p>
             </section>
 
             <section>
@@ -39,7 +64,6 @@
                 </div>
             </section>
 
-
             <section>
                 <h2>Customise</h2>
                 <form id="options">
@@ -53,8 +77,8 @@
 
                     <fieldset>
                         <legend>Window size</legend>
-                        <label>Panel width (px) <input type="number" name="width" min="200" placeholder="auto"></label>
-                        <label>Max height (px) <input type="number" name="maxheight" min="150" placeholder="auto"></label>
+                        <label>Chat width (px) <input type="number" name="width" min="200" placeholder="440"></label>
+                        <label>Height (px) <input type="number" name="maxheight" min="150" placeholder="480"></label>
                         <label>Messages kept <input type="number" name="max" min="5" max="200" placeholder="30"></label>
                     </fieldset>
 
@@ -89,7 +113,6 @@
                 </form>
                 <p class="hint">OBS Browser Source size: <b id="obsSize">700 × 530</b></p>
             </section>
-
           </div>
 
           <aside class="col-preview">
@@ -104,15 +127,15 @@
                 <ol>
                     <li>In OBS: <b>Sources → + → Browser</b></li>
                     <li>Paste your URL into the <b>URL</b> field</li>
-                    <li>Set width <b>700</b> and height <b>530</b></li>
+                    <li>Set width and height to the <b>OBS Browser Source size</b> shown under Customise</li>
                 </ol>
             </section>
           </aside>
         </main>
 
         <footer>
-            <p>Built on the original overlay by <a href="https://www.twitch.tv/schadsquatch">Schadsquatch</a>, whose idea and design this is. Rewritten and hosted by <a href="https://static-orbit.co.uk/">static-orbit </a>.</p>
-                <p class="legal">EVE Online and the EVE logo are the registered trademarks of Fenris Creations hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of Fenris Creations hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of FC hf. FC hf. has granted permission to SocketKill to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, SocketKill. FC is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.</p>
+            <p>Built on the original overlay by <a href="https://www.twitch.tv/schadsquatch">Schadsquatch</a>, whose idea and design this is. Rewritten and hosted by <a href="https://static-orbit.co.uk/">Static Orbit</a>.</p>
+            <p class="legal">EVE Online and the EVE logo are registered trademarks of Fenris Creations. All rights are reserved worldwide. All other trademarks are the property of their respective owners. FC has granted permission to socketkill.com to use EVE Online and all associated logos and designs for promotional and informational purposes on its website but does not endorse, and is not in any way affiliated with, socketkill.com. FC is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.</p>
         </footer>
     </div>
 
