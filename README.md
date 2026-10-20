@@ -13,6 +13,8 @@ Socket.Kill started with a side project where I was throwing away killmail data.
 
 The scope is simple: stream kills as fast as technically possible, using the latest tech and ideas.
 
+By [Static Orbit Studio] (https://static-orbit.co.uk/)
+
 ## Features
 
 - **Real-time WebSocket feed.** Dual Caching layer provides optimized rendering speed
@@ -26,6 +28,7 @@ The scope is simple: stream kills as fast as technically possible, using the lat
 - **Demo** Feature illustration here [Video](https://youtu.be/zbiEjZFed30?si=5q55ew3FAVLH6_N-)
 - **Damage Guide** [Average Damage Guide](https://socketkill.com/guide/)
 - **Map of New Eden** [Cinematic Map](https://socketkill.com/map)
+- **OBS Eve Twitch Chat** [Eve Twitch Chat] (https://socketkill.com/local/)
 
 ## Tech stack
 
