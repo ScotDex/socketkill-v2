@@ -10,6 +10,7 @@
   --dim: #8f9a9f;
   --green: #59c97a;
   --red: #d9534f;
+  --gold: #e8b923;
 
   --portrait: 48px;                                         
   --panel-w: 440px;                                          
@@ -89,6 +90,8 @@ body.preview-bg {
   letter-spacing: 4px;
   color: var(--cyan);
   margin: 0 0 6px;
+
+
 }
 
 #setup h2 {
@@ -539,8 +542,8 @@ body.preview-bg {
   --ui-line-hi: #353b3f;
   --ui-text:    #d9dcde;
   --ui-muted:   #7d8589;
-  --ui-accent:  #8ab8cc;
-  --ui-accent-dim: rgba(138, 184, 204, .12);
+  --ui-accent:     var(--gold);
+  --ui-accent-dim: rgba(232, 185, 35, .12);
 
   background: var(--ui-bg);
   color: var(--ui-text);
@@ -606,8 +609,9 @@ body.preview-bg {
   border-color: #e8b923;
   color: #0b0c0d;
 }
-#copyBtn:hover { background: #a3cadb; border-color: #a3cadb; }
+#copyBtn:hover { background: #f2cc4d; border-color: #f2cc4d; }
 
+.text .link { color: var(--gold); }
 
 #previewBox { border-color: var(--ui-line); background: #070808; }
 
