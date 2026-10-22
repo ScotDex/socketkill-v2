@@ -57,29 +57,26 @@ function showOverlay() {
   windowEl.classList.add('active');
 }
 
-const chatters = new Set();
-let viewers = null;
 
-function updateTabCount() {
-  tabCountEl.textContent = viewers ?? chatters.size;
-}
+const URL_PATTERN = /\b(?:https?:\/\/|www\.)\S*[^\s.,!?)\]]/gi;
 
-async function pollViewers() {
-  try {
-    const res = await fetch('https://api.ivr.fi/v2/twitch/user?login=' + encodeURIComponent(channel));
-    if (!res.ok) return;
-    const data = await res.json();
-    const user = Array.isArray(data) ? data[0] : data;
-    if (!user) return;
-    viewers = user.stream ? (user.stream.viewersCount ?? user.stream.viewers ?? null) : 0;
-    updateTabCount();
-  } catch {}
+function appendText(frag, str) {
+  let last = 0;
+  for (const match of str.matchAll(URL_PATTERN)) {
+    if (match.index > last) frag.append(str.slice(last, match.index));
+    const span = document.createElement('span');
+    span.className = 'link';
+    span.textContent = match[0];
+    frag.append(span);
+    last = match.index + match[0].length;
+  }
+  if (last < str.length) frag.append(str.slice(last));
 }
 
 function buildText(text, emoteTag) {
   const frag = document.createDocumentFragment();
   if (!emoteTag) {
-    frag.append(text);
+    appendText(frag, text);
     return frag;
   }
 
@@ -97,7 +94,7 @@ function buildText(text, emoteTag) {
   const chars = [...text];
   let cursor = 0;
   for (const r of ranges) {
-    if (r.start > cursor) frag.append(chars.slice(cursor, r.start).join(''));
+    if (r.start > cursor) appendText(frag, chars.slice(cursor, r.start).join(''));
     const img = document.createElement('img');
     img.className = 'emote';
     img.alt = chars.slice(r.start, r.end + 1).join('');
@@ -105,7 +102,7 @@ function buildText(text, emoteTag) {
     frag.append(img);
     cursor = r.end + 1;
   }
-  if (cursor < chars.length) frag.append(chars.slice(cursor).join(''));
+  if (cursor < chars.length) appendText(frag, chars.slice(cursor).join(''));
 
   return frag;
 }
@@ -126,9 +123,6 @@ function addMessage(msg) {
   row.append(who, text);
   listEl.appendChild(row);
 
-  chatters.add(msg.user);
-  updateTabCount();
-
   while (listEl.children.length > maxMessages) {
     listEl.firstElementChild.remove();
     listEl.classList.add('overflowing');
@@ -140,11 +134,12 @@ function addMessage(msg) {
   }
 }
 
+
+
 const STANDING = {
   mod: '#59c97a',
   vip: '#e04e4e',
   sub: '#a970ff',
-  follower: '#4a9eff',
   none: '#4a5358'
 };
 
@@ -161,16 +156,24 @@ function standingColor(entry) {
   if (entry.mod) return STANDING.mod;
   if (entry.vip) return STANDING.vip;
   if (entry.sub) return STANDING.sub;
-  if (entry.follower) return STANDING.follower;
   return STANDING.none;
 }
 
 
-const roster = new Map();
+
+const roster = new Map();   
+const present = new Set();  
 const isAnon = login => /^justinfan\d+$/i.test(login);
 
+function updateCounts() {
+  tabCountEl.textContent = present.size;
+  rosterCountEl.textContent = present.size;
+}
+
 function rosterAdd(login, name) {
-  if (!rosterEnabled || isAnon(login) || roster.has(login)) return;
+  if (isAnon(login)) return;
+  present.add(login);
+  if (!rosterEnabled || roster.has(login)) return;
   roster.set(login, {
     login,
     name: name || login,
@@ -182,7 +185,6 @@ function rosterAdd(login, name) {
 }
 
 function rosterSpoke(login, name, badges) {
-  if (!rosterEnabled) return;
   rosterAdd(login, name);
   const entry = roster.get(login);
   if (!entry) return;
@@ -193,6 +195,7 @@ function rosterSpoke(login, name, badges) {
 }
 
 function rosterRemove(login) {
+  present.delete(login);
   const entry = roster.get(login);
   if (!entry) return;
   if (entry.el) entry.el.remove();
@@ -202,6 +205,7 @@ function rosterRemove(login) {
 function rosterClear() {
   roster.forEach(entry => { if (entry.el) entry.el.remove(); });
   roster.clear();
+  present.clear();
 }
 
 
@@ -252,6 +256,7 @@ function updateRosterRow(entry) {
 }
 
 function renderRoster() {
+  updateCounts();
   if (!rosterEnabled) return;
 
   const sorted = [...roster.values()].sort((a, b) => {
@@ -270,9 +275,8 @@ function renderRoster() {
       if (!entry.spoken) roster.delete(entry.login);
     }
   });
-
-  rosterCountEl.textContent = roster.size;
 }
+
 
 
 const lookupQueue = [];
@@ -286,15 +290,6 @@ async function lookupUser(entry) {
       const data = await res.json();
       const user = Array.isArray(data) ? data[0] : data;
       if (user && user.logo) entry.avatar = user.logo;
-    }
-  } catch {}
-
-  try {
-    const res = await fetch('https://api.ivr.fi/v2/twitch/subage/' + encodeURIComponent(entry.login) + '/' + encodeURIComponent(channel));
-    if (res.ok) {
-      const data = await res.json();
-      entry.follower = !!data.followedAt;
-      if (data.subscribed === true || data.meta?.type) entry.sub = true;
     }
   } catch {}
 }
@@ -315,6 +310,8 @@ async function runLookups() {
 
   lookupBusy = false;
 }
+
+
 
 function parseLine(line) {
   const msg = { tags: {}, prefix: '', command: '', params: [], text: '' };
@@ -417,6 +414,8 @@ function connect(ch) {
   };
 }
 
+
+
 const channelInput = document.getElementById('channelInput');
 const urlOutput    = document.getElementById('urlOutput');
 const setupError   = document.getElementById('setupError');
@@ -475,17 +474,17 @@ function updatePreview() {
   }, 400);
 }
 
+
+
 if (params.get('demo') === '1') {
   showOverlay();
   import('./demo.js').then(({ runDemo }) => runDemo({
     addMessage, rosterAdd, rosterSpoke, renderRoster, roster, labelEl, dotEl,
-    setViewers: n => { viewers = n; updateTabCount(); }
+    setViewers: () => {}   
   }));
 } else if (channel) {
   showOverlay();
   connect(channel);
-  pollViewers();
-  setInterval(pollViewers, 30000);
 } else {
   channelInput.addEventListener('input', buildUrl);
   optionsForm.addEventListener('input', () => { buildUrl(); if (previewFrame) updatePreview(); });
@@ -502,7 +501,7 @@ if (params.get('demo') === '1') {
     const url = buildUrl();
     clearTimeout(copyTimer);
     copyBtn.classList.remove('copied', 'failed');
-    void copyBtn.offsetWidth;   
+    void copyBtn.offsetWidth;
 
     if (!url) {
       copyBtn.classList.add('failed');
@@ -512,7 +511,7 @@ if (params.get('demo') === '1') {
       try {
         await navigator.clipboard.writeText(url);
       } catch {
-        urlOutput.select();     
+        urlOutput.select();
         document.execCommand('copy');
       }
       copyBtn.classList.add('copied');

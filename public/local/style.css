@@ -546,9 +546,9 @@ body.preview-bg {
   color: var(--ui-text);
 }
 
-/* Headings: off-white and muted, not cyan */
+
 #setup h1        { color: var(--ui-text); letter-spacing: 3px; }
-#setup h1::first-letter { color: var(--ui-accent); }   /* only the status dot is accented */
+#setup h1::first-letter { color: var(--ui-accent); }   
 #setup header p  { color: var(--ui-muted); }
 #setup h2        { color: var(--ui-muted); letter-spacing: 2.5px; font-size: 12px; }
 
@@ -615,7 +615,6 @@ body.preview-bg {
 #setup a { color: var(--ui-text); text-decoration-color: var(--ui-line-hi); text-underline-offset: 3px; }
 #setup a:hover { color: var(--ui-accent); }
 
-/* ===== Copy feedback ===== */
 #setup #copyBtn { min-width: 110px; transition: background .2s, border-color .2s; }
 
 #setup #copyBtn.copied {

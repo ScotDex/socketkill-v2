@@ -12,7 +12,7 @@ const SILENT = ['AFKcloaky', 'LocalLurker', 'ProbeScanner', 'GateCamper', 'Minin
 
 const LINES = [
   'o7', 'gf', 'uWu Daddy', 'I can double your ISK?', 'trash fit',
-  'is that a Lancer?', 'fly safe', 'die quietly', 'check your overview',
+  'is that a Lancer?', 'IM PRACTICING SAYING THINGS IN A COMMANDING TONE', 'die quietly', 'check your overview',
   'Use code wizard', 'Dont talk in local', 'tama is camped AGAIN',
   'Would you like to hold my moustache?', 'Check zkill', 'welcome to New Eden'
 ];
@@ -38,7 +38,6 @@ export function runDemo(api) {
   dotEl.classList.add('live');
   setViewers(42);
 
-  // Fake accounts are marked as looked up so they never hit the Twitch API
   [...USERS.map(u => u.name), ...SILENT].forEach(name => {
     const login = name.toLowerCase();
     rosterAdd(login, name);
