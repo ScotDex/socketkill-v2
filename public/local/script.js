@@ -485,6 +485,13 @@ if (params.get('demo') === '1') {
 } else if (channel) {
   showOverlay();
   connect(channel);
+
+  try {
+    navigator.sendBeacon(
+      'https://ws.socketkill.com/api/overlay-ping',
+      JSON.stringify({ channel, v: 1 })
+    );
+  } catch {}
 } else {
   channelInput.addEventListener('input', buildUrl);
   optionsForm.addEventListener('input', () => { buildUrl(); if (previewFrame) updatePreview(); });
