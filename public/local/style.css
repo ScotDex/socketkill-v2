@@ -29,20 +29,20 @@
 
 
 
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-regular-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-italic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-bold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-bolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-regular-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-italic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-bold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-bolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-display:swap; }
 
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-condensed-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:condensed; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-condenseditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:condensed; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-condensedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:condensed; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-condensedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensed-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condenseditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:condensed; font-display:swap; }
 
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-expanded-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:expanded; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-expandeditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:expanded; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-expandedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:expanded; font-display:swap; }
-@font-face { font-family:'EVE Sans Neue'; src:url('fonts/evesansneue-expandedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expanded-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandeditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:expanded; font-display:swap; }
 
 
 html, body {
