@@ -14,38 +14,35 @@
 }
 
 @theme {
-    /* Palette */
     --color-phosphor: #3fb950;
     --color-neon-green: oklch(0.695 0.24 145.6);
     --color-terminal-blue: #4b8fd6;
     --color-isk-billion: #ff8f85;
     --color-whale-accent: #f2cc60;
 
-    /* Surfaces */
     --color-dark-bg: #0a0b0e;
     --color-glass-bg: #0d0f13;
     --color-feed-bg: #161b22;
 
-    /* Text */
+    
     --color-text-body: #c9d1d9;
     --color-text-faint: rgb(255 255 255 / 0.62);
 
-    /* Derived */
+   
     --color-border-dim: rgb(var(--phosphor-rgb) / 0.25);
     --color-border-mid: rgb(var(--phosphor-rgb) / 0.4);
     --color-border-bright: rgb(var(--phosphor-rgb) / 0.6);
     --color-whale: rgb(var(--whale-rgb) / 0.05);
 
-    /* Aliases — kept so existing `eve-*` utilities keep resolving */
+   
     --color-eve-accent: var(--color-phosphor);
     --color-eve-dark: var(--color-dark-bg);
     --color-eve-border: rgb(255 255 255 / 0.1);
 
-    /* Type */
+    
     --font-mono: 'IBM Plex Mono', monospace;
-    --font-body: 'Chakra Petch', sans-serif;
+    --font-body: 'EVE Sans Neue', Arial, sans-serif;
 
-    /* Shadows */
     --shadow-phosphor:
         0 0 2px rgb(var(--phosphor-rgb) / 0.6),
         0 0 4px rgb(var(--phosphor-rgb) / 0.3),
@@ -63,6 +60,21 @@
     src: url(https://edge.socketkill.com/triglavian-completed.otf) format('opentype');
     font-display: swap;
 }
+
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-regular-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-italic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-bold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-bolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-display:swap; }
+
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensed-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condenseditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:condensed; font-display:swap; }
+
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expanded-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandeditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:expanded; font-display:swap; }
 
 .triglavian { font-family: 'Triglavian', var(--font-body); }
 .ui { font-family: var(--font-body); }
@@ -217,7 +229,8 @@ body::after {
 .eve-card-title { text-shadow: 0 0 6px rgb(var(--scan-cyan-rgb) / 0.5); }
 
 .kill-headline {
-  font-family: 'Michroma', sans-serif;
+  font-family: var(--font-body);
+  font-stretch: expanded;
   letter-spacing: 0.25em;
   word-spacing: 0.2em;
   font-size: 1rem;

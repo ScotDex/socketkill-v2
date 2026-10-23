@@ -10,7 +10,6 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
     ogDescription="A OBS overlay add on showing eve losses and kills, low latency performance based."
     
 >
-<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" />
         <div class="kill-screen art-bg" style={`--art-bg-url: url(${artBg})`}>
         <main class="relative z-10 max-w-3xl mx-auto px-4 py-10">
             <header class="fade-card border-b border-[var(--color-border-dim)] pb-4 mb-8">
@@ -190,7 +189,7 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
 
 <style>
     .kill-screen {
-        font-family: "Nunito Sans", sans-serif;
+                font-family: var(--font-body);
     }
 </style>
 
