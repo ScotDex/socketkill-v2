@@ -653,3 +653,11 @@ body.preview-bg {
 }
 
 .legal { font-size: 10px; line-height: 1.5; color: #4f565a; margin-top: 12px; }
+
+.no-portrait .portrait { display: none; }
+.no-portrait .roster-row { height: auto; gap: 6px; }
+.no-portrait .standing { position: static; order: -1; flex: none; }
+
+.row.system .who,
+.row.system .text { color: var(--red); font-weight: 400; }
+#channelLabel:empty { display: none; }

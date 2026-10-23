@@ -34,7 +34,7 @@ export function runDemo(api) {
     renderRoster();
   }
 
-  labelEl.textContent = 'demo';
+  addMessage({ system: true, user: 'EVE System', text: 'Channel changed to Local : demo', tags: {} });
   dotEl.classList.add('live');
   setViewers(42);
 

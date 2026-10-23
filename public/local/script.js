@@ -51,6 +51,8 @@ if (!rosterEnabled) {
   windowEl.classList.add('no-roster');
 }
 
+const portraitsOff = params.get('portrait') === '0';
+if (portraitsOff) windowEl.classList.add('no-portrait');
 
 function showOverlay() {
   setupEl.style.display = 'none';
@@ -115,6 +117,10 @@ function addMessage(msg) {
   who.className = 'who';
   who.textContent = msg.tags['display-name'] || msg.user;
   if (msg.tags.color) who.style.color = msg.tags.color;
+  if (msg.system) {
+  row.classList.add('system');
+  who.textContent = `[${new Date().toISOString().slice(11, 19)}] ${who.textContent}`;
+}
 
   const text = document.createElement('span');
   text.className = 'text';
@@ -230,7 +236,7 @@ function buildRosterRow(entry) {
   entry.standingEl = standing;
   entry.avatarShown = false;
 
-  if (!entry.lookedUp) {
+  if (!portraitsOff && !entry.lookedUp) {
     entry.lookedUp = true;
     lookupQueue.push(entry.login);
     runLookups();
@@ -348,7 +354,6 @@ function parseLine(line) {
 }
 
 function connect(ch) {
-  labelEl.textContent = ch;
   const ws = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
 
   ws.onopen = () => {
@@ -378,6 +383,8 @@ function connect(ch) {
         dotEl.classList.add('live');
         continue;
       }
+
+        addMessage({ system: true, user: 'EVE System', text: 'Channel changed to Local : ' + ch, tags: {} });
 
       if (msg.command === 'PRIVMSG') {
         addMessage(msg);
