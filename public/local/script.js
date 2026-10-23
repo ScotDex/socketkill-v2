@@ -381,10 +381,11 @@ function connect(ch) {
 
       if (msg.command === '001') {
         dotEl.classList.add('live');
+         addMessage({ system: true, user: 'EVE System', text: 'Channel changed to Local : ' + ch, tags: {} });
         continue;
       }
 
-        addMessage({ system: true, user: 'EVE System', text: 'Channel changed to Local : ' + ch, tags: {} });
+       
 
       if (msg.command === 'PRIVMSG') {
         addMessage(msg);
