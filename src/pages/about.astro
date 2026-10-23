@@ -99,7 +99,7 @@ const socials = [
     ogTitle="About Socket.Kill"
     ogDescription="How Socket.Kill works, where the data comes from, and a bunch of other questions you didnt ask..."
 >
-    <div class="art-bg kill-screen">
+    <div class="art-bg kill-screen about-eve">
         <div class="fog-overlay" aria-hidden="true"></div>
 
         <main class="relative max-w-6xl mx-auto px-6 py-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px] items-start">
@@ -176,7 +176,49 @@ const socials = [
     </div>
 </Base>
 
-<style>
+<style is:global>
+    /* Pilot: EVE Sans Neue on /about only. Move the @font-face rules to the global stylesheet later. */
+
+    /* paste the 12 @font-face rules here, the edge.socketkill.com versions */
+
+    @font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-regular-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-italic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-bold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-bolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-display:swap; }
+
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensed-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condenseditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:condensed; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-condensedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:condensed; font-display:swap; }
+
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expanded-webfont.woff2') format('woff2'); font-weight:400; font-style:normal; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandeditalic-webfont.woff2') format('woff2'); font-weight:400; font-style:italic; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandedbold-webfont.woff2') format('woff2'); font-weight:700; font-style:normal; font-stretch:expanded; font-display:swap; }
+@font-face { font-family:'EVE Sans Neue'; src:url('https://edge.socketkill.com/fonts/evesansneue-expandedbolditalic-webfont.woff2') format('woff2'); font-weight:700; font-style:italic; font-stretch:expanded; font-display:swap; }
+
+
+    .kill-screen.about-eve {
+        font-family: 'EVE Sans Neue', Arial, sans-serif;
+    }
+
+    .about-eve .font-mono {
+        font-family: inherit;
+    }
+
+    .about-eve h2,
+    .about-eve footer a,
+    .about-eve nav p {
+        font-stretch: expanded;
+    }
+
+    .about-eve summary > span:first-child {
+        font-weight: 700;
+    }
+
+    .about-eve #legal {
+        font-stretch: condensed;
+    }
+
     details summary::-webkit-details-marker { display: none; }
     details:not([open]) .accordion-icon::before { content: '+'; }
     details[open] .accordion-icon::before { content: '−'; }
