@@ -4,7 +4,7 @@ const channel = (params.get('channel') || '')
   .trim()
   .toLowerCase()
   .replace(/^#/, '');
-
+const kickId = parseInt(params.get('kick'), 10);
 const rosterEnabled = params.get('roster') !== '0';
 const maxRoster = Number(params.get('rostermax')) || 80;
 
@@ -422,24 +422,48 @@ function connect(ch) {
   };
 }
 
+function connectKick(id) {
+  const s = document.createElement('script');
+  s.src = 'https://ws.socketkill.com/socket.io/socket.io.js';
+  s.onload = () => {
+    const sock = io('https://ws.socketkill.com', { query: { kick: String(id) }, transports: ['websocket'] });
+    sock.on('connect', () => dotEl.classList.add('live'));
+    sock.on('kick:chat', msg => {
+      addMessage(msg);
+      rosterSpoke(msg.user, msg.tags['display-name'], msg.tags.badges);
+      const entry = roster.get(msg.user);
+      if (entry) entry.lookedUp = true;
+      renderRoster();
+    });
+  };
+  s.onerror = () => console.warn('Kick relay unavailable');
+  document.head.appendChild(s);
+}
+
 
 
 const channelInput = document.getElementById('channelInput');
 const urlOutput    = document.getElementById('urlOutput');
 const setupError   = document.getElementById('setupError');
 const optionsForm  = document.getElementById('options');
+const kickInput  = document.getElementById('kickInput');
+const kickError  = document.getElementById('kickError');
+let kickResolvedId = null;
+let kickTimer;
 
 function buildUrl() {
   const ch = channelInput.value.trim().toLowerCase().replace(/^#/, '');
-  if (!/^[a-z0-9_]{3,25}$/.test(ch)) {
-    setupError.textContent = ch ? 'Not a valid Twitch channel name' : '';
+  const twitchOk = /^[a-z0-9_]{3,25}$/.test(ch);
+  setupError.textContent = ch && !twitchOk ? 'Not a valid Twitch channel name' : '';
+
+  if ((ch && !twitchOk) || (!twitchOk && !kickResolvedId)) {
     urlOutput.value = '';
     return null;
   }
-  setupError.textContent = '';
 
   const out = optionParams();
-  out.set('channel', ch);
+  if (twitchOk) out.set('channel', ch);
+  if (kickResolvedId) out.set('kick', String(kickResolvedId));
   out.sort();
 
   urlOutput.value = location.origin + location.pathname + '?' + out;
@@ -490,19 +514,48 @@ if (params.get('demo') === '1') {
     addMessage, rosterAdd, rosterSpoke, renderRoster, roster, labelEl, dotEl,
     setViewers: () => {}   
   }));
-} else if (channel) {
+} else if (channel || kickId > 0) {
   showOverlay();
-  connect(channel);
 
-  try {
-    navigator.sendBeacon(
-      'https://ws.socketkill.com/api/overlay-ping',
-      JSON.stringify({ channel, v: 1 })
-    );
-  } catch {}
+  if (channel) {
+    connect(channel);
+    try {
+      navigator.sendBeacon(
+        'https://ws.socketkill.com/api/overlay-ping',
+        JSON.stringify({ channel, v: 1 })
+      );
+    } catch {}
+  }
+
+  if (kickId > 0) connectKick(kickId);
 } else {
   channelInput.addEventListener('input', buildUrl);
   optionsForm.addEventListener('input', () => { buildUrl(); if (previewFrame) updatePreview(); });
+    kickInput.addEventListener('input', () => {
+    clearTimeout(kickTimer);
+    kickResolvedId = null;
+    kickError.textContent = '';
+    buildUrl();
+
+    const slug = kickInput.value.trim().toLowerCase();
+    if (!slug) return;
+
+    kickTimer = setTimeout(async () => {
+      try {
+        const res = await fetch('https://ws.socketkill.com/api/kick/resolve?slug=' + encodeURIComponent(slug));
+        const data = await res.json();
+        if (kickInput.value.trim().toLowerCase() !== slug) return;
+        if (res.ok && Number.isInteger(data.id)) {
+          kickResolvedId = data.id;
+          buildUrl();
+        } else {
+          kickError.textContent = data.error || 'Kick lookup failed';
+        }
+      } catch {
+        kickError.textContent = 'Kick lookup failed';
+      }
+    }, 600);
+  });
 
   if (previewFrame) {
     fitPreview();

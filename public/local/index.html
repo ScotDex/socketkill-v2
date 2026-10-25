@@ -48,14 +48,18 @@
                 <h2>What it is</h2>
                 <p>A free OBS browser source that makes your Twitch chat look like EVE Online's Local chat. No accounts, registration or login required.</p>
                 <p class="hint">Avatars are fetched from IVR (api.ivr.fi). We record which channels load the overlay (channel name only) to measure usage and tell streamers about updates. No viewer data is collected.</p>
-            </section>
+                <p class="hint">Kick chat passes through our server to reach the overlay. Messages are never stored or logged.</p>
+                </section>
 
             <section>
                 <h2>Get your URL</h2>
 
-                <label for="channelInput">Enter your channel name</label>
+                <label for="channelInput">Enter your twitch channel name</label>
                 <input id="channelInput" type="text" placeholder="e.g. fenriscreations" autocomplete="off" spellcheck="false">
                 <div class="error" id="setupError" role="alert"></div>
+                <label for="kickInput">Kick channel (optional)</label>
+                <input id="kickInput" type="text" placeholder="e.g. scotdex" autocomplete="off" spellcheck="false">
+                <div class="error" id="kickError" role="alert"></div>
 
                 <label for="urlOutput">Browser Source URL for OBS</label>
                 <div class="url-row">
