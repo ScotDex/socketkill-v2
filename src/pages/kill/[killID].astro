@@ -12,6 +12,11 @@ if (!Number.isFinite(id) || id <= 0) {
     return new Response('Invalid killID', { status: 400 })
 }
 
+const ALLOWED_HOSTS = ['socketkill.com', 'www.socketkill.com']
+if (!ALLOWED_HOSTS.includes(Astro.url.hostname)) {
+    return new Response('Not found', { status: 404 })
+}
+
 const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
 const clientIP = Astro.request.headers.get('cf-connecting-ip') || ''
 
