@@ -10,8 +10,6 @@
     import WeaponKeywordFacet from './WeaponKeywordFacet.svelte'
     import { killCount, serverStatus, iskDestroyed, connectionStatus } from '../../lib/stats-store.js'
     import { filtersToParams, paramsToFilters } from '../../lib/filter-url.js'
-    import { internalLink } from '../../lib/entity-links.js'
-    import Fuse from 'fuse.js'
     import {
         passesFilter,
         getUtcTimestamp,
@@ -47,62 +45,11 @@
         origin: []
     })
 
-let searchTerm = $state('')
-let lookupError = $state('')
-let lookupSuggestion = $state('')
-let lookupBusy = $state(false)
 let glitching = $state(false)
 let glitchTimer = null
 
-const LOOKUP_ORDER = [
-    ['characters',   'character'],
-    ['corporations', 'corp'],
-    ['alliances',    'alliance'],
-]
 
-async function runSearch() {
-    const term = searchTerm.trim()
-    if (!term || lookupBusy) return
 
-    lookupBusy = true
-lookupError = ''
-lookupSuggestion = ''
-
-    try {
-        const res = await fetch('https://esi.evetech.net/latest/universe/ids/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify([term]),
-        })
-
-        if (!res.ok) {
-            lookupError = 'LOOKUP UNAVAILABLE'
-            return
-        }
-
-        const data = await res.json()
-
-        for (const [bucket, kind] of LOOKUP_ORDER) {
-            const hit = data[bucket]?.[0]
-            if (hit) {
-                window.location.href = internalLink(kind, hit.id)
-                return
-            }
-        }
-
-    const guess = lookupFuse.search(term)[0]?.item
-if (guess && guess.toLowerCase() !== term.toLowerCase()) {
-    lookupSuggestion = guess
-    lookupError = 'NO MATCH'
-} else {
-    lookupError = 'NO MATCH — EXACT NAME REQUIRED'
-}
-    } catch {
-        lookupError = 'LOOKUP FAILED'
-    } finally {
-        lookupBusy = false
-    }
-}
 let filterCopied = $state(false)
 
 async function copyFilterUrl() {
@@ -146,12 +93,6 @@ $effect(() => {
         }
         return null
     })
-    const lookupFuse = $derived(
-    new Fuse([...corpCache, ...allianceCache], {
-        threshold: 0.3,
-        ignoreLocation: true
-    })
-)
 
     const filteredFeed = $derived(
         killBuffer
@@ -385,36 +326,6 @@ $effect(() => {
             />
 
             <WeaponKeywordFacet bind:keyword={filters.weaponKeyword} />
-
-<section class="flex flex-col gap-1.5">
-    <span class="lbl">entity lookup</span>
-    <div class="lookup">
-        <input
-            type="text"
-            class="lookup-input"
-            placeholder="EXACT NAME"
-            bind:value={searchTerm}
-            oninput={() => { lookupError = ''; lookupSuggestion = '' }}
-            onkeydown={(e) => e.key === 'Enter' && runSearch()}
-        />
-        <button type="button" class="lookup-go" onclick={runSearch}
-            disabled={lookupBusy} aria-label="Look up entity">
-            {lookupBusy ? '·' : '>'}
-        </button>
-    </div>
-{#if lookupError}
-    <span class="lookup-err" transition:fade={{ duration: 120 }}>{lookupError}</span>
-{/if}
-{#if lookupSuggestion}
-    <button type="button" class="flush"
-        transition:fade={{ duration: 120 }}
-        onclick={() => { searchTerm = lookupSuggestion; runSearch() }}>
-        DID YOU MEAN {lookupSuggestion}?
-    </button>
-{/if}
-</section>
-
-
         </div>
 
         {#if hasActiveFilters}
