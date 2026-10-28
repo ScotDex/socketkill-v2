@@ -5,6 +5,8 @@ const channel = (params.get('channel') || '')
   .toLowerCase()
   .replace(/^#/, '');
 const kickId = parseInt(params.get('kick'), 10);
+const ytParam = params.get('yt') || '';
+const ytId = /^UC[A-Za-z0-9_-]{22}$/.test(ytParam) ? ytParam : null;
 const rosterEnabled = params.get('roster') !== '0';
 const maxRoster = Number(params.get('rostermax')) || 80;
 
@@ -426,17 +428,26 @@ function connectKick(id) {
   const s = document.createElement('script');
   s.src = 'https://ws.socketkill.com/socket.io/socket.io.js';
   s.onload = () => {
-    const sock = io('https://ws.socketkill.com', { query: { kick: String(id) }, transports: ['websocket'] });
+    const query = {};
+    if (id > 0) query.kick = String(id);
+    if (ytId) query.yt = ytId;
+    const sock = io('https://ws.socketkill.com', { query, transports: ['websocket'] });
     sock.on('connect', () => dotEl.classList.add('live'));
-    sock.on('kick:chat', msg => {
+
+    const handle = msg => {
       addMessage(msg);
       rosterSpoke(msg.user, msg.tags['display-name'], msg.tags.badges);
       const entry = roster.get(msg.user);
-      if (entry) entry.lookedUp = true;
+      if (entry) {
+        entry.lookedUp = true;
+        if (msg.tags.avatar) entry.avatar = msg.tags.avatar;
+      }
       renderRoster();
-    });
+    };
+    sock.on('kick:chat', handle);
+    sock.on('yt:chat', handle);
   };
-  s.onerror = () => console.warn('Kick relay unavailable');
+  s.onerror = () => console.warn('Relay unavailable');
   document.head.appendChild(s);
 }
 
@@ -514,7 +525,7 @@ if (params.get('demo') === '1') {
     addMessage, rosterAdd, rosterSpoke, renderRoster, roster, labelEl, dotEl,
     setViewers: () => {}   
   }));
-} else if (channel || kickId > 0) {
+} else if (channel || kickId > 0 || ytId) {
   showOverlay();
 
   if (channel) {
@@ -527,7 +538,7 @@ if (params.get('demo') === '1') {
     } catch {}
   }
 
-  if (kickId > 0) connectKick(kickId);
+  if (kickId > 0 || ytId) connectKick(kickId);
 } else {
   channelInput.addEventListener('input', buildUrl);
   optionsForm.addEventListener('input', () => { buildUrl(); if (previewFrame) updatePreview(); });
