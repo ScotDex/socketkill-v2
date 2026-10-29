@@ -459,15 +459,19 @@ const setupError   = document.getElementById('setupError');
 const optionsForm  = document.getElementById('options');
 const kickInput  = document.getElementById('kickInput');
 const kickError  = document.getElementById('kickError');
+const ytInput = document.getElementById('ytInput');
+const ytError = document.getElementById('ytError');
 let kickResolvedId = null;
 let kickTimer;
+let ytResolvedId = null;
+let ytTimer;
 
 function buildUrl() {
   const ch = channelInput.value.trim().toLowerCase().replace(/^#/, '');
   const twitchOk = /^[a-z0-9_]{3,25}$/.test(ch);
   setupError.textContent = ch && !twitchOk ? 'Not a valid Twitch channel name' : '';
 
-  if ((ch && !twitchOk) || (!twitchOk && !kickResolvedId)) {
+  if ((ch && !twitchOk) || (!twitchOk && !kickResolvedId && !ytResolvedId)) {
     urlOutput.value = '';
     return null;
   }
@@ -475,6 +479,7 @@ function buildUrl() {
   const out = optionParams();
   if (twitchOk) out.set('channel', ch);
   if (kickResolvedId) out.set('kick', String(kickResolvedId));
+  if (ytResolvedId) out.set('yt', ytResolvedId);
   out.sort();
 
   urlOutput.value = location.origin + location.pathname + '?' + out;
@@ -567,6 +572,36 @@ if (params.get('demo') === '1') {
       }
     }, 600);
   });
+
+  ytInput.addEventListener('input', () => {
+  clearTimeout(ytTimer);
+  ytResolvedId = null;
+  ytError.textContent = '';
+  buildUrl();
+
+  const handle = ytInput.value.trim()
+    .replace(/^https?:\/\/(www\.)?youtube\.com\//i, '')
+    .replace(/^@/, '')
+    .replace(/\/.*$/, '')
+    .toLowerCase();
+  if (!handle) return;
+
+  ytTimer = setTimeout(async () => {
+    try {
+      const res = await fetch('https://ws.socketkill.com/api/yt/resolve?handle=' + encodeURIComponent(handle));
+      const data = await res.json();
+      if (ytInput.value.trim().toLowerCase().indexOf(handle) === -1) return;
+      if (res.ok && /^UC[A-Za-z0-9_-]{22}$/.test(data.id || '')) {
+        ytResolvedId = data.id;
+        buildUrl();
+      } else {
+        ytError.textContent = data.error || 'YouTube lookup failed';
+      }
+    } catch {
+      ytError.textContent = 'YouTube lookup failed';
+    }
+  }, 600);
+});
 
   if (previewFrame) {
     fitPreview();

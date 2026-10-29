@@ -25,7 +25,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "EVE Local Chat Overlay",
-      "description": "Free OBS browser source that styles Twitch chat like EVE Online's Local channel.",
+      "description": "Free OBS browser source that styles Twitch/YouTube/Kick chat like EVE Online's Local channel.",
       "url": "https://socketkill.com/local/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Any (OBS Studio browser source)",
@@ -38,8 +38,8 @@
 <body>
     <div id="setup">
         <header>
-            <h1>&#9673; EVE Twitch Chat <span class="badge">Beta</span></h1>
-            <p>EVE Online Local chat for your Twitch stream.</p>
+            <h1>&#9673; EVE Stream Chat <span class="badge">Beta</span></h1>
+            <p>EVE Online Local chat for your Twitch Youtube or Kick stream.</p>
         </header>
 
         <main>
@@ -48,7 +48,8 @@
                 <h2>What it is</h2>
                 <p>A free OBS browser source that makes your Twitch chat look like EVE Online's Local chat. No accounts, registration or login required.</p>
                 <p class="hint">Avatars are fetched from IVR (api.ivr.fi). We record which channels load the overlay (channel name only) to measure usage and tell streamers about updates. No viewer data is collected.</p>
-                <p class="hint">Kick chat passes through our server to reach the overlay. Messages are never stored or logged.</p>
+                <p class="hint">Kick and YouTube chat pass through our server to reach the overlay. Messages are never stored or logged.</p>
+                <p class="hint">YouTube support is in beta. YouTube limits how much chat we can read per day across all streamers, so YouTube chat may pause on busy days and resumes automatically at 07:00 UK time.</p>
                 </section>
 
             <section>
@@ -58,9 +59,12 @@
                 <input id="channelInput" type="text" placeholder="e.g. fenriscreations" autocomplete="off" spellcheck="false">
                 <div class="error" id="setupError" role="alert"></div>
                 <label for="kickInput">Kick channel (optional)</label>
-                <input id="kickInput" type="text" placeholder="e.g. scotdex" autocomplete="off" spellcheck="false">
+                <input id="kickInput" type="text" placeholder="e.g. erst" autocomplete="off" spellcheck="false">
                 <div class="error" id="kickError" role="alert"></div>
-
+                <label for="ytInput">YouTube handle (optional)</label>
+                <input id="ytInput" type="text" placeholder="e.g. @lynnerankin" autocomplete="off" spellcheck="false">
+                <div class="error" id="ytError" role="alert"></div>
+                
                 <label for="urlOutput">Browser Source URL for OBS</label>
                 <div class="url-row">
                     <input id="urlOutput" type="text" readonly placeholder="Enter a channel above">
@@ -139,7 +143,7 @@
 
         <footer>
             <p>Built on the original overlay by <a href="https://www.twitch.tv/schadsquatch">Schadsquatch</a>, whose idea and design this is. Rewritten and hosted by <a href="https://socketkill.com/">Socketkill</a>.</p>
-            <p>Want YouTube support or have a feature request? Come say hi on <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener">Discord</a>.</p>
+            <p>Feature requests or problems? Come say hi on <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener">Discord</a>.</p>
             <p class="legal">EVE Online and the EVE logo are registered trademarks of Fenris Creations. All rights are reserved worldwide. All other trademarks are the property of their respective owners. FC has granted permission to socketkill.com to use EVE Online and all associated logos and designs for promotional and informational purposes on its website but does not endorse, and is not in any way affiliated with, socketkill.com. FC is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.</p>
         </footer>
     </div>
