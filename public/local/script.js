@@ -11,6 +11,14 @@ const rosterEnabled = params.get('roster') !== '0';
 const maxRoster = Number(params.get('rostermax')) || 80;
 
 
+const DEFAULT_BOTS = ['nightbot', 'streamelements', 'streamlabs', 'moobot', 'fossabot', 'wizebot',
+  'sery_bot', 'soundalerts', 'kofistreambot', 'pokemoncommunitygame', 'botrix', 'botrixoficial'];
+const hidden = new Set([
+  ...(params.get('bots') === '1' ? [] : DEFAULT_BOTS),
+  ...(params.get('hide') || '').split(',').map(s => s.trim().toLowerCase().replace(/^@/, '')).filter(Boolean),
+]);
+const isHidden = (...names) => names.some(n => n && hidden.has(String(n).toLowerCase().replace(/^@/, '')));
+
 const setupEl       = document.getElementById('setup');
 const windowEl      = document.getElementById('window');
 const listEl        = document.getElementById('list');
@@ -114,6 +122,8 @@ function buildText(text, emoteTag) {
 function addMessage(msg) {
   const row = document.createElement('li');
   row.className = 'row';
+  row.dataset.user = msg.user || '';
+  if (msg.tags.id) row.dataset.msgId = msg.tags.id;
 
   const who = document.createElement('span');
   who.className = 'who';
@@ -179,7 +189,7 @@ function updateCounts() {
 }
 
 function rosterAdd(login, name) {
-  if (isAnon(login)) return;
+  if (isAnon(login) || isHidden(login, name)) return;
   present.add(login);
   if (!rosterEnabled || roster.has(login)) return;
   roster.set(login, {
@@ -355,6 +365,11 @@ function parseLine(line) {
   return msg;
 }
 
+function purgeUser(login, ban) {
+  listEl.querySelectorAll(`[data-user="${CSS.escape(login)}"]`).forEach(r => r.remove());
+  if (ban) { rosterRemove(login); renderRoster(); }
+}
+
 function connect(ch) {
   const ws = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
 
@@ -381,6 +396,18 @@ function connect(ch) {
         continue;
       }
 
+      if (msg.command === 'CLEARCHAT') {
+        if (msg.text) purgeUser(msg.text.toLowerCase(), !msg.tags['ban-duration']);
+        else listEl.replaceChildren();
+        continue;
+      }
+
+      if (msg.command === 'CLEARMSG') {
+        const id = msg.tags['target-msg-id'];
+        if (id) listEl.querySelector(`[data-msg-id="${CSS.escape(id)}"]`)?.remove();
+        continue;
+      }
+
       if (msg.command === '001') {
         dotEl.classList.add('live');
          addMessage({ system: true, user: 'EVE System', text: 'Channel changed to Local : ' + ch, tags: {} });
@@ -390,6 +417,7 @@ function connect(ch) {
        
 
       if (msg.command === 'PRIVMSG') {
+        if (isHidden(msg.user, msg.tags['display-name'])) continue;
         addMessage(msg);
         rosterSpoke(msg.user, msg.tags['display-name'], msg.tags.badges);
         renderRoster();
@@ -435,6 +463,7 @@ function connectKick(id) {
     sock.on('connect', () => dotEl.classList.add('live'));
 
     const handle = msg => {
+      if (isHidden(msg.tags['display-name'])) return;
       addMessage(msg);
       rosterSpoke(msg.user, msg.tags['display-name'], msg.tags.badges);
       const entry = roster.get(msg.user);
