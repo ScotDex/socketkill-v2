@@ -1,0 +1,299 @@
+/* =====================================================================
+   setup.css  —  Setup page redesign ("fitting window" concept)
+   Loaded AFTER style.css. Everything is scoped to #setup, so the
+   overlay itself (#stage / #window) is untouched.
+   To revert: delete the <link> to this file.
+   ===================================================================== */
+
+/* ---------- 1. Tokens ---------------------------------------------- */
+#setup {
+  --ui-bg:      #08090a;
+  --ui-panel:   rgba(16, 18, 20, .78);
+  --ui-field:   #121517;
+  --ui-line:    rgba(255, 255, 255, .07);
+  --ui-line-hi: rgba(255, 255, 255, .14);
+  --ui-text:    #d9dcde;
+  --ui-muted:   #7d8589;
+  --ui-faint:   #4f565a;
+  --ui-accent:     var(--gold);
+  --ui-accent-dim: rgba(232, 185, 35, .10);
+
+  counter-reset: step;
+  padding: 56px 20px 40px;
+
+  /* Faint tactical grid + a cold glow top-left, like a station hangar */
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(111, 215, 255, .06), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, .018) 1px, transparent 1px) 0 0 / 100% 48px,
+    linear-gradient(90deg, rgba(255, 255, 255, .018) 1px, transparent 1px) 0 0 / 48px 100%,
+    var(--ui-bg);
+  background-attachment: fixed;
+}
+
+/* ---------- 2. Header ---------------------------------------------- */
+#setup header {
+  position: relative;
+  padding-bottom: 22px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--ui-line);
+}
+
+/* gold tick on the header rule, left-aligned */
+#setup header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 1px;
+  background: var(--ui-accent);
+}
+
+#setup h1 {
+  font-size: 22px;
+  letter-spacing: 5px;
+  margin: 0 0 10px;
+}
+
+#setup header p {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: .3px;
+}
+
+.badge { font-size: 9px; letter-spacing: 2.5px; padding: 3px 7px; }
+
+/* ---------- 3. Panels: hairline box + corner brackets --------------- */
+#setup section {
+  position: relative;
+  padding: 22px 22px 20px;
+  margin-top: 14px;
+  background: var(--ui-panel);
+  border: 1px solid var(--ui-line);
+  backdrop-filter: blur(2px);
+}
+
+/* Two L-shaped brackets (top-left, bottom-right). Drawn with
+   gradients so no extra HTML is needed. */
+#setup section::before,
+#setup section::after {
+  content: "";
+  position: absolute;
+  width: 10px; height: 10px;
+  pointer-events: none;
+}
+#setup section::before {
+  top: -1px; left: -1px;
+  border-top: 1px solid var(--ui-muted);
+  border-left: 1px solid var(--ui-muted);
+}
+#setup section::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 1px solid var(--ui-muted);
+  border-right: 1px solid var(--ui-muted);
+}
+
+/* The section you're working in lights its brackets gold */
+#setup section:focus-within::before,
+#setup section:focus-within::after { border-color: var(--ui-accent); }
+
+/* ---------- 4. Section headings with step numbers ------------------ */
+#setup h2 {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--ui-text);
+}
+
+#setup h2::before {
+  content: counter(step, decimal-leading-zero);
+  font-weight: 700;
+  color: var(--ui-accent);
+  letter-spacing: 1px;
+}
+
+/* trailing rule fills the rest of the line */
+#setup h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--ui-line);
+}
+
+/* ---------- 5. Body copy & the privacy notes ------------------------ */
+#setup section p { line-height: 1.6; }
+#setup section > p:not(.hint) { margin: 0 0 4px; font-size: 15px; }
+
+/* The data/privacy hints become a quiet indented log */
+#setup section > .hint {
+  position: relative;
+  margin: 12px 0 0;
+  padding-left: 14px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  border-left: 1px solid var(--ui-line-hi);
+}
+
+/* ---------- 6. Form fields ------------------------------------------ */
+#setup label {
+  margin: 16px 0 6px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ui-muted);
+}
+
+#setup input {
+  font-size: 15px;
+  padding: 11px 12px;
+  transition: border-color .15s, background-color .15s;
+}
+#setup input:hover:not(:focus) { border-color: rgba(255, 255, 255, .22); }
+#setup input:focus { background-color: #15191b; }
+
+/* The output URL reads like a readout, not an input */
+#urlOutput {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 13px !important;
+  color: var(--ui-accent) !important;
+  letter-spacing: .2px;
+}
+#urlOutput:placeholder-shown { color: var(--ui-faint) !important; }
+
+/* separate the output from the three inputs */
+#setup label[for="urlOutput"] {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--ui-line-hi);
+}
+
+/* ---------- 7. Customise block -------------------------------------- */
+#options { gap: 10px; }
+
+#options fieldset {
+  padding: 14px 14px 16px;
+  border-color: var(--ui-line);
+}
+
+#options legend {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  padding: 0 8px;
+}
+
+#options label {
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ui-text);
+}
+
+#options input[type=number],
+#options select { font-size: 14px; }
+
+#options label:has(> input[type=radio]) {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#setup .hint b,
+#obsSize {
+  font-weight: 700;
+  color: var(--ui-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 8. Preview column --------------------------------------- */
+#previewBox {
+  border-color: var(--ui-line);
+  background:
+    radial-gradient(circle at 30% 20%, #142a33 0%, #05090c 75%);
+}
+
+#setup ol {
+  list-style: none;
+  counter-reset: obs;
+  padding: 0;
+  line-height: 1.5;
+}
+#setup ol li {
+  counter-increment: obs;
+  position: relative;
+  padding: 8px 0 8px 30px;
+  border-bottom: 1px solid var(--ui-line);
+  font-size: 14px;
+}
+#setup ol li:last-child { border-bottom: 0; }
+#setup ol li::before {
+  content: counter(obs);
+  position: absolute;
+  left: 0; top: 8px;
+  width: 18px; height: 18px;
+  display: grid; place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ui-accent);
+  border: 1px solid rgba(232, 185, 35, .4);
+}
+#setup ol b { color: #eef1f2; font-weight: 700; }
+
+/* ---------- 9. Support slot (Buy Me a Coffee) ----------------------- */
+.support-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--ui-line);
+  background: rgba(232, 185, 35, .03);
+}
+.support-slot p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ui-muted);
+}
+.support-slot img { display: block; height: 40px; width: auto; }
+
+/* ---------- 10. Footer ---------------------------------------------- */
+#setup footer {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ui-line);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+#setup footer p { margin: 0 0 6px; }
+#setup .legal { margin-top: 16px; color: var(--ui-faint); max-width: 900px; }
+
+/* ---------- 11. Layout ---------------------------------------------- */
+@media (min-width: 1000px) {
+  #setup main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 24px;
+  }
+  .col-preview { top: 16px; }
+}
+
+@media (max-width: 520px) {
+  #setup { padding-top: 32px; }
+  #setup h1 { font-size: 18px; letter-spacing: 3px; }
+  #setup section { padding: 18px 16px; }
+  .support-slot { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #setup * { transition: none !important; }
+}
+
+/* ---------- 12. Fixes ----------------------------------------------- */
+/* Copy was losing its gold: "#setup button" outranked "#copyBtn" */
+#setup #copyBtn { background: var(--ui-accent); border-color: var(--ui-accent); color: #0b0c0d; }
+#setup #copyBtn:hover { background: #f2cc4d; border-color: #f2cc4d; }
+
+/* Preview caption shouldn't get the privacy-note rule */
+.col-preview section > .hint { border-left: 0; padding-left: 0; }
