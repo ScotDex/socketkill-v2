@@ -15,7 +15,6 @@
 
 Socket.Kill began as a side project that was discarding killmail data. Rather than throw it away, the project now streams every kill as fast as technically possible, wrapped in an atmospheric interface.
 
-Built by [Static Orbit Studio](https://static-orbit.co.uk/).
 
 ## Features
 
@@ -32,13 +31,6 @@ Built by [Static Orbit Studio](https://static-orbit.co.uk/).
 
 ### Integrations
 - **Discord alerts** across multiple channels: whale kills, AT/officer/Rorqual sightings, and configurable value thresholds. [Join the server](https://discord.gg/UnFN8UY6Dz).
-
-### Companion tools
-| Tool | Description |
-|------|-------------|
-| [Damage Guide](https://socketkill.com/guide/) | Average damage reference |
-| [Map of New Eden](https://socketkill.com/map) | Cinematic universe map |
-| [EVE Twitch Chat](https://socketkill.com/local/) | OBS overlay styled like EVE Local chat |
 
 ## Tech Stack
 
