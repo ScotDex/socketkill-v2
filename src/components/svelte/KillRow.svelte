@@ -22,16 +22,16 @@
             </div>
             <div class="ml-2">
                 <strong class="ship-name text-white text-base font-semibold block">
-                    <span class="text-[var(--color-neon-green)]/70 text-xs font-mono mr-1.5">{kill.timestamp}</span>
+                    <span class="text-[var(--color-neon-green)]/70 text-sm font-mono mr-1.5">{kill.timestamp}</span>
                     {getVictimDisplay(kill)} lost {kill.article} <span class="inline-block">{kill.ship}</span>
                 </strong>
-                <div class="text-sm">
-                    <span class="text-[var(--color-terminal-blue)] font-light text-sm" class:triglavian={kill.isTriglavian}>{kill.locationLabel}</span>
+                <div>
+                    <span class="text-[var(--color-terminal-blue)] font-light text-[0.9375rem]" class:triglavian={kill.isTriglavian}>{kill.locationLabel}</span>
                 </div>
             </div>
         </a>
     </div>
-    <div class="text-white/25 font-mono text-[10px] tracking-wider mr-3">
+    <div class="text-white/25 font-mono text-xs tracking-wider mr-3">
         {kill.attackerCount} attackers
     </div>
     <div class="flex items-center">
