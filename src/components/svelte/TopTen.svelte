@@ -145,4 +145,13 @@
 
     </div>
   {/if}
+
+  <footer class="border-t border-[var(--color-eve-border)] pt-4 text-center">
+  <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
+    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
+    <a href="/about" class="hover:text-[var(--color-neon-green)] transition-colors">ABOUT</a>
+  </div>
+</footer>
+
 </div>
+
