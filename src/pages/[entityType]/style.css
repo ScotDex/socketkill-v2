@@ -10,8 +10,8 @@
 
 .status {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--s-c);
     border: 1px solid color-mix(in srgb, var(--s-c) 35%, transparent);
@@ -19,7 +19,7 @@
 }
 
 .assess {
-    font-size: 13px;
+    font-size: var(--fs-secondary);
     line-height: 1.6;
 }
 
