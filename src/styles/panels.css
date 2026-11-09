@@ -26,9 +26,9 @@
 
 .card-h {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.22em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--card-c);
     padding: 0.55rem 0.75rem;
@@ -44,9 +44,9 @@
 .lbl,
 .facet-lbl {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: var(--fs-meta);
     font-weight: 500;
-    letter-spacing: 0.22em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--color-border-bright);
     user-select: none;
@@ -54,9 +54,9 @@
 
 .lbl-unit {
     color: var(--color-text-faint);
-    letter-spacing: 0.14em;
+    letter-spacing: var(--track-label);
     font-weight: 400;
-}                     
+}
 
 .seg,
 .flush,
@@ -75,7 +75,7 @@
 .seg {
     flex: 1;
     padding: 0.45rem 0.25rem;
-    font-size: 12px;
+    font-size: var(--fs-meta);
     letter-spacing: 0.06em;
 }
 
@@ -94,8 +94,8 @@
 
 /* QueryBuilder only */
 .seg.solo {
-    letter-spacing: 0.14em;
-    font-size: 11px;
+    letter-spacing: var(--track-label);
+    font-size: var(--fs-meta);
     --seg-c: var(--color-neon-green);
 }
 
@@ -103,8 +103,8 @@
 .flush {
     width: 100%;
     padding: 0.5rem;
-    font-size: 11px;
-    letter-spacing: 0.18em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
 }
 
@@ -121,8 +121,8 @@
 /* SearchResults only */
 .page-btn {
     padding: 0.45rem 0.9rem;
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
 }
 
 .page-btn:hover:not(:disabled) {
@@ -139,9 +139,9 @@
 /* QueryBuilder only — the one button off the chassis */
 .run {
     font-family: var(--font-body);
-    font-size: 11.5px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--color-neon-green);
     background: rgb(var(--phosphor-rgb) / 0.08);
@@ -189,7 +189,7 @@
     border-bottom: 1px solid var(--color-border-dim);
     color: var(--color-neon-green);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--fs-secondary);
     font-variant-numeric: tabular-nums;
     padding: 0.35rem 0.1rem;
     outline: 0;
@@ -210,15 +210,15 @@
 .field::placeholder {
     color: var(--color-text-faint);
     font-family: var(--font-body);
-    font-size: 10px;
-    letter-spacing: 0.14em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
 }
 
 .sec-chip {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: var(--track-label);
     color: var(--c);
     align-self: flex-start;
     text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
@@ -227,7 +227,7 @@
 /* SearchResults */
 .readout-filter {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     letter-spacing: 0.06em;
     color: var(--color-text-faint);
     word-break: break-word;
@@ -236,7 +236,7 @@
 /* QueryBuilder */
 .readout-query {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: var(--fs-meta);
     line-height: 1.6;
     color: var(--color-text-faint);
     word-break: break-all;
@@ -265,8 +265,8 @@
 
 .lookup-err {
     font-family: var(--font-body);
-    font-size: 10px;
-    letter-spacing: 0.14em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--color-isk-billion);
 }

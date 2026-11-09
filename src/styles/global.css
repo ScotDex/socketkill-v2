@@ -11,6 +11,12 @@
      --burn-peak: 2.4;
     --burn-bloom: 6px;
     --burn-dur: 700ms;
+
+    --fs-meta: 12px;
+    --fs-secondary: 14px;
+    --fs-body: 16px;
+    --fs-heading: 20px;
+    --track-label: 0.1em;
 }
 
 @theme {
