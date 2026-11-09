@@ -280,7 +280,7 @@ $effect(() => {
                 label="CORPORATIONS"
                 bind:items={filters.corps}
                 suggestions={corpSuggestions}
-                placeholder="ADD CORPORATION"
+                placeholder="Add Corporation"
                 maxItems={MAX_CORPS}
                 allowFreeText={true}
             />
@@ -318,7 +318,7 @@ $effect(() => {
                 label="ORIGIN SYSTEM"
                 bind:items={filters.origin}
                 suggestions={sdeSystemNames}
-                placeholder="SET LOCATION"
+                placeholder="Set Origin System"
                 maxItems={1}
             />
 
