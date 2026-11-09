@@ -106,7 +106,7 @@ const secShort = sec.display ?? '?'
 const totalIsk = parseIsk(kill.totalValue)
 const valueTier =
     totalIsk >= 10_000_000_000 ? 'var(--color-whale-accent)'
-    : totalIsk >= 1_000_000_000 ? 'var(--color-isk-billion)'
+    : totalIsk >= 1_000_000_000 ? 'var(--color-whale-accent)'
     : 'var(--color-neon-green)'
 
 const droppedIsk = parseIsk(kill.droppedValue)
@@ -406,7 +406,7 @@ const singleGroup = grouped.length === 1
         </main>
 
         <footer class="relative z-10 max-w-7xl mx-auto p-4 mt-8 border-t border-[var(--color-eve-border)] text-center">
-            <div class="ui flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] tracking-[0.14em] text-[var(--color-text-faint)]">
+            <div class="ui flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-[var(--track-label)] text-[var(--color-text-faint)]">
                 <div>
                     <a href="/" class="link">&lt; BACK TO SOCKETKILL.COM</a>
                 </div>

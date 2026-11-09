@@ -60,23 +60,10 @@ details[open]::details-content {
 }
 
 
-.card-h {
-    font-family: var(--font-display);
-    font-stretch: expanded;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--card-c);
-    padding: 0.55rem 0.75rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
-    text-shadow: var(--glow);
-}
-
 .card-f {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     padding: 0.35rem 0.75rem;
     border-top: 1px solid var(--color-eve-border);
@@ -85,9 +72,9 @@ details[open]::details-content {
 
 .tag {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: var(--track-label);
     color: var(--color-text-faint);
 }
 
@@ -100,9 +87,9 @@ details[open]::details-content {
 
 .k {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: var(--track-label);
     color: var(--color-text-faint);
 }
 
@@ -129,9 +116,9 @@ details[open]::details-content {
 
 .chip {
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--track-label);
     color: var(--c);
     text-shadow: var(--glow);
 }
@@ -178,7 +165,7 @@ details[open]::details-content {
 
 .fb {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     color: var(--color-isk-billion);
     text-shadow: var(--glow);
 }
@@ -189,16 +176,16 @@ details[open]::details-content {
     justify-content: space-between;
     margin-top: 0.6rem;
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: var(--track-label);
 }
 
 .more {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: var(--track-label);
     color: var(--color-text-faint);
     background: var(--color-feed-bg);
     border: 0;
@@ -217,9 +204,9 @@ details[open]::details-content {
 
 .grp {
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--color-neon-green);
     text-shadow: var(--glow);
@@ -234,9 +221,9 @@ details[open]::details-content {
     padding-bottom: 0.25rem;
     border-bottom: 1px solid color-mix(in srgb, var(--color-isk-billion) 18%, transparent);
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--color-isk-billion);
 }
@@ -290,9 +277,9 @@ details[open] > .grp-atk .grp-caret {
 
 .act {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: var(--fs-meta);
     font-weight: 500;
-    letter-spacing: 0.14em;
+    letter-spacing: var(--track-label);
     text-align: center;
     color: var(--color-text-faint);
     background: var(--color-feed-bg);
@@ -319,10 +306,6 @@ details[open] > .grp-atk .grp-caret {
     text-shadow: var(--shadow-phosphor);
 }
 
-.ui {
-    font-family: var(--font-body);
-}
-
 .tabs {
     display: flex;
     gap: 2px;
@@ -330,9 +313,9 @@ details[open] > .grp-atk .grp-caret {
 
 .tab {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--fs-meta);
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: var(--track-label);
     color: var(--color-text-faint);
     background: var(--color-feed-bg);
     border: 0;
@@ -392,13 +375,13 @@ details[open] > .grp-atk .grp-caret {
     font-family: var(--font-body);
     font-weight: 600;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: var(--fs-body);
     line-height: 1.15;
 }
 
 .ident .who .af {
     font-family: var(--font-body);
-    font-size: 13px;
+    font-size: var(--fs-secondary);
     color: var(--color-text-faint);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -425,7 +408,7 @@ details[open] > .grp-atk .grp-caret {
     flex-direction: column;
     gap: 0.55rem;
     padding: 0.75rem;
-    font-size: 14px;
+    font-size: var(--fs-secondary);
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
 }
