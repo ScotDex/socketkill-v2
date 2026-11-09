@@ -28,6 +28,7 @@
                     lost {kill.article}
                     <strong class="font-semibold inline-block">{kill.ship}</strong>
                 </span>
+                <!-- TEMP: terminal-blue until sec-status colouring lands (needs backend fields) -->
                 <div>
                     <span class="text-[var(--color-terminal-blue)] text-sm"
                         class:triglavian={kill.isTriglavian}
@@ -40,10 +41,10 @@
     </div>
     <div class="flex items-center">
         <div class="w-12 h-12 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
-    <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[44px] h-[44px]" loading="lazy" />
-    
-        <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
-            <img src={kill.allianceImageUrl} alt={kill.allianceName ?? ''} class="w-[60px] h-[60px]" loading="lazy" />
+            <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[44px] h-[44px]" loading="lazy" />
+        </div>
+        <div class="w-12 h-12 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
+            <img src={kill.allianceImageUrl} alt={kill.allianceName ?? ''} class="w-[44px] h-[44px]" loading="lazy" />
         </div>
         <div class="w-[120px] text-right pr-2">
             <div class="font-bold font-mono {isBillion ? 'text-[var(--color-whale-accent)] text-xl' : 'text-[var(--color-neon-green)] text-lg'}">
