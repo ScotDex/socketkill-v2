@@ -48,9 +48,11 @@
     font-weight: 500;
     letter-spacing: var(--track-label);
     text-transform: uppercase;
-    color: var(--color-text-faint);
+    color: var(--color-text-label);
     user-select: none;
 }
+
+.lbl-title { color: var(--color-neon-green); }
 
 .lbl-unit {
     color: var(--color-text-faint);
