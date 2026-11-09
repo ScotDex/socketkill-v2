@@ -70,5 +70,5 @@ export function getUtcTimestamp() {
     const now = new Date()
     const hh = now.getUTCHours().toString().padStart(2, '0')
     const mm = now.getUTCMinutes().toString().padStart(2, '0')
-    return `[${hh}:${mm}]`
+    return `${hh}:${mm}`
 }

@@ -28,7 +28,11 @@
     <strong class="font-semibold inline-block">{kill.ship}</strong>
 </span>
                 <div>
-                    <span class="text-[var(--color-terminal-blue)] font-light text-[0.9375rem]" class:triglavian={kill.isTriglavian}>{kill.locationLabel}</span>
+                    <span class="text-[var(--color-text-body)] text-[0.9375rem]"
+    class:triglavian={kill.isTriglavian}
+    title={kill.isTriglavian ? kill.locationLabel : undefined}>
+    {kill.locationLabel}
+</span>
                 </div>
             </div>
         </a>
@@ -41,10 +45,10 @@
             <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[60px] h-[60px]" loading="lazy" />
         </div>
         <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
-            <img src={kill.allianceImageUrl} alt="" class="w-[60px] h-[60px]" loading="lazy" />
+            <img src={kill.allianceImageUrl} alt={kill.allianceName ?? ''} class="w-[60px] h-[60px]" loading="lazy" />
         </div>
         <div class="w-[120px] text-center">
-            <div class="font-bold font-mono {isBillion ? 'text-[var(--color-isk-billion)] text-xl' : 'text-[var(--color-neon-green)] text-lg'}">
+            <div class="font-bold font-mono {isBillion ? 'text-[var(--color-whale-accent)] text-xl' : 'text-[var(--color-neon-green)] text-lg'}">
                 {formatIsk(kill.val)}
             </div>
         </div>
