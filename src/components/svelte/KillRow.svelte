@@ -39,9 +39,9 @@
         </a>
     </div>
     <div class="flex items-center">
-        <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
-            <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[60px] h-[60px]" loading="lazy" />
-        </div>
+        <div class="w-12 h-12 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
+    <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[44px] h-[44px]" loading="lazy" />
+    
         <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
             <img src={kill.allianceImageUrl} alt={kill.allianceName ?? ''} class="w-[60px] h-[60px]" loading="lazy" />
         </div>

@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte'
-  import { Tween } from 'svelte/motion'
   import { connectionStatus } from '../../lib/stats-store.js'
   import { searchFilters } from '../../lib/search-store.js'
   import { filterSource, loadFilterSource } from '../../lib/filter-source-store.js'
@@ -77,20 +76,6 @@
 
     return params.toString()
   })
-  const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  const target = $derived(`/search${queryString ? '?' + queryString : ''}`)
-  const t = new Tween(1, { duration: 0 })
-
-  $effect(() => {
-    const dur = reduceMotion ? 0 : Math.min(400, target.length * 4)
-    t.set(0, { duration: 0 }).then(() => t.set(1, { duration: dur }))
-  })
-
-  const typed = $derived(target.slice(0, Math.ceil(t.current * target.length)))
-
   const runQuery = () => window.open(`/search?${queryString}`, '_blank')
 </script>
 
@@ -153,9 +138,6 @@
   </div>
 
   <footer class="flex flex-col gap-2.5 p-3 pt-2.5 border-t border-[var(--color-border-dim)]">
-    <div class="readout-query">
-      {typed}
-    </div>
     <button type="button" class="run" onclick={runQuery}>View results ↗</button>
   </footer>
   <ReferralSlot />

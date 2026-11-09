@@ -40,23 +40,23 @@
     </div>
 
     <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-[var(--color-text-faint)] whitespace-nowrap">
-        <span>KILLMAILS PROCESSED</span>
+        <span>Killmails processed</span>
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$killCount} formatter={numberFormatter} />
         </span>
         <span aria-hidden="true">|</span>
-        <span>TQ_STATUS</span>
+        <span>Players online</span>
         <span class="text-white font-bold text-sm" class:text-yellow-400={$serverStatus.active === false}>
             <PhosphorCounter value={$serverStatus} formatter={tqFormatter} />
             {#if $serverStatus.vip}<span class="text-yellow-400 ml-1">VIP</span>{/if}
         </span>
         <span aria-hidden="true">|</span>
-        <span>ISK_DESTROYED</span>
+        <span>ISK destroyed</span>
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$iskDestroyed} formatter={formatIsk} />
         </span>
         <span aria-hidden="true">|</span>
-        <span>NPC_KILLS PER HR</span>
+        <span>NPC kills/hr</span>
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$npcKills} formatter={npcFormatter} />
         </span>
