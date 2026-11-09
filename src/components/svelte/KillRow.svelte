@@ -8,6 +8,7 @@
     }
 </script>
 
+
 <div
     class="kill-row group relative overflow-hidden flex items-center justify-between border-b border-[#1c2128] border-l-2 border-l-transparent hover:border-l-[var(--color-neon-green)] py-2 px-4 min-h-[64px] {isWhale ? 'whale-row' : ''}"
     onmousemove={(e) => {

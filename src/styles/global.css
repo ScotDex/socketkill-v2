@@ -85,7 +85,6 @@
 .triglavian { font-family: 'Triglavian', var(--font-body); }
 .ui { font-family: var(--font-body); }
 
-/* ══ FIT WHEEL ══════════════════════════════════════════════════ */
 
 .fit-wheel-wrap {
     position: relative;
