@@ -302,7 +302,16 @@ $effect(() => {
                 maxItems={MAX_ALLIANCES}
                 allowFreeText={true}
             />
-                        <section class="flex flex-col gap-1.5">
+
+            <ChipFacet
+                label="ORIGIN SYSTEM"
+                bind:items={filters.origin}
+                suggestions={sdeSystemNames}
+                placeholder="Set origin system"
+                maxItems={1}
+            />
+
+            <section class="flex flex-col gap-1.5">
                 <span class="lbl">proximity <span class="lbl-unit">ly</span></span>
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
                     {#each radiusPresets as preset}
@@ -313,14 +322,6 @@ $effect(() => {
                     {/each}
                 </div>
             </section>
-
-            <ChipFacet
-                label="ORIGIN SYSTEM"
-                bind:items={filters.origin}
-                suggestions={sdeSystemNames}
-                placeholder="Set origin system"
-                maxItems={1}
-            />
 
             <WeaponKeywordFacet bind:keyword={filters.weaponKeyword} />
         </div>
