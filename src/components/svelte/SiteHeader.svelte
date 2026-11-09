@@ -39,25 +39,25 @@
         <TitleBoot />
     </div>
 
-    <div class="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 whitespace-nowrap">
+    <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-[var(--color-text-faint)] whitespace-nowrap">
         <span>KILLMAILS PROCESSED</span>
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$killCount} formatter={numberFormatter} />
         </span>
-        <span>|</span>
+        <span aria-hidden="true">|</span>
         <span>TQ_STATUS</span>
         <span class="text-white font-bold text-sm" class:text-yellow-400={$serverStatus.active === false}>
             <PhosphorCounter value={$serverStatus} formatter={tqFormatter} />
             {#if $serverStatus.vip}<span class="text-yellow-400 ml-1">VIP</span>{/if}
         </span>
-        <span>|</span>
+        <span aria-hidden="true">|</span>
         <span>ISK_DESTROYED</span>
         <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$iskDestroyed} formatter={formatIsk} />
         </span>
-        <span>|</span>
+        <span aria-hidden="true">|</span>
         <span>NPC_KILLS PER HR</span>
-        <span class="text-[#ffc107] font-bold text-sm [text-shadow:0_0_5px_rgba(255,193,7,0.3)]">
+        <span class="text-white font-bold text-sm">
             <PhosphorCounter value={$npcKills} formatter={npcFormatter} />
         </span>
     </div>

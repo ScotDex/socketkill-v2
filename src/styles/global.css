@@ -407,7 +407,7 @@ body::after {
 @keyframes screen-corruption {
     0%, 100% { filter: none; transform: translate(0); }
     10% { filter: hue-rotate(90deg) saturate(3); transform: translate(-3px, 2px); }
-    20% { filter: invert(1) contrast(3); transform: translate(2px, -2px); }
+    20% { filter: hue-rotate(45deg); transform: translate(2px, -2px); }
     30% { filter: hue-rotate(-90deg); transform: translate(-2px, 1px); }
     40% { filter: none; transform: translate(0); }
 }

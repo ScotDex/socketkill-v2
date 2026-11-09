@@ -235,7 +235,7 @@ $effect(() => {
     <aside class="lf lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
         <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
-            <span class="lbl glow text-[var(--color-neon-green)] !text-[13px]">&gt; LIVE FILTER</span>
+            <span class="lbl text-[var(--color-neon-green)] !text-[13px]">Live filter</span>
             <span class="ui text-[10px] tracking-[0.14em] tabular-nums"
                 class:text-[var(--color-neon-green)]={hasActiveFilters}
                 class:text-[var(--color-text-faint)]={!hasActiveFilters}>
@@ -250,7 +250,6 @@ $effect(() => {
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
                     {#each valuePresets as preset}
                         <button type="button" class="seg" class:on={filters.minValue === preset.value}
-                            style="--seg-c:var(--color-whale-accent)"
                             onclick={() => filters.minValue = preset.value}>
                             {preset.label}
                         </button>
@@ -263,7 +262,6 @@ $effect(() => {
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
                     {#each secBands as band}
                         <button type="button" class="seg" class:on={filters.bands.includes(band.value)}
-                            style="--seg-c:{band.color}"
                             onclick={() => toggleBand(band.value)}>
                             {band.label}
                         </button>
@@ -309,7 +307,6 @@ $effect(() => {
                 <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
                     {#each radiusPresets as preset}
                         <button type="button" class="seg" class:on={filters.radius === preset.value}
-                            style="--seg-c:var(--color-terminal-blue)"
                             onclick={() => filters.radius = preset.value}>
                             {preset.label}
                         </button>

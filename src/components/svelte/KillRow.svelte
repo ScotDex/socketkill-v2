@@ -21,18 +21,20 @@
                 <img src={kill.shipImageUrl} alt="" class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="ml-2">
-                <strong class="ship-name text-white text-base font-semibold block">
-                    <span class="text-[var(--color-neon-green)]/70 text-sm font-mono mr-1.5">{kill.timestamp}</span>
-                    {getVictimDisplay(kill)} lost {kill.article} <span class="inline-block">{kill.ship}</span>
-                </strong>
+                <span class="ship-name text-white text-base block">
+    <span class="text-[var(--color-text-faint)] text-sm font-mono mr-1.5">{kill.timestamp}</span>
+    <strong class="font-semibold">{getVictimDisplay(kill)}</strong>
+    lost {kill.article}
+    <strong class="font-semibold inline-block">{kill.ship}</strong>
+</span>
                 <div>
                     <span class="text-[var(--color-terminal-blue)] font-light text-[0.9375rem]" class:triglavian={kill.isTriglavian}>{kill.locationLabel}</span>
                 </div>
             </div>
         </a>
     </div>
-    <div class="text-white/25 font-mono text-xs tracking-wider mr-3">
-        {kill.attackerCount} attackers
+    <div class="text-[var(--color-text-faint)] font-mono text-xs tracking-wider mr-3">
+    {kill.attackerCount} {kill.attackerCount === 1 ? 'attacker' : 'attackers'}
     </div>
     <div class="flex items-center">
         <div class="w-16 h-16 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">

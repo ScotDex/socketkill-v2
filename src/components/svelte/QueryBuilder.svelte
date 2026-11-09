@@ -97,7 +97,7 @@
 <aside class="qb lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
   <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
-    <span class="font-mono text-[13px] tracking-[0.14em] text-[var(--color-neon-green)] glow">&gt; SEARCH KILLMAILS</span>
+    <span class="lbl text-[var(--color-neon-green)] !text-[13px]">Search killmails</span>
     <span class="ui flex items-center gap-1.5 text-[10px] tracking-[0.14em]"
       style="color:{STATUS[$connectionStatus].color}">
       <span class="status-dot" class:pulse={STATUS[$connectionStatus].pulse}
@@ -154,7 +154,7 @@
 
   <footer class="flex flex-col gap-2.5 p-3 pt-2.5 border-t border-[var(--color-border-dim)]">
     <div class="readout-query">
-      <span class="text-[var(--color-neon-green)]">&gt;</span> {typed}<span class="caret" aria-hidden="true">█</span>
+      {typed}
     </div>
     <button type="button" class="run" onclick={runQuery}>View results ↗</button>
   </footer>
