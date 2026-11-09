@@ -132,21 +132,21 @@
       </div>
     </section>
 
-    <ChipFacet label="HULLS (MAX 5)"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="HULL CLASS" maxItems={5} />
-    <ChipFacet label="SOLAR SYSTEMS (MAX 5)" bind:items={selectedSystems} suggestions={systemNames} placeholder="ADD SYSTEM" maxItems={5} />
-    <ChipFacet label="REGION (MAX 3)"       bind:items={selectedRegions} suggestions={regionNames} placeholder="ADD REGION" maxItems={3} />
+    <ChipFacet label="HULL"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="Hull Class" maxItems={5} />
+    <ChipFacet label="SOLAR SYSTEMS" bind:items={selectedSystems} suggestions={systemNames} placeholder="Add System" maxItems={5} />
+    <ChipFacet label="REGION"       bind:items={selectedRegions} suggestions={regionNames} placeholder="Add Region" maxItems={3} />
 
     <section class="flex flex-col gap-1.5">
       <span class="lbl">attackers</span>
       <div class="flex items-end gap-3">
-        <input class="field" type="number" min="0" placeholder="MIN"
+        <input class="field" type="number" min="0" placeholder="Min"
           value={$searchFilters.minAttackers ?? ''} oninput={(e) => setNum('minAttackers', e)} />
         <span class="text-[var(--color-text-faint)] text-[11px] pb-1.5">—</span>
-        <input class="field" type="number" min="0" placeholder="MAX"
+        <input class="field" type="number" min="0" placeholder="Max"
           value={$searchFilters.maxAttackers ?? ''} oninput={(e) => setNum('maxAttackers', e)} />
       </div>
       <button type="button" class="seg solo" class:on={$searchFilters.solo} onclick={toggleSolo}>
-        {$searchFilters.solo ? '◉' : '○'}&nbsp; SOLO KILLS ONLY
+        {$searchFilters.solo ? '◉' : '○'}&nbsp; Solo Only
       </button>
     </section>
 

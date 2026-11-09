@@ -273,11 +273,11 @@ $effect(() => {
                 label="REGIONS"
                 bind:items={filters.regions}
                 suggestions={sdeRegionNames}
-                placeholder="ADD REGION"
+                placeholder="Add Region"
             />
 
             <ChipFacet
-                label="CORPORATIONS (MAX 5)"
+                label="CORPORATIONS"
                 bind:items={filters.corps}
                 suggestions={corpSuggestions}
                 placeholder="ADD CORPORATION"
@@ -286,10 +286,10 @@ $effect(() => {
             />
 
             <ChipFacet
-                label="SOLAR SYSTEMS (MAX 5)"
+                label="SOLAR SYSTEMS"
                 bind:items={filters.systems}
                 suggestions={sdeSystemNames}
-                placeholder="ADD SYSTEM"
+                placeholder="Add System"
                 maxItems={MAX_SYSTEMS}
                 allowFreeText={true}
             />
@@ -298,7 +298,7 @@ $effect(() => {
                 label="ALLIANCES (MAX 5)"
                 bind:items={filters.alliances}
                 suggestions={allianceSuggestions}
-                placeholder="ADD ALLIANCE"
+                placeholder="Add Alliance"
                 maxItems={MAX_ALLIANCES}
                 allowFreeText={true}
             />
