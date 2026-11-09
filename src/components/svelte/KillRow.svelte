@@ -28,7 +28,7 @@
     <strong class="font-semibold inline-block">{kill.ship}</strong>
 </span>
                 <div>
-                    <span class="text-[var(--color-text-body)] text-[0.9375rem]"
+                    <span class="text-[var(--color-text-faint)] text-sm"
     class:triglavian={kill.isTriglavian}
     title={kill.isTriglavian ? kill.locationLabel : undefined}>
     {kill.locationLabel}

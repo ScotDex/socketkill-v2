@@ -205,8 +205,8 @@ body::after {
 
 
 
-.glow,
-.ship-name { text-shadow: var(--shadow-phosphor); }
+.glow { text-shadow: var(--shadow-phosphor); }
+
 
 .kill-row .kill-loc,
 .kill-row .kill-isk {
@@ -217,7 +217,7 @@ body::after {
 .kill-row .kill-loc { --burn-stagger: 60ms; }
 .kill-row .kill-isk { --burn-stagger: 120ms; }
 
-.ship-name { mix-blend-mode: screen; }
+
 
 .eve-accent-glow {
     text-shadow:
