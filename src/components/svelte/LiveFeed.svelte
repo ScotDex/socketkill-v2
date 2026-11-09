@@ -235,8 +235,8 @@ $effect(() => {
     <aside class="lf lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
         <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
-            <span class="lbl text-[var(--color-neon-green)] !text-[13px]">Live filter</span>
-            <span class="ui text-[10px] tracking-[0.14em] tabular-nums"
+            <span class="lbl lbl-title !text-[13px]">Live filter</span>
+            <span class="ui text-xs tracking-[var(--track-label)] tabular-nums"
                 class:text-[var(--color-neon-green)]={hasActiveFilters}
                 class:text-[var(--color-text-faint)]={!hasActiveFilters}>
                 {filteredFeed.length}/{killBuffer.length}
@@ -273,14 +273,14 @@ $effect(() => {
                 label="REGIONS"
                 bind:items={filters.regions}
                 suggestions={sdeRegionNames}
-                placeholder="Add Region"
+                placeholder="Add region"
             />
 
             <ChipFacet
                 label="CORPORATIONS"
                 bind:items={filters.corps}
                 suggestions={corpSuggestions}
-                placeholder="Add Corporation"
+                placeholder="Add corporation"
                 maxItems={MAX_CORPS}
                 allowFreeText={true}
             />
@@ -289,7 +289,7 @@ $effect(() => {
                 label="SOLAR SYSTEMS"
                 bind:items={filters.systems}
                 suggestions={sdeSystemNames}
-                placeholder="Add System"
+                placeholder="Add system"
                 maxItems={MAX_SYSTEMS}
                 allowFreeText={true}
             />
@@ -298,7 +298,7 @@ $effect(() => {
                 label="ALLIANCES"
                 bind:items={filters.alliances}
                 suggestions={allianceSuggestions}
-                placeholder="Add Alliance"
+                placeholder="Add alliance"
                 maxItems={MAX_ALLIANCES}
                 allowFreeText={true}
             />
@@ -318,7 +318,7 @@ $effect(() => {
                 label="ORIGIN SYSTEM"
                 bind:items={filters.origin}
                 suggestions={sdeSystemNames}
-                placeholder="Set Origin System"
+                placeholder="Set origin system"
                 maxItems={1}
             />
 
@@ -359,5 +359,3 @@ $effect(() => {
 
     <QueryBuilder />
 </div>
-
-

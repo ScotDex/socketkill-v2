@@ -97,8 +97,8 @@
 <aside class="qb lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:self-start">
 
   <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
-    <span class="lbl text-[var(--color-neon-green)] !text-[13px]">Search killmails</span>
-    <span class="ui flex items-center gap-1.5 text-[10px] tracking-[0.14em]"
+    <span class="lbl lbl-title !text-[13px]">Search killmails</span>
+    <span class="ui flex items-center gap-1.5 text-xs tracking-[var(--track-label)]"
       style="color:{STATUS[$connectionStatus].color}">
       <span class="status-dot" class:pulse={STATUS[$connectionStatus].pulse}
         style="background:{STATUS[$connectionStatus].color}"></span>
@@ -113,7 +113,7 @@
       <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
         {#each SEC_BANDS as band}
           <button type="button" class="seg" class:on={$searchFilters.space.includes(band.value)}
-            style="--seg-c:{band.color}" onclick={() => toggleSpace(band.value)}>
+            onclick={() => toggleSpace(band.value)}>
             {band.label}
           </button>
         {/each}
@@ -125,28 +125,28 @@
       <div class="flex gap-px bg-[var(--color-eve-border)] p-px">
         {#each VALUE_PRESETS as p}
           <button type="button" class="seg" class:on={($searchFilters.minIsk ?? null) === p.value}
-            style="--seg-c:var(--color-whale-accent)" onclick={() => setMinValue(p.value)}>
+            onclick={() => setMinValue(p.value)}>
             {p.label}
           </button>
         {/each}
       </div>
     </section>
 
-    <ChipFacet label="HULL"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="Add Hull Class" maxItems={5} />
-    <ChipFacet label="SOLAR SYSTEMS" bind:items={selectedSystems} suggestions={systemNames} placeholder="Add System" maxItems={5} />
-    <ChipFacet label="REGION"       bind:items={selectedRegions} suggestions={regionNames} placeholder="Add Region" maxItems={3} />
+    <ChipFacet label="HULL"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="Add hull class" maxItems={5} />
+    <ChipFacet label="SOLAR SYSTEMS" bind:items={selectedSystems} suggestions={systemNames} placeholder="Add system" maxItems={5} />
+    <ChipFacet label="REGION"       bind:items={selectedRegions} suggestions={regionNames} placeholder="Add region" maxItems={3} />
 
     <section class="flex flex-col gap-1.5">
       <span class="lbl">attackers</span>
       <div class="flex items-end gap-3">
         <input class="field" type="number" min="0" placeholder="Min"
           value={$searchFilters.minAttackers ?? ''} oninput={(e) => setNum('minAttackers', e)} />
-        <span class="text-[var(--color-text-faint)] text-[11px] pb-1.5">—</span>
+        <span class="text-[var(--color-text-faint)] text-xs pb-1.5">—</span>
         <input class="field" type="number" min="0" placeholder="Max"
           value={$searchFilters.maxAttackers ?? ''} oninput={(e) => setNum('maxAttackers', e)} />
       </div>
       <button type="button" class="seg solo" class:on={$searchFilters.solo} onclick={toggleSolo}>
-        {$searchFilters.solo ? '◉' : '○'}&nbsp; Solo Only
+        {$searchFilters.solo ? '◉' : '○'}&nbsp; Solo only
       </button>
     </section>
 
@@ -161,4 +161,3 @@
   <ReferralSlot />
 
 </aside>
-
