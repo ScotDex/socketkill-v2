@@ -48,7 +48,7 @@
     font-weight: 500;
     letter-spacing: var(--track-label);
     text-transform: uppercase;
-    color: var(--color-border-bright);
+    color: var(--color-text-faint);
     user-select: none;
 }
 

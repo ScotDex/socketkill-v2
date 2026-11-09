@@ -76,7 +76,7 @@
     <div class="relative">
         <input
             type="text"
-            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-sm tracking-wider px-2 py-1 outline-none focus:border-[var(--color-border-bright)] placeholder:text-[var(--color-neon-green)]/30 placeholder:uppercase placeholder:italic disabled:opacity-50"
+            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-sm tracking-wider px-2 py-1 outline-none focus:border-[var(--color-border-bright)] placeholder:text-[var(--color-text-faint)] disabled:opacity-50"
             placeholder={atMax ? 'MAX REACHED' : placeholder}
             bind:value={input}
             onkeydown={handleKeydown}
