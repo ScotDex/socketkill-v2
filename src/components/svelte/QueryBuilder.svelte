@@ -132,7 +132,7 @@
       </div>
     </section>
 
-    <ChipFacet label="HULL"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="Hull Class" maxItems={5} />
+    <ChipFacet label="HULL"         bind:items={selectedGroups}  suggestions={groupNames}  placeholder="Add Hull Class" maxItems={5} />
     <ChipFacet label="SOLAR SYSTEMS" bind:items={selectedSystems} suggestions={systemNames} placeholder="Add System" maxItems={5} />
     <ChipFacet label="REGION"       bind:items={selectedRegions} suggestions={regionNames} placeholder="Add Region" maxItems={3} />
 

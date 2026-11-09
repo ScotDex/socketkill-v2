@@ -295,7 +295,7 @@ $effect(() => {
             />
 
             <ChipFacet
-                label="ALLIANCES (MAX 5)"
+                label="ALLIANCES"
                 bind:items={filters.alliances}
                 suggestions={allianceSuggestions}
                 placeholder="Add Alliance"
