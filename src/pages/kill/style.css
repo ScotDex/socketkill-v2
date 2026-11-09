@@ -45,13 +45,6 @@ details[open]::details-content {
     animation: card-rise var(--dur) var(--ease) both;
     animation-delay: var(--d, 0ms);
 
-    clip-path: polygon(
-        0 0,
-        calc(100% - var(--notch)) 0,
-        100% var(--notch),
-        100% 100%,
-        0 100%
-    );
 }
 
 @keyframes card-rise {

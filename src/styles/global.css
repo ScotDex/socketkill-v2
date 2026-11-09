@@ -15,7 +15,7 @@
 
 @theme {
     --color-phosphor: #3fb950;
-    --color-neon-green: oklch(0.695 0.24 145.6);
+    --color-neon-green: var(--color-phosphor);
     --color-terminal-blue: #4b8fd6;
     --color-isk-billion: #ff8f85;
     --color-whale-accent: #f2cc60;
@@ -150,7 +150,6 @@ body {
     background-attachment: fixed;
 }
 
-/* ══ CRT ATMOSPHERE ═════════════════════════════════════════════ */
 
 .kill-screen {
     position: relative;
@@ -190,7 +189,7 @@ body {
     opacity: 0.8;
 }
 
-/* Cathode flicker */
+
 body::after {
     content: "";
     position: fixed;
@@ -204,7 +203,7 @@ body::after {
 
 .signal-interference { animation: screen-corruption 0.4s steps(8); }
 
-/* ══ TEXT TREATMENTS ════════════════════════════════════════════ */
+
 
 .glow,
 .ship-name { text-shadow: var(--shadow-phosphor); }
@@ -247,7 +246,6 @@ body::after {
     margin-top: 0.25rem;
 }
 
-/* ══ FEED ═══════════════════════════════════════════════════════ */
 
 .kill-feed-panel {
     position: relative;
@@ -297,7 +295,6 @@ body::after {
 
 .whale-row { box-shadow: inset 4px 0 0 var(--color-whale-accent); }
 
-/* ══ ENTRANCE ANIMATIONS ════════════════════════════════════════ */
 
 .fade-card {
     animation: fade-card-in 0.5s ease-out forwards;
@@ -310,11 +307,10 @@ body::after {
 
 .filter-panel-enter { animation: filter-panel-enter 0.5s ease-out forwards; }
 
-/* ══ CONTROLS ═══════════════════════════════════════════════════ */
 
 .filter-btn.selected {
     background: var(--color-neon-green);
-    color: #ffffff;
+    color: var(--color-dark-bg);
     border-color: var(--color-neon-green);
 }
 
@@ -445,12 +441,26 @@ body::after {
 }
 
 
-/* ══ MEDIA QUERIES ══════════════════════════════════════════════
-   Kept last so source order never fights the base rules.
-   ═══════════════════════════════════════════════════════════════ */
 
 @media (prefers-reduced-motion: reduce) {
-    .signal-interference { animation: none; }
+    .signal-interference,
+    .crt-screen,
+    .fog-overlay,
+    body::after,
+    .kill-row .ship-name,
+    .kill-row .kill-loc,
+    .kill-row .kill-isk,
+    .filter-panel-enter {
+        animation: none;
+    }
+
+    .fade-card {
+        animation: none;
+        opacity: 1;
+    }
+
+    .kill-row { transition: none; }
+    .kill-row:hover { transform: none; }
 }
 
 @media (max-width: 1023px) {
