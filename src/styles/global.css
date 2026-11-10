@@ -94,10 +94,7 @@
 
 .fit-wheel-ring {
     position: relative;
-    max-width: 520px;
-    width: 100%;
-    aspect-ratio: 1;
-    min-height: 300px;
+    --esf-wheel-size: min(520px, calc(100vw - 48px));
     margin: 0 auto;
 }
 
