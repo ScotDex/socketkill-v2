@@ -80,6 +80,18 @@ body.preview-bg {
   margin: 0 auto;
 }
 
+/* Top bar: same width as header/main. margin-inline keeps the
+   14px top margin it gets from "#setup section". */
+#setup .bar { max-width: 1180px; margin-inline: auto; }
+
+/* Three channel inputs side by side */
+.bar-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 16px;
+}
+#setup .bar-inputs label { margin-top: 0; }
+
 #setup h1,
 #setup h2,
 #setup button {
@@ -505,7 +517,6 @@ body.preview-bg {
   --ui-accent:     var(--gold);
   --ui-accent-dim: rgba(232, 185, 35, .10);
 
-  counter-reset: step;
   padding: 56px 20px 40px;
 
   /* Faint tactical grid + a cold glow top-left, like a station hangar */
@@ -583,9 +594,8 @@ body.preview-bg {
 #setup section:focus-within::before,
 #setup section:focus-within::after { border-color: var(--ui-accent); }
 
-/* ---------- 4. Section headings with step numbers ------------------ */
+/* ---------- 4. Section headings ------------------------------------ */
 #setup h2 {
-  counter-increment: step;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -594,13 +604,6 @@ body.preview-bg {
   font-weight: 400;
   letter-spacing: 3px;
   color: var(--ui-text);
-}
-
-#setup h2::before {
-  content: counter(step, decimal-leading-zero);
-  font-weight: 700;
-  color: var(--ui-accent);
-  letter-spacing: 1px;
 }
 
 /* trailing rule fills the rest of the line */
@@ -806,7 +809,8 @@ body.preview-bg {
 @media (min-width: 1000px) {
   #setup main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    /* canvas (preview) wide, inspector narrow but never below 320px */
+    grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
     gap: 24px;
     align-items: start;
   }
@@ -822,6 +826,7 @@ body.preview-bg {
   #setup h1 { font-size: 18px; letter-spacing: 3px; }
   #setup section { padding: 18px 16px; }
   .support-slot { flex-direction: column; align-items: flex-start; }
+  .bar-inputs { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
