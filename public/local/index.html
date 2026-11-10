@@ -134,6 +134,23 @@
                         </label>
                     </fieldset>
 
+                    <fieldset>
+    <legend>Filter</legend>
+    <label>Bots
+        <select name="bots">
+            <option value="" selected>Hide common bots</option>
+            <option value="1">Show bots</option>
+        </select>
+    </label>
+    <label>Hide users (comma separated)
+        <input type="text" name="hide" placeholder="e.g. nightbot, someuser" autocomplete="off" spellcheck="false">
+    </label>
+    <p class="hint bot-hint">
+    <span id="botList"></span>
+    Missing one? <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener">Tell us on Discord</a>.
+</p>
+</fieldset>
+
                 </form>
             </section>
           </aside>

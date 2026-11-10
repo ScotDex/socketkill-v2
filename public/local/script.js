@@ -637,6 +637,8 @@ if (params.get('demo') === '1') {
     window.addEventListener('resize', fitPreview);
     updatePreview();
   }
+  const botList = document.getElementById('botList');
+  if (botList) botList.textContent = 'Hidden by default: ' + DEFAULT_BOTS.join(', ') + '.';
   const copyBtn = document.getElementById('copyBtn');
   let copyTimer;
 

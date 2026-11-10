@@ -224,7 +224,7 @@ body.preview-bg {
   #options fieldset { grid-template-columns: 1fr; }
 }
 
-
+#options .bot-hint { grid-column: 1 / -1; margin: 0; font-size: var(--fs-small); }
 
 /* =====================================================================
    OVERLAY — #stage / #window. Unchanged.
