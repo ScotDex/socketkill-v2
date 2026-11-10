@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro'
+const CHANNEL = 'scottish_dex'
+const parent = Astro.url.hostname
+---
+
+<Base
+  title="Radio EVE | Socketkill.com"
+  ogTitle="Radio EVE"
+  ogDescription="Lofi & ambient EVE Online music to mine, haul and chill to. Weekdays 10:00–16:00 UTC."
+>
+  <div class="crt-screen max-w-[1700px] mx-auto px-4 py-3">
+    <main class="mt-4">
+      <h1>Radio EVE</h1>
+<section class="stage">
+  <div class="player">
+    <iframe
+      src={`https://player.twitch.tv/?channel=${CHANNEL}&parent=${parent}&muted=true`}
+      allowfullscreen
+      title="Radio EVE stream"></iframe>
+  </div>
+  <div class="chat">
+    <iframe
+      src={`https://www.twitch.tv/embed/${CHANNEL}/chat?parent=${parent}&darkpopout`}
+      title="Radio EVE chat"></iframe>
+  </div>
+</section>
+<p class="hint">Starts muted. Click the player to turn the sound on.</p>
+<div class="info">
+  <section>
+    <h2>Schedule</h2>
+    <table class="sched">
+      <tr><td>Monday – Friday</td><td>10:00 – 16:00</td></tr>
+      <tr><td>Saturday – Sunday</td><td>Off air</td></tr>
+    </table>
+    <p class="hint">All times UTC (EVE time).</p>
+  </section>
+
+  <section>
+    <h2>Credits</h2>
+    <p>
+      Music: EVE Online soundtrack by Fenris Creations /
+      <a href="https://soundcloud.com/fenriscreations" target="_blank" rel="noopener" class="link">Fenris Creations</a>.<br>
+      Footage: captured in EVE Online.
+    </p>
+  </section>
+</div>
+    </main>
+  </div>
+</Base>
+
+<style>
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 12px;
+  }
+  .player { aspect-ratio: 16 / 9; }
+  .chat   { min-height: 300px; }
+  .player, .chat {
+    background: var(--color-feed-bg);
+    border: 1px solid var(--color-eve-border);
+  }
+  iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .hint { font-size: var(--fs-meta); color: var(--color-text-faint); }
+  h1 { font-size: var(--fs-heading); }
+h2 {
+  font-size: var(--fs-meta);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: 8px;
+}
+.info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 24px;
+  margin-top: 24px;
+  align-items: start;
+}
+.sched { width: 100%; border-collapse: collapse; font-size: var(--fs-secondary); }
+.sched td { padding: 8px 0; border-bottom: 1px solid var(--color-eve-border); }
+.sched td:last-child {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.sched tr:last-child td { border-bottom: 0; }
+
+  @media (max-width: 900px) {
+    .stage { grid-template-columns: 1fr; }
+    .chat  { height: 420px; }
+  }
+</style>
