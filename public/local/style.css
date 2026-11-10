@@ -608,6 +608,12 @@ body.preview-bg {
   border-left: 1px solid var(--ui-line-hi);
 }
 
+.data-notes { margin-top: 12px; font-size: var(--fs-small); color: var(--ui-muted); }
+.data-notes summary { cursor: pointer; width: fit-content; }
+.data-notes summary:hover { color: var(--ui-text); }
+.data-notes summary:focus-visible { outline: 1px solid var(--ui-accent); outline-offset: 2px; }
+.data-notes .hint { margin: 8px 0 0; padding-left: 12px; border-left: 1px solid var(--ui-line-hi); }
+
 /* ---------- 6. Form fields ------------------------------------------ */
 #setup label {
   margin: 16px 0 6px;
