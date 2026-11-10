@@ -1,6 +1,6 @@
 :root {
   --eve-rgb: 18, 20, 23;
-  --panel-opacity: .9;                                       
+  --panel-opacity: .9;
   --eve-bg: rgba(var(--eve-rgb), var(--panel-opacity));
   --eve-border: rgba(255, 255, 255, .14);
   --line: rgba(255, 255, 255, .12);
@@ -11,11 +11,11 @@
   --red: #d9534f;
   --gold: #e8b923;
 
-  --portrait: 48px;                                         
-  --panel-w: 440px;                                          
-  --roster-w: 210px;                                        
-  --panel-max-h: min(480px, calc(100vh - 48px));              
-  --font-size: 16px;                                          
+  --portrait: 48px;
+  --panel-w: 440px;
+  --roster-w: 210px;
+  --panel-max-h: min(480px, calc(100vh - 48px));
+  --font-size: 16px;
 }
 
 
@@ -59,19 +59,24 @@ body.preview-bg {
 
 
 
+/* =====================================================================
+   SETUP PAGE — base
+   Order matters below: #setup label must stay ABOVE #options label
+   (display: block vs flex), and #options fieldset must stay ABOVE the
+   max-width: 520px media query.
+   ===================================================================== */
+
 #setup {
   position: fixed;
   inset: 0;
   overflow-y: auto;
-  padding: 48px 16px;
-  background: radial-gradient(circle at 30% 20%, #10222c, #05090c 75%);
-  color: var(--text);
+  color: var(--ui-text);
 }
 
 #setup header,
 #setup main,
 #setup footer {
-  max-width: 520px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
@@ -83,119 +88,84 @@ body.preview-bg {
   text-transform: uppercase;
 }
 
-#setup h1 {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  color: var(--cyan);
-  margin: 0 0 6px;
+#setup h1 { font-weight: 700; color: var(--ui-text); }
+#setup h1::first-letter { color: var(--ui-accent); }
 
-
-}
-
-#setup h2 {
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  color: var(--dim);
-  margin: 0 0 10px;
-}
-
-#setup section {
-  background: rgba(18, 20, 23, .8);
-  border: 1px solid rgba(255, 255, 255, .14);
-  padding: 18px;
-  margin-top: 16px;
-}
-
-#setup label { display: block; margin: 12px 0 6px; font-size: 13px; color: #c9d4d8; }
+#setup label { display: block; }
 #setup section > label:first-of-type { margin-top: 0; }
 
 #setup input {
   width: 100%;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .14);
-  color: var(--text);
   font: 15px 'EVE Sans Neue', Arial, sans-serif;
-  padding: 10px 12px;
   outline: none;
+  background-color: var(--ui-field);
+  border: 1px solid var(--ui-line-hi);
+  color: var(--ui-text);
 }
-
-#setup input:focus { border-color: var(--cyan); }
+#setup input::placeholder { color: #5b6266; }
+#setup input:focus,
+#options select:focus { border-color: var(--ui-accent); outline: none; }
 
 #setup button {
-  background: #16323b;
-  border: 1px solid #3a8ba8;
-  color: var(--cyan);
+  background: transparent;
+  border: 1px solid var(--ui-line-hi);
+  color: var(--ui-text);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
   padding: 10px 16px;
   cursor: pointer;
 }
-
-#setup button:hover { background: #1d4350; }
+#setup button:hover { border-color: var(--ui-muted); background: rgba(255, 255, 255, .03); }
 
 .error { color: var(--red); font-size: 13px; min-height: 0; margin-top: 6px; }
 .error:empty { display: none; }
 
 .url-row { display: flex; gap: 8px; }
 .url-row input { flex: 1; min-width: 0; }
-#connectBtn { width: 100%; margin-top: 10px; }
 
-.hint { font-size: 13px; color: var(--dim); margin: 14px 0 0; }
+.hint, #setup footer { color: var(--ui-muted); }
 
-#setup ol { margin: 0; padding-left: 20px; line-height: 1.8; }
-
-#setup footer {
-  margin-top: 24px;
-  font-size: 12px;
-  color: var(--dim);
-}
-
-#setup a { color: var(--cyan); }
+#setup a { color: var(--ui-text); text-decoration-color: var(--ui-line-hi); text-underline-offset: 3px; }
+#setup a:hover { color: var(--ui-accent); }
 
 .badge {
   display: inline-block;
   vertical-align: middle;
   margin-left: 8px;
-  padding: 2px 7px;
-  border: 1px solid #e8c165;
-  color: #e8c165;
-  background: rgba(232, 193, 101, .10);
-  font-size: 10px;
+  border: 1px solid var(--ui-line-hi);
+  color: var(--ui-muted);
+  background: none;
   font-weight: 700;
-  letter-spacing: 2px;
   line-height: 1.4;
 }
 
 
 
-#options { display: grid; gap: 14px; }
+#options { display: grid; gap: 10px; }
 
 #options fieldset {
   margin: 0;
-  padding: 14px;
-  border: 1px solid rgba(255, 255, 255, .08);
-  background: rgba(255, 255, 255, .02);
+  padding: 14px 14px 16px;
+  border: 1px solid var(--ui-line);
+  background: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px 16px;
 }
 
 #options legend {
-  padding: 0 6px;
-  font-size: 11px;
-  letter-spacing: .15em;
+  padding: 0 8px;
+  font-size: 10px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #7fa9b8;
+  color: var(--ui-muted);
 }
 
 #options label {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 0;
 }
 
 #options fieldset:has(input[type=radio]) { grid-template-columns: repeat(3, 1fr); gap: 0; }
@@ -204,21 +174,25 @@ body.preview-bg {
   flex-direction: row;
   justify-content: center;
   padding: 9px;
-  border: 1px solid rgba(255, 255, 255, .12);
+  border: 1px solid var(--ui-line-hi);
   margin-left: -1px;
   cursor: pointer;
+  color: var(--ui-muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 #options label:has(> input[type=radio]:checked) {
-  border-color: #4fc3e8;
-  background: rgba(79, 195, 232, .12);
-  color: #fff;
+  border-color: var(--ui-accent);
+  background: var(--ui-accent-dim);
+  color: var(--ui-text);
   z-index: 1;
 }
 #options input[type=radio] { position: absolute; opacity: 0; pointer-events: none; }
 
 
 #options label:has(> input[type=checkbox]) { flex-direction: row; align-items: center; gap: 8px; cursor: pointer; }
-#options input[type=checkbox] { width: auto; margin: 0; accent-color: #4fc3e8; }
+#options input[type=checkbox] { width: auto; margin: 0; accent-color: var(--ui-accent); }
 
 
 #options select {
@@ -226,13 +200,13 @@ body.preview-bg {
   width: 100%;
   padding: 9px 30px 9px 10px;
   font: inherit;
-  color: inherit;
-  background: #14191c url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237fa9b8'/%3E%3C/svg%3E") no-repeat right 10px center;
-  border: 1px solid rgba(255, 255, 255, .12);
+  color: var(--ui-text);
+  background: var(--ui-field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237fa9b8'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border: 1px solid var(--ui-line-hi);
 }
 
 #options label:has(> input[type=range]) { grid-column: 1 / -1; }
-#options input[type=range] { width: 100%; padding: 0; border: 0; background: none; accent-color: #4fc3e8; }
+#options input[type=range] { width: 100%; padding: 0; border: 0; background: none; accent-color: var(--ui-accent); }
 
 #options label:has(> input[name=max]) { grid-column: 1 / -1; }
 
@@ -241,6 +215,11 @@ body.preview-bg {
 }
 
 
+
+/* =====================================================================
+   OVERLAY — #stage / #window. Unchanged.
+   ===================================================================== */
+
 #stage {
   position: fixed;
   left: 24px;
@@ -248,7 +227,7 @@ body.preview-bg {
 }
 
 #window {
-  display: none;                       
+  display: none;
   flex-direction: column;
   width: calc(var(--panel-w) + var(--roster-w));
   height: var(--panel-max-h);
@@ -400,6 +379,8 @@ body.preview-bg {
   margin: -2px 1px;
 }
 
+.text .link { color: var(--gold); }
+
 
 #rosterHead {
   flex: none;
@@ -495,175 +476,20 @@ body.preview-bg {
     var(--standing, #4a5358);
 }
 
-
-#previewBox {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 700 / 530;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .08);
-}
-
-#previewFrame {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 700px;
-  height: 530px;
-  border: 0;
-  transform-origin: 0 0;
-  pointer-events: none;
-}
-
-#setup header,
-#setup main,
-#setup footer { max-width: 1180px; }
-
-@media (min-width: 1000px) {
-  #setup main {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-    gap: 16px;
-    align-items: start;
-  }
-
-  .col-preview {
-    position: sticky;
-    top: 0;
-  }
-}
-
-#setup {
-  --ui-bg:      #0b0c0d;
-  --ui-panel:   #121416;
-  --ui-field:   #181b1d;
-  --ui-line:    #23272a;
-  --ui-line-hi: #353b3f;
-  --ui-text:    #d9dcde;
-  --ui-muted:   #7d8589;
-  --ui-accent:     var(--gold);
-  --ui-accent-dim: rgba(232, 185, 35, .12);
-
-  background: var(--ui-bg);
-  color: var(--ui-text);
-}
-
-
-#setup h1        { color: var(--ui-text); letter-spacing: 3px; }
-#setup h1::first-letter { color: var(--ui-accent); }   
-#setup header p  { color: var(--ui-muted); }
-#setup h2        { color: var(--ui-muted); letter-spacing: 2.5px; font-size: 12px; }
-
-.badge {
-  border-color: var(--ui-line-hi);
-  background: none;
-  color: var(--ui-muted);
-}
-
-#setup section {
-  background: var(--ui-panel);
-  border: 1px solid var(--ui-line);
-}
-
-#setup label,
-#options label   { color: var(--ui-text); }
-.hint, #setup footer { color: var(--ui-muted); }
-
-
-#setup input,
-#options select {
-  background-color: var(--ui-field);
-  border: 1px solid var(--ui-line-hi);
-  color: var(--ui-text);
-}
-#setup input::placeholder { color: #5b6266; }
-#setup input:focus,
-#options select:focus { border-color: var(--ui-accent); outline: none; }
-
-
-#options fieldset { background: none; border-color: var(--ui-line); }
-#options legend   { color: var(--ui-muted); }
-
-
-#options label:has(> input[type=radio]) { border-color: var(--ui-line-hi); color: var(--ui-muted); }
-#options label:has(> input[type=radio]:checked) {
-  border-color: var(--ui-accent);
-  background: var(--ui-accent-dim);
-  color: var(--ui-text);
-}
-
-#options input[type=checkbox],
-#options input[type=range] { accent-color: var(--ui-accent); }
-
-
-#setup button {
-  background: transparent;
-  border: 1px solid var(--ui-line-hi);
-  color: var(--ui-text);
-}
-#setup button:hover { border-color: var(--ui-muted); background: rgba(255, 255, 255, .03); }
-
-#copyBtn {
-  background: #e8b923;
-  border-color: #e8b923;
-  color: #0b0c0d;
-}
-#copyBtn:hover { background: #f2cc4d; border-color: #f2cc4d; }
-
-.text .link { color: var(--gold); }
-
-#previewBox { border-color: var(--ui-line); background: #070808; }
-
-
-#setup a { color: var(--ui-text); text-decoration-color: var(--ui-line-hi); text-underline-offset: 3px; }
-#setup a:hover { color: var(--ui-accent); }
-
-#setup #copyBtn { min-width: 110px; transition: background .2s, border-color .2s; }
-
-#setup #copyBtn.copied {
-  background: #59c97a;
-  border-color: #59c97a;
-  animation: copy-blink .45s ease-out;
-}
-
-#setup #copyBtn.failed {
-  background: transparent;
-  border-color: #d9534f;
-  color: #d9534f;
-  animation: copy-shake .3s;
-}
-
-#urlOutput.flash { animation: url-flash .6s ease-out; }
-
-@keyframes copy-blink {
-  0%   { filter: brightness(1.8); transform: scale(.96); }
-  100% { filter: none;            transform: none; }
-}
-
-@keyframes url-flash {
-  0%   { border-color: #e8b923; box-shadow: 0 0 0 3px rgba(232, 185, 35, .25); }
-  100% { border-color: var(--ui-line-hi); box-shadow: none; }
-}
-
-@keyframes copy-shake {
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
-
-}
-
-.legal { font-size: 10px; line-height: 1.5; color: #4f565a; margin-top: 12px; }
-
 .no-portrait .portrait { display: none; }
 .no-portrait .roster-row { height: auto; gap: 6px; }
 .no-portrait .standing { position: static; order: -1; flex: none; }
 
 .row.system .who,
 .row.system .text { color: var(--red); font-weight: 400; }
-#channelLabel:empty { display: none; }/* =====================================================================
-   setup.css  —  Setup page redesign ("fitting window" concept)
-   Loaded AFTER style.css. Everything is scoped to #setup, so the
-   overlay itself (#stage / #window) is untouched.
-   To revert: delete the <link> to this file.
+#channelLabel:empty { display: none; }
+
+
+
+/* =====================================================================
+   SETUP PAGE — redesign ("fitting window" concept), formerly setup.css
+   Must stay BELOW the base setup rules: it overrides them by cascade
+   order. Scoped to #setup; the overlay is untouched.
    ===================================================================== */
 
 /* ---------- 1. Tokens ---------------------------------------------- */
@@ -718,6 +544,7 @@ body.preview-bg {
   margin: 0;
   font-size: 14px;
   letter-spacing: .3px;
+  color: var(--ui-muted);
 }
 
 .badge { font-size: 9px; letter-spacing: 2.5px; padding: 3px 7px; }
@@ -732,8 +559,8 @@ body.preview-bg {
   backdrop-filter: blur(2px);
 }
 
-/* Two L-shaped brackets (top-left, bottom-right). Drawn with
-   gradients so no extra HTML is needed. */
+/* Two L-shaped brackets (top-left, bottom-right), drawn with borders
+   on pseudo-elements so no extra HTML is needed. */
 #setup section::before,
 #setup section::after {
   content: "";
@@ -764,6 +591,7 @@ body.preview-bg {
   gap: 12px;
   margin: 0 0 16px;
   font-size: 11px;
+  font-weight: 400;
   letter-spacing: 3px;
   color: var(--ui-text);
 }
@@ -807,7 +635,6 @@ body.preview-bg {
 }
 
 #setup input {
-  font-size: 15px;
   padding: 11px 12px;
   transition: border-color .15s, background-color .15s;
 }
@@ -831,19 +658,6 @@ body.preview-bg {
 }
 
 /* ---------- 7. Customise block -------------------------------------- */
-#options { gap: 10px; }
-
-#options fieldset {
-  padding: 14px 14px 16px;
-  border-color: var(--ui-line);
-}
-
-#options legend {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  padding: 0 8px;
-}
-
 #options label {
   font-size: 13px;
   letter-spacing: 0;
@@ -854,12 +668,6 @@ body.preview-bg {
 #options input[type=number],
 #options select { font-size: 14px; }
 
-#options label:has(> input[type=radio]) {
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
 #setup .hint b,
 #obsSize {
   font-weight: 700;
@@ -869,14 +677,29 @@ body.preview-bg {
 
 /* ---------- 8. Preview column --------------------------------------- */
 #previewBox {
-  border-color: var(--ui-line);
-  background:
-    radial-gradient(circle at 30% 20%, #142a33 0%, #05090c 75%);
+  position: relative;
+  width: 100%;
+  aspect-ratio: 700 / 530;
+  overflow: hidden;
+  border: 1px solid var(--ui-line);
+  background: radial-gradient(circle at 30% 20%, #142a33 0%, #05090c 75%);
+}
+
+#previewFrame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 700px;
+  height: 530px;
+  border: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
 }
 
 #setup ol {
   list-style: none;
   counter-reset: obs;
+  margin: 0;
   padding: 0;
   line-height: 1.5;
 }
@@ -929,15 +752,69 @@ body.preview-bg {
   line-height: 1.6;
 }
 #setup footer p { margin: 0 0 6px; }
-#setup .legal { margin-top: 16px; color: var(--ui-faint); max-width: 900px; }
+#setup .legal {
+  font-size: 10px;
+  line-height: 1.5;
+  margin-top: 16px;
+  color: var(--ui-faint);
+  max-width: 900px;
+}
 
-/* ---------- 11. Layout ---------------------------------------------- */
+/* ---------- 11. Copy button ----------------------------------------- */
+#setup #copyBtn {
+  min-width: 110px;
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: #0b0c0d;
+  transition: background .2s, border-color .2s;
+}
+
+#setup #copyBtn.copied {
+  background: #59c97a;
+  border-color: #59c97a;
+  animation: copy-blink .45s ease-out;
+}
+
+#setup #copyBtn.failed {
+  background: transparent;
+  border-color: #d9534f;
+  color: #d9534f;
+  animation: copy-shake .3s;
+}
+
+/* NOTE: sits after .copied/.failed, so it overrides them while hovered. */
+#setup #copyBtn:hover { background: #f2cc4d; border-color: #f2cc4d; }
+
+#urlOutput.flash { animation: url-flash .6s ease-out; }
+
+@keyframes copy-blink {
+  0%   { filter: brightness(1.8); transform: scale(.96); }
+  100% { filter: none;            transform: none; }
+}
+
+@keyframes url-flash {
+  0%   { border-color: #e8b923; box-shadow: 0 0 0 3px rgba(232, 185, 35, .25); }
+  100% { border-color: var(--ui-line-hi); box-shadow: none; }
+}
+
+@keyframes copy-shake {
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* ---------- 12. Layout ---------------------------------------------- */
 @media (min-width: 1000px) {
   #setup main {
+    display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
     gap: 24px;
+    align-items: start;
   }
-  .col-preview { top: 16px; }
+
+  .col-preview {
+    position: sticky;
+    top: 16px;
+  }
 }
 
 @media (max-width: 520px) {
@@ -948,13 +825,5 @@ body.preview-bg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #setup * { transition: none !important; }
+  #setup * { transition: none !important; animation: none !important; }
 }
-
-/* ---------- 12. Fixes ----------------------------------------------- */
-/* Copy was losing its gold: "#setup button" outranked "#copyBtn" */
-#setup #copyBtn { background: var(--ui-accent); border-color: var(--ui-accent); color: #0b0c0d; }
-#setup #copyBtn:hover { background: #f2cc4d; border-color: #f2cc4d; }
-
-/* Preview caption shouldn't get the privacy-note rule */
-.col-preview section > .hint { border-left: 0; padding-left: 0; }
