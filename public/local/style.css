@@ -122,15 +122,15 @@ body.preview-bg {
   background: transparent;
   border: 1px solid var(--ui-line-hi);
   color: var(--ui-text);
-  font-size: 12px;
+  font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: var(--track-label);
   padding: 10px 16px;
   cursor: pointer;
 }
 #setup button:hover { border-color: var(--ui-muted); background: rgba(255, 255, 255, .03); }
 
-.error { color: var(--red); font-size: 13px; min-height: 0; margin-top: 6px; }
+.error { color: var(--red); font-size: var(--fs-small); min-height: 0; margin-top: 6px; }
 .error:empty { display: none; }
 
 .url-row { display: flex; gap: 8px; }
@@ -168,8 +168,8 @@ body.preview-bg {
 
 #options legend {
   padding: 0 8px;
-  font-size: 10px;
-  letter-spacing: 2.5px;
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
   color: var(--ui-muted);
 }
@@ -190,9 +190,7 @@ body.preview-bg {
   margin-left: -1px;
   cursor: pointer;
   color: var(--ui-muted);
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  font-size: var(--fs-small);
 }
 #options label:has(> input[type=radio]:checked) {
   border-color: var(--ui-accent);
@@ -517,6 +515,12 @@ body.preview-bg {
   --ui-accent:     var(--gold);
   --ui-accent-dim: rgba(232, 185, 35, .10);
 
+  /* Type scale. 12px is the floor; nothing in #setup goes below it. */
+  --fs-label:   12px;   /* small uppercase labels, legal */
+  --fs-small:   13px;   /* field labels, hints, footer */
+  --fs-body:    15px;   /* body copy, inputs */
+  --track-label: .1em;  /* letter-spacing for uppercase labels only */
+
   padding: 56px 20px 40px;
 
   /* Faint tactical grid + a cold glow top-left, like a station hangar */
@@ -547,7 +551,7 @@ body.preview-bg {
 
 #setup h1 {
   font-size: 22px;
-  letter-spacing: 5px;
+  letter-spacing: .12em;
   margin: 0 0 10px;
 }
 
@@ -558,7 +562,7 @@ body.preview-bg {
   color: var(--ui-muted);
 }
 
-.badge { font-size: 9px; letter-spacing: 2.5px; padding: 3px 7px; }
+.badge { font-size: var(--fs-label); letter-spacing: var(--track-label); padding: 2px 6px; }
 
 /* ---------- 3. Panels: hairline box + corner brackets --------------- */
 #setup section {
@@ -600,9 +604,9 @@ body.preview-bg {
   align-items: center;
   gap: 12px;
   margin: 0 0 16px;
-  font-size: 11px;
+  font-size: var(--fs-label);
   font-weight: 400;
-  letter-spacing: 3px;
+  letter-spacing: var(--track-label);
   color: var(--ui-text);
 }
 
@@ -616,14 +620,14 @@ body.preview-bg {
 
 /* ---------- 5. Body copy & the privacy notes ------------------------ */
 #setup section p { line-height: 1.6; }
-#setup section > p:not(.hint) { margin: 0 0 4px; font-size: 15px; }
+#setup section > p:not(.hint) { margin: 0 0 4px; font-size: var(--fs-body); }
 
 /* The data/privacy hints become a quiet indented log */
 #setup section > .hint {
   position: relative;
   margin: 12px 0 0;
   padding-left: 14px;
-  font-size: 12.5px;
+  font-size: var(--fs-small);
   line-height: 1.6;
   border-left: 1px solid var(--ui-line-hi);
 }
@@ -631,9 +635,7 @@ body.preview-bg {
 /* ---------- 6. Form fields ------------------------------------------ */
 #setup label {
   margin: 16px 0 6px;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  font-size: var(--fs-small);
   color: var(--ui-muted);
 }
 
@@ -647,7 +649,7 @@ body.preview-bg {
 /* The output URL reads like a readout, not an input */
 #urlOutput {
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
-  font-size: 13px !important;
+  font-size: var(--fs-small) !important;
   color: var(--ui-accent) !important;
   letter-spacing: .2px;
 }
@@ -662,9 +664,6 @@ body.preview-bg {
 
 /* ---------- 7. Customise block -------------------------------------- */
 #options label {
-  font-size: 13px;
-  letter-spacing: 0;
-  text-transform: none;
   color: var(--ui-text);
 }
 
@@ -720,7 +719,7 @@ body.preview-bg {
   left: 0; top: 8px;
   width: 18px; height: 18px;
   display: grid; place-items: center;
-  font-size: 10px;
+  font-size: var(--fs-label);
   font-weight: 700;
   color: var(--ui-accent);
   border: 1px solid rgba(232, 185, 35, .4);
@@ -740,7 +739,7 @@ body.preview-bg {
 }
 .support-slot p {
   margin: 0;
-  font-size: 12.5px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   color: var(--ui-muted);
 }
@@ -751,12 +750,12 @@ body.preview-bg {
   margin-top: 40px;
   padding-top: 18px;
   border-top: 1px solid var(--ui-line);
-  font-size: 12.5px;
+  font-size: var(--fs-small);
   line-height: 1.6;
 }
 #setup footer p { margin: 0 0 6px; }
 #setup .legal {
-  font-size: 10px;
+  font-size: var(--fs-label);
   line-height: 1.5;
   margin-top: 16px;
   color: var(--ui-faint);
@@ -823,7 +822,7 @@ body.preview-bg {
 
 @media (max-width: 520px) {
   #setup { padding-top: 32px; }
-  #setup h1 { font-size: 18px; letter-spacing: 3px; }
+  #setup h1 { font-size: 18px; letter-spacing: .08em; }
   #setup section { padding: 18px 16px; }
   .support-slot { flex-direction: column; align-items: flex-start; }
   .bar-inputs { grid-template-columns: 1fr; }
