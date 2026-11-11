@@ -24,8 +24,8 @@
             id="weapon-keyword-input"
             type="text"
             bind:value={keyword}
-            placeholder="smartbomb, neut, ECM"
-            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-sm px-2 py-1.5 outline-none placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-neon-green)]/70"
+            placeholder="e.g. smartbomb, neut, ECM"
+            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] ui text-sm px-2 py-1 outline-none placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-neon-green)]"
             autocomplete="off"
             spellcheck="false"
         />
@@ -33,20 +33,20 @@
             <button
                 type="button"
                 onclick={clear}
-                aria-label="Clear"
-                class="absolute right-1 top-1/2 -translate-y-1/2 text-[var(--color-neon-green)]/40 hover:text-[var(--color-neon-green)] font-mono cursor-pointer text-sm leading-none px-1"
+                aria-label="Clear weapon keyword"
+                class="absolute right-1 top-1/2 -translate-y-1/2 text-[var(--color-text-faint)] hover:text-[var(--color-neon-green)] cursor-pointer text-sm leading-none px-1"
             >×</button>
         {/if}
     </div>
 
     {#if keyword && keyword.length >= 3}
-        <div class="font-mono text-[0.65rem] tracking-wider text-[var(--color-neon-green)]/50">
-            {#if matchCount > 0}
-                {matchCount} MATCH{matchCount === 1 ? '' : 'ES'}
-            {:else}
-                NO MATCHES
-            {/if}
-        </div>
+        <div class="ui text-xs text-[var(--color-text-faint)]" aria-live="polite">
+    {#if matchCount > 0}
+        {matchCount} {matchCount === 1 ? 'match' : 'matches'}
+    {:else}
+        No matches
+    {/if}
+</div>
     {/if}
 </div>
 

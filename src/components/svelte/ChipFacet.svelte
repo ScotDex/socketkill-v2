@@ -3,7 +3,7 @@
         label,
         items = $bindable([]),
         suggestions = [],
-        placeholder = 'ADD',
+        placeholder = 'Add',
         maxItems = Infinity,
         allowFreeText = false
     } = $props()
@@ -62,7 +62,7 @@
     {#if items.length > 0}
         <div class="flex flex-wrap gap-1">
             {#each items as item (item)}
-                <span class="inline-flex items-center gap-1 bg-[var(--color-neon-green)]/10 border border-[var(--color-border-mid)] text-[var(--color-neon-green)] font-mono text-xs px-1.5 py-0.5 uppercase">
+                <span class="inline-flex items-center gap-1 bg-[var(--color-neon-green)]/10 border border-[var(--color-border-mid)] text-[var(--color-neon-green)] ui text-xs px-1.5 py-0.5">
                     {item}
                     <button
                         type="button"
@@ -76,8 +76,8 @@
     <div class="relative">
         <input
             type="text"
-            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] font-mono text-sm tracking-wider px-2 py-1 outline-none focus:border-[var(--color-border-bright)] placeholder:text-[var(--color-text-faint)] disabled:opacity-50"
-            placeholder={atMax ? 'MAX REACHED' : placeholder}
+            class="w-full bg-transparent border border-[var(--color-border-dim)] text-[var(--color-neon-green)] ui text-sm px-2 py-1 outline-none focus:border-[var(--color-border-bright)] placeholder:text-[var(--color-text-faint)] disabled:opacity-50"
+            placeholder={atMax ? 'Limit Reached' : placeholder}
             bind:value={input}
             onkeydown={handleKeydown}
             disabled={atMax}
@@ -86,7 +86,7 @@
             <div class="absolute top-full left-0 right-0 bg-black/95 border border-[var(--color-border-mid)] border-t-0 max-h-60 overflow-y-auto z-50 shadow-lg">
                 {#each filtered as suggestion, i}
                     <div
-                        class="px-3 py-1.5 font-mono text-xs cursor-pointer border-b border-[var(--color-neon-green)]/10 last:border-b-0 hover:bg-[var(--color-neon-green)]/15 hover:text-[var(--color-neon-green)] {i === selectedIndex ? 'bg-[var(--color-neon-green)]/15 text-[var(--color-neon-green)]' : 'text-[var(--color-neon-green)]/70'}"
+                        class="px-3 py-1.5 ui text-sm cursor-pointer border-b border-[var(--color-neon-green)]/10 last:border-b-0 hover:bg-[var(--color-neon-green)]/15 hover:text-[var(--color-neon-green)] {i === selectedIndex ? 'bg-[var(--color-neon-green)]/15 text-[var(--color-neon-green)]' : 'text-[var(--color-neon-green)]/70'}"
                         onclick={() => add(suggestion)}
                         role="button"
                         tabindex="0"

@@ -137,9 +137,10 @@ body {
     color: var(--color-text-body);
     font-family: var(--font-body);
     transition: background 2s ease-in-out;
-    text-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
 }
 
 
@@ -233,9 +234,8 @@ body::after {
 .kill-headline {
   font-family: var(--font-body);
   font-stretch: expanded;
-  letter-spacing: 0.25em;
-  word-spacing: 0.2em;
-  font-size: 1rem;
+  letter-spacing: var(--track-label);
+  font-size: var(--fs-heading);
   font-weight: 400;
   line-height: 1.8;
   text-transform: uppercase;
@@ -243,8 +243,8 @@ body::after {
 
 .kill-sub {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    font-size: var(--fs-meta);
+    letter-spacing: var(--track-label);
     color: var(--color-text-faint);
     margin-top: 0.25rem;
 }
@@ -466,36 +466,12 @@ body::after {
     .kill-row:hover { transform: none; }
 }
 
-@media (max-width: 1023px) {
+.kill-row > div:nth-child(2) > div:nth-child(1),
+.kill-row > div:nth-child(2) > div:nth-child(2) { display: none; }
 
-    header,
-    .query-builder { display: none; }
-
-    .filter-panel-enter { order: 1; }
-
-    .kill-feed-panel .kill-row {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        min-height: 56px;
-    }
-
-    .kill-row a > div:first-child {
-        width: 48px;
-        height: 48px;
-        margin-right: 0.5rem;
-    }
-
-    .kill-row a > div:nth-child(2) { margin-left: 0; }
-
-    .kill-row .ship-name { font-size: 0.875rem; }
-
-    .kill-row > div:nth-child(2) { display: none; }
-
-    .kill-row > div:nth-child(3) > div:nth-child(1),
-    .kill-row > div:nth-child(3) > div:nth-child(2) { display: none; }
-
-    .kill-row > div:nth-child(3) > div:nth-child(3) {
-        width: auto;
-        padding-left: 0.5rem;
-    }
+.kill-row > div:nth-child(2) > div:nth-child(3) {
+    width: auto;
+    padding-left: 0.5rem;
 }
+
+.kill-attackers { display: none; }
