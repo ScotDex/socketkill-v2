@@ -4,7 +4,7 @@ import EntityLookup from '../svelte/EntityLookup.svelte'
 
 <div class="relative z-50 w-full bg-black border-b border-[var(--color-border-dim)]">
     <div class="max-w-[1700px] mx-auto px-4 py-1 flex items-center gap-4
-                font-mono text-[0.75rem] uppercase tracking-widest text-white/40">
+                ui text-xs uppercase tracking-widest text-[var(--color-text-faint)]">
         <nav class="flex items-center gap-4" aria-label="Site navigation">
             <a href="/about" class="band-link">About</a>
             <a href="/stats" class="band-link">Top 10</a>
@@ -34,14 +34,16 @@ import EntityLookup from '../svelte/EntityLookup.svelte'
 </div>
 
 <style>
-    .band-link {
-        color: rgba(255, 255, 255, 0.4);
+        .band-link {
+        color: var(--color-text-faint);
         text-decoration: none;
         transition: color 0.2s;
     }
-    .band-link:hover {
+    .band-link:hover,
+    .band-link:focus-visible {
         color: var(--color-neon-green);
-        text-shadow: 0 0 5px rgba(63, 185, 80, 0.5);
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
 
     .band-drop {

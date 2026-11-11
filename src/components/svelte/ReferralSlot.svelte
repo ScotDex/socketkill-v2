@@ -127,18 +127,29 @@
     gap: 0.5rem;
   }
 
-  .dots { display: flex; gap: 6px; }
+  .dots { display: flex; }
 
   .dots button {
-    width: 18px;
-    height: 3px;
+    width: 24px;
+    height: 24px;
     padding: 0;
     border: 0;
-    background: var(--color-border-mid);
+    background: transparent;
     cursor: pointer;
+    display: grid;
+    place-items: center;
   }
 
-  .dots button[aria-current='true'] { background: var(--color-neon-green); }
+  .dots button::before {
+    content: "";
+    width: 18px;
+    height: 3px;
+    background: var(--color-border-mid);
+  }
+
+  .dots button[aria-current='true']::before { background: var(--color-neon-green); }
+
+  .dots button:focus-visible { outline: 1px solid var(--color-neon-green); outline-offset: -2px; }
 
   @media (prefers-reduced-motion: reduce) {
     .item { transition: none; }
