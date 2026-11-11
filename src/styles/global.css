@@ -466,12 +466,36 @@ body::after {
     .kill-row:hover { transform: none; }
 }
 
-.kill-row > div:nth-child(2) > div:nth-child(1),
-.kill-row > div:nth-child(2) > div:nth-child(2) { display: none; }
+@media (max-width: 1023px) {
 
-.kill-row > div:nth-child(2) > div:nth-child(3) {
-    width: auto;
-    padding-left: 0.5rem;
+    header,
+    .query-builder { display: none; }
+
+    .filter-panel-enter { order: 1; }
+
+    .kill-feed-panel .kill-row {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        min-height: 56px;
+    }
+
+    .kill-row a > div:first-child {
+        width: 48px;
+        height: 48px;
+        margin-right: 0.5rem;
+    }
+
+    .kill-row a > div:nth-child(2) { margin-left: 0; }
+
+    .kill-row .ship-name { font-size: 0.875rem; }
+
+    .kill-row > div:nth-child(2) > div:nth-child(1),
+    .kill-row > div:nth-child(2) > div:nth-child(2) { display: none; }
+
+    .kill-row > div:nth-child(2) > div:nth-child(3) {
+        width: auto;
+        padding-left: 0.5rem;
+    }
+
+    .kill-attackers { display: none; }
 }
-
-.kill-attackers { display: none; }
