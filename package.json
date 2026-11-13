@@ -27,7 +27,7 @@
     "@eveshipfit/sde": "^14.3682781.0",
     "@eveshipfit/sde-loader": "^4.1.0",
     "@eveshipfit/ui-ingame": "^1.15.0",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "astro": "^6.4.8",
