@@ -52,9 +52,10 @@ try {
 </head><body><main>
 <p>RETRIEVING KILL ${id} FROM DATABASE</p>
 <form method="POST" action="/kill/${id}">
-<div class="cf-turnstile" data-sitekey="${TURNSTILE_SITEKEY}" data-theme="dark" data-callback="skGo"></div>
+<div class="cf-turnstile" data-sitekey="${TURNSTILE_SITEKEY}" data-theme="dark" data-callback="skReady"></div>
+<button id="go" type="submit" disabled>RETRIEVE</button>
 </form>
-<script>function skGo(){document.forms[0].submit()}</script>
+<script>function skReady(){document.getElementById('go').disabled=false}</script>
 </main></body></html>`
         return new Response(shell, {
             status: 428,
