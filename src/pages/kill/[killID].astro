@@ -19,6 +19,15 @@ if (!ALLOWED_HOSTS.includes(Astro.url.hostname)) {
 
 const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
 const clientIP = Astro.request.headers.get('cf-connecting-ip') || ''
+const TURNSTILE_SITEKEY = '0x4AAAAAAF-7Kei0BSiCRfNA'
+let tsToken = null
+if (Astro.request.method === 'POST') {
+    try {
+        const form = await Astro.request.formData()
+        const v = form.get('cf-turnstile-response')
+        if (typeof v === 'string' && v) tsToken = v
+    } catch {}
+}
 
 let kill = null
 
@@ -26,11 +35,35 @@ try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
     headers: {
         'User-Agent': incomingUA,
-        ...(clientIP && { 'X-SK-Client-IP': clientIP })
+        ...(clientIP && { 'X-SK-Client-IP': clientIP }),
+        ...(tsToken && { 'X-SK-Turnstile': tsToken })
     }
 })  
     console.log(`[CACHE] kill=${id} status=${res.headers.get('cf-cache-status')}`)
     if (!res.ok) {
+        if (res.status === 428) {
+        const shell = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Archive lookup | Socketkill.com</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>body{background:#0a0b0e;color:#9aa;font-family:monospace;display:grid;place-items:center;min-height:100vh;margin:0}main{text-align:center}</style>
+</head><body><main>
+<p>RETRIEVING KILL ${id} FROM ARCHIVE</p>
+<form method="POST" action="/kill/${id}">
+<div class="cf-turnstile" data-sitekey="${TURNSTILE_SITEKEY}" data-theme="dark" data-callback="skGo"></div>
+</form>
+<script>function skGo(){document.forms[0].submit()}</script>
+</main></body></html>`
+        return new Response(shell, {
+            status: 428,
+            headers: {
+                'Content-Type': 'text/html; charset=utf-8',
+                'Cache-Control': 'no-store'
+            }
+        })
+    }
     if (res.status === 503) {
         return new Response('Killmail warming up, retry shortly', {
             status: 503,
