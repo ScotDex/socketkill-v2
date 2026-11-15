@@ -9,7 +9,7 @@
 }
 
 .status {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--fs-meta);
     letter-spacing: var(--track-label);
     text-transform: uppercase;
@@ -86,12 +86,10 @@
 
 .ck-up>span {
     background: var(--color-neon-green);
-    box-shadow: 0 0 5px color-mix(in srgb, var(--color-neon-green) 50%, transparent);
 }
 
 .ck-dn>span {
     background: var(--color-isk-billion);
-    box-shadow: 0 0 5px color-mix(in srgb, var(--color-isk-billion) 45%, transparent);
 }
 
 .ck::after {
@@ -111,8 +109,7 @@
     top: -3px;
     bottom: -3px;
     width: 1px;
-    background: var(--color-terminal-blue);
-    box-shadow: 0 0 8px var(--color-terminal-blue);
+    background: var(--color-text-body);
     pointer-events: none;
 }
 
@@ -124,6 +121,7 @@
     background: color-mix(in srgb, var(--color-whale-accent) 10%, transparent);
     border-inline: 1px solid color-mix(in srgb, var(--color-whale-accent) 40%, transparent);
 }
+
 .split-bar.mix {
     display: flex;
     margin-top: 0;
@@ -141,7 +139,7 @@
     gap: 0.5rem;
     border-left: 2px solid var(--accent);
     background: color-mix(in srgb, var(--accent) 4%, transparent);
-    transition: background 0.12s, transform 0.12s;
+    transition: background 0.12s;
 }
 
 .entity-screen {
@@ -156,11 +154,9 @@
 .entity-screen .card-h,
 .entity-screen .grp {
     color: var(--dossier-c);
-    text-shadow: none;
 }
 
-.entity-screen .chip,
-.entity-screen .card-f {
+.entity-screen .card-h {
     text-shadow: none;
 }
 
@@ -170,7 +166,6 @@
 
 .fr:hover {
     background: color-mix(in srgb, var(--accent) 13%, transparent);
-    transform: translateX(2px);
 }
 
 @media (max-width: 640px) {
@@ -183,6 +178,7 @@
         display: none;
     }
 }
+
 @media (prefers-reduced-motion: reduce) {
 
     .status .pulse-dot,
