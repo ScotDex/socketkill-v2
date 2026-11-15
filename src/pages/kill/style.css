@@ -61,7 +61,7 @@ details[open]::details-content {
 
 
 .card-f {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--fs-meta);
     letter-spacing: var(--track-label);
     text-transform: uppercase;
@@ -98,12 +98,13 @@ details[open]::details-content {
 }
 
 .link {
-    transition: color 0.15s, text-shadow 0.15s;
+    transition: color 0.15s;
 }
 
 .link:hover {
     color: var(--color-neon-green);
-    text-shadow: var(--shadow-phosphor);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .act:focus-visible,
@@ -120,7 +121,6 @@ details[open]::details-content {
     font-weight: 600;
     letter-spacing: var(--track-label);
     color: var(--c);
-    text-shadow: var(--glow);
 }
 
 .split-bar {
@@ -167,7 +167,6 @@ details[open]::details-content {
     font-family: var(--font-mono);
     font-size: var(--fs-meta);
     color: var(--color-isk-billion);
-    text-shadow: var(--glow);
 }
 
 
@@ -209,7 +208,6 @@ details[open]::details-content {
     letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--color-neon-green);
-    text-shadow: var(--glow);
 }
 
 .grp-atk {
@@ -303,7 +301,6 @@ details[open] > .grp-atk .grp-caret {
 .act-primary:hover {
     color: var(--color-neon-green);
     border-bottom-color: var(--color-neon-green);
-    text-shadow: var(--shadow-phosphor);
 }
 
 .tabs {
@@ -332,13 +329,11 @@ details[open] > .grp-atk .grp-caret {
 .tab.is-active {
     color: var(--color-neon-green);
     border-bottom-color: var(--color-neon-green);
-    text-shadow: var(--shadow-phosphor);
 }
 
 .tab[data-mode="destroyed"].is-active {
     color: var(--color-isk-billion);
     border-bottom-color: var(--color-isk-billion);
-    text-shadow: var(--glow);
 }
 
 .cover {
@@ -414,12 +409,11 @@ details[open] > .grp-atk .grp-caret {
 }
 
 .dossier-rows .v {
+    font-family: var(--font-mono);
     font-weight: 400;
     color: var(--color-text-body);
     text-align: right;
 }
-
-.dossier-rows .v { font-family: var(--font-mono); }
 
 .dossier-rows .v .sub {
     font-weight: 400;
