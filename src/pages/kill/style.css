@@ -233,7 +233,7 @@ details[open]::details-content {
 }
 
 .grp-caret {
-    font-size: 10px;
+    font-size: var(--fs-meta);
     color: var(--color-text-faint);
     transition: transform 0.2s;
     display: inline-block;
@@ -409,7 +409,7 @@ details[open] > .grp-atk .grp-caret {
     gap: 0.55rem;
     padding: 0.75rem;
     font-size: var(--fs-secondary);
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-variant-numeric: tabular-nums;
 }
 
@@ -418,6 +418,8 @@ details[open] > .grp-atk .grp-caret {
     color: var(--color-text-body);
     text-align: right;
 }
+
+.dossier-rows .v { font-family: var(--font-mono); }
 
 .dossier-rows .v .sub {
     font-weight: 400;
