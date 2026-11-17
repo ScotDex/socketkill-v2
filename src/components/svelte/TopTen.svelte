@@ -69,27 +69,27 @@
     {#each items as item, i (item.id + '-' + i)}
       <li class="relative flex items-center gap-2 px-3 py-1.5 border-b border-eve-border last:border-b-0 text-sm overflow-hidden group hover:bg-white/5 transition-colors">
         <span class="bar absolute inset-y-0 left-0 transition-all duration-500" style="width: {item.count / max * 100}%"></span>
-        <span class="relative w-5 font-mono text-xs tabular-nums" style="color: color-mix(in srgb, var(--card-c) 45%, transparent)">{i + 1}</span>
-        <span class="ui relative flex-1 truncate text-text-body/85 group-hover:text-white transition-colors">{labelFn(item)}</span>
-        <span class="relative font-mono font-bold tabular-nums ml-auto" style="color: var(--card-c)">{item.count}</span>
+        <span class="relative w-5 font-mono text-xs tabular-nums text-text-faint">{i + 1}</span>
+        <span class="ui relative flex-1 truncate text-text-body group-hover:text-white transition-colors">{labelFn(item)}</span>
+        <span class="relative font-mono tabular-nums ml-auto" style="color: var(--card-c)">{item.count}</span>
       </li>
     {:else}
-      <li class="ui px-3 py-4 text-xs text-white/20 uppercase tracking-[0.18em] text-center">No activity recorded</li>
+      <li class="ui px-3 py-4 text-xs text-text-faint text-center">No activity recorded</li>
     {/each}
   </ol>
 {/snippet}
 
-<div class="min-h-screen font-body text-text-body max-w-7xl mx-auto lg:p-6 space-y-6 select-none">
+<div class="min-h-screen font-body text-text-body max-w-7xl mx-auto lg:p-6 space-y-6">
 
   <header class="flex flex-col sm:flex-row items-start sm:items-baseline justify-between border-b border-border-dim pb-4 gap-2">
     <div class="space-y-1">
-      <h1 class="font-mono tracking-[0.18em] text-2xl text-neon-green glow">&gt; TOP 10 <span class="text-neon-green/40">LAST HOUR</span></h1>
-      <p class="ui text-[10px] tracking-[0.22em] text-text-faint uppercase">Rolling 1h window · auto-refreshes every 60s</p>
+      <h1 class="ui text-xl font-semibold tracking-[var(--track-label)] uppercase text-neon-green">Top 10 <span class="text-text-faint">last hour</span></h1>
+      <p class="ui text-xs tracking-[var(--track-label)] text-text-faint uppercase">Rolling 1h window · auto-refreshes every 60s</p>
     </div>
     {#if data}
       <div class="text-right">
-        <span class="font-mono text-sm tracking-[0.1em] tabular-nums text-text-body bg-feed-bg px-2.5 py-1 border-b-2 border-neon-green/50">
-          {shownSample} <span class="ui text-[10px] text-text-faint uppercase tracking-[0.18em]">kills sampled</span>
+        <span class="font-mono text-sm tabular-nums text-text-body bg-feed-bg px-2.5 py-1 border-b-2 border-neon-green/50">
+          {shownSample} <span class="ui text-xs text-text-faint uppercase tracking-[var(--track-label)]">kills sampled</span>
         </span>
       </div>
     {/if}
@@ -97,23 +97,23 @@
 
   {#if loading && !initialized}
     <div class="flex flex-col items-center justify-center min-h-[400px] border border-dashed border-eve-border bg-eve-dark/20">
-      <div class="text-neon-green glow font-mono text-sm tracking-[0.18em] animate-pulse uppercase">&gt; AWAITING STATS FROM ENGINE</div>
+      <div class="ui text-sm text-text-faint motion-safe:animate-pulse" aria-live="polite">Awaiting stats from engine…</div>
     </div>
   {:else if error}
     <div class="flex flex-col items-center justify-center min-h-[400px] border border-isk-billion/30 bg-eve-dark">
-      <div class="text-isk-billion font-mono text-sm tracking-[0.18em] uppercase mb-2">&gt; CRITICAL EXCEPTION ENCOUNTERED</div>
+      <div class="ui text-sm text-isk-billion mb-2" role="alert">Couldn't load stats</div>
       <div class="ui text-xs text-text-faint bg-black/40 px-4 py-2 border border-eve-border">{error}</div>
     </div>
   {:else if initialized}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
       <section class="card fade-card overflow-hidden md:col-span-2 flex flex-col h-full" style="--card-c:var(--color-whale-accent)">
-        <header class="card-h"> Most valuable kills</header>
+        <header class="card-h">Most valuable kills</header>
         <ol class="flex flex-col flex-1 divide-y divide-eve-border">
           {#each data.topValue as k, i (k.killID)}
             <li class="h-full">
               <a href={`/kill/${k.killID}`} target="_blank" rel="noopener"
                  class="group flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 transition-colors h-full">
-                <span class="w-4 flex-shrink-0 font-mono text-xs tabular-nums text-whale-accent/45">{i + 1}</span>
+                <span class="w-4 flex-shrink-0 font-mono text-xs tabular-nums text-text-faint">{i + 1}</span>
                 <div class="relative w-9 h-9 flex-shrink-0 bg-black border border-eve-border overflow-hidden">
                   <img src={`https://images.evetech.net/types/${k.shipID}/render?size=64`}
                        alt="" loading="lazy" width="36" height="36"
@@ -122,9 +122,9 @@
                 </div>
                 <div class="flex flex-col min-w-0 flex-1">
                   <span class="ui truncate text-white text-sm font-semibold group-hover:text-neon-green transition-colors">{shipName(k.shipID)}</span>
-                  <span class="ui truncate text-text-body/70 text-xs mt-0.5">{k.victimName ?? 'Unknown Capsuleer'} · <span class="text-text-faint">{systemName(k.systemID)}</span></span>
+                  <span class="ui truncate text-text-body text-xs mt-0.5">{k.victimName ?? 'Unknown Capsuleer'} · <span class="text-text-faint">{systemName(k.systemID)}</span></span>
                 </div>
-                <span class="flex-shrink-0 text-whale-accent font-bold font-mono tabular-nums text-sm">{formatIsk(k.value)}</span>
+                <span class="flex-shrink-0 text-whale-accent font-mono tabular-nums text-sm">{formatIsk(k.value)}</span>
               </a>
             </li>
           {/each}
@@ -147,11 +147,10 @@
   {/if}
 
   <footer class="border-t border-[var(--color-eve-border)] pt-4 text-center">
-  <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
-    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
+  <div class="ui text-xs tracking-[var(--track-label)] text-[var(--color-text-faint)] space-x-4">
+    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">← Back to SocketKill</a>
     <a href="/about" class="hover:text-[var(--color-neon-green)] transition-colors">ABOUT</a>
   </div>
 </footer>
 
 </div>
-

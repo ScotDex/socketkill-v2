@@ -33,7 +33,6 @@
     color: var(--card-c);
     padding: 0.55rem 0.75rem;
     border-bottom: 1px solid color-mix(in srgb, var(--card-c) 25%, transparent);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--card-c) 40%, transparent);
 }
 
 .bar {
@@ -70,10 +69,10 @@
     border: 0;
     border-bottom: 2px solid transparent;
     cursor: pointer;
-    transition: color 0.15s, background 0.15s, border-color 0.15s, text-shadow 0.15s;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
 
-/* Segmented toggle — QueryBuilder + LiveFilter */
+
 .seg {
     flex: 1;
     padding: 0.45rem 0.25rem;
@@ -91,17 +90,15 @@
     color: var(--c);
     border-bottom-color: var(--c);
     background: color-mix(in srgb, var(--c) 10%, var(--color-feed-bg));
-    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 55%, transparent);
 }
 
-/* QueryBuilder only */
 .seg.solo {
     letter-spacing: var(--track-label);
     font-size: var(--fs-meta);
     --seg-c: var(--color-neon-green);
 }
 
-/* LiveFilter only */
+
 .flush {
     width: 100%;
     padding: 0.5rem;
@@ -120,7 +117,6 @@
     border-bottom-color: var(--color-neon-green);
 }
 
-/* SearchResults only */
 .page-btn {
     padding: 0.45rem 0.9rem;
     font-size: var(--fs-meta);
@@ -138,7 +134,7 @@
     cursor: not-allowed;
 }
 
-/* QueryBuilder only — the one button off the chassis */
+
 .run {
     font-family: var(--font-body);
     font-size: var(--fs-meta);
@@ -150,22 +146,14 @@
     border: 1px solid var(--color-border-mid);
     padding: 0.6rem;
     cursor: pointer;
-    text-shadow: var(--shadow-phosphor);
-    box-shadow:
-        0 0 14px rgb(var(--phosphor-rgb) / 0.12),
-        inset 0 0 14px rgb(var(--phosphor-rgb) / 0.05);
-    transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+    transition: background 0.15s, border-color 0.15s;
 }
 
 .run:hover {
     background: rgb(var(--phosphor-rgb) / 0.16);
     border-color: var(--color-neon-green);
-    box-shadow:
-        0 0 22px rgb(var(--phosphor-rgb) / 0.28),
-        inset 0 0 18px rgb(var(--phosphor-rgb) / 0.1);
 }
 
-/* ⚠ No known call site — see note 4 in header. */
 .icon-link {
     display: inline-flex;
     align-items: center;
@@ -223,7 +211,6 @@
     letter-spacing: var(--track-label);
     color: var(--c);
     align-self: flex-start;
-    text-shadow: 0 0 8px color-mix(in srgb, var(--c) 45%, transparent);
 }
 
 /* SearchResults */
@@ -247,7 +234,7 @@
 }
 
 
-/* ── STATUS & FEEDBACK ─────────────────────────────────────────*/
+
 
 .caret {
     color: var(--color-neon-green);
@@ -280,7 +267,7 @@ ul.loading {
 }
 
 
-/* ── BOOT SEQUENCE ─────────────────────────────────────────────*/
+
 
 .boot-sequence {
     font-family: var(--font-mono);
@@ -366,14 +353,13 @@ ul.loading {
     }
     100% {
         color: inherit;
-        text-shadow: 0 0 4px rgb(var(--phosphor-rgb) / 0.4);
+        text-shadow: none;
         transform: translateY(0);
         opacity: 1;
     }
 }
 
 
-/* ── REDUCED MOTION ────────────────────────────────────────────*/
 
 @media (prefers-reduced-motion: reduce) {
     .caret,
