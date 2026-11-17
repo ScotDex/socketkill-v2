@@ -71,24 +71,24 @@
 </script>
 <section class="sr mt-4">
   <header class="flex items-center justify-between px-3 py-2.5 border-b border-[var(--color-border-dim)]">
-    <span class="font-mono text-[13px] tracking-[0.14em] text-[var(--color-neon-green)] glow">
-      &gt; SEARCH RESULTS <span class="tabular-nums">[{shownTotal}]</span>
-    </span>
-    <span class="ui text-[10px] tracking-[0.14em]"
+    <span class="lbl lbl-title !text-[13px]">
+  Search results <span class="font-mono tabular-nums">({shownTotal})</span>
+</span>
+    <span class="ui text-xs tracking-[var(--track-label)]"
       class:text-[var(--color-whale-accent)]={$searchResults?.loading}
       class:text-[var(--color-isk-billion)]={$searchResults?.error}
       class:text-[var(--color-text-faint)]={!$searchResults?.loading && !$searchResults?.error}>
       {#if $searchResults?.loading}
         SCANNING WRECKAGE…
       {:else if $searchResults?.error}
-        ERR: {$searchResults.error}
+        Error: {$searchResults.error}
       {:else}
-        SHOWING {$searchResults?.kills?.length ?? 0}
+        Showing {$searchResults?.kills?.length ?? 0}
       {/if}
     </span>
   </header>
   <div class="readout px-3 py-2 border-b border-[var(--color-border-dim)]">
-    <span class="text-[var(--color-neon-green)]">&gt;</span> filter: {filterSummary}
+    Filter: {filterSummary}
   </div>
   <ul class="flex flex-col" class:loading={$searchResults?.loading}>
     {#each $searchResults?.kills ?? [] as k, i (k.killID)}
@@ -110,7 +110,7 @@
               class="w-12 h-12 flex-shrink-0 bg-black border border-[var(--color-eve-border)] object-cover"
               onerror={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
             <div class="flex flex-col min-w-0">
-              <span class="ui font-semibold text-[15px] text-[var(--color-text-body)] group-hover:text-[var(--color-neon-green)] transition-colors truncate">{shipName(k)}</span>
+              <span class="ui font-semibold text-base text-[var(--color-text-body)] group-hover:text-[var(--color-neon-green)] transition-colors truncate">{shipName(k)}</span>
               <span class="ui text-xs text-[var(--color-text-faint)] truncate flex items-center gap-1.5">
                 {#if k.victimCorpID}
                   <img src={`https://images.evetech.net/corporations/${k.victimCorpID}/logo?size=32`}
@@ -122,24 +122,24 @@
             </div>
           </div>
           <div class="md:col-span-3 flex flex-col min-w-0 text-xs">
-            <span class="ui text-[var(--color-text-body)]/70 truncate">{systemName(k)}</span>
-            <span class="ui text-[var(--color-text-faint)]/60 truncate">{regionName(k)}</span>
+            <span class="ui text-[var(--color-text-body)] truncate">{systemName(k)}</span>
+            <span class="ui text-[var(--color-text-faint)] truncate">{regionName(k)}</span>
           </div>
           <div class="md:col-span-2 flex flex-col items-end text-right">
             <span class="font-mono font-bold tabular-nums" style="color:{valueColor(k.totalValue)}">{formatIsk(k.totalValue)}</span>
-            <span class="ui text-[10px] tracking-[0.12em] text-[var(--color-text-faint)] tabular-nums">{k.attackerCount} ATTACKERS</span>
+            <span class="ui text-xs tracking-[var(--track-label)] text-[var(--color-text-faint)] tabular-nums">{k.attackerCount} {k.attackerCount === 1 ? 'attacker' : 'attackers'}</span>
           </div>
         </a>
       </li>
     {/each}
     {#if !$searchResults?.loading && $searchResults?.kills?.length === 0}
-      <li class="ui p-8 text-center text-[var(--color-text-faint)] text-xs tracking-[0.2em] uppercase">&gt; no results &lt;</li>
+      <li class="ui p-8 text-center text-[var(--color-text-faint)] text-sm">No kills match this search</li>
     {/if}
   </ul>
   <footer class="flex justify-between items-center p-3 border-t border-[var(--color-border-dim)]">
-    <button class="page-btn" onclick={prevPage} disabled={!$searchResults?.hasPrev}>&lt; NEWER</button>
-    <span class="font-mono text-xs tracking-[0.18em] text-[var(--color-neon-green)] glow tabular-nums">PAGE {$searchResults?.page ?? 1}</span>
-    <button class="page-btn" onclick={nextPage} disabled={!$searchResults?.hasMore}>OLDER &gt;</button>
+    <button class="page-btn" onclick={prevPage} disabled={!$searchResults?.hasPrev}>Newer</button>
+    <span class="text-xs tracking-[var(--track-label)] text-[var(--color-text-faint)] tabular-nums">Page {$searchResults?.page ?? 1}</span>
+    <button class="page-btn" onclick={nextPage} disabled={!$searchResults?.hasMore}>Older</button>
   </footer>
 </section>
 
