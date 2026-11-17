@@ -7,13 +7,13 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
 <Base
     title="Live Kill Overlay for OBS | Socketkill.com"
     ogTitle="SocketKill Ticker for OBS"
-    ogDescription="A OBS overlay add on showing eve losses and kills, low latency performance based."
+    ogDescription="A free OBS overlay showing an EVE character's kills and losses in real time."
     
 >
         <div class="kill-screen art-bg" style={`--art-bg-url: url(${artBg})`}>
         <main class="relative z-10 max-w-3xl mx-auto px-4 py-10">
             <header class="fade-card border-b border-[var(--color-border-dim)] pb-4 mb-8">
-                <h1 class="kill-headline">&gt; SocketKill | <span class="text-[var(--color-neon-green)]/40">LIVE KILL OVERLAY FOR OBS</span></h1>
+                <h1 class="kill-headline">SocketKill <span class="text-[var(--color-text-faint)]">Live kill overlay for OBS</span></h1>
                 <p class="kill-sub">TRANSPARENT · REAL-TIME · NO POLLING</p>
             </header>
             <section class="fade-card mb-8 text-sm leading-relaxed text-[var(--color-text-body)]">
@@ -21,47 +21,47 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
                 <p class="mt-3 text-[var(--color-text-faint)]">This guide covers setting it up. No coding required.</p>
             </section>
             <section class="fade-card mb-8 border border-[var(--color-border-mid)] bg-[var(--color-feed-bg)]/60">
-                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)]" style="text-shadow: var(--shadow-phosphor)">build your overlay url</header>
+                <header class="px-4 py-2.5 border-b border-[var(--color-border-dim)] ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)]">build your overlay url</header>
                 <div class="p-4 space-y-4">
                     <div>
-                        <label for="char-id" class="block font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)] mb-1.5">Character ID</label>
+                        <label for="char-id" class="block ui text-xs tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)] mb-1.5">Character ID</label>
                         <input
                             id="char-id"
                             type="text"
                             inputmode="numeric"
-                            placeholder="909008587"
+                            placeholder="e.g. 909008587"
                             autocomplete="off"
-                            class="w-full bg-[var(--color-dark-bg)] border border-[var(--color-border-dim)] focus:border-[var(--color-border-bright)] outline-none px-3 py-2 font-mono text-sm text-[var(--color-text-body)] placeholder:text-[var(--color-text-faint)]/40"
+                            class="w-full bg-[var(--color-dark-bg)] border border-[var(--color-border-dim)] focus:border-[var(--color-border-bright)] outline-none px-3 py-2 font-mono text-sm text-[var(--color-text-body)] placeholder:text-[var(--color-text-faint)]"
                         />
                     </div>
 
-                    <label class="flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--color-text-faint)] cursor-pointer select-none">
+                    <label class="flex items-center gap-2 ui text-xs tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)] cursor-pointer select-none">
                         <input id="hide-ship" type="checkbox" class="accent-[var(--color-neon-green)]" />
-                        Hide ship names <span class="text-[var(--color-text-faint)]/50">(shorter cards)</span>
+                        Hide ship names <span class="normal-case">(shorter cards)</span>
                     </label>
 
                     <div>
-                        <span class="block font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)] mb-1.5">Your URL</span>
+                        <span class="block ui text-xs tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)] mb-1.5">Your URL</span>
                         <div class="flex gap-2">
                             <code id="url-out" class="flex-1 min-w-0 truncate bg-[var(--color-dark-bg)] border border-[var(--color-border-dim)] px-3 py-2 font-mono text-xs text-[var(--color-text-faint)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code>
-                            <button id="copy-btn" type="button" class="filter-btn shrink-0 px-4 py-2 font-mono text-xs tracking-[0.14em] uppercase border border-[var(--color-border-mid)] text-[var(--color-text-body)] hover:border-[var(--color-border-bright)] transition-colors">COPY</button>
+                            <button id="copy-btn" type="button" class="filter-btn shrink-0 px-4 py-2 ui text-xs tracking-[var(--track-label)] uppercase border border-[var(--color-border-mid)] text-[var(--color-text-body)] hover:border-[var(--color-border-bright)] transition-colors">COPY</button>
                         </div>
-                        <p id="url-hint" class="mt-1.5 font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)]/60">&gt; enter your character id above</p>
-                        <p id="size-hint" class="mt-1 font-mono text-[10px] tracking-[0.14em] text-[var(--color-text-faint)]/40">&gt; suggested browser source size: 800 × 150</p>
+                        <p id="url-hint" class="mt-1.5 ui text-xs text-[var(--color-text-faint)]" aria-live="polite">Enter your character ID above</p>
+                        <p id="size-hint" class="mt-1 ui text-xs text-[var(--color-text-faint)]">Suggested Browser Source size: 800 × 150</p>
                     </div>
                 </div>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">quick start</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">quick start</h2>
                 <ol class="list-decimal pl-5 space-y-2 text-sm leading-relaxed text-[var(--color-text-body)]">
                     <li>Find your character ID (see below).</li>
-                    <li>Build your overlay URL:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code></li>
+                    <li>Build your overlay URL:<br /><code class="font-mono text-xs text-[var(--color-text-body)]">https://ws.socketkill.com/ticker.html?character=YOUR_CHARACTER_ID</code></li>
                     <li>In OBS: Sources → + → Browser, paste the URL, set the size to 800 × 150.</li>
                     <li>Position it on your scene. Done — kills and losses appear live.</li>
                 </ol>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">how does it look on screen?</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">how does it look on screen?</h2>
                 <div class="bg-[var(--color-eve-dark)]">
                     <iframe
                         src="https://ws.socketkill.com/ticker.html?demo=1&rate=2200"
@@ -71,22 +71,22 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
                         style="background: var(--color-eve-dark)"
                     ></iframe>
                 </div>
-                <p class="mt-2 font-mono text-[10px] tracking-[0.14em] uppercase text-[var(--color-text-faint)]/60">&gt; simulated feed — sample data, not live kills</p>
+                <p class="mt-2 ui text-xs text-[var(--color-text-faint)]">Simulated feed: sample data, not live kills</p>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">finding your character id</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">finding your character id</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <p>The Ticker needs your numeric character ID, not your character name. The easiest way to find it:</p>
                     <ol class="list-decimal pl-5 space-y-2">
                         <li>Go to zKillboard and search your character name.</li>
                         <li>Open your character page.</li>
-                        <li>The number in the URL is your ID. For example, in <code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://zkillboard.com/character/909008587/</code>, the ID is <code class="font-mono text-xs text-[var(--color-terminal-blue)]">909008587</code>.</li>
+                        <li>The number in the URL is your ID. For example, in <code class="font-mono text-xs text-[var(--color-text-body)]">https://zkillboard.com/character/909008587/</code>, the ID is <code class="font-mono text-xs text-[var(--color-text-body)]">909008587</code>.</li>
                     </ol>
-                    <p>That number goes after <code class="font-mono text-xs text-[var(--color-terminal-blue)]">?character=</code> in your overlay URL.</p>
+                    <p>That number goes after <code class="font-mono text-xs text-[var(--color-text-body)]">?character=</code> in your overlay URL.</p>
                 </div>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">setting it up in obs</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">setting it up in obs</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <ol class="list-decimal pl-5 space-y-2">
                         <li>In OBS, under Sources, click the + and choose Browser.</li>
@@ -105,7 +105,7 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
                 </div>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)"> what you'll see</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">What you'll see</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-body)] space-y-3">
                     <p>Each event appears as a card: the ship render on top, then the ISK value, with the ship name underneath. Cards are a fixed 116px wide, so the layout stays steady no matter how long the ship name is.</p>
                     <p>A coloured bar across the top of each card tells you which way round it went:</p>
@@ -118,29 +118,29 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
                 </div>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">options</h2>
-                <p class="text-sm text-[var(--color-text-body)] mb-3">You can adjust the overlay by adding parameters to the URL. Chain extra parameters with <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;</code>.</p>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">options</h2>
+                <p class="text-sm text-[var(--color-text-body)] mb-3">You can adjust the overlay by adding parameters to the URL. Chain extra parameters with <code class="font-mono text-xs text-[var(--color-text-body)]">&amp;</code>.</p>
                 <div class="border border-[var(--color-border-dim)]">
                     <div class="grid grid-cols-[auto_auto_1fr] font-mono text-xs">
-                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Parameter</div>
-                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Values</div>
-                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[0.18em] uppercase text-[var(--color-text-faint)]">Effect</div>
-                        <div class="px-3 py-2 text-[var(--color-terminal-blue)]">character</div>
+                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)]">Parameter</div>
+                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)]">Values</div>
+                        <div class="px-3 py-2 border-b border-[var(--color-border-dim)] tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)]">Effect</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)]">character</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)]">a character ID</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] font-body text-sm"><span class="text-[var(--color-neon-green)]">Required.</span> The character to track.</div>
-                        <div class="px-3 py-2 text-[var(--color-terminal-blue)] border-t border-[var(--color-border-dim)]/50">ship</div>
+                        <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50">ship</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50">false</div>
                         <div class="px-3 py-2 text-[var(--color-text-body)] border-t border-[var(--color-border-dim)]/50 font-body text-sm">Hides the ship name, leaving the render and the ISK value. Cards get shorter, so you can drop the Browser Source height to around 130.</div>
                     </div>
                 </div>
                 <div class="mt-4 text-sm text-[var(--color-text-body)] space-y-2">
-                    <p class="font-mono text-[10px] tracking-[0.22em] uppercase text-[var(--color-text-faint)]">Examples</p>
-                    <p>Track a character, showing everything:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=909008587</code></p>
-                    <p>Track a character, hiding ship names:<br /><code class="font-mono text-xs text-[var(--color-terminal-blue)]">https://ws.socketkill.com/ticker.html?character=909008587&amp;ship=false</code></p>
+                    <p class="ui text-xs tracking-[var(--track-label)] uppercase text-[var(--color-text-faint)]">Examples</p>
+                    <p>Track a character, showing everything:<br /><code class="font-mono text-xs text-[var(--color-text-body)]">https://ws.socketkill.com/ticker.html?character=909008587</code></p>
+                    <p>Track a character, hiding ship names:<br /><code class="font-mono text-xs text-[var(--color-text-body)]">https://ws.socketkill.com/ticker.html?character=909008587&amp;ship=false</code></p>
                 </div>
             </section>
             <section class="fade-card mb-8">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-neon-green)] mb-3" style="text-shadow: var(--shadow-phosphor)">troubleshooting</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">troubleshooting</h2>
                 <dl class="text-sm leading-relaxed space-y-4">
                     <div>
                         <dt class="font-semibold text-[var(--color-text-body)]">Nothing appears.</dt>
@@ -156,7 +156,7 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
                     </div>
                     <div>
                         <dt class="font-semibold text-[var(--color-text-body)]">Cards are cut off along the bottom.</dt>
-                        <dd class="text-[var(--color-text-faint)] mt-1">The Browser Source height is too small. Set it to 150 (or around 130 if you're using <code class="font-mono text-xs text-[var(--color-terminal-blue)]">&amp;ship=false</code>).</dd>
+                        <dd class="text-[var(--color-text-faint)] mt-1">The Browser Source height is too small. Set it to 150 (or around 130 if you're using <code class="font-mono text-xs text-[var(--color-text-body)]">&amp;ship=false</code>).</dd>
                     </div>
                     <div>
                         <dt class="font-semibold text-[var(--color-text-body)]">Only a few cards are visible.</dt>
@@ -169,15 +169,15 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
                 </dl>
             </section>
             <section class="fade-card mb-8 border border-[var(--color-border-dim)] bg-[var(--color-eve-dark)]/40 p-4">
-                <h2 class="font-mono text-sm tracking-[0.18em] uppercase text-[var(--color-terminal-blue)] mb-3">how it works (the short version)</h2>
+                <h2 class="ui text-sm tracking-[var(--track-label)] uppercase text-[var(--color-neon-green)] mb-3">how it works (the short version)</h2>
                 <div class="text-sm leading-relaxed text-[var(--color-text-faint)] space-y-3">
                     <p>For the curious: the overlay opens a live connection to SocketKill's server and asks for events involving one specific character. SocketKill processes every killmail as soon as possible, and pushes only the ones matching your character down to your overlay. Nothing is polled or refreshed — events arrive the moment they're processed.</p>
                     <p>Because it's filtered server-side, your overlay only ever receives your character's events, not the whole stream.</p>
                 </div>
             </section>
             <footer class="border-t border-[var(--color-eve-border)] pt-4 text-center">
-                <div class="font-mono text-[11px] tracking-[0.14em] text-[var(--color-text-faint)] space-x-4">
-                    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">&lt; BACK TO SOCKETKILL.COM</a>
+                <div class="ui text-xs tracking-[var(--track-label)] text-[var(--color-text-faint)] space-x-4">
+                    <a href="/" class="hover:text-[var(--color-neon-green)] transition-colors">← Back to SocketKill</a>
                     <a href="/about" class="hover:text-[var(--color-neon-green)] transition-colors">ABOUT</a>
                     <a href="https://discord.gg/dpgmEm9REc" target="_blank" rel="noopener" class="hover:text-[var(--color-neon-green)] transition-colors">DISCORD</a>
                 </div>
@@ -209,17 +209,17 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
             url = `${BASE}?character=${id}` + (hideShip.checked ? '&ship=false' : '')
             urlOut.textContent = url
             urlOut.style.color = 'var(--color-neon-green)'
-            hint.textContent = '> url ready — copy it into an obs browser source'
+            hint.textContent = 'URL ready. Copy it into an OBS Browser Source'
         } else {
             urlOut.textContent = `${BASE}?character=YOUR_CHARACTER_ID`
             urlOut.style.color = ''
             hint.textContent = id.length
-                ? '> character id must be numbers only'
-                : '> enter your character id above'
+                ? 'Character ID must be numbers only'
+                : 'Enter your character ID above'
         }
         sizeHint.textContent = hideShip.checked
-            ? '> suggested browser source size: 800 × 130'
-            : '> suggested browser source size: 800 × 150'
+            ? 'Suggested Browser Source size: 800 × 130'
+            : 'Suggested Browser Source size: 800 × 150'
         return valid ? url : null
     }
     input.addEventListener('input', buildUrl)
@@ -227,7 +227,7 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
     copyBtn.addEventListener('click', async () => {
         const url = buildUrl()
         if (!url) {
-            hint.textContent = '> enter a valid character id first'
+            hint.textContent = 'Enter a valid character ID first'
             return
         }
         try {
@@ -235,7 +235,7 @@ const artBg = `https://edge.socketkill.com/kills/kills-${String(Math.floor(Math.
             copyBtn.textContent = 'COPIED'
             setTimeout(() => { copyBtn.textContent = 'COPY' }, 1500)
         } catch {
-            hint.textContent = '> copy failed — select the url and copy manually'
+            hint.textContent = 'Copy failed. Select the URL and copy it manually'
         }
     })
 </script>
