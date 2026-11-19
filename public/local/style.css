@@ -59,13 +59,6 @@ body.preview-bg {
 
 
 
-/* =====================================================================
-   SETUP PAGE — base
-   Order matters below: #setup label must stay ABOVE #options label
-   (display: block vs flex), and #options fieldset must stay ABOVE the
-   max-width: 520px media query.
-   ===================================================================== */
-
 #setup {
   position: fixed;
   inset: 0;
@@ -226,9 +219,6 @@ body.preview-bg {
 
 #options .bot-hint { grid-column: 1 / -1; margin: 0; font-size: var(--fs-small); }
 
-/* =====================================================================
-   OVERLAY — #stage / #window. Unchanged.
-   ===================================================================== */
 
 #stage {
   position: fixed;
@@ -496,14 +486,6 @@ body.preview-bg {
 #channelLabel:empty { display: none; }
 
 
-
-/* =====================================================================
-   SETUP PAGE — redesign ("fitting window" concept), formerly setup.css
-   Must stay BELOW the base setup rules: it overrides them by cascade
-   order. Scoped to #setup; the overlay is untouched.
-   ===================================================================== */
-
-/* ---------- 1. Tokens ---------------------------------------------- */
 #setup {
   --ui-bg:      #08090a;
   --ui-panel:   rgba(16, 18, 20, .78);
@@ -516,7 +498,6 @@ body.preview-bg {
   --ui-accent:     var(--gold);
   --ui-accent-dim: rgba(232, 185, 35, .10);
 
-  /* Type scale. 12px is the floor; nothing in #setup goes below it. */
   --fs-label:   12px;   /* small uppercase labels, legal */
   --fs-small:   13px;   /* field labels, hints, footer */
   --fs-body:    15px;   /* body copy, inputs */
@@ -533,7 +514,7 @@ body.preview-bg {
   background-attachment: fixed;
 }
 
-/* ---------- 2. Header ---------------------------------------------- */
+
 #setup header {
   position: relative;
   padding-bottom: 22px;
@@ -541,7 +522,7 @@ body.preview-bg {
   border-bottom: 1px solid var(--ui-line);
 }
 
-/* gold tick on the header rule, left-aligned */
+
 #setup header::after {
   content: "";
   position: absolute;
@@ -565,7 +546,7 @@ body.preview-bg {
 
 .badge { font-size: var(--fs-label); letter-spacing: var(--track-label); padding: 2px 6px; }
 
-/* ---------- 3. Panels -------------------------------------------- */
+
 #setup section {
   position: relative;
   padding: 22px 22px 20px;
@@ -575,7 +556,6 @@ body.preview-bg {
   backdrop-filter: blur(2px);
 }
 
-/* ---------- 4. Section headings ------------------------------------ */
 #setup h2 {
   display: flex;
   align-items: center;
@@ -587,7 +567,7 @@ body.preview-bg {
   color: var(--ui-text);
 }
 
-/* trailing rule fills the rest of the line */
+
 #setup h2::after {
   content: "";
   flex: 1;
@@ -595,11 +575,10 @@ body.preview-bg {
   background: var(--ui-line);
 }
 
-/* ---------- 5. Body copy & the privacy notes ------------------------ */
+
 #setup section p { line-height: 1.6; }
 #setup section > p:not(.hint) { margin: 0 0 4px; font-size: var(--fs-body); }
 
-/* The data/privacy hints become a quiet indented log */
 #setup section > .hint {
   position: relative;
   margin: 12px 0 0;
@@ -615,7 +594,7 @@ body.preview-bg {
 .data-notes summary:focus-visible { outline: 1px solid var(--ui-accent); outline-offset: 2px; }
 .data-notes .hint { margin: 8px 0 0; padding-left: 12px; border-left: 1px solid var(--ui-line-hi); }
 
-/* ---------- 6. Form fields ------------------------------------------ */
+
 #setup label {
   margin: 16px 0 6px;
   font-size: var(--fs-small);
@@ -629,7 +608,7 @@ body.preview-bg {
 #setup input:hover:not(:focus) { border-color: rgba(255, 255, 255, .22); }
 #setup input:focus { background-color: #15191b; }
 
-/* The output URL reads like a readout, not an input */
+
 #urlOutput {
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
   font-size: var(--fs-small) !important;
@@ -638,14 +617,13 @@ body.preview-bg {
 }
 #urlOutput:placeholder-shown { color: var(--ui-faint) !important; }
 
-/* separate the output from the three inputs */
 #setup label[for="urlOutput"] {
   margin-top: 24px;
   padding-top: 18px;
   border-top: 1px dashed var(--ui-line-hi);
 }
 
-/* ---------- 7. Customise block -------------------------------------- */
+
 #options label {
   color: var(--ui-text);
 }
@@ -660,7 +638,7 @@ body.preview-bg {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 8. Preview column --------------------------------------- */
+
 #previewBox {
   position: relative;
   width: 100%;
@@ -709,7 +687,7 @@ body.preview-bg {
 }
 #setup ol b { color: #eef1f2; font-weight: 700; }
 
-/* ---------- 9. Support slot (Buy Me a Coffee) ----------------------- */
+
 .support-slot {
   display: flex;
   align-items: center;
@@ -728,7 +706,6 @@ body.preview-bg {
 }
 .support-slot img { display: block; height: 40px; width: auto; }
 
-/* ---------- 10. Footer ---------------------------------------------- */
 #setup footer {
   margin-top: 40px;
   padding-top: 18px;
@@ -745,7 +722,6 @@ body.preview-bg {
   max-width: 900px;
 }
 
-/* ---------- 11. Copy button ----------------------------------------- */
 #setup #copyBtn {
   min-width: 110px;
   background: var(--ui-accent);
@@ -767,7 +743,7 @@ body.preview-bg {
   animation: copy-shake .3s;
 }
 
-/* NOTE: sits after .copied/.failed, so it overrides them while hovered. */
+
 #setup #copyBtn:hover { background: #f2cc4d; border-color: #f2cc4d; }
 
 #urlOutput.flash { animation: url-flash .6s ease-out; }
@@ -787,11 +763,9 @@ body.preview-bg {
   75% { transform: translateX(3px); }
 }
 
-/* ---------- 12. Layout ---------------------------------------------- */
 @media (min-width: 1000px) {
   #setup main {
     display: grid;
-    /* canvas (preview) wide, inspector narrow but never below 320px */
     grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
     gap: 24px;
     align-items: start;

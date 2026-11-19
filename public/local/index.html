@@ -61,7 +61,6 @@
                 <input id="urlOutput" type="text" readonly placeholder="Enter a channel above">
                 <button id="copyBtn" type="button">Copy</button>
             </div>
-            <p class="hint">OBS Browser Source size: <b id="obsSize">700 × 530</b></p>
 <details class="data-notes">
     <summary>How your data is used</summary>
     <p class="hint">Avatars are fetched from IVR (api.ivr.fi). We record which channels load the overlay (channel name only) to measure usage and tell streamers about updates. No viewer data is collected.</p>
@@ -83,7 +82,7 @@
                 <ol>
                     <li>In OBS: <b>Sources → + → Browser</b></li>
                     <li>Paste your URL into the <b>URL</b> field</li>
-                    <li>Set width and height to the <b>OBS Browser Source size</b> shown under Customise</li>
+                    <li>Set <b>Width</b> and <b>Height</b> to any size. The chat window fills it (700 × 530 is a good start)</li>
                 </ol>
             </section>
           </div>
@@ -101,8 +100,6 @@
 
                     <fieldset>
                         <legend>Window size</legend>
-                        <label>Chat width (px) <input type="number" name="width" min="200" placeholder="440"></label>
-                        <label>Height (px) <input type="number" name="maxheight" min="150" placeholder="480"></label>
                         <label>Messages kept <input type="number" name="max" min="5" max="200" placeholder="30"></label>
                     </fieldset>
 
