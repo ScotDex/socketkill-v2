@@ -21,7 +21,7 @@
     "@astrojs/svelte": "^8.1.2",
     "@eveshipfit/dogma-engine": "^14.1.0",
     "@eveshipfit/esi": "^1.3.0",
-    "@eveshipfit/fitting": "^2.8.0",
+    "@eveshipfit/fitting": "^2.9.0",
     "@eveshipfit/images": "^3.3687575.0",
     "@eveshipfit/react-hooks": "^2.9.0",
     "@eveshipfit/sde": "^14.3682781.0",
