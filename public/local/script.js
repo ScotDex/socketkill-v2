@@ -49,6 +49,7 @@ if (panelW > 0) rootStyle.setProperty('--panel-w', `min(${panelW}px, calc(100vw 
 
 const maxH = parseInt(params.get('maxheight'), 10);
 if (maxH > 0) rootStyle.setProperty('--panel-max-h', `min(${maxH}px, calc(100vh - 48px))`);
+if (panelW > 0 || maxH > 0) windowEl.classList.add('fixed-size');
 
 const opacity = parseFloat(params.get('opacity'));
 if (opacity >= 0 && opacity <= 1) rootStyle.setProperty('--panel-opacity', opacity);

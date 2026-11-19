@@ -239,8 +239,8 @@ body.preview-bg {
 #window {
   display: none;
   flex-direction: column;
-  width: calc(var(--panel-w) + var(--roster-w));
-  height: var(--panel-max-h);
+  width: calc(100vw - 48px);
+  height: calc(100vh - 48px);
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0) 45%),
@@ -254,7 +254,8 @@ body.preview-bg {
 }
 
 #window.active    { display: flex; }
-#window.no-roster { width: var(--panel-w); }
+#window.fixed-size           { width: calc(var(--panel-w) + var(--roster-w)); height: var(--panel-max-h); }
+#window.fixed-size.no-roster { width: var(--panel-w); }
 
 
 
