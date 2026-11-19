@@ -19,7 +19,6 @@ if (!ALLOWED_HOSTS.includes(Astro.url.hostname)) {
 
 const incomingUA = Astro.request.headers.get('user-agent') || 'SocketKill-Frontend/1.0'
 const clientIP = Astro.request.headers.get('cf-connecting-ip') || ''
-const TURNSTILE_SITEKEY = '0x4AAAAAAF-7Kei0BSiCRfNA'
 let tsToken = null
 if (Astro.request.method === 'POST') {
     try {
@@ -33,54 +32,41 @@ let kill = null
 
 try {
     const res = await fetch(`https://ws.socketkill.com/api/kill/${id}`, {
-    headers: {
-        'User-Agent': incomingUA,
-        ...(clientIP && { 'X-SK-Client-IP': clientIP }),
-        ...(tsToken && { 'X-SK-Turnstile': tsToken })
-    }
-})  
+        headers: {
+            'User-Agent': incomingUA,
+            ...(clientIP && { 'X-SK-Client-IP': clientIP }),
+            ...(tsToken && { 'X-SK-Turnstile': tsToken })
+        }
+    })
     console.log(`[CACHE] kill=${id} status=${res.headers.get('cf-cache-status')}`)
+
     if (!res.ok) {
         if (res.status === 428) {
-        const shell = `<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex">
-<title>Archive lookup | Socketkill.com</title>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<style>body{background:#0a0b0e;color:#9aa;font-family:monospace;display:grid;place-items:center;min-height:100vh;margin:0}main{text-align:center}</style>
-</head><body><main>
-<p>RETRIEVING KILL ${id} FROM DATABASE</p>
-<form method="POST" action="/kill/${id}">
-<div class="cf-turnstile" data-sitekey="${TURNSTILE_SITEKEY}" data-theme="dark" data-callback="skReady"></div>
-<button id="go" type="submit" disabled>RETRIEVE</button>
-</form>
-<script>function skReady(){document.getElementById('go').disabled=false}</script>
-</main></body></html>`
-        return new Response(shell, {
-            status: 428,
-            headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-                'Cache-Control': 'no-store'
-            }
-        })
+            const failed = tsToken ? '?failed=1' : ''
+            return new Response(null, {
+                status: 303,
+                headers: {
+                    'Location': `/archive/${id}${failed}`,
+                    'Cache-Control': 'no-store'
+                }
+            })
+        }
+        if (res.status === 503) {
+            return new Response('Killmail warming up, retry shortly', {
+                status: 503,
+                headers: { 'Retry-After': '300' }
+            })
+        }
+        if (res.status === 410) {
+            return new Response('Killmail not available', { status: 410 })
+        }
+        return new Response('Kill not found', { status: 404 })
     }
-    if (res.status === 503) {
-        return new Response('Killmail warming up, retry shortly', {
-            status: 503,
-            headers: { 'Retry-After': '300' }
-        })
-    }
-    if (res.status === 410) {
-        return new Response('Killmail not available', { status: 410 })
-    }
-    return new Response('Kill not found', { status: 404 })
-}
+
     kill = await res.json()
 } catch (err) {
     return new Response(`Error: ${err.message}`, { status: 500 })
 }
-
 const isToday = (kill.killmailTime ?? '').slice(0, 10) === new Date().toISOString().slice(0, 10);
 Astro.response.headers.set(
     'Cache-Control',

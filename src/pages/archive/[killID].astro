@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro'
+import '../kill/style.css'
+
+const { killID } = Astro.params
+const id = parseInt(killID)
+if (!Number.isFinite(id) || id <= 0) {
+    return new Response('Invalid killID', { status: 400 })
+}
+
+const failed = Astro.url.searchParams.has('failed')
+const TURNSTILE_SITEKEY = '0x4AAAAAAF-7Kei0BSiCRfNA'
+
+Astro.response.status = 428
+Astro.response.headers.set('Cache-Control', 'no-store')
+---
+
+<Base title="Archived killmail | Socketkill.com">
+    <Fragment slot="head">
+        <meta name="robots" content="noindex" />
+        <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    </Fragment>
+
+    <div class="kill-screen">
+        <main class="max-w-md mx-auto px-4 pt-16 relative z-10">
+            <div class="card" style="--card-c: var(--color-neon-green); --d: 0ms">
+                <header class="card-h flex justify-between items-center">
+                    <span>archived killmail</span>
+                    <span class="tag">KILL {id}</span>
+                </header>
+
+                <form method="POST" action={`/kill/${id}`} data-astro-reload class="p-4 flex flex-col gap-4">
+                    <p class="ui text-sm">
+                        This kill is older than the live feed, so it loads from the archive.
+                        Complete the check, then load it.
+                    </p>
+
+                    <div class="cf-turnstile"
+                        data-sitekey={TURNSTILE_SITEKEY}
+                        data-theme="dark"
+                        data-callback="skReady"
+                        data-expired-callback="skReset"
+                        data-error-callback="skReset"></div>
+
+                    <p id="gate-msg" class="ui text-sm" style="color: var(--color-isk-billion)" aria-live="polite">
+                        {failed ? 'The check failed. Please try again.' : ''}
+                    </p>
+
+                    <button id="go" type="submit" disabled
+                        class="act act-primary disabled:opacity-40 disabled:cursor-not-allowed">
+                        LOAD KILLMAIL
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script is:inline>
+        (() => {
+            const go = document.getElementById('go')
+            const msg = document.getElementById('gate-msg')
+
+            window.skReady = () => { go.disabled = false; msg.textContent = '' }
+            window.skReset = () => {
+                go.disabled = true
+                msg.textContent = 'The check expired or failed to load. Complete it again to continue.'
+            }
+
+            const box = document.querySelector('.cf-turnstile')
+            if (window.turnstile && box && !box.hasChildNodes()) {
+                window.turnstile.render(box, {
+                    sitekey: box.dataset.sitekey,
+                    theme: 'dark',
+                    callback: window.skReady,
+                    'expired-callback': window.skReset,
+                    'error-callback': window.skReset
+                })
+            }
+        })()
+    </script>
+</Base>
