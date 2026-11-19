@@ -37,6 +37,7 @@ Astro.response.headers.set('Cache-Control', 'no-store')
 
                     <div class="cf-turnstile"
                         data-sitekey={TURNSTILE_SITEKEY}
+                        data-action="archive"
                         data-theme="dark"
                         data-callback="skReady"
                         data-expired-callback="skReset"
@@ -69,6 +70,7 @@ Astro.response.headers.set('Cache-Control', 'no-store')
             const box = document.querySelector('.cf-turnstile')
             if (window.turnstile && box && !box.hasChildNodes()) {
                 window.turnstile.render(box, {
+                    action: 'archive',
                     sitekey: box.dataset.sitekey,
                     theme: 'dark',
                     callback: window.skReady,
