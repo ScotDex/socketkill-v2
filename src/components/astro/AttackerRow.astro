@@ -7,7 +7,7 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
 <li class:list={["atk relative flex items-start gap-2 text-sm overflow-hidden py-1", { "atk-fb": a.finalBlow }]}>
     <span class="dmg" style={`width:${a.damagePercent}%`}></span>
 
-    <div class="relative w-10 h-10 flex-shrink-0 bg-black/40">
+    <div class="relative w-10 h-10 flex-shrink-0 bg-[var(--color-dark-bg)]">
         {!isNpc && <img src={`https://images.evetech.net/characters/${a.characterID}/portrait?size=64`} class="w-full h-full" alt="" loading="lazy" />}
     </div>
 
@@ -17,7 +17,7 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
     </div>
 
     <div class="relative flex-1 min-w-0">
-        <div class="ui truncate text-white text-[13px]">
+        <div class="ui truncate text-white text-sm">
             {isNpc
                 ? <span title={a.ship}>{a.name !== 'Unknown' ? a.name : a.ship}</span>
                 : <a href={internalLink('character', a.characterID)} class="link">{a.name}</a>}
@@ -52,12 +52,13 @@ const corpKnown = a.corporationID && a.corp && a.corp !== 'Unknown'
     }
     @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
     .fb {
-        font-family: var(--font-mono); font-size: 10px;
+        font-family: var(--font-mono);
+        font-size: var(--fs-meta);
+        letter-spacing: var(--track-label);
         color: var(--color-isk-billion);
-        text-shadow: 0 0 8px color-mix(in srgb, var(--color-isk-billion) 50%, transparent);
     }
-    .link { transition: color 0.15s, text-shadow 0.15s; }
-    .link:hover { color: var(--color-neon-green); text-shadow: var(--shadow-phosphor); }
+    .link { transition: color 0.15s; }
+    .link:hover { color: var(--color-neon-green); }
     .ui { font-family: var(--font-body); }
     @media (prefers-reduced-motion: reduce) { .dmg { animation: none; } }
 

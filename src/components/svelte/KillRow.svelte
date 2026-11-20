@@ -10,7 +10,7 @@
 
 
 <div
-    class="kill-row group relative overflow-hidden flex items-center justify-between border-b border-[#1c2128] border-l-2 border-l-transparent hover:border-l-[var(--color-neon-green)] py-2 px-4 min-h-[64px] {isWhale ? 'whale-row' : ''}"
+    class="kill-row group relative overflow-hidden flex items-center justify-between border-b border-[var(--color-eve-border)] border-l-2 border-l-transparent hover:border-l-[var(--color-neon-green)] py-2 px-4 min-h-[64px] {isWhale ? 'whale-row' : ''}"
     onmousemove={(e) => {
         const r = e.currentTarget.getBoundingClientRect()
         e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
@@ -18,7 +18,7 @@
 >
     <div class="flex items-center flex-1">
         <a href={kill.zkillUrl} target="_blank" rel="noopener noreferrer" class="flex items-center">
-            <div class="w-16 h-16 bg-black border border-[var(--color-border-dim)] rounded-sm overflow-hidden mr-4">
+            <div class="w-16 h-16 bg-black border border-[var(--color-border-dim)] overflow-hidden mr-4">
                 <img src={kill.shipImageUrl} alt="" class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="ml-2">
@@ -40,10 +40,10 @@
         </a>
     </div>
     <div class="flex items-center">
-        <div class="w-12 h-12 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
+        <div class="w-12 h-12 bg-[var(--color-dark-bg)] border border-[var(--color-eve-border)] flex items-center justify-center mr-3">
             <img src={kill.corpImageUrl} alt={kill.corpName} class="w-[44px] h-[44px]" loading="lazy" />
         </div>
-        <div class="w-12 h-12 bg-black/40 border border-gray-700 flex items-center justify-center mr-3">
+        <div class="w-12 h-12 bg-[var(--color-dark-bg)] border border-[var(--color-eve-border)] flex items-center justify-center mr-3">
             <img src={kill.allianceImageUrl} alt={kill.allianceName ?? ''} class="w-[44px] h-[44px]" loading="lazy" />
         </div>
         <div class="w-[120px] text-right pr-2">
