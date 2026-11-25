@@ -1,3 +1,19 @@
+
+{
+  const p = new URLSearchParams(location.search);
+  const twitchOnly =
+    p.has('channel') && !p.has('kick') && !p.has('yt') && !p.has('demo');
+  if (twitchOnly) {
+    try {
+      navigator.sendBeacon(
+        'https://ws.socketkill.com/api/overlay-ping',
+        JSON.stringify({ channel: p.get('channel').trim().toLowerCase(), v: 2 }),
+      );
+    } catch {}
+    location.replace('/local/v2/' + location.search);
+  }
+}
+
 const params = new URLSearchParams(location.search);
 const maxMessages = Number(params.get('max')) || 30;
 const channel = (params.get('channel') || '')
