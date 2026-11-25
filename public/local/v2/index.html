@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-skin="eve">
+  <head>
+    <meta charset="utf-8" />
+    <title>Local chat overlay</title>
+    <link
+      rel="preload"
+      href="https://edge.socketkill.com/fonts/evesansneue-regular-webfont.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./core/core.css" />
+    <link rel="stylesheet" href="./skins/eve/skin.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <div id="window">
+        <div id="tabbar">
+          <div id="tabs">
+            <span class="dot" id="statusDot"></span>
+            <span class="tab active">Local [<span id="tabCount">0</span>]</span>
+            <span class="tab" id="channelLabel"></span>
+          </div>
+          <div id="winctl">
+            <span>+</span><span>&#8942;</span><span>&#8722;</span>
+          </div>
+        </div>
+        <div id="body">
+          <div id="chatCol">
+            <ul id="list"></ul>
+            <div class="track"></div>
+          </div>
+          <div id="rosterCol">
+            <div id="rosterHead">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z" />
+              </svg>
+              <span id="rosterCount">0</span>
+            </div>
+            <ul id="rosterList"></ul>
+            <div class="track"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

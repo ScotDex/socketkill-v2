@@ -1,0 +1,397 @@
+/* EVE Online Local chat skin.
+   Requires <html data-skin="eve">; faction themes add data-theme on the same element. */
+
+/* ---------- Fonts (only the faces this skin uses) ---------- */
+
+@font-face {
+  font-family: 'EVE Sans Neue';
+  src: url('https://edge.socketkill.com/fonts/evesansneue-regular-webfont.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'EVE Sans Neue';
+  src: url('https://edge.socketkill.com/fonts/evesansneue-italic-webfont.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'EVE Sans Neue';
+  src: url('https://edge.socketkill.com/fonts/evesansneue-bold-webfont.woff2')
+    format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'EVE Sans Neue';
+  src: url('https://edge.socketkill.com/fonts/evesansneue-bolditalic-webfont.woff2')
+    format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Tokens ---------- */
+
+[data-skin='eve'] {
+  --eve-rgb: 18, 20, 23;
+  --panel-opacity: 0.9;
+  --eve-bg: rgba(var(--eve-rgb), var(--panel-opacity));
+  --eve-border: rgba(255, 255, 255, 0.14);
+  --line: rgba(255, 255, 255, 0.12);
+  --text: #d2d9dc;
+  --dim: #8f9a9f;
+  --green: #59c97a;
+  --red: #d9534f;
+  --gold: #e8b923;
+
+  --portrait: 48px;
+  --panel-w: 440px;
+  --roster-w: 210px;
+  --panel-max-h: min(480px, calc(100vh - 48px));
+  --font-size: 16px;
+
+  font-family: 'EVE Sans Neue', Arial, sans-serif;
+}
+
+/* ---------- Faction themes ---------- */
+
+[data-skin='eve'][data-theme='amarr'] {
+  --eve-border: rgba(201, 161, 74, 0.55);
+}
+[data-skin='eve'][data-theme='caldari'] {
+  --eve-border: rgba(79, 143, 191, 0.55);
+}
+[data-skin='eve'][data-theme='gallente'] {
+  --eve-border: rgba(79, 174, 138, 0.55);
+}
+[data-skin='eve'][data-theme='minmatar'] {
+  --eve-border: rgba(181, 82, 59, 0.55);
+}
+
+/* ---------- Window ---------- */
+
+#stage {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+}
+
+#window {
+  display: none;
+  flex-direction: column;
+  width: calc(100vw - 48px);
+  height: calc(100vh - 48px);
+  overflow: hidden;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0) 45%
+    ),
+    var(--eve-bg);
+  border: 1px solid var(--eve-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 24px rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  font-size: var(--font-size);
+}
+
+#window.active {
+  display: flex;
+}
+
+/* Legacy fixed sizing for old width=/maxheight= URLs */
+#window.fixed-size {
+  width: calc(var(--panel-w) + var(--roster-w));
+  height: var(--panel-max-h);
+}
+#window.fixed-size.no-roster {
+  width: var(--panel-w);
+}
+
+/* ---------- Tab bar ---------- */
+
+#tabbar {
+  flex: none;
+  height: calc(var(--font-size) * 2.75);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+#tabs {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.0625em;
+}
+
+.tab {
+  color: #8d979b;
+}
+.tab.active {
+  color: #f2f5f6;
+}
+
+.dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: -8px;
+  background: var(--red);
+  box-shadow: 0 0 6px var(--red);
+}
+.dot.live {
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+}
+
+#winctl {
+  display: flex;
+  gap: 18px;
+  color: #e8eef0;
+  font-size: 1.375em;
+  line-height: 1;
+  user-select: none;
+}
+
+#channelLabel:empty {
+  display: none;
+}
+
+/* ---------- Body columns ---------- */
+
+#body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+#chatCol,
+#rosterCol {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#chatCol {
+  flex: 1;
+  min-width: 0;
+}
+#rosterCol {
+  flex: none;
+  width: var(--roster-w);
+}
+
+/* Decorative scroll tracks */
+.track {
+  position: absolute;
+  right: 8px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+}
+.track::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.4);
+}
+#chatCol .track::after {
+  bottom: 0;
+  height: 38%;
+}
+#rosterCol .track::after {
+  top: 0;
+  height: 60%;
+}
+
+/* ---------- Chat list ---------- */
+
+#list {
+  list-style: none;
+  margin: 0;
+  padding: 10px 24px 12px 18px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#list.overflowing {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 36px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 36px);
+}
+
+.row {
+  flex: none;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  animation: row-in 0.25s ease-out;
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.who {
+  font-weight: 700;
+}
+.who::after {
+  content: ' > ';
+  color: var(--dim);
+  font-weight: 400;
+}
+
+.text img.emote {
+  height: 1.5em;
+  vertical-align: middle;
+  margin: -2px 1px;
+}
+
+.text .link {
+  color: var(--gold);
+}
+
+.row.system .who,
+.row.system .text {
+  color: var(--red);
+  font-weight: 400;
+}
+
+/* ---------- Roster ---------- */
+
+#rosterHead {
+  flex: none;
+  height: calc(var(--font-size) * 2.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  color: var(--dim);
+  font-size: 1.0625em;
+}
+
+#rosterHead svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: currentColor;
+}
+
+#rosterList {
+  list-style: none;
+  margin: 0;
+  padding: 4px 24px 10px 10px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.roster-row {
+  position: relative;
+  flex: none;
+  height: var(--portrait);
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.portrait {
+  position: relative;
+  flex: none;
+  width: var(--portrait);
+  height: var(--portrait);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: calc(var(--portrait) * 0.42);
+  background: #2a2f33;
+  color: #c9cfd2;
+  filter: grayscale(0.8) brightness(0.8);
+  opacity: 0.6;
+  transition:
+    filter 0.3s,
+    opacity 0.3s;
+}
+
+.portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.roster-row.spoken .portrait {
+  filter: none;
+  opacity: 1;
+}
+
+.roster-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #c9cfd2;
+}
+
+.roster-row.spoken .roster-name {
+  color: #e9eef0;
+}
+
+.standing {
+  position: absolute;
+  right: -12px;
+  bottom: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background:
+    linear-gradient(#eef3f4, #eef3f4) 3px 4px / 8px 2px no-repeat,
+    linear-gradient(#eef3f4, #eef3f4) 3px 8px / 8px 2px no-repeat,
+    var(--standing, #4a5358);
+}
+
+.no-portrait .portrait {
+  display: none;
+}
+.no-portrait .roster-row {
+  height: auto;
+  gap: 6px;
+}
+.no-portrait .standing {
+  position: static;
+  order: -1;
+  flex: none;
+}
